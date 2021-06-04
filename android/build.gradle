@@ -1,0 +1,38 @@
+group 'org.infobip.plugins.mobilemessaging.flutter.infobip_mobilemessaging'
+version '1.0'
+
+buildscript {
+    repositories {
+        google()
+        jcenter()
+        mavenCentral()
+    }
+
+    dependencies {
+        classpath 'com.android.tools.build:gradle:4.1.0'
+    }
+}
+
+rootProject.allprojects {
+    repositories {
+        google()
+        jcenter()
+        mavenCentral()
+    }
+}
+
+apply plugin: 'com.android.library'
+
+android {
+    compileSdkVersion 30
+
+    defaultConfig {
+        minSdkVersion 16
+    }
+}
+
+dependencies {
+    implementation ('com.infobip:infobip-mobile-messaging-android-sdk:5.2.3@aar') {
+        transitive = true
+    }
+}
