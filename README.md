@@ -23,10 +23,13 @@ The document describes plugin integration steps for your Flutter project.
   1. Make sure to [setup application at Infobip portal](https://www.infobip.com/docs/mobile-app-messaging/create-mobile-application-profile), if you haven't already.
 
   2. Add MobileMessaging plugin to dependencies at `pubspec.yaml`:
-    ```yaml
-    dependencies:
+
+  ```yaml
+  dependencies:
       infobip_mobilemessaging: '^0.0.1'
-    ```
+
+  ```
+
   3. Run `flutter pub get` to install plugin
 
   4. Configure iOS.
