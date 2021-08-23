@@ -2,13 +2,13 @@ PODS:
   - Flutter (1.0.0)
   - infobip_mobilemessaging (0.0.1):
     - Flutter
-    - MobileMessaging/Core (= 9.1.7)
-    - MobileMessaging/Geofencing (= 9.1.7)
-    - MobileMessaging/InAppChat (= 9.1.7)
-  - MobileMessaging/Core (9.1.7)
-  - MobileMessaging/Geofencing (9.1.7):
+    - MobileMessaging/Core (= 9.2.1)
+    - MobileMessaging/Geofencing (= 9.2.1)
+    - MobileMessaging/InAppChat (= 9.2.1)
+  - MobileMessaging/Core (9.2.1)
+  - MobileMessaging/Geofencing (9.2.1):
     - MobileMessaging/Core
-  - MobileMessaging/InAppChat (9.1.7):
+  - MobileMessaging/InAppChat (9.2.1):
     - MobileMessaging/Core
   - package_info_plus (0.4.5):
     - Flutter
@@ -32,8 +32,8 @@ EXTERNAL SOURCES:
 
 SPEC CHECKSUMS:
   Flutter: 434fef37c0980e73bb6479ef766c45957d4b510c
-  infobip_mobilemessaging: 1bd64711695c58cfdd1d1547b087ea643475a79c
-  MobileMessaging: 7de221bc5ba0c4a28c8e40f3716e29d2bcfa01e5
+  infobip_mobilemessaging: 47be521b0eb6303e8f7434dd0e7e49126113d81e
+  MobileMessaging: 37e93336986204ed05b299372aee1fa819f2744f
   package_info_plus: 6c92f08e1f853dc01228d6f553146438dafcd14e
 
 PODFILE CHECKSUM: fe0e1ee7f3d1f7d00b11b474b62dd62134535aea
