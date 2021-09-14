@@ -202,7 +202,7 @@ public class InfobipMobilemessagingPlugin implements FlutterPlugin, MethodCallHa
         return;
       }
 
-      if (intent.getAction() != null && intent.getAction().equals(Event.INSTALLATION_UPDATED.getKey()) {
+      if (intent.getAction() != null && intent.getAction().equals(Event.INSTALLATION_UPDATED.getKey())) {
         final JSONObject updatedInstallation = InstallationJson.toJSON(Installation.createFrom(intent.getExtras()));
         broadcastHandler.sendEvent(event, updatedInstallation);
         return;
