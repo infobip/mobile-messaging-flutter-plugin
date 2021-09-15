@@ -1,6 +1,6 @@
 name: infobip_mobilemessaging
 description: Infobip Mobile Messaging Flutter Plugin.
-version: 0.0.1
+version: 0.0.2
 homepage: https://github.com/infobip/mobile-messaging-flutter-plugin#readme
 repository: https://github.com/infobip/mobile-messaging-flutter-plugin
 issue_tracker: https://github.com/infobip/mobile-messaging-flutter-plugin/issues
