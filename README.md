@@ -1,4 +1,4 @@
-# Infobip Mobilemessaging Flutter plugin
+# Mobile Messaging SDK plugin for Flutter
 
 Mobile Messaging SDK is designed and developed to easily enable push notification channel in your mobile application. In almost no time of implementation you get push notification in your application and access to the features of [Infobip IP Messaging Platform](https://portal.infobip.com/push/).
 The document describes plugin integration steps for your Flutter project.
@@ -26,7 +26,7 @@ The document describes plugin integration steps for your Flutter project.
 
   ```yaml
   dependencies:
-      infobip_mobilemessaging: '^0.0.2'
+      infobip_mobilemessaging: '^0.1.0'
 
   ```
 

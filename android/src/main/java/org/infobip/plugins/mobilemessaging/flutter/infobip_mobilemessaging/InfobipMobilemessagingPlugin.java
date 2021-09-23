@@ -21,7 +21,10 @@ import org.infobip.mobile.messaging.InstallationMapper;
 import org.infobip.mobile.messaging.Message;
 import org.infobip.mobile.messaging.MobileMessaging;
 import org.infobip.mobile.messaging.MobileMessagingProperty;
+import org.infobip.mobile.messaging.SuccessPending;
+import org.infobip.mobile.messaging.User;
 import org.infobip.mobile.messaging.api.shaded.google.gson.Gson;
+import org.infobip.mobile.messaging.api.shaded.google.gson.JsonParser;
 import org.infobip.mobile.messaging.api.shaded.google.gson.reflect.TypeToken;
 import org.infobip.mobile.messaging.api.support.http.serialization.JsonSerializer;
 import org.infobip.mobile.messaging.interactive.InteractiveEvent;
@@ -29,15 +32,21 @@ import org.infobip.mobile.messaging.interactive.MobileInteractive;
 import org.infobip.mobile.messaging.interactive.NotificationAction;
 import org.infobip.mobile.messaging.interactive.NotificationCategory;
 import org.infobip.mobile.messaging.mobileapi.InternalSdkError;
+import org.infobip.mobile.messaging.mobileapi.MobileMessagingError;
 import org.infobip.mobile.messaging.util.PreferenceHelper;
 import org.infobip.plugins.mobilemessaging.flutter.common.Configuration;
+import org.infobip.plugins.mobilemessaging.flutter.common.ErrorCodes;
 import org.infobip.plugins.mobilemessaging.flutter.common.InitHelper;
+import org.infobip.plugins.mobilemessaging.flutter.common.InstallationJson;
+import org.infobip.plugins.mobilemessaging.flutter.common.PersonalizationCtx;
+import org.infobip.plugins.mobilemessaging.flutter.common.UserJson;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.lang.reflect.Type;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -98,6 +107,26 @@ public class InfobipMobilemessagingPlugin implements FlutterPlugin, MethodCallHa
     Log.i(TAG, "activity: " + activity.toString());
     if (call.method.equals("init")) {
       init(call, result);
+    } else if (call.method.equals("saveUser")) {
+      saveUser(call, result);
+    } else if (call.method.equals("fetchUser")) {
+      fetchUser(result);
+    } else if (call.method.equals("getUser")) {
+      getUser(result);
+    } else if (call.method.equals("saveInstallation")) {
+      saveInstallation(call, result);
+    } else if (call.method.equals("fetchInstallation")) {
+      fetchInstallation(result);
+    } else if (call.method.equals("getInstallation")) {
+      getInstallation(result);
+    } else if (call.method.equals("personalize")) {
+      personalize(call, result);
+    } else if (call.method.equals("depersonalize")) {
+      depersonalize(result);
+    } else if (call.method.equals("depersonalizeInstallation")) {
+      depersonalizeInstallation(call, result);
+    } else if (call.method.equals("setInstallationAsPrimary")) {
+      setInstallationAsPrimary(call, result);
     } else {
       result.notImplemented();
     }
@@ -198,13 +227,31 @@ public class InfobipMobilemessagingPlugin implements FlutterPlugin, MethodCallHa
       ) {
         final Message message = Message.createFrom(intent.getExtras());
         final NotificationAction notificationAction = NotificationAction.createFrom(intent.getExtras());
-        broadcastHandler.sendEvent(event, messageToJSON(message), notificationAction.getId(), notificationAction.getInputText());
+        final JSONObject payload = messageToJSON(message);
+        try {
+          payload.put("id", notificationAction.getId());
+          payload.put("inputText", notificationAction.getInputText());
+          broadcastHandler.sendEvent(event, payload);
+        } catch (JSONException e) {
+          Log.e(TAG, e.getMessage(), e);
+        }
         return;
       }
 
       if (intent.getAction() != null && intent.getAction().equals(Event.INSTALLATION_UPDATED.getKey())) {
         final JSONObject updatedInstallation = InstallationJson.toJSON(Installation.createFrom(intent.getExtras()));
         broadcastHandler.sendEvent(event, updatedInstallation);
+        return;
+      }
+
+      if (Event.USER_UPDATED.getKey().equals(intent.getAction()) || Event.PERSONALIZED.getKey().equals(intent.getAction())) {
+        JSONObject updatedUser = UserJson.toJSON(User.createFrom(intent.getExtras()));
+        broadcastHandler.sendEvent(event, updatedUser);
+        return;
+      }
+
+      if (Event.DEPERSONALIZED.getKey().equals(intent.getAction())) {
+        broadcastHandler.sendEvent(event);
         return;
       }
 
@@ -317,22 +364,16 @@ public class InfobipMobilemessagingPlugin implements FlutterPlugin, MethodCallHa
         return true;
       }
 
-      private boolean sendEvent(String event, Object object1, Object... objects) {
+      private boolean sendEvent(String event, Object payload) {
         Log.d(TAG, "sendEvent: " + event);
-        if (event == null || object1 == null) {
+        if (event == null || payload == null) {
           return false;
         }
 
         JSONObject eventData = new JSONObject();
-        JSONArray parameters = new JSONArray();
-        // parameters.put(event);
-        parameters.put(object1);
-        for (Object o : objects) {
-          parameters.put(o);
-        }
         try {
           eventData.put("eventName", event);
-          eventData.put("payload", parameters);
+          eventData.put("payload", payload);
         } catch (JSONException e) {
           Log.e(TAG, e.getMessage(), e);
           return false;
@@ -351,7 +392,7 @@ public class InfobipMobilemessagingPlugin implements FlutterPlugin, MethodCallHa
       }
 
     private boolean sendEvent(String event) {
-      Log.d(TAG, "sendEvent: " + event);
+      Log.d(TAG, "sendEvent: (without payload) " + event);
       if (event == null) {
         return false;
       }
@@ -364,52 +405,146 @@ public class InfobipMobilemessagingPlugin implements FlutterPlugin, MethodCallHa
 
   }
 
+  private MobileMessaging mobileMessaging() {
+    return MobileMessaging.getInstance(this.activity.getApplicationContext());
+  }
 
-  private static class InstallationJson extends Installation {
+  /*User Profile Management*/
 
-    static JSONArray toJSON(final List<Installation> installations) {
-      JSONArray installationsJson = new JSONArray();
-      for (Installation installation : installations) {
-        installationsJson.put(toJSON(installation));
-      }
-      return installationsJson;
-    }
-
-    static JSONObject toJSON(final Installation installation) {
-      try {
-        String json = InstallationMapper.toJson(installation);
-        JSONObject jsonObject = new JSONObject(json);
-        cleanupJsonMapForClient(installation.getCustomAttributes(), jsonObject);
-        return jsonObject;
-      } catch (JSONException e) {
-        e.printStackTrace();
-        return new JSONObject();
-      }
-    }
-
-    static Installation fromJSON(JSONObject json) {
-      Installation installation = new Installation();
-
-      try {
-        if (json.has("isPushRegistrationEnabled")) {
-          installation.setPushRegistrationEnabled(json.optBoolean("isPushRegistrationEnabled"));
-        }
-        if (json.has("isPrimaryDevice")) {
-          installation.setPrimaryDevice(json.optBoolean("isPrimaryDevice"));
-        }
-        if (json.has("customAttributes")) {
-          Type type = new TypeToken<Map<String, Object>>() {
-          }.getType();
-          Map<String, Object> customAttributes = new JsonSerializer().deserialize(json.optString("customAttributes"), type);
-          installation.setCustomAttributes(CustomAttributesMapper.customAttsFromBackend(customAttributes));
-        }
-      } catch (Exception e) {
-        //error parsing
-      }
-
-      return installation;
+  // public void saveUser(ReadableMap args, final Callback successCallback, final Callback errorCallback) throws JSONException {
+  public void saveUser(MethodCall call,final Result result) {
+    try {
+      //final User user = UserJson.resolveUser(ReactNativeJson.convertMapToJson(args));
+      final User user = new Gson().fromJson(call.arguments.toString(), User.class);
+      mobileMessaging().saveUser(user, userResultListener(result));
+    } catch (IllegalArgumentException e) {
+      result.error(ErrorCodes.SAVE_USER.getErrorCode(), e.getMessage(), e.getLocalizedMessage());
     }
   }
+
+  public void fetchUser(final Result result) {
+    mobileMessaging().fetchUser(userResultListener(result));
+  }
+
+  @NonNull
+  private MobileMessaging.ResultListener<User> userResultListener(final Result resultCallbacks) {
+    return new MobileMessaging.ResultListener<User>() {
+      @Override
+      public void onResult(org.infobip.mobile.messaging.mobileapi.Result<User, MobileMessagingError> result) {
+        if (result.isSuccess()) {
+          resultCallbacks.success(UserJson.toJSON(result.getData()).toString());
+        } else {
+          resultCallbacks.error(result.getError().getCode(), result.getError().getMessage(), result.getError());
+        }
+      }
+    };
+  }
+
+  public void getUser(final Result result) {
+    User user = mobileMessaging().getUser();
+    result.success(UserJson.toJSON(user).toString());
+  }
+
+  public void saveInstallation(MethodCall call,final Result result) {
+    final Installation installation = new Gson().fromJson(call.arguments.toString(), Installation.class);
+    mobileMessaging().saveInstallation(installation, installationResultListener(result));
+  }
+
+  public void fetchInstallation(final Result result) {
+    mobileMessaging().fetchInstallation(installationResultListener(result));
+  }
+
+  @NonNull
+  private MobileMessaging.ResultListener<Installation> installationResultListener(final Result resultCallbacks) {
+    return new MobileMessaging.ResultListener<Installation>() {
+      @Override
+      public void onResult(org.infobip.mobile.messaging.mobileapi.Result<Installation, MobileMessagingError> result) {
+        if (result.isSuccess()) {
+          resultCallbacks.success(InstallationJson.toJSON(result.getData()).toString());
+        } else {
+          resultCallbacks.error(result.getError().getCode(), result.getError().getMessage(), result.getError());
+        }
+      }
+    };
+  }
+
+  public void getInstallation(final Result result) {
+    Installation installation = mobileMessaging().getInstallation();
+    result.success(InstallationJson.toJSON(installation).toString());
+  }
+
+  public void personalize(MethodCall call,final Result resultCallbacks) {
+    try {
+      final PersonalizationCtx ctx = PersonalizationCtx.resolvePersonalizationCtx(new JSONObject(call.arguments.toString()));
+      mobileMessaging().personalize(ctx.userIdentity, ctx.userAttributes, ctx.forceDepersonalize, new MobileMessaging.ResultListener<User>() {
+        @Override
+        public void onResult(org.infobip.mobile.messaging.mobileapi.Result<User, MobileMessagingError> result) {
+          if (result.isSuccess()) {
+            resultCallbacks.success(UserJson.toJSON(result.getData()).toString());
+          } else {
+            resultCallbacks.error(result.getError().getCode(), result.getError().getMessage(), result.getError());
+          }
+        }
+      });
+    } catch (IllegalArgumentException e) {
+      resultCallbacks.error(ErrorCodes.PERSONALIZE.getErrorCode(), e.getMessage(), e.getLocalizedMessage());
+    } catch (JSONException e) {
+      resultCallbacks.error(ErrorCodes.PERSONALIZE.getErrorCode(), e.getMessage(), e.getLocalizedMessage());
+    }
+  }
+
+  private static final Map<SuccessPending, String> depersonalizeStates = new HashMap<SuccessPending, String>() {{
+    put(SuccessPending.Pending, "pending");
+    put(SuccessPending.Success, "success");
+  }};
+
+  public void depersonalize(final Result resultCallbacks) {
+    mobileMessaging().depersonalize(new MobileMessaging.ResultListener<SuccessPending>() {
+      @Override
+      public void onResult(org.infobip.mobile.messaging.mobileapi.Result<SuccessPending, MobileMessagingError> result) {
+        if (result.isSuccess()) {
+          resultCallbacks.success(depersonalizeStates.get(result.getData()));
+        } else {
+          resultCallbacks.error(result.getError().getCode(), result.getError().getMessage(), result.getError());
+        }
+      }
+    });
+  }
+
+  public void depersonalizeInstallation(MethodCall call,final Result result) {
+    String pushRegistrationId = call.arguments.toString();
+    if (pushRegistrationId.isEmpty()) {
+      result.error(ErrorCodes.DEPERSONALIZE_INSTALLATION.getErrorCode(), "Cannot resolve pushRegistrationId from arguments", null);
+      return;
+    }
+    mobileMessaging().depersonalizeInstallation(pushRegistrationId, installationsResultListener(result));
+  }
+
+  public void setInstallationAsPrimary(MethodCall call,final Result result) {
+    String pushRegistrationId = call.argument("pushRegistrationId");
+    Boolean primary = call.argument("primary");
+    if (pushRegistrationId.isEmpty()) {
+      result.error(ErrorCodes.DEPERSONALIZE_INSTALLATION.getErrorCode(), "Cannot resolve pushRegistrationId from arguments", null);
+      return;
+    }
+    mobileMessaging().setInstallationAsPrimary(pushRegistrationId, primary, installationsResultListener(result));
+  }
+
+  @NonNull
+  private MobileMessaging.ResultListener<List<Installation>> installationsResultListener(final Result resultCallbacks) {
+    return new MobileMessaging.ResultListener<List<Installation>>() {
+      @Override
+      public void onResult(org.infobip.mobile.messaging.mobileapi.Result<List<Installation>, MobileMessagingError> result) {
+        if (result.isSuccess()) {
+          resultCallbacks.success(InstallationJson.toJSON(result.getData()).toString());
+        } else {
+          resultCallbacks.error(result.getError().getCode(), result.getError().getMessage(), result.getError());
+        }
+      }
+    };
+  }
+  /*User Profile Management End */
+
 
   static void cleanupJsonMapForClient(Map<String, CustomAttributeValue> customAttributes, JSONObject jsonObject) throws JSONException {
     jsonObject.remove("map");

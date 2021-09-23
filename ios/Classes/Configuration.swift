@@ -8,19 +8,6 @@
 import Foundation
 import MobileMessaging
 
-/*
-extension Optional {
-    func unwrap<T>(orDefault fallbackValue: T) -> T {
-        switch self {
-        case .some(let val as T):
-            return val
-        default:
-            return fallbackValue
-        }
-    }
-}
-*/
-
 class Configuration {
     struct Keys {
         static let iosSettings = "iosSettings"

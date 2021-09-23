@@ -9,6 +9,8 @@ extension String {
     }
 }
 
+public typealias DictionaryRepresentation = [String : Any]
+
 public class SwiftInfobipMobilemessagingPlugin: NSObject, FlutterPlugin {
     
     private var eventsManager: MobileMessagingEventsManager?
@@ -49,6 +51,26 @@ public class SwiftInfobipMobilemessagingPlugin: NSObject, FlutterPlugin {
     public func handle(_ call: FlutterMethodCall, result: @escaping FlutterResult) {
         if call.method == "init" {
             initPlugin(call: call, result: result)
+        } else if call.method == "saveUser" {
+            saveUser(call: call, result: result)
+        } else if call.method == "fetchUser" {
+            fetchUser(result: result)
+        } else if call.method == "getUser" {
+            getUser(result: result)
+        } else if call.method == "saveInstallation" {
+            saveInstallation(call: call, result: result)
+        } else if call.method == "fetchInstallation" {
+            fetchInstallation(result: result)
+        } else if call.method == "getInstallation" {
+            getInstallation(result: result)
+        } else if call.method == "setInstallationAsPrimary" {
+            setInstallationAsPrimary(call: call, result: result)
+        } else if call.method == "personalize" {
+            personalize(call: call, result: result)
+        } else if call.method == "depersonalize" {
+            depersonalize(result: result)
+        } else if call.method == "depersonalizeInstallation" {
+            depersonalizeInstallation(call: call, result: result)
         }
     }
     
@@ -62,7 +84,8 @@ public class SwiftInfobipMobilemessagingPlugin: NSObject, FlutterPlugin {
                   details: "Error parsing Configuration" ))
         }
         
-        return start(configuration: configuration)
+        start(configuration: configuration)
+        return result("success")
     }
     
     private func start(configuration: Configuration) {
@@ -85,7 +108,216 @@ public class SwiftInfobipMobilemessagingPlugin: NSObject, FlutterPlugin {
         mobileMessaging?.start()
         MobileMessaging.sync()
     }
+    
+    func saveUser(call: FlutterMethodCall, result: @escaping FlutterResult) {
+        guard let jsonString = call.arguments as? String,
+              let userDataDictionary = convertStringToDictionary(text: jsonString),
+              let user = MMUser(dictRepresentation: userDataDictionary) else
+        {
+            return result(
+               FlutterError( code: "invalidUser",
+                 message: "Error parsing User Data",
+                 details: "Error parsing User Data" ))
+        }
 
+        MobileMessaging.saveUser(user, completion: { (error) in
+            if let error = error {
+                return result(
+                    FlutterError( code: String(error.code),
+                                 message: error.mm_message,
+                                 details: error.description ))
+            } else {
+                return self.dictionaryResulut(result: result, dict: MobileMessaging.getUser()?.dictionaryRepresentation)
+            }
+        })
+    }
     
+    func fetchUser(result: @escaping FlutterResult) {
+        MobileMessaging.fetchUser(completion: { (user, error) in
+            if let error = error {
+                return result(
+                    FlutterError( code: String(error.code),
+                                 message: error.mm_message,
+                                 details: error.description ))
+            } else {
+                return self.dictionaryResulut(result: result, dict: MobileMessaging.getUser()?.dictionaryRepresentation)
+            }
+        })
+    }
     
+    func getUser(result: @escaping FlutterResult) {
+        return self.dictionaryResulut(result: result, dict: MobileMessaging.getUser()?.dictionaryRepresentation)
+    }
+    
+    func saveInstallation(call: FlutterMethodCall, result: @escaping FlutterResult) {
+        guard let jsonString = call.arguments as? String,
+              let installationDictionary = convertStringToDictionary(text: jsonString),
+              let installation = MMInstallation(dictRepresentation: installationDictionary) else
+        {
+            return result(
+               FlutterError( code: "invalidInstallation",
+                 message: "Error parsing Installation Data",
+                 details: "Error parsing Installation Data" ))
+        }
+        
+        MobileMessaging.saveInstallation(installation, completion: { (error) in
+            if let error = error {
+                return result(
+                    FlutterError( code: String(error.code),
+                                 message: error.mm_message,
+                                 details: error.description ))
+            } else {
+                return self.dictionaryResulut(result: result, dict: MobileMessaging.getInstallation()?.dictionaryRepresentation)
+            }
+        })
+    }
+    
+    func fetchInstallation(result: @escaping FlutterResult) {
+        MobileMessaging.fetchInstallation(completion: { (installation, error) in
+            if let error = error {
+                return result(
+                    FlutterError( code: String(error.code),
+                                 message: error.mm_message,
+                                 details: error.description ))
+            } else {
+                return self.dictionaryResulut(result: result, dict: installation?.dictionaryRepresentation)
+            }
+        })
+    }
+    
+    func getInstallation(result: @escaping FlutterResult) {
+        return self.dictionaryResulut(result: result, dict: MobileMessaging.getInstallation()?.dictionaryRepresentation)
+    }
+    
+    func setInstallationAsPrimary(call: FlutterMethodCall, result: @escaping FlutterResult) {
+        guard let args = call.arguments as? Dictionary<String, Any> else {
+
+            return result(
+               FlutterError( code: "invalidArguments",
+                 message: "iOS could not recognize flutter arguments",
+                 details: "iOS could not recognize flutter arguments" ))
+        }
+        guard let pushRegId = args["pushRegistrationId"] as? String,
+              let primary = args["primary"] as? Bool else
+        {
+            return result(
+               FlutterError( code: "invalidInstallation",
+                 message: "Error parsing Installation Data",
+                 details: "Error parsing Installation Data" ))
+        }
+        MobileMessaging.setInstallation(withPushRegistrationId: pushRegId, asPrimary: primary, completion: { (installations, error) in
+            if let error = error {
+                return result(
+                    FlutterError( code: String(error.code),
+                                 message: error.mm_message,
+                                 details: error.description ))
+            } else {
+                return result("success")
+            }
+        })
+    }
+    
+    func personalize(call: FlutterMethodCall, result: @escaping FlutterResult) {
+        guard let args = call.arguments as? Dictionary<String, Any> else {
+
+            return result(
+               FlutterError( code: "invalidArguments",
+                 message: "iOS could not recognize flutter arguments",
+                 details: "iOS could not recognize flutter arguments" ))
+        }
+        guard let context = args["context"] as? [String: Any],
+              let uiDict = context["userIdentity"] as? [String: Any] else
+        {
+            return result(
+               FlutterError( code: "invalidContext",
+                 message: "Error parsing Context Data",
+                 details: "Error parsing Context Data" ))
+        }
+        guard let ui = MMUserIdentity(phones: uiDict["phones"] as? [String], emails: uiDict["emails"] as? [String], externalUserId: uiDict["externalUserId"] as? String) else
+        {
+            return result(
+               FlutterError( code: "invalidContext",
+                 message: "userIdentity must have at least one non-nil property",
+                 details: "userIdentity must have at least one non-nil property" ))
+        }
+        let uaDict = context["userAttributes"] as? [String: Any]
+        let ua = uaDict == nil ? nil : MMUserAttributes(dictRepresentation: uaDict!)
+        MobileMessaging.personalize(withUserIdentity: ui, userAttributes: ua) { (error) in
+            if let error = error {
+                return result(
+                    FlutterError( code: String(error.code),
+                                 message: error.mm_message,
+                                 details: error.description ))
+            } else {
+                return self.dictionaryResulut(result: result, dict: MobileMessaging.getUser()?.dictionaryRepresentation)
+            }
+        }
+    }
+    
+    func depersonalize(result: @escaping FlutterResult) {
+        MobileMessaging.depersonalize(completion: { (status, error) in
+            if (status == MMSuccessPending.pending) {
+                return result("pending")
+            } else if let error = error {
+                return result(
+                    FlutterError( code: String(error.code),
+                                 message: error.mm_message,
+                                 details: error.description ))
+            } else {
+                return result("success")
+            }
+        })
+    }
+ 
+    func depersonalizeInstallation(call: FlutterMethodCall, result: @escaping FlutterResult) {
+        guard let args = call.arguments as? Dictionary<String, Any> else {
+
+            return result(
+               FlutterError( code: "invalidArguments",
+                 message: "iOS could not recognize flutter arguments",
+                 details: "iOS could not recognize flutter arguments" ))
+        }
+        guard let pushRegId = args["pushRegistrationId"] as? String else
+        {
+            return result(
+               FlutterError( code: "invalidPushRegId",
+                 message: "Error parsing PushRegId Data",
+                 details: "Error parsing PushRegId Data" ))
+        }
+        MobileMessaging.depersonalizeInstallation(withPushRegistrationId: pushRegId, completion: { (installations, error) in
+            if let error = error {
+                return result(
+                    FlutterError( code: String(error.code),
+                                 message: error.mm_message,
+                                 details: error.description ))
+            } else {
+                return result("success")
+            }
+        })
+    }
+    
+    private func dictionaryResulut(result: @escaping FlutterResult, dict: DictionaryRepresentation?) {
+        do {
+            return result(String(data:
+                            try JSONSerialization.data(withJSONObject: dict ?? [:]),
+                          encoding: String.Encoding.utf8))
+        } catch {
+            return result(
+               FlutterError( code: "errorSerializingResult",
+                 message: "Error while serializing result Data",
+                 details: "Error while serializing result Data" ))
+        }
+    }
+    
+    private  func convertStringToDictionary(text: String) -> [String:AnyObject]? {
+       if let data = text.data(using: .utf8) {
+           do {
+               let json = try JSONSerialization.jsonObject(with: data, options: .mutableContainers) as? [String:AnyObject]
+               return json
+           } catch {
+               print("Something went wrong")
+           }
+       }
+       return nil
+   }
 }

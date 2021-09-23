@@ -4,6 +4,8 @@ import 'dart:async';
 import 'package:flutter/services.dart';
 import 'package:infobip_mobilemessaging/infobip_mobilemessaging.dart';
 import 'package:infobip_mobilemessaging/models/Configuration.dart';
+import 'package:infobip_mobilemessaging/models/UserData.dart';
+import 'package:infobip_mobilemessaging/models/Installation.dart';
 import 'package:infobip_mobilemessaging/models/LibraryEvent.dart';
 import 'package:infobip_mobilemessaging/models/Message.dart';
 
@@ -43,11 +45,42 @@ class _MyAppState extends State<MyApp> {
             logging: true
         )
     ));
-    InfobipMobilemessaging.on(LibraryEvent.TOKEN_RECEIVED, (event) => {
-      print("Callback. TOKEN_RECEIVED event:" + event.toString())
+    InfobipMobilemessaging.on(LibraryEvent.TOKEN_RECEIVED, (String token) {
+      print("Callback. TOKEN_RECEIVED event:" + token);
+
+      InfobipMobilemessaging.saveUser(UserData(
+          externalUserId: "ext-12345",
+          firstName: "TestFlutterName 1",
+          lastName: "TestFlutterLastName 1"
+      ));
+
+      InfobipMobilemessaging.getInstallation().then((Installation installation) => {
+        print(installation)
+      });
     });
-    InfobipMobilemessaging.on(LibraryEvent.MESSAGE_RECEIVED, (Map<String, dynamic> event) => {
-      print("Callback. MESSAGE_RECEIVED event,  message title: "  + event["body"])
+    InfobipMobilemessaging.on(LibraryEvent.MESSAGE_RECEIVED, (Message message) => {
+      print("Callback. MESSAGE_RECEIVED event,  message title: "  + message.title + " body: " + message.body)
+    });
+    InfobipMobilemessaging.on(LibraryEvent.USER_UPDATED, (event) => {
+      print("Callback. USER_UPDATED event:" + event.toString())
+    });
+    InfobipMobilemessaging.on(LibraryEvent.PERSONALIZED, (event) => {
+      print("Callback. PERSONALIZED event:" + event.toString())
+    });
+    InfobipMobilemessaging.on(LibraryEvent.INSTALLATION_UPDATED, (String event) => {
+      print("Callback. INSTALLATION_UPDATED event:" + event.toString())
+    });
+    InfobipMobilemessaging.on(LibraryEvent.DEPERSONALIZED, (event) => {
+      print("Callback. DEPERSONALIZED event:" + event.toString())
+    });
+    InfobipMobilemessaging.on(LibraryEvent.NOTIFICATION_ACTION_TAPPED, (event) => {
+      print("Callback. NOTIFICATION_ACTION_TAPPED event:" + event.toString())
+    });
+    InfobipMobilemessaging.on(LibraryEvent.NOTIFICATION_TAPPED, (event) => {
+      print("Callback. NOTIFICATION_TAPPED event:" + event.toString())
+    });
+    InfobipMobilemessaging.on(LibraryEvent.REGISTRATION_UPDATED, (String token) => {
+      print("Callback. REGISTRATION_UPDATED event:" + token)
     });
   }
 

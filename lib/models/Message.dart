@@ -43,4 +43,26 @@ class Message {
     this.webViewUrl,
     this.inAppDismissTitle
   });
+
+  Message.fromJson(Map<String, dynamic> json)
+      : messageId = json['messageId'],
+        title = json['title'],
+        body = json['body'],
+        sound = json['sound'],
+        boolean = json['boolean'],
+        customPayload = json['customPayload'],
+        internalData = json['internalData'],
+        receivedTimestamp = json['receivedTimestamp'],
+        seenDate = json['seenDate'],
+        contentUrl = json['contentUrl'],
+        seen = json['seen'],
+        geo = json['geo'],
+        originalPayload = json['originalPayload'],
+        vibrate = json['vibrate'],
+        icon = json['icon'],
+        category = json['category'],
+        browserUrl = json['browserUrl'],
+        deeplink = json['deeplink'],
+        webViewUrl = json['webViewUrl'],
+        inAppDismissTitle = json['inAppDismissTitle'];
 }
