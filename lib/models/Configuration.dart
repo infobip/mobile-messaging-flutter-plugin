@@ -5,6 +5,8 @@ class Configuration {
 
   String? pluginVersion;
 
+  final bool? inAppChatEnabled;
+
   final AndroidSettings? androidSettings;
 
   final IOSSettings? iosSettings;
@@ -16,6 +18,7 @@ class Configuration {
   Configuration({
     required this.applicationCode,
     this.pluginVersion,
+    this.inAppChatEnabled,
     this.androidSettings,
     this.iosSettings,
     this.privacySettings,
@@ -26,6 +29,7 @@ class Configuration {
     return {
       'applicationCode': applicationCode,
       'pluginVersion': pluginVersion,
+      'inAppChatEnabled': inAppChatEnabled,
       'androidSettings': (this.androidSettings !=null)? this.androidSettings!.toJson() : null,
       'iosSettings': (this.iosSettings !=null)? this.iosSettings!.toJson(): null,
       'privacySettings': (this.privacySettings !=null)? this.privacySettings!.toJson() : null,
@@ -139,6 +143,5 @@ class NotificationCategory {
       'actions': actions
     };
   }
-
 
 }

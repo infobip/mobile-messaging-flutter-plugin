@@ -1,5 +1,8 @@
 package org.infobip.plugins.mobilemessaging.flutter.infobip_mobilemessaging;
 
+import static org.infobip.plugins.mobilemessaging.flutter.common.LibraryEvent.broadcastEventMap;
+import static org.infobip.plugins.mobilemessaging.flutter.common.LibraryEvent.messageBroadcastEventMap;
+
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.BroadcastReceiver;
@@ -17,16 +20,12 @@ import org.infobip.mobile.messaging.CustomAttributeValue;
 import org.infobip.mobile.messaging.CustomAttributesMapper;
 import org.infobip.mobile.messaging.Event;
 import org.infobip.mobile.messaging.Installation;
-import org.infobip.mobile.messaging.InstallationMapper;
 import org.infobip.mobile.messaging.Message;
 import org.infobip.mobile.messaging.MobileMessaging;
 import org.infobip.mobile.messaging.MobileMessagingProperty;
 import org.infobip.mobile.messaging.SuccessPending;
 import org.infobip.mobile.messaging.User;
 import org.infobip.mobile.messaging.api.shaded.google.gson.Gson;
-import org.infobip.mobile.messaging.api.shaded.google.gson.JsonParser;
-import org.infobip.mobile.messaging.api.shaded.google.gson.reflect.TypeToken;
-import org.infobip.mobile.messaging.api.support.http.serialization.JsonSerializer;
 import org.infobip.mobile.messaging.interactive.InteractiveEvent;
 import org.infobip.mobile.messaging.interactive.MobileInteractive;
 import org.infobip.mobile.messaging.interactive.NotificationAction;
@@ -34,6 +33,7 @@ import org.infobip.mobile.messaging.interactive.NotificationCategory;
 import org.infobip.mobile.messaging.mobileapi.InternalSdkError;
 import org.infobip.mobile.messaging.mobileapi.MobileMessagingError;
 import org.infobip.mobile.messaging.util.PreferenceHelper;
+import org.infobip.mobile.messaging.chat.InAppChat;
 import org.infobip.plugins.mobilemessaging.flutter.common.Configuration;
 import org.infobip.plugins.mobilemessaging.flutter.common.ErrorCodes;
 import org.infobip.plugins.mobilemessaging.flutter.common.InitHelper;
@@ -44,7 +44,6 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -63,9 +62,6 @@ import io.flutter.plugin.common.MethodCall;
 import io.flutter.plugin.common.MethodChannel;
 import io.flutter.plugin.common.MethodChannel.MethodCallHandler;
 import io.flutter.plugin.common.MethodChannel.Result;
-
-import static org.infobip.plugins.mobilemessaging.flutter.common.LibraryEvent.broadcastEventMap;
-import static org.infobip.plugins.mobilemessaging.flutter.common.LibraryEvent.messageBroadcastEventMap;
 
 /** InfobipMobilemessagingPlugin */
 public class InfobipMobilemessagingPlugin implements FlutterPlugin, MethodCallHandler, ActivityAware, ServiceAware {
@@ -127,6 +123,8 @@ public class InfobipMobilemessagingPlugin implements FlutterPlugin, MethodCallHa
       depersonalizeInstallation(call, result);
     } else if (call.method.equals("setInstallationAsPrimary")) {
       setInstallationAsPrimary(call, result);
+    } else if (call.method.equals("showChat")) {
+      showChat(call, result);
     } else {
       result.notImplemented();
     }
@@ -542,6 +540,10 @@ public class InfobipMobilemessagingPlugin implements FlutterPlugin, MethodCallHa
       return;
     }
     mobileMessaging().setInstallationAsPrimary(pushRegistrationId, primary, installationsResultListener(result));
+  }
+
+  public void showChat(MethodCall call,final Result result) {
+    InAppChat.getInstance(activity.getApplication()).inAppChatView().show();
   }
 
   @NonNull

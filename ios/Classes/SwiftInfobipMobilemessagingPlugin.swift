@@ -9,6 +9,23 @@ extension String {
     }
 }
 
+extension UIApplication {
+    class func topViewController(controller: UIViewController? = UIApplication.shared.keyWindow?.rootViewController) -> UIViewController? {
+        if let navigationController = controller as? UINavigationController {
+            return topViewController(controller: navigationController.visibleViewController)
+        }
+        if let tabController = controller as? UITabBarController {
+            if let selected = tabController.selectedViewController {
+                return topViewController(controller: selected)
+            }
+        }
+        if let presented = controller?.presentedViewController {
+            return topViewController(controller: presented)
+        }
+        return controller
+    }
+}
+
 public typealias DictionaryRepresentation = [String : Any]
 
 public class SwiftInfobipMobilemessagingPlugin: NSObject, FlutterPlugin {
@@ -71,6 +88,10 @@ public class SwiftInfobipMobilemessagingPlugin: NSObject, FlutterPlugin {
             depersonalize(result: result)
         } else if call.method == "depersonalizeInstallation" {
             depersonalizeInstallation(call: call, result: result)
+        } else if call.method == "showChat" {
+            showChat(call: call, result: result)
+        } else if call.method == "setupiOSChatSettings" {
+            setupiOSChatSettings(call: call, result: result)
         }
     }
     
@@ -96,6 +117,10 @@ public class SwiftInfobipMobilemessagingPlugin: NSObject, FlutterPlugin {
 
         var mobileMessaging = MobileMessaging.withApplicationCode(configuration.appCode, notificationType: configuration.notificationType, forceCleanup: configuration.forceCleanup)
 
+        if configuration.inAppChatEnabled {
+            mobileMessaging = mobileMessaging?.withInAppChat()
+        }
+        
         if let categories = configuration.categories {
             mobileMessaging = mobileMessaging?.withInteractiveNotificationCategories(Set(categories))
         }
@@ -296,6 +321,39 @@ public class SwiftInfobipMobilemessagingPlugin: NSObject, FlutterPlugin {
         })
     }
     
+    func showChat(call: FlutterMethodCall, result: @escaping FlutterResult) {
+        guard let shouldBePresentedModallyIOS = call.arguments as? Bool else {
+
+            return result(
+               FlutterError( code: "invalidArguments",
+                 message: "iOS could not recognize flutter arguments",
+                 details: "iOS could not recognize flutter arguments" ))
+        }
+        
+        let vc = shouldBePresentedModallyIOS ? MMChatViewController.makeRootNavigationViewController(): MMChatViewController.makeRootNavigationViewControllerWithCustomTransition()
+        if shouldBePresentedModallyIOS {
+            vc.modalPresentationStyle = .fullScreen
+        }
+        if let rootVc = UIApplication.topViewController() {
+            rootVc.present(vc, animated: true, completion: nil)
+        } else {
+            MMLogDebug("[InAppChat] could not define root vc to present in-app-chat")
+        }
+        return result("success")
+    }
+    
+    func setupiOSChatSettings(call: FlutterMethodCall, result: @escaping FlutterResult) {
+        guard let jsonString = call.arguments as? String,
+              let chatSettings = convertStringToDictionary(text: jsonString) else {
+            return result(
+               FlutterError( code: "invalidiOSChatSettings",
+                 message: "Error parsing iOSChatSettings",
+                 details: "Error parsing iOSChatSettings" ))
+        }
+
+        MobileMessaging.inAppChat?.settings.configureWith(rawConfig: chatSettings)
+    }
+    
     private func dictionaryResulut(result: @escaping FlutterResult, dict: DictionaryRepresentation?) {
         do {
             return result(String(data:
@@ -320,4 +378,5 @@ public class SwiftInfobipMobilemessagingPlugin: NSObject, FlutterPlugin {
        }
        return nil
    }
+    
 }

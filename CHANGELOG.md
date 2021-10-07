@@ -23,5 +23,6 @@
 ## 0.2.0
 
 * Added example application
+* Added InAppChat support  
 * Fixed callbacks list error
 * Fixed events errors

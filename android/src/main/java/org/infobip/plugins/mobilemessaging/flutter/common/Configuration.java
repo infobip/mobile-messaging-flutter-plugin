@@ -8,6 +8,8 @@ public class Configuration {
 
     String pluginVersion = "unknown";
 
+    boolean inAppChatEnabled;
+
     AndroidSettings androidSettings;
 
     PrivacySettings privacySettings;

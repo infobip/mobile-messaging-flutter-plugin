@@ -13,6 +13,7 @@ import org.infobip.mobile.messaging.NotificationSettings;
 import org.infobip.mobile.messaging.app.ActivityLifecycleMonitor;
 import org.infobip.mobile.messaging.interactive.NotificationAction;
 import org.infobip.mobile.messaging.interactive.NotificationCategory;
+import org.infobip.mobile.messaging.chat.InAppChat;
 
 import java.util.List;
 
@@ -64,6 +65,11 @@ public class InitHelper {
             int color = Color.parseColor(androidSettings.getNotificationAccentColor());
             notificationBuilder.withColor(color);
         }
+
+        if (configuration.inAppChatEnabled) {
+            InAppChat.getInstance(context).activate();
+        }
+
         builder.withDisplayNotification(notificationBuilder.build());
         return builder;
     }

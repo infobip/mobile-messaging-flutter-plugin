@@ -2,6 +2,7 @@
 import 'dart:async';
 import 'dart:collection';
 import 'dart:convert';
+import 'dart:io';
 
 import 'package:flutter/services.dart';
 import 'package:infobip_mobilemessaging/models/Installation.dart';
@@ -10,6 +11,7 @@ import 'package:infobip_mobilemessaging/models/UserData.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 
 import 'models/Configuration.dart';
+import 'models/IOSChatSettings.dart';
 import 'models/LibraryEvent.dart';
 import 'models/Message.dart';
 
@@ -111,5 +113,19 @@ class InfobipMobilemessaging {
 
   static void setInstallationAsPrimary(InstallationPrimary installationPrimary) async {
     await _channel.invokeMethod('setInstallationAsPrimary',installationPrimary.toJson());
+  }
+
+  static Future<void> showChat({bool shouldBePresentedModallyIOS = false}) async {
+    print("showChat");
+    await _channel.invokeMethod('showChat', shouldBePresentedModallyIOS);
+  }
+
+  static Future<void> setupiOSChatSettings(IOSChatSettings settings) async {
+    print("setupiOSChatSettings");
+    if (Platform.isIOS) {
+      print("setupiOSChatSettings for iOS");
+      await _channel.invokeMethod(
+          'setupiOSChatSettings', jsonEncode(settings.toJson()));
+    }
   }
 }

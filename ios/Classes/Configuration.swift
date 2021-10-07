@@ -17,6 +17,7 @@ class Configuration {
         static let systemInfoSendingDisabled = "systemInfoSendingDisabled"
         static let applicationCodePersistingDisabled = "applicationCodePersistingDisabled"
         static let applicationCode = "applicationCode"
+        static let inAppChatEnabled = "inAppChatEnabled"
         static let forceCleanup = "forceCleanup"
         static let logging = "logging"
         // static let defaultMessageStorage = "defaultMessageStorage"
@@ -28,7 +29,7 @@ class Configuration {
     
     let appCode: String
     // let geofencingEnabled: Bool
-    // let inAppChatEnabled: Bool
+    let inAppChatEnabled: Bool
     // let messageStorageEnabled: Bool
     // let defaultMessageStorage: Bool
     let notificationType: MMUserNotificationType
@@ -46,6 +47,7 @@ class Configuration {
         }
         
         self.appCode = appCode
+        self.inAppChatEnabled = rawConfig[Configuration.Keys.inAppChatEnabled].unwrap(orDefault: false)
         self.forceCleanup = ios[Configuration.Keys.forceCleanup].unwrap(orDefault: false)
         self.logging = ios[Configuration.Keys.logging].unwrap(orDefault: false)
         
