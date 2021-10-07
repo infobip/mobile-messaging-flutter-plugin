@@ -341,55 +341,55 @@ public class InfobipMobilemessagingPlugin implements FlutterPlugin, MethodCallHa
 
   public static class StreamHandler implements EventChannel.StreamHandler {
 
-      private EventChannel.EventSink eventSink;
-      private List<JSONObject> cached = new ArrayList<>();
+    private EventChannel.EventSink eventSink;
+    private List<JSONObject> cached = new ArrayList<>();
 
-      @Override
-      public void onListen(Object arguments, EventChannel.EventSink events) {
-        Log.d(TAG, "StreamHandler.onListen: " + events);
-        eventSink = events;
-        for (JSONObject item: cached) {
-          sendEvent(item);
-        }
+    @Override
+    public void onListen(Object arguments, EventChannel.EventSink events) {
+      Log.d(TAG, "StreamHandler.onListen: " + events);
+      eventSink = events;
+      for (JSONObject item: cached) {
+        sendEvent(item);
+      }
+    }
+
+    @Override
+    public void onCancel(Object arguments) {
+      eventSink = null;
+    }
+
+    private boolean sendEvent(JSONObject eventObj) {
+      Log.d(TAG, "sendEvent from cached: " + eventObj);
+      eventSink.success(eventObj.toString());
+      return true;
+    }
+
+    private boolean sendEvent(String event, Object payload) {
+      Log.d(TAG, "sendEvent: " + event);
+      if (event == null || payload == null) {
+        return false;
       }
 
-      @Override
-      public void onCancel(Object arguments) {
-        eventSink = null;
+      JSONObject eventData = new JSONObject();
+      try {
+        eventData.put("eventName", event);
+        eventData.put("payload", payload);
+      } catch (JSONException e) {
+        Log.e(TAG, e.getMessage(), e);
+        return false;
       }
 
-      private boolean sendEvent(JSONObject eventObj) {
-        Log.d(TAG, "sendEvent from cached: " + eventObj);
-        eventSink.success(eventObj.toString());
-        return true;
+      if (eventSink != null) {
+        Log.d(TAG, "Send  event to flutter: " + event);
+        eventSink.success(eventData.toString());
+      } else {
+        Log.d(TAG, "add event to cached: " + event);
+        cached.add(eventData);
+        return  false;
       }
 
-      private boolean sendEvent(String event, Object payload) {
-        Log.d(TAG, "sendEvent: " + event);
-        if (event == null || payload == null) {
-          return false;
-        }
-
-        JSONObject eventData = new JSONObject();
-        try {
-          eventData.put("eventName", event);
-          eventData.put("payload", payload);
-        } catch (JSONException e) {
-          Log.e(TAG, e.getMessage(), e);
-          return false;
-        }
-
-        if (eventSink != null) {
-          Log.d(TAG, "Send  event to flutter: " + event);
-          eventSink.success(eventData.toString());
-        } else {
-          Log.d(TAG, "add event to cached: " + event);
-          cached.add(eventData);
-          return  false;
-        }
-
-        return true;
-      }
+      return true;
+    }
 
     private boolean sendEvent(String event) {
       Log.d(TAG, "sendEvent: (without payload) " + event);
@@ -397,9 +397,23 @@ public class InfobipMobilemessagingPlugin implements FlutterPlugin, MethodCallHa
         return false;
       }
 
-      JSONArray parameters = new JSONArray();
-      parameters.put(event);
-      eventSink.success(parameters);
+      JSONObject eventData = new JSONObject();
+      try {
+        eventData.put("eventName", event);
+      } catch (JSONException e) {
+        Log.e(TAG, e.getMessage(), e);
+        return false;
+      }
+
+      if (eventSink != null) {
+        Log.d(TAG, "Send  event to flutter: " + event);
+        eventSink.success(eventData.toString());
+      } else {
+        Log.d(TAG, "add event to cached: " + event);
+        cached.add(eventData);
+        return  false;
+      }
+
       return true;
     }
 
@@ -536,7 +550,7 @@ public class InfobipMobilemessagingPlugin implements FlutterPlugin, MethodCallHa
       @Override
       public void onResult(org.infobip.mobile.messaging.mobileapi.Result<List<Installation>, MobileMessagingError> result) {
         if (result.isSuccess()) {
-          resultCallbacks.success(InstallationJson.toJSON(result.getData()).toString());
+          resultCallbacks.success("Success");
         } else {
           resultCallbacks.error(result.getError().getCode(), result.getError().getMessage(), result.getError());
         }

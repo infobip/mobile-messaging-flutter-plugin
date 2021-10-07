@@ -1,9 +1,11 @@
-enum OS {
-  Android,
-  iOS
-}
+enum OS { Android, iOS }
+
+enum PushServiceType { GCM, Firebase }
 
 class Installation {
+  final String? pushRegistrationId;
+  final String? pushServiceToken;
+  final PushServiceType? pushServiceType;
   final bool? isPrimaryDevice;
   final bool? isPushRegistrationEnabled;
   final bool? notificationsEnabled;
@@ -16,29 +18,43 @@ class Installation {
   final String? deviceModel;
   final bool? deviceSecure;
   final String? language;
-  final String? deviceTimezoneId;
+  final String? deviceTimezoneOffset;
   final String? applicationUserId;
   final String? deviceName;
   final Map<String, dynamic>? customAttributes;
 
-  Installation({
-      this.isPrimaryDevice,
-      this.isPushRegistrationEnabled,
-      this.notificationsEnabled,
-      this.geoEnabled,
-      this.sdkVersion,
-      this.appVersion,
-      this.os,
-      this.osVersion,
-      this.deviceManufacturer,
-      this.deviceModel,
-      this.deviceSecure,
-      this.language,
-      this.deviceTimezoneId,
-      this.applicationUserId,
-      this.deviceName,
-      this.customAttributes
-  });
+  Installation(
+      {this.pushRegistrationId,
+        this.pushServiceType,
+        this.pushServiceToken,
+        this.isPrimaryDevice,
+        this.isPushRegistrationEnabled,
+        this.notificationsEnabled,
+        this.geoEnabled,
+        this.sdkVersion,
+        this.appVersion,
+        this.os,
+        this.osVersion,
+        this.deviceManufacturer,
+        this.deviceModel,
+        this.deviceSecure,
+        this.language,
+        this.deviceTimezoneOffset,
+        this.applicationUserId,
+        this.deviceName,
+        this.customAttributes});
+
+  static PushServiceType? resolvePushServiceType(String? pst) {
+    if (pst == null) {
+      return null;
+    }
+    try {
+      return PushServiceType.values
+          .firstWhere((e) => e.toString().split('.').last == pst);
+    } on Exception {
+      return null;
+    }
+  }
 
   static OS? fromString(String? str) {
     if (str == null) {
@@ -52,26 +68,32 @@ class Installation {
   }
 
   Map<String, dynamic> toJson() => {
-        'isPrimaryDevice': isPrimaryDevice,
-        'isPushRegistrationEnabled': isPushRegistrationEnabled,
-        'notificationsEnabled': notificationsEnabled,
-        'geoEnabled': geoEnabled,
-        'sdkVersion': sdkVersion,
-        'appVersion': appVersion,
-        'os': os,
-        'osVersion': osVersion,
-        'deviceManufacturer': deviceManufacturer,
-        'deviceModel': deviceModel,
-        'deviceSecure': deviceSecure,
-        'language': language,
-        'deviceTimezoneId': deviceTimezoneId,
-        'applicationUserId': applicationUserId,
-        'deviceName': deviceName,
-        'customAttributes': customAttributes,
-      };
+    'pushRegistrationId': pushRegistrationId,
+    'pushServiceToken': pushServiceToken,
+    'pushServiceType': pushServiceType,
+    'isPrimaryDevice': isPrimaryDevice,
+    'isPushRegistrationEnabled': isPushRegistrationEnabled,
+    'notificationsEnabled': notificationsEnabled,
+    'geoEnabled': geoEnabled,
+    'sdkVersion': sdkVersion,
+    'appVersion': appVersion,
+    'os': os,
+    'osVersion': osVersion,
+    'deviceManufacturer': deviceManufacturer,
+    'deviceModel': deviceModel,
+    'deviceSecure': deviceSecure,
+    'language': language,
+    'deviceTimezoneOffset': deviceTimezoneOffset,
+    'applicationUserId': applicationUserId,
+    'deviceName': deviceName,
+    'customAttributes': customAttributes,
+  };
 
   Installation.fromJson(Map<String, dynamic> json)
       : isPrimaryDevice = json['isPrimaryDevice'],
+        pushRegistrationId = json['pushRegistrationId'],
+        pushServiceToken = json['pushServiceToken'],
+        pushServiceType = Installation.resolvePushServiceType(json['pushServiceType']),
         isPushRegistrationEnabled = json['isPushRegistrationEnabled'],
         notificationsEnabled = json['notificationsEnabled'],
         geoEnabled = json['geoEnabled'],
@@ -83,20 +105,22 @@ class Installation {
         deviceModel = json['deviceModel'],
         deviceSecure = json['deviceSecure'],
         language = json['language'],
-        deviceTimezoneId = json['deviceTimezoneId'],
+        deviceTimezoneOffset = json['deviceTimezoneOffset'],
         applicationUserId = json['applicationUserId'],
         deviceName = json['deviceName'],
         customAttributes = json['customAttributes'];
+
+  String? getPushRegistrationId () {
+    return this.pushRegistrationId;
   }
+}
 
-  class InstallationPrimary {
-    final String pushRegistrationId;
-    final bool primary;
+class InstallationPrimary {
+  final String pushRegistrationId;
+  final bool primary;
 
-    InstallationPrimary(this.pushRegistrationId, this.primary);
+  InstallationPrimary(this.pushRegistrationId, this.primary);
 
-    Map<String, dynamic> toJson() => {
-      'pushRegistrationId': pushRegistrationId,
-      'primary': primary
-    };
-  }
+  Map<String, dynamic> toJson() =>
+      {'pushRegistrationId': pushRegistrationId, 'primary': primary};
+}

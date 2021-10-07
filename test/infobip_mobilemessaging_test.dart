@@ -14,10 +14,10 @@ void main() {
       switch (methodCall.method) {
         case 'getAll':
           return {
-            "buildNumber": '0.0.1',
+            "buildNumber": '0.0.2',
             "appName": 'TestApp',
             "packageName": 'test.plugin',
-            "version": '0.0.1',
+            "version": '0.0.2',
           };
         default:
           return null;

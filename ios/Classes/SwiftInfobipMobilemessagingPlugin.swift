@@ -12,7 +12,7 @@ extension String {
 public typealias DictionaryRepresentation = [String : Any]
 
 public class SwiftInfobipMobilemessagingPlugin: NSObject, FlutterPlugin {
-    
+
     private var eventsManager: MobileMessagingEventsManager?
 
     @objc
@@ -36,12 +36,12 @@ public class SwiftInfobipMobilemessagingPlugin: NSObject, FlutterPlugin {
             EventName.inAppChat_availabilityUpdated
         ]
     }
-    
+
    public static func register(with registrar: FlutterPluginRegistrar) {
     let channel = FlutterMethodChannel(name: "infobip_mobilemessaging", binaryMessenger: registrar.messenger())
     let instance = SwiftInfobipMobilemessagingPlugin()
     registrar.addMethodCallDelegate(instance, channel: channel)
-    
+
     let eventChannel = FlutterEventChannel(name: "infobip_mobilemessaging/broadcast", binaryMessenger: registrar.messenger())
     instance.eventsManager = MobileMessagingEventsManager()
     eventChannel.setStreamHandler(instance.eventsManager)
@@ -83,7 +83,7 @@ public class SwiftInfobipMobilemessagingPlugin: NSObject, FlutterPlugin {
                   message: "Error parsing Configuration",
                   details: "Error parsing Configuration" ))
         }
-        
+
         start(configuration: configuration)
         return result("success")
     }
@@ -108,7 +108,7 @@ public class SwiftInfobipMobilemessagingPlugin: NSObject, FlutterPlugin {
         mobileMessaging?.start()
         MobileMessaging.sync()
     }
-    
+
     func saveUser(call: FlutterMethodCall, result: @escaping FlutterResult) {
         guard let jsonString = call.arguments as? String,
               let userDataDictionary = convertStringToDictionary(text: jsonString),

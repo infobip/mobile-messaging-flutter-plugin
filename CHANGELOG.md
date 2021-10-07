@@ -19,3 +19,9 @@
 ## 0.1.0
 
 * Support for User and Installation management (personalization).
+
+## 0.2.0
+
+* Added example application
+* Fixed callbacks list error
+* Fixed events errors

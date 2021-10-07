@@ -15,29 +15,38 @@ import 'models/Message.dart';
 
 class InfobipMobilemessaging {
   static const MethodChannel _channel =
-    const MethodChannel('infobip_mobilemessaging');
+  const MethodChannel('infobip_mobilemessaging');
   static const EventChannel _libraryEvent =
-    const EventChannel('infobip_mobilemessaging/broadcast');
+  const EventChannel('infobip_mobilemessaging/broadcast');
   static StreamSubscription _libraryEventSubscription = _libraryEvent.receiveBroadcastStream()
       .listen((dynamic event) {
-        print('Received event: $event');
-        LibraryEvent libraryEvent = LibraryEvent.fromJson(jsonDecode(event));
-        print("callbacks:");
-        print(callbacks.toString());
-        print("libraryEvent.eventName:");
-        print(libraryEvent.eventName);
-        if (callbacks.containsKey(libraryEvent.eventName)) {
-          print("libraryEvent.eventName: " + libraryEvent.eventName);
-          callbacks[libraryEvent.eventName]?.forEach((callback) {
-            print("Try to call callback");
-            if (libraryEvent.eventName == LibraryEvent.MESSAGE_RECEIVED) {
-              callback(Message.fromJson(libraryEvent.payload));
-            } else {
-              callback(libraryEvent.payload);
-            }
-          });
+    print('Received event: $event');
+    LibraryEvent libraryEvent = LibraryEvent.fromJson(jsonDecode(event));
+    print("callbacks:");
+    print(callbacks.toString());
+    print("libraryEvent.eventName:");
+    print(libraryEvent.eventName);
+    if (callbacks.containsKey(libraryEvent.eventName)) {
+      print("libraryEvent.eventName: " + libraryEvent.eventName);
+      callbacks[libraryEvent.eventName]?.forEach((callback) {
+        print("Try to call callback " + libraryEvent.eventName);
+        if (libraryEvent.payload != null) {
+          print(libraryEvent.payload);
+        } else {
+          print("Try to call with payload NULL");
         }
-      },
+        if (libraryEvent.eventName == LibraryEvent.MESSAGE_RECEIVED) {
+          callback(Message.fromJson(libraryEvent.payload));
+        } else if (libraryEvent.eventName == LibraryEvent.INSTALLATION_UPDATED) {
+          callback(Installation.fromJson(libraryEvent.payload).toString());
+        } else if (libraryEvent.payload != null) {
+          callback(libraryEvent.payload);
+        } else {
+          callback(libraryEvent.eventName);
+        }
+      });
+    }
+  },
       onError: (dynamic error) {
         print('Received error: ${error.message}');
       },
@@ -51,7 +60,7 @@ class InfobipMobilemessaging {
       existed?.add(callack);
       callbacks.update(eventName, (val) => existed);
     } else {
-      callbacks.putIfAbsent(eventName, () => List.filled(1, callack));
+      callbacks.putIfAbsent(eventName, () => List.of([callack]));
     }
     _libraryEventSubscription.resume();
   }
@@ -71,7 +80,8 @@ class InfobipMobilemessaging {
   }
 
   static Future<UserData> getUser() async {
-    return await _channel.invokeMethod('getUser');
+    String result = await _channel.invokeMethod('getUser');
+    return UserData.fromJson(jsonDecode(result));
   }
 
   static Future<void> saveInstallation(Installation installation) async {
@@ -91,15 +101,15 @@ class InfobipMobilemessaging {
     await _channel.invokeMethod('personalize', jsonEncode(context.toJson()));
   }
 
-  static Future<void> depersonalize() async {
+  static void depersonalize() async {
     await _channel.invokeMethod('depersonalize');
   }
 
-  static Future<void> depersonalizeInstallation(String pushRegistrationId) async {
+  static void depersonalizeInstallation(String pushRegistrationId) async {
     await _channel.invokeMethod('depersonalizeInstallation', pushRegistrationId);
   }
 
-  static Future<void> setInstallationAsPrimary(InstallationPrimary installationPrimary) async {
+  static void setInstallationAsPrimary(InstallationPrimary installationPrimary) async {
     await _channel.invokeMethod('setInstallationAsPrimary',installationPrimary.toJson());
   }
 }
