@@ -48,6 +48,7 @@ class _MyAppState extends State<MyApp> {
 
     await InfobipMobilemessaging.init(Configuration(
         applicationCode: "Your Application Code",
+        inAppChatEnabled: true,
         androidSettings: AndroidSettings(firebaseSenderId: "Your Firebase ID"),
         iosSettings: IOSSettings(
             notificationTypes: ["alert", "badge", "sound"],
@@ -257,7 +258,13 @@ class _HomePageState extends State<HomePage> {
                     ],
                   ),
                 );
-              })
+              }),
+          ListTile(
+              title: Text('Show Chat'),
+              onTap: () {
+                InfobipMobilemessaging.showChat();
+              }
+          )
         ],
       ),
     );
