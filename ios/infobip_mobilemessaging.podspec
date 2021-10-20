@@ -15,9 +15,9 @@ A new flutter plugin project.
   s.source           = { :path => '.' }
   s.source_files = 'Classes/**/*'
   s.dependency 'Flutter'
-  s.dependency "MobileMessaging/Core", "9.2.1"
-  s.dependency "MobileMessaging/Geofencing", "9.2.1"
-  s.dependency "MobileMessaging/InAppChat", "9.2.1"
+  s.dependency "MobileMessaging/Core", "9.2.7"
+  s.dependency "MobileMessaging/Geofencing", "9.2.7"
+  s.dependency "MobileMessaging/InAppChat", "9.2.7"
 
   s.platform = :ios, '10.0'
 

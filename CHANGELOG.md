@@ -26,3 +26,7 @@
 * Added InAppChat support  
 * Fixed callbacks list error
 * Fixed events errors
+
+## 0.2.1
+* Updated iOS SDK dependency
+* Fixed personalisation issues at Android

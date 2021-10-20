@@ -446,7 +446,7 @@ public class InfobipMobilemessagingPlugin implements FlutterPlugin, MethodCallHa
         if (result.isSuccess()) {
           resultCallbacks.success(UserJson.toJSON(result.getData()).toString());
         } else {
-          resultCallbacks.error(result.getError().getCode(), result.getError().getMessage(), result.getError());
+          resultCallbacks.error(result.getError().getCode(), result.getError().getMessage(), result.getError().toString());
         }
       }
     };
@@ -474,7 +474,7 @@ public class InfobipMobilemessagingPlugin implements FlutterPlugin, MethodCallHa
         if (result.isSuccess()) {
           resultCallbacks.success(InstallationJson.toJSON(result.getData()).toString());
         } else {
-          resultCallbacks.error(result.getError().getCode(), result.getError().getMessage(), result.getError());
+          resultCallbacks.error(result.getError().getCode(), result.getError().getMessage(), result.getError().toString());
         }
       }
     };
@@ -494,7 +494,7 @@ public class InfobipMobilemessagingPlugin implements FlutterPlugin, MethodCallHa
           if (result.isSuccess()) {
             resultCallbacks.success(UserJson.toJSON(result.getData()).toString());
           } else {
-            resultCallbacks.error(result.getError().getCode(), result.getError().getMessage(), result.getError());
+            resultCallbacks.error(result.getError().getCode(), result.getError().getMessage(), result.getError().toString());
           }
         }
       });
@@ -517,7 +517,7 @@ public class InfobipMobilemessagingPlugin implements FlutterPlugin, MethodCallHa
         if (result.isSuccess()) {
           resultCallbacks.success(depersonalizeStates.get(result.getData()));
         } else {
-          resultCallbacks.error(result.getError().getCode(), result.getError().getMessage(), result.getError());
+          resultCallbacks.error(result.getError().getCode(), result.getError().getMessage(), result.getError().toString());
         }
       }
     });
@@ -554,7 +554,7 @@ public class InfobipMobilemessagingPlugin implements FlutterPlugin, MethodCallHa
         if (result.isSuccess()) {
           resultCallbacks.success("Success");
         } else {
-          resultCallbacks.error(result.getError().getCode(), result.getError().getMessage(), result.getError());
+          resultCallbacks.error(result.getError().getCode(), result.getError().getMessage(), result.getError().toString());
         }
       }
     };
