@@ -1,4 +1,3 @@
-
 import 'dart:async';
 import 'dart:collection';
 import 'dart:convert';
@@ -127,5 +126,13 @@ class InfobipMobilemessaging {
       await _channel.invokeMethod(
           'setupiOSChatSettings', jsonEncode(settings.toJson()));
     }
+  }
+
+  static void submitEvent(Object customEvent) {
+    _channel.invokeMethod('submitEvent', jsonEncode(customEvent));
+  }
+
+  static void submitEventImmediately(Object customEvent) {
+    _channel.invokeMethod('submitEventImmediately', jsonEncode(customEvent));
   }
 }

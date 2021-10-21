@@ -29,9 +29,9 @@ extension UIApplication {
 public typealias DictionaryRepresentation = [String : Any]
 
 public class SwiftInfobipMobilemessagingPlugin: NSObject, FlutterPlugin {
-
+    
     private var eventsManager: MobileMessagingEventsManager?
-
+    
     @objc
     func supportedEvents() -> [String]! {
         return [
@@ -53,18 +53,18 @@ public class SwiftInfobipMobilemessagingPlugin: NSObject, FlutterPlugin {
             EventName.inAppChat_availabilityUpdated
         ]
     }
-
-   public static func register(with registrar: FlutterPluginRegistrar) {
-    let channel = FlutterMethodChannel(name: "infobip_mobilemessaging", binaryMessenger: registrar.messenger())
-    let instance = SwiftInfobipMobilemessagingPlugin()
-    registrar.addMethodCallDelegate(instance, channel: channel)
-
-    let eventChannel = FlutterEventChannel(name: "infobip_mobilemessaging/broadcast", binaryMessenger: registrar.messenger())
-    instance.eventsManager = MobileMessagingEventsManager()
-    eventChannel.setStreamHandler(instance.eventsManager)
-    instance.eventsManager?.startObserving()
-   }
-
+    
+    public static func register(with registrar: FlutterPluginRegistrar) {
+        let channel = FlutterMethodChannel(name: "infobip_mobilemessaging", binaryMessenger: registrar.messenger())
+        let instance = SwiftInfobipMobilemessagingPlugin()
+        registrar.addMethodCallDelegate(instance, channel: channel)
+        
+        let eventChannel = FlutterEventChannel(name: "infobip_mobilemessaging/broadcast", binaryMessenger: registrar.messenger())
+        instance.eventsManager = MobileMessagingEventsManager()
+        eventChannel.setStreamHandler(instance.eventsManager)
+        instance.eventsManager?.startObserving()
+    }
+    
     public func handle(_ call: FlutterMethodCall, result: @escaping FlutterResult) {
         if call.method == "init" {
             initPlugin(call: call, result: result)
@@ -92,6 +92,10 @@ public class SwiftInfobipMobilemessagingPlugin: NSObject, FlutterPlugin {
             showChat(call: call, result: result)
         } else if call.method == "setupiOSChatSettings" {
             setupiOSChatSettings(call: call, result: result)
+        } else if call.method == "submitEvent" {
+            submitEvent(call: call, result: result)
+        } else if call.method == "submitEventImmediately" {
+            submitEventImmediately(call: call, result: result)
         }
     }
     
@@ -99,12 +103,12 @@ public class SwiftInfobipMobilemessagingPlugin: NSObject, FlutterPlugin {
         guard let jsonString = call.arguments as? String,
               let json = jsonString.toJSON() as? [String: AnyObject],
               let configuration = Configuration.init(rawConfig: json) else {
-            return result(
-                FlutterError( code: "invalidConfig",
-                  message: "Error parsing Configuration",
-                  details: "Error parsing Configuration" ))
-        }
-
+                  return result(
+                    FlutterError( code: "invalidConfig",
+                                  message: "Error parsing Configuration",
+                                  details: "Error parsing Configuration" ))
+              }
+        
         start(configuration: configuration)
         return result("success")
     }
@@ -114,9 +118,9 @@ public class SwiftInfobipMobilemessagingPlugin: NSObject, FlutterPlugin {
         MobileMessaging.privacySettings.systemInfoSendingDisabled = configuration.privacySettings[Configuration.Keys.systemInfoSendingDisabled].unwrap(orDefault: false)
         MobileMessaging.privacySettings.carrierInfoSendingDisabled = configuration.privacySettings[Configuration.Keys.carrierInfoSendingDisabled].unwrap(orDefault: false)
         MobileMessaging.privacySettings.userDataPersistingDisabled = configuration.privacySettings[Configuration.Keys.userDataPersistingDisabled].unwrap(orDefault: false)
-
+        
         var mobileMessaging = MobileMessaging.withApplicationCode(configuration.appCode, notificationType: configuration.notificationType, forceCleanup: configuration.forceCleanup)
-
+        
         if configuration.inAppChatEnabled {
             mobileMessaging = mobileMessaging?.withInAppChat()
         }
@@ -124,33 +128,33 @@ public class SwiftInfobipMobilemessagingPlugin: NSObject, FlutterPlugin {
         if let categories = configuration.categories {
             mobileMessaging = mobileMessaging?.withInteractiveNotificationCategories(Set(categories))
         }
-
+        
         MobileMessaging.userAgent.pluginVersion = "flutter \(configuration.pluginVersion)"
         if (configuration.logging) {
             MobileMessaging.logger = MMDefaultLogger()
         }
-
+        
         mobileMessaging?.start()
         MobileMessaging.sync()
     }
-
+    
     func saveUser(call: FlutterMethodCall, result: @escaping FlutterResult) {
         guard let jsonString = call.arguments as? String,
               let userDataDictionary = convertStringToDictionary(text: jsonString),
               let user = MMUser(dictRepresentation: userDataDictionary) else
-        {
-            return result(
-               FlutterError( code: "invalidUser",
-                 message: "Error parsing User Data",
-                 details: "Error parsing User Data" ))
-        }
-
+              {
+                  return result(
+                    FlutterError( code: "invalidUser",
+                                  message: "Error parsing User Data",
+                                  details: "Error parsing User Data" ))
+              }
+        
         MobileMessaging.saveUser(user, completion: { (error) in
             if let error = error {
                 return result(
                     FlutterError( code: String(error.code),
-                                 message: error.mm_message,
-                                 details: error.description ))
+                                  message: error.mm_message,
+                                  details: error.description ))
             } else {
                 return self.dictionaryResulut(result: result, dict: MobileMessaging.getUser()?.dictionaryRepresentation)
             }
@@ -162,8 +166,8 @@ public class SwiftInfobipMobilemessagingPlugin: NSObject, FlutterPlugin {
             if let error = error {
                 return result(
                     FlutterError( code: String(error.code),
-                                 message: error.mm_message,
-                                 details: error.description ))
+                                  message: error.mm_message,
+                                  details: error.description ))
             } else {
                 return self.dictionaryResulut(result: result, dict: MobileMessaging.getUser()?.dictionaryRepresentation)
             }
@@ -178,19 +182,19 @@ public class SwiftInfobipMobilemessagingPlugin: NSObject, FlutterPlugin {
         guard let jsonString = call.arguments as? String,
               let installationDictionary = convertStringToDictionary(text: jsonString),
               let installation = MMInstallation(dictRepresentation: installationDictionary) else
-        {
-            return result(
-               FlutterError( code: "invalidInstallation",
-                 message: "Error parsing Installation Data",
-                 details: "Error parsing Installation Data" ))
-        }
+              {
+                  return result(
+                    FlutterError( code: "invalidInstallation",
+                                  message: "Error parsing Installation Data",
+                                  details: "Error parsing Installation Data" ))
+              }
         
         MobileMessaging.saveInstallation(installation, completion: { (error) in
             if let error = error {
                 return result(
                     FlutterError( code: String(error.code),
-                                 message: error.mm_message,
-                                 details: error.description ))
+                                  message: error.mm_message,
+                                  details: error.description ))
             } else {
                 return self.dictionaryResulut(result: result, dict: MobileMessaging.getInstallation()?.dictionaryRepresentation)
             }
@@ -202,8 +206,8 @@ public class SwiftInfobipMobilemessagingPlugin: NSObject, FlutterPlugin {
             if let error = error {
                 return result(
                     FlutterError( code: String(error.code),
-                                 message: error.mm_message,
-                                 details: error.description ))
+                                  message: error.mm_message,
+                                  details: error.description ))
             } else {
                 return self.dictionaryResulut(result: result, dict: installation?.dictionaryRepresentation)
             }
@@ -216,26 +220,26 @@ public class SwiftInfobipMobilemessagingPlugin: NSObject, FlutterPlugin {
     
     func setInstallationAsPrimary(call: FlutterMethodCall, result: @escaping FlutterResult) {
         guard let args = call.arguments as? Dictionary<String, Any> else {
-
+            
             return result(
-               FlutterError( code: "invalidArguments",
-                 message: "iOS could not recognize flutter arguments",
-                 details: "iOS could not recognize flutter arguments" ))
+                FlutterError( code: "invalidArguments",
+                              message: "iOS could not recognize flutter arguments",
+                              details: "iOS could not recognize flutter arguments" ))
         }
         guard let pushRegId = args["pushRegistrationId"] as? String,
               let primary = args["primary"] as? Bool else
-        {
-            return result(
-               FlutterError( code: "invalidInstallation",
-                 message: "Error parsing Installation Data",
-                 details: "Error parsing Installation Data" ))
-        }
+              {
+                  return result(
+                    FlutterError( code: "invalidInstallation",
+                                  message: "Error parsing Installation Data",
+                                  details: "Error parsing Installation Data" ))
+              }
         MobileMessaging.setInstallation(withPushRegistrationId: pushRegId, asPrimary: primary, completion: { (installations, error) in
             if let error = error {
                 return result(
                     FlutterError( code: String(error.code),
-                                 message: error.mm_message,
-                                 details: error.description ))
+                                  message: error.mm_message,
+                                  details: error.description ))
             } else {
                 return result("success")
             }
@@ -244,26 +248,26 @@ public class SwiftInfobipMobilemessagingPlugin: NSObject, FlutterPlugin {
     
     func personalize(call: FlutterMethodCall, result: @escaping FlutterResult) {
         guard let args = call.arguments as? Dictionary<String, Any> else {
-
+            
             return result(
-               FlutterError( code: "invalidArguments",
-                 message: "iOS could not recognize flutter arguments",
-                 details: "iOS could not recognize flutter arguments" ))
+                FlutterError( code: "invalidArguments",
+                              message: "iOS could not recognize flutter arguments",
+                              details: "iOS could not recognize flutter arguments" ))
         }
         guard let context = args["context"] as? [String: Any],
               let uiDict = context["userIdentity"] as? [String: Any] else
-        {
-            return result(
-               FlutterError( code: "invalidContext",
-                 message: "Error parsing Context Data",
-                 details: "Error parsing Context Data" ))
-        }
+              {
+                  return result(
+                    FlutterError( code: "invalidContext",
+                                  message: "Error parsing Context Data",
+                                  details: "Error parsing Context Data" ))
+              }
         guard let ui = MMUserIdentity(phones: uiDict["phones"] as? [String], emails: uiDict["emails"] as? [String], externalUserId: uiDict["externalUserId"] as? String) else
         {
             return result(
-               FlutterError( code: "invalidContext",
-                 message: "userIdentity must have at least one non-nil property",
-                 details: "userIdentity must have at least one non-nil property" ))
+                FlutterError( code: "invalidContext",
+                              message: "userIdentity must have at least one non-nil property",
+                              details: "userIdentity must have at least one non-nil property" ))
         }
         let uaDict = context["userAttributes"] as? [String: Any]
         let ua = uaDict == nil ? nil : MMUserAttributes(dictRepresentation: uaDict!)
@@ -271,8 +275,8 @@ public class SwiftInfobipMobilemessagingPlugin: NSObject, FlutterPlugin {
             if let error = error {
                 return result(
                     FlutterError( code: String(error.code),
-                                 message: error.mm_message,
-                                 details: error.description ))
+                                  message: error.mm_message,
+                                  details: error.description ))
             } else {
                 return self.dictionaryResulut(result: result, dict: MobileMessaging.getUser()?.dictionaryRepresentation)
             }
@@ -286,35 +290,28 @@ public class SwiftInfobipMobilemessagingPlugin: NSObject, FlutterPlugin {
             } else if let error = error {
                 return result(
                     FlutterError( code: String(error.code),
-                                 message: error.mm_message,
-                                 details: error.description ))
+                                  message: error.mm_message,
+                                  details: error.description ))
             } else {
                 return result("success")
             }
         })
     }
- 
+    
     func depersonalizeInstallation(call: FlutterMethodCall, result: @escaping FlutterResult) {
-        guard let args = call.arguments as? Dictionary<String, Any> else {
-
-            return result(
-               FlutterError( code: "invalidArguments",
-                 message: "iOS could not recognize flutter arguments",
-                 details: "iOS could not recognize flutter arguments" ))
-        }
-        guard let pushRegId = args["pushRegistrationId"] as? String else
+        guard let pushRegId = call.arguments as? String else
         {
             return result(
-               FlutterError( code: "invalidPushRegId",
-                 message: "Error parsing PushRegId Data",
-                 details: "Error parsing PushRegId Data" ))
+                FlutterError( code: "invalidPushRegId",
+                              message: "Error parsing PushRegId Data",
+                              details: "Error parsing PushRegId Data" ))
         }
         MobileMessaging.depersonalizeInstallation(withPushRegistrationId: pushRegId, completion: { (installations, error) in
             if let error = error {
                 return result(
                     FlutterError( code: String(error.code),
-                                 message: error.mm_message,
-                                 details: error.description ))
+                                  message: error.mm_message,
+                                  details: error.description ))
             } else {
                 return result("success")
             }
@@ -323,11 +320,11 @@ public class SwiftInfobipMobilemessagingPlugin: NSObject, FlutterPlugin {
     
     func showChat(call: FlutterMethodCall, result: @escaping FlutterResult) {
         guard let shouldBePresentedModallyIOS = call.arguments as? Bool else {
-
+            
             return result(
-               FlutterError( code: "invalidArguments",
-                 message: "iOS could not recognize flutter arguments",
-                 details: "iOS could not recognize flutter arguments" ))
+                FlutterError( code: "invalidArguments",
+                              message: "iOS could not recognize flutter arguments",
+                              details: "iOS could not recognize flutter arguments" ))
         }
         
         let vc = shouldBePresentedModallyIOS ? MMChatViewController.makeRootNavigationViewController(): MMChatViewController.makeRootNavigationViewControllerWithCustomTransition()
@@ -345,38 +342,73 @@ public class SwiftInfobipMobilemessagingPlugin: NSObject, FlutterPlugin {
     func setupiOSChatSettings(call: FlutterMethodCall, result: @escaping FlutterResult) {
         guard let jsonString = call.arguments as? String,
               let chatSettings = convertStringToDictionary(text: jsonString) else {
-            return result(
-               FlutterError( code: "invalidiOSChatSettings",
-                 message: "Error parsing iOSChatSettings",
-                 details: "Error parsing iOSChatSettings" ))
-        }
-
+                  return result(
+                    FlutterError( code: "invalidiOSChatSettings",
+                                  message: "Error parsing iOSChatSettings",
+                                  details: "Error parsing iOSChatSettings" ))
+              }
+        
         MobileMessaging.inAppChat?.settings.configureWith(rawConfig: chatSettings)
+    }
+    
+    func submitEvent(call: FlutterMethodCall, result: @escaping FlutterResult){
+        guard let jsonString = call.arguments as? String,
+              let customEventDictionary = convertStringToDictionary(text: jsonString),
+              let customEvent = MMCustomEvent(dictRepresentation: customEventDictionary) else
+              {
+                  return result(
+                    FlutterError( code: "invalidEvent",
+                                  message: "Error parsing Custom Event Data",
+                                  details: "Error parsing Custom Event Data" ))
+              }
+        MobileMessaging.submitEvent(customEvent)
+    }
+    
+    func submitEventImmediately(call: FlutterMethodCall, result: @escaping FlutterResult){
+        guard let jsonString = call.arguments as? String,
+              let customEventDictionary = convertStringToDictionary(text: jsonString),
+              let customEvent = MMCustomEvent(dictRepresentation: customEventDictionary) else
+              {
+                  return result(
+                    FlutterError( code: "invalidEvent",
+                                  message: "Error parsing Custom Event Data",
+                                  details: "Error parsing Custom Event Data" ))
+              }
+        MobileMessaging.submitEvent(customEvent) { (error) in
+            if let error = error {
+                return result(
+                    FlutterError( code: String(error.code),
+                                  message: error.mm_message,
+                                  details: error.description ))
+            } else {
+                return result("success")
+            }
+        }
     }
     
     private func dictionaryResulut(result: @escaping FlutterResult, dict: DictionaryRepresentation?) {
         do {
             return result(String(data:
-                            try JSONSerialization.data(withJSONObject: dict ?? [:]),
-                          encoding: String.Encoding.utf8))
+                                    try JSONSerialization.data(withJSONObject: dict ?? [:]),
+                                 encoding: String.Encoding.utf8))
         } catch {
             return result(
-               FlutterError( code: "errorSerializingResult",
-                 message: "Error while serializing result Data",
-                 details: "Error while serializing result Data" ))
+                FlutterError( code: "errorSerializingResult",
+                              message: "Error while serializing result Data",
+                              details: "Error while serializing result Data" ))
         }
     }
     
     private  func convertStringToDictionary(text: String) -> [String:AnyObject]? {
-       if let data = text.data(using: .utf8) {
-           do {
-               let json = try JSONSerialization.jsonObject(with: data, options: .mutableContainers) as? [String:AnyObject]
-               return json
-           } catch {
-               print("Something went wrong")
-           }
-       }
-       return nil
-   }
+        if let data = text.data(using: .utf8) {
+            do {
+                let json = try JSONSerialization.jsonObject(with: data, options: .mutableContainers) as? [String:AnyObject]
+                return json
+            } catch {
+                print("Something went wrong")
+            }
+        }
+        return nil
+    }
     
 }

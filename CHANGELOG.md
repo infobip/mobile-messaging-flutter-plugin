@@ -30,3 +30,6 @@
 ## 0.2.1
 * Updated iOS SDK dependency
 * Fixed personalisation issues at Android
+
+## 0.2.2
+* Added custom events

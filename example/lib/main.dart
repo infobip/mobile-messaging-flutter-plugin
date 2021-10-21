@@ -264,7 +264,19 @@ class _HomePageState extends State<HomePage> {
               onTap: () {
                 InfobipMobilemessaging.showChat();
               }
-          )
+          ),
+          ListTile(
+              title: Text('Send Event'),
+              onTap: () {
+                print("Trying to send event");
+                InfobipMobilemessaging.submitEvent({
+                  "definitionId" : "alEvent1",
+                  "properties" : {
+                    "alEvent1String": "SomeString",
+                    "alEvent1Number": 12345,
+                    "alEvent1Boolean": true,
+                    "alEvent1Date": "2021-10-19"}});
+              }),
         ],
       ),
     );

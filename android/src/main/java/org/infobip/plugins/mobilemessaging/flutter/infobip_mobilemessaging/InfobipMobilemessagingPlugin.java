@@ -18,6 +18,7 @@ import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 import org.infobip.mobile.messaging.BroadcastParameter;
 import org.infobip.mobile.messaging.CustomAttributeValue;
 import org.infobip.mobile.messaging.CustomAttributesMapper;
+import org.infobip.mobile.messaging.CustomEvent;
 import org.infobip.mobile.messaging.Event;
 import org.infobip.mobile.messaging.Installation;
 import org.infobip.mobile.messaging.Message;
@@ -25,25 +26,29 @@ import org.infobip.mobile.messaging.MobileMessaging;
 import org.infobip.mobile.messaging.MobileMessagingProperty;
 import org.infobip.mobile.messaging.SuccessPending;
 import org.infobip.mobile.messaging.User;
+import org.infobip.mobile.messaging.api.appinstance.UserCustomEventAtts;
 import org.infobip.mobile.messaging.api.shaded.google.gson.Gson;
+import org.infobip.mobile.messaging.api.shaded.google.gson.reflect.TypeToken;
+import org.infobip.mobile.messaging.api.support.http.serialization.JsonSerializer;
+import org.infobip.mobile.messaging.chat.InAppChat;
 import org.infobip.mobile.messaging.interactive.InteractiveEvent;
 import org.infobip.mobile.messaging.interactive.MobileInteractive;
 import org.infobip.mobile.messaging.interactive.NotificationAction;
 import org.infobip.mobile.messaging.interactive.NotificationCategory;
 import org.infobip.mobile.messaging.mobileapi.InternalSdkError;
 import org.infobip.mobile.messaging.mobileapi.MobileMessagingError;
+import org.infobip.mobile.messaging.mobileapi.Result;
 import org.infobip.mobile.messaging.util.PreferenceHelper;
-import org.infobip.mobile.messaging.chat.InAppChat;
 import org.infobip.plugins.mobilemessaging.flutter.common.Configuration;
 import org.infobip.plugins.mobilemessaging.flutter.common.ErrorCodes;
 import org.infobip.plugins.mobilemessaging.flutter.common.InitHelper;
 import org.infobip.plugins.mobilemessaging.flutter.common.InstallationJson;
 import org.infobip.plugins.mobilemessaging.flutter.common.PersonalizationCtx;
 import org.infobip.plugins.mobilemessaging.flutter.common.UserJson;
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -61,9 +66,10 @@ import io.flutter.plugin.common.EventChannel;
 import io.flutter.plugin.common.MethodCall;
 import io.flutter.plugin.common.MethodChannel;
 import io.flutter.plugin.common.MethodChannel.MethodCallHandler;
-import io.flutter.plugin.common.MethodChannel.Result;
 
-/** InfobipMobilemessagingPlugin */
+/**
+ * InfobipMobilemessagingPlugin
+ */
 public class InfobipMobilemessagingPlugin implements FlutterPlugin, MethodCallHandler, ActivityAware, ServiceAware {
 
   private static final String TAG = "MobileMessagingFlutter";
@@ -76,8 +82,6 @@ public class InfobipMobilemessagingPlugin implements FlutterPlugin, MethodCallHa
   private EventChannel broadcastChannel;
 
   private StreamHandler broadcastHandler = new StreamHandler();
-
-  private FlutterActivity flutterActivity = null;
   private Activity activity = null;
   private BinaryMessenger binaryMessenger = null;
 
@@ -98,39 +102,59 @@ public class InfobipMobilemessagingPlugin implements FlutterPlugin, MethodCallHa
   }
 
   @Override
-  public void onMethodCall(@NonNull MethodCall call, @NonNull Result result)  {
+  public void onMethodCall(@NonNull MethodCall call, @NonNull MethodChannel.Result result) {
     Log.d(TAG, "onMethodCall");
     Log.i(TAG, "activity: " + activity.toString());
-    if (call.method.equals("init")) {
-      init(call, result);
-    } else if (call.method.equals("saveUser")) {
-      saveUser(call, result);
-    } else if (call.method.equals("fetchUser")) {
-      fetchUser(result);
-    } else if (call.method.equals("getUser")) {
-      getUser(result);
-    } else if (call.method.equals("saveInstallation")) {
-      saveInstallation(call, result);
-    } else if (call.method.equals("fetchInstallation")) {
-      fetchInstallation(result);
-    } else if (call.method.equals("getInstallation")) {
-      getInstallation(result);
-    } else if (call.method.equals("personalize")) {
-      personalize(call, result);
-    } else if (call.method.equals("depersonalize")) {
-      depersonalize(result);
-    } else if (call.method.equals("depersonalizeInstallation")) {
-      depersonalizeInstallation(call, result);
-    } else if (call.method.equals("setInstallationAsPrimary")) {
-      setInstallationAsPrimary(call, result);
-    } else if (call.method.equals("showChat")) {
-      showChat(call, result);
-    } else {
-      result.notImplemented();
+    switch (call.method) {
+      case "init":
+        init(call, result);
+        break;
+      case "saveUser":
+        saveUser(call, result);
+        break;
+      case "fetchUser":
+        fetchUser(result);
+        break;
+      case "getUser":
+        getUser(result);
+        break;
+      case "saveInstallation":
+        saveInstallation(call, result);
+        break;
+      case "fetchInstallation":
+        fetchInstallation(result);
+        break;
+      case "getInstallation":
+        getInstallation(result);
+        break;
+      case "personalize":
+        personalize(call, result);
+        break;
+      case "depersonalize":
+        depersonalize(result);
+        break;
+      case "depersonalizeInstallation":
+        depersonalizeInstallation(call, result);
+        break;
+      case "setInstallationAsPrimary":
+        setInstallationAsPrimary(call, result);
+        break;
+      case "showChat":
+        showChat(call, result);
+        break;
+      case "submitEvent":
+        submitEvent(call, result);
+        break;
+      case "submitEventImmediately":
+        submitEventImmediately(call, result);
+        break;
+      default:
+        result.notImplemented();
+        break;
     }
   }
 
-  private void init(MethodCall call,final Result result) {
+  private void init(MethodCall call, final MethodChannel.Result result) {
     Log.d(TAG, "init");
 
     final Configuration configuration = new Gson().fromJson(call.arguments.toString(), Configuration.class);
@@ -340,13 +364,13 @@ public class InfobipMobilemessagingPlugin implements FlutterPlugin, MethodCallHa
   public static class StreamHandler implements EventChannel.StreamHandler {
 
     private EventChannel.EventSink eventSink;
-    private List<JSONObject> cached = new ArrayList<>();
+    private final List<JSONObject> cached = new ArrayList<>();
 
     @Override
     public void onListen(Object arguments, EventChannel.EventSink events) {
       Log.d(TAG, "StreamHandler.onListen: " + events);
       eventSink = events;
-      for (JSONObject item: cached) {
+      for (JSONObject item : cached) {
         sendEvent(item);
       }
     }
@@ -383,7 +407,7 @@ public class InfobipMobilemessagingPlugin implements FlutterPlugin, MethodCallHa
       } else {
         Log.d(TAG, "add event to cached: " + event);
         cached.add(eventData);
-        return  false;
+        return false;
       }
 
       return true;
@@ -409,7 +433,7 @@ public class InfobipMobilemessagingPlugin implements FlutterPlugin, MethodCallHa
       } else {
         Log.d(TAG, "add event to cached: " + event);
         cached.add(eventData);
-        return  false;
+        return false;
       }
 
       return true;
@@ -424,7 +448,7 @@ public class InfobipMobilemessagingPlugin implements FlutterPlugin, MethodCallHa
   /*User Profile Management*/
 
   // public void saveUser(ReadableMap args, final Callback successCallback, final Callback errorCallback) throws JSONException {
-  public void saveUser(MethodCall call,final Result result) {
+  public void saveUser(MethodCall call, final MethodChannel.Result result) {
     try {
       //final User user = UserJson.resolveUser(ReactNativeJson.convertMapToJson(args));
       final User user = new Gson().fromJson(call.arguments.toString(), User.class);
@@ -434,12 +458,12 @@ public class InfobipMobilemessagingPlugin implements FlutterPlugin, MethodCallHa
     }
   }
 
-  public void fetchUser(final Result result) {
+  public void fetchUser(final MethodChannel.Result result) {
     mobileMessaging().fetchUser(userResultListener(result));
   }
 
   @NonNull
-  private MobileMessaging.ResultListener<User> userResultListener(final Result resultCallbacks) {
+  private MobileMessaging.ResultListener<User> userResultListener(final MethodChannel.Result resultCallbacks) {
     return new MobileMessaging.ResultListener<User>() {
       @Override
       public void onResult(org.infobip.mobile.messaging.mobileapi.Result<User, MobileMessagingError> result) {
@@ -452,22 +476,22 @@ public class InfobipMobilemessagingPlugin implements FlutterPlugin, MethodCallHa
     };
   }
 
-  public void getUser(final Result result) {
+  public void getUser(final MethodChannel.Result result) {
     User user = mobileMessaging().getUser();
     result.success(UserJson.toJSON(user).toString());
   }
 
-  public void saveInstallation(MethodCall call,final Result result) {
+  public void saveInstallation(MethodCall call, final MethodChannel.Result result) {
     final Installation installation = new Gson().fromJson(call.arguments.toString(), Installation.class);
     mobileMessaging().saveInstallation(installation, installationResultListener(result));
   }
 
-  public void fetchInstallation(final Result result) {
+  public void fetchInstallation(final MethodChannel.Result result) {
     mobileMessaging().fetchInstallation(installationResultListener(result));
   }
 
   @NonNull
-  private MobileMessaging.ResultListener<Installation> installationResultListener(final Result resultCallbacks) {
+  private MobileMessaging.ResultListener<Installation> installationResultListener(final MethodChannel.Result resultCallbacks) {
     return new MobileMessaging.ResultListener<Installation>() {
       @Override
       public void onResult(org.infobip.mobile.messaging.mobileapi.Result<Installation, MobileMessagingError> result) {
@@ -480,12 +504,12 @@ public class InfobipMobilemessagingPlugin implements FlutterPlugin, MethodCallHa
     };
   }
 
-  public void getInstallation(final Result result) {
+  public void getInstallation(final MethodChannel.Result result) {
     Installation installation = mobileMessaging().getInstallation();
     result.success(InstallationJson.toJSON(installation).toString());
   }
 
-  public void personalize(MethodCall call,final Result resultCallbacks) {
+  public void personalize(MethodCall call, final MethodChannel.Result resultCallbacks) {
     try {
       final PersonalizationCtx ctx = PersonalizationCtx.resolvePersonalizationCtx(new JSONObject(call.arguments.toString()));
       mobileMessaging().personalize(ctx.userIdentity, ctx.userAttributes, ctx.forceDepersonalize, new MobileMessaging.ResultListener<User>() {
@@ -510,10 +534,10 @@ public class InfobipMobilemessagingPlugin implements FlutterPlugin, MethodCallHa
     put(SuccessPending.Success, "success");
   }};
 
-  public void depersonalize(final Result resultCallbacks) {
+  public void depersonalize(final MethodChannel.Result resultCallbacks) {
     mobileMessaging().depersonalize(new MobileMessaging.ResultListener<SuccessPending>() {
       @Override
-      public void onResult(org.infobip.mobile.messaging.mobileapi.Result<SuccessPending, MobileMessagingError> result) {
+      public void onResult(Result<SuccessPending, MobileMessagingError> result) {
         if (result.isSuccess()) {
           resultCallbacks.success(depersonalizeStates.get(result.getData()));
         } else {
@@ -523,7 +547,7 @@ public class InfobipMobilemessagingPlugin implements FlutterPlugin, MethodCallHa
     });
   }
 
-  public void depersonalizeInstallation(MethodCall call,final Result result) {
+  public void depersonalizeInstallation(MethodCall call, final MethodChannel.Result result) {
     String pushRegistrationId = call.arguments.toString();
     if (pushRegistrationId.isEmpty()) {
       result.error(ErrorCodes.DEPERSONALIZE_INSTALLATION.getErrorCode(), "Cannot resolve pushRegistrationId from arguments", null);
@@ -532,22 +556,63 @@ public class InfobipMobilemessagingPlugin implements FlutterPlugin, MethodCallHa
     mobileMessaging().depersonalizeInstallation(pushRegistrationId, installationsResultListener(result));
   }
 
-  public void setInstallationAsPrimary(MethodCall call,final Result result) {
+  public void setInstallationAsPrimary(MethodCall call, final MethodChannel.Result result) {
     String pushRegistrationId = call.argument("pushRegistrationId");
     Boolean primary = call.argument("primary");
-    if (pushRegistrationId.isEmpty()) {
+    if (pushRegistrationId == null || pushRegistrationId.isEmpty()) {
       result.error(ErrorCodes.DEPERSONALIZE_INSTALLATION.getErrorCode(), "Cannot resolve pushRegistrationId from arguments", null);
+      return;
+    }
+    if (primary == null) {
+      result.error(ErrorCodes.DEPERSONALIZE_INSTALLATION.getErrorCode(), "Cannot resolve primary from arguments", null);
       return;
     }
     mobileMessaging().setInstallationAsPrimary(pushRegistrationId, primary, installationsResultListener(result));
   }
 
-  public void showChat(MethodCall call,final Result result) {
+  public void showChat(MethodCall call, final MethodChannel.Result result) {
     InAppChat.getInstance(activity.getApplication()).inAppChatView().show();
   }
 
+  public void submitEvent(MethodCall call, final MethodChannel.Result result) {
+    try {
+      JSONObject jsonObject = new JSONObject(call.arguments.toString());
+      final CustomEvent customEvent = CustomEventJson.fromJSON(jsonObject);
+      mobileMessaging().submitEvent(customEvent);
+      result.success("Success");
+    } catch (JSONException e) {
+      Log.w(TAG, e.getMessage(), e);
+      result.error(ErrorCodes.CUSTOM_EVENT.getErrorCode(), "Cannot send custom event", null);
+    }
+  }
+
+  public void submitEventImmediately(MethodCall call, final MethodChannel.Result result) {
+    try {
+      JSONObject jsonObject = new JSONObject(call.arguments.toString());
+      final CustomEvent customEvent = CustomEventJson.fromJSON(jsonObject);
+      mobileMessaging().submitEvent(customEvent, customEventResultListener(result));
+    } catch (JSONException e) {
+      Log.w(TAG, e.getMessage(), e);
+      result.error(ErrorCodes.CUSTOM_EVENT.getErrorCode(), "Cannot send custom event", null);
+    }
+  }
+
   @NonNull
-  private MobileMessaging.ResultListener<List<Installation>> installationsResultListener(final Result resultCallbacks) {
+  private MobileMessaging.ResultListener<CustomEvent> customEventResultListener(final MethodChannel.Result resultCallbacks) {
+    return new MobileMessaging.ResultListener<CustomEvent>() {
+      @Override
+      public void onResult(org.infobip.mobile.messaging.mobileapi.Result<CustomEvent, MobileMessagingError> result) {
+        if (result.isSuccess()) {
+          resultCallbacks.success("Success");
+        } else {
+          resultCallbacks.error(result.getError().getCode(), result.getError().getMessage(), result.getError().toString());
+        }
+      }
+    };
+  }
+
+  @NonNull
+  private MobileMessaging.ResultListener<List<Installation>> installationsResultListener(final MethodChannel.Result resultCallbacks) {
     return new MobileMessaging.ResultListener<List<Installation>>() {
       @Override
       public void onResult(org.infobip.mobile.messaging.mobileapi.Result<List<Installation>, MobileMessagingError> result) {
@@ -584,5 +649,33 @@ public class InfobipMobilemessagingPlugin implements FlutterPlugin, MethodCallHa
     }
 
     return messageToJSON(message);
+  }
+
+  private static class CustomEventJson extends CustomEvent {
+
+    static CustomEvent fromJSON(JSONObject json) {
+      CustomEvent customEvent = new CustomEvent();
+
+      try {
+        if (json.has(UserCustomEventAtts.definitionId)) {
+          customEvent.setDefinitionId(json.optString(UserCustomEventAtts.definitionId));
+        }
+      } catch (Exception e) {
+        Log.w(TAG, "Error when serializing CustomEvent object: " + e.getMessage());
+      }
+
+      try {
+        if (json.has(UserCustomEventAtts.properties)) {
+          Type type = new TypeToken<Map<String, Object>>() {
+          }.getType();
+          Map<String, Object> properties = new JsonSerializer().deserialize(json.optString(UserCustomEventAtts.properties), type);
+          customEvent.setProperties(CustomAttributesMapper.customAttsFromBackend(properties));
+        }
+      } catch (Exception e) {
+        Log.w(TAG, "Error when serializing CustomEvent object: " + e.getMessage());
+      }
+
+      return customEvent;
+    }
   }
 }
