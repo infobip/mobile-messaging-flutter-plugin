@@ -96,6 +96,10 @@ public class SwiftInfobipMobilemessagingPlugin: NSObject, FlutterPlugin {
             submitEvent(call: call, result: result)
         } else if call.method == "submitEventImmediately" {
             submitEventImmediately(call: call, result: result)
+        } else if call.method == "getMessageCounter" {
+            getMessageCounter(call: call, result: result)
+        } else if call.method == "resetMessageCounter" {
+            resetMessageCounter()
         }
     }
     
@@ -385,6 +389,15 @@ public class SwiftInfobipMobilemessagingPlugin: NSObject, FlutterPlugin {
             }
         }
     }
+    
+    func getMessageCounter(call: FlutterMethodCall, result: @escaping FlutterResult){
+        return result(MobileMessaging.inAppChat?.getMessageCounter ?? 0)
+    }
+    
+    func resetMessageCounter(){
+        MobileMessaging.inAppChat?.resetMessageCounter()
+    }
+    
     
     private func dictionaryResulut(result: @escaping FlutterResult, dict: DictionaryRepresentation?) {
         do {

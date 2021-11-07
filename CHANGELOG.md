@@ -33,3 +33,7 @@
 
 ## 0.2.2
 * Added custom events
+
+## 0.3.0
+* Added in-app chat methods getMessageCounter and resetMessageCounter
+* Updated Android and iOS SDKs with new bug-fix versions

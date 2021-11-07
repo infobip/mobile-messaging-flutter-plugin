@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'dart:async';
 
 import 'package:flutter/services.dart';
+import 'package:infobip_mobilemessaging/models/IOSChatSettings.dart';
 import 'package:infobip_mobilemessaging/infobip_mobilemessaging.dart';
 import 'package:infobip_mobilemessaging/models/Configuration.dart';
 import 'package:infobip_mobilemessaging/models/UserData.dart';
@@ -31,7 +32,6 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
-
   @override
   void initState() {
     super.initState();
@@ -40,7 +40,6 @@ class _MyAppState extends State<MyApp> {
 
   // Platform messages are asynchronous, so we initialize in an async method.
   Future<void> initPlatformState() async {
-
     // If the widget was removed from the tree while the asynchronous platform
     // message was in flight, we want to discard the reply rather than calling
     // setState to update our non-existent appearance.
@@ -54,6 +53,13 @@ class _MyAppState extends State<MyApp> {
             notificationTypes: ["alert", "badge", "sound"],
             forceCleanup: false,
             logging: true)));
+    InfobipMobilemessaging.setupiOSChatSettings(IOSChatSettings(
+      title: 'Flutter Example Chat',
+      sendButtonColor: '#ff5722',
+      navigationBarItemsColor: '#ff8a50',
+      navigationBarColor: '#c41c00',
+      navigationBarTitleColor: '#000000',
+    ));
     InfobipMobilemessaging.on(LibraryEvent.TOKEN_RECEIVED, (String token) {
       print("Callback. TOKEN_RECEIVED event:" + token);
       _HomePageState.addLibraryEvent("Token Received");
@@ -61,56 +67,58 @@ class _MyAppState extends State<MyApp> {
 
     InfobipMobilemessaging.on(
         LibraryEvent.MESSAGE_RECEIVED,
-            (Message message) => {
-          print("Callback. MESSAGE_RECEIVED event, message title: " +
-              message.title +
-              " body: " +
-              message.body),
-          _HomePageState.addLibraryEvent("Message Received")
-        });
+        (Message message) => {
+              print("Callback. MESSAGE_RECEIVED event, message title: " +
+                  message.title +
+                  " body: " +
+                  message.body),
+              _HomePageState.addLibraryEvent("Message Received")
+            });
     InfobipMobilemessaging.on(
         LibraryEvent.USER_UPDATED,
-            (event) => {
-          print("Callback. USER_UPDATED event:" + event.toString()),
-          _HomePageState.addLibraryEvent("User Updated")
-        });
+        (event) => {
+              print("Callback. USER_UPDATED event:" + event.toString()),
+              _HomePageState.addLibraryEvent("User Updated")
+            });
     InfobipMobilemessaging.on(
         LibraryEvent.PERSONALIZED,
-            (event) => {
-          print("Callback. PERSONALIZED event:" + event.toString()),
-          _HomePageState.addLibraryEvent("Personalized")
-        });
+        (event) => {
+              print("Callback. PERSONALIZED event:" + event.toString()),
+              _HomePageState.addLibraryEvent("Personalized")
+            });
     InfobipMobilemessaging.on(
         LibraryEvent.INSTALLATION_UPDATED,
-            (String event) => {
-          print("Callback. INSTALLATION_UPDATED event:" + event.toString()),
-          _HomePageState.addLibraryEvent("Installation Updated")
-        });
+        (String event) => {
+              print("Callback. INSTALLATION_UPDATED event:" + event.toString()),
+              _HomePageState.addLibraryEvent("Installation Updated")
+            });
     InfobipMobilemessaging.on(
         LibraryEvent.DEPERSONALIZED,
-            (event) => {
-          print("Callback. DEPERSONALIZED event:" + event.toString()),
-          _HomePageState.addLibraryEvent("Depersonalized")
-        });
+        (event) => {
+              print("Callback. DEPERSONALIZED event:" + event.toString()),
+              _HomePageState.addLibraryEvent("Depersonalized")
+            });
     InfobipMobilemessaging.on(
         LibraryEvent.NOTIFICATION_ACTION_TAPPED,
-            (event) => {
-          print("Callback. NOTIFICATION_ACTION_TAPPED event:" +
-              event.toString()),
-          _HomePageState.addLibraryEvent("Notification Action Tapped")
-        });
+        (event) => {
+              print("Callback. NOTIFICATION_ACTION_TAPPED event:" +
+                  event.toString()),
+              _HomePageState.addLibraryEvent("Notification Action Tapped")
+            });
     InfobipMobilemessaging.on(
         LibraryEvent.NOTIFICATION_TAPPED,
-            (event) => {
-          print("Callback. NOTIFICATION_TAPPED event:" + event.toString()),
-          _HomePageState.addLibraryEvent("Notification Tapped")
-        });
+        (Message message) => {
+              print(
+                  "Callback. NOTIFICATION_TAPPED event:" + message.toString()),
+              _HomePageState.addLibraryEvent("Notification Tapped"),
+              if (message.chat) {print('Chat Message Tapped')}
+            });
     InfobipMobilemessaging.on(
         LibraryEvent.REGISTRATION_UPDATED,
-            (String token) => {
-          print("Callback. REGISTRATION_UPDATED event:" + token),
-          _HomePageState.addLibraryEvent("Registration Updated")
-        });
+        (String token) => {
+              print("Callback. REGISTRATION_UPDATED event:" + token),
+              _HomePageState.addLibraryEvent("Registration Updated")
+            });
   }
 
   @override
@@ -263,19 +271,20 @@ class _HomePageState extends State<HomePage> {
               title: Text('Show Chat'),
               onTap: () {
                 InfobipMobilemessaging.showChat();
-              }
-          ),
+              }),
           ListTile(
               title: Text('Send Event'),
               onTap: () {
                 print("Trying to send event");
                 InfobipMobilemessaging.submitEvent({
-                  "definitionId" : "alEvent1",
-                  "properties" : {
+                  "definitionId": "alEvent1",
+                  "properties": {
                     "alEvent1String": "SomeString",
                     "alEvent1Number": 12345,
                     "alEvent1Boolean": true,
-                    "alEvent1Date": "2021-10-19"}});
+                    "alEvent1Date": "2021-10-19"
+                  }
+                });
               }),
         ],
       ),

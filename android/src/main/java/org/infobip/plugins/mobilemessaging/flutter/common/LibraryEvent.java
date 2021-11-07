@@ -1,6 +1,7 @@
 package org.infobip.plugins.mobilemessaging.flutter.common;
 
 import org.infobip.mobile.messaging.Event;
+import org.infobip.mobile.messaging.chat.core.InAppChatEvent;
 import org.infobip.mobile.messaging.interactive.InteractiveEvent;
 
 import java.util.HashMap;
@@ -18,6 +19,7 @@ public class LibraryEvent {
     public static final String EVENT_NOTIFICATION_TAPPED = "notificationTapped";
     public static final String EVENT_NOTIFICATION_ACTION_TAPPED = "actionTapped";
     public static final String EVENT_MESSAGE_RECEIVED = "messageReceived";
+    public static final String EVENT_INAPP_CHAT_UNREAD_MESSAGE_COUNTER_UPDATED = "inAppChat.unreadMessageCounterUpdated";
 
     public static final Map<String, String> broadcastEventMap = new HashMap<String, String>() {{
         put(Event.TOKEN_RECEIVED.getKey(), EVENT_TOKEN_RECEIVED);
@@ -28,6 +30,7 @@ public class LibraryEvent {
         put(Event.DEPERSONALIZED.getKey(), EVENT_DEPERSONALIZED);
         // put(GeoEvent.GEOFENCE_AREA_ENTERED.getKey(), EVENT_GEOFENCE_ENTERED);
         put(InteractiveEvent.NOTIFICATION_ACTION_TAPPED.getKey(), EVENT_NOTIFICATION_ACTION_TAPPED);
+        put(InAppChatEvent.UNREAD_MESSAGES_COUNTER_UPDATED.getKey(), EVENT_INAPP_CHAT_UNREAD_MESSAGE_COUNTER_UPDATED);
     }};
 
     public static final Map<String, String> messageBroadcastEventMap = new HashMap<String, String>() {{

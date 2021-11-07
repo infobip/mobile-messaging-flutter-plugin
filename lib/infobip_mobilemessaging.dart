@@ -16,11 +16,11 @@ import 'models/Message.dart';
 
 class InfobipMobilemessaging {
   static const MethodChannel _channel =
-  const MethodChannel('infobip_mobilemessaging');
+      const MethodChannel('infobip_mobilemessaging');
   static const EventChannel _libraryEvent =
-  const EventChannel('infobip_mobilemessaging/broadcast');
-  static StreamSubscription _libraryEventSubscription = _libraryEvent.receiveBroadcastStream()
-      .listen((dynamic event) {
+      const EventChannel('infobip_mobilemessaging/broadcast');
+  static StreamSubscription _libraryEventSubscription =
+      _libraryEvent.receiveBroadcastStream().listen((dynamic event) {
     print('Received event: $event');
     LibraryEvent libraryEvent = LibraryEvent.fromJson(jsonDecode(event));
     print("callbacks:");
@@ -36,9 +36,11 @@ class InfobipMobilemessaging {
         } else {
           print("Try to call with payload NULL");
         }
-        if (libraryEvent.eventName == LibraryEvent.MESSAGE_RECEIVED) {
+        if (libraryEvent.eventName == LibraryEvent.MESSAGE_RECEIVED ||
+            libraryEvent.eventName == LibraryEvent.NOTIFICATION_TAPPED) {
           callback(Message.fromJson(libraryEvent.payload));
-        } else if (libraryEvent.eventName == LibraryEvent.INSTALLATION_UPDATED) {
+        } else if (libraryEvent.eventName ==
+            LibraryEvent.INSTALLATION_UPDATED) {
           callback(Installation.fromJson(libraryEvent.payload).toString());
         } else if (libraryEvent.payload != null) {
           callback(libraryEvent.payload);
@@ -47,11 +49,9 @@ class InfobipMobilemessaging {
         }
       });
     }
-  },
-      onError: (dynamic error) {
-        print('Received error: ${error.message}');
-      },
-      cancelOnError: true);
+  }, onError: (dynamic error) {
+    print('Received error: ${error.message}');
+  }, cancelOnError: true);
 
   static Map<String, List<Function>?> callbacks = new HashMap();
 
@@ -134,5 +134,13 @@ class InfobipMobilemessaging {
 
   static void submitEventImmediately(Object customEvent) {
     _channel.invokeMethod('submitEventImmediately', jsonEncode(customEvent));
+  }
+
+  static Future<int> getMessageCounter() async {
+    return await _channel.invokeMethod('getMessageCounter');
+  }
+
+  static void resetMessageCounter() async {
+    await _channel.invokeMethod('resetMessageCounter');
   }
 }

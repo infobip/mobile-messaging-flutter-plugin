@@ -32,10 +32,10 @@ android {
 }
 
 dependencies {
-    implementation ('com.infobip:infobip-mobile-messaging-android-sdk:5.3.2@aar') {
+    implementation ('com.infobip:infobip-mobile-messaging-android-sdk:5.3.3@aar') {
         transitive = true
     }
     implementation 'com.google.android.material:material:1.0.0'
-    implementation "com.infobip:infobip-mobile-messaging-android-chat-sdk:4.+@aar"
+    implementation "com.infobip:infobip-mobile-messaging-android-chat-sdk:5.+@aar"
     implementation 'androidx.exifinterface:exifinterface:1.1.0'
 }

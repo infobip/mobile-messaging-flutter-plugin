@@ -148,6 +148,12 @@ public class InfobipMobilemessagingPlugin implements FlutterPlugin, MethodCallHa
       case "submitEventImmediately":
         submitEventImmediately(call, result);
         break;
+      case "getMessageCounter":
+        getMessageCounter(result);
+        break;
+      case "resetMessageCounter":
+        resetMessageCounter();
+        break;
       default:
         result.notImplemented();
         break;
@@ -595,6 +601,14 @@ public class InfobipMobilemessagingPlugin implements FlutterPlugin, MethodCallHa
       Log.w(TAG, e.getMessage(), e);
       result.error(ErrorCodes.CUSTOM_EVENT.getErrorCode(), "Cannot send custom event", null);
     }
+  }
+
+  private void getMessageCounter(final MethodChannel.Result result) {
+    result.success(InAppChat.getInstance(activity.getApplication()).getMessageCounter());
+  }
+
+  private void resetMessageCounter() {
+    InAppChat.getInstance(activity.getApplication()).resetMessageCounter();
   }
 
   @NonNull

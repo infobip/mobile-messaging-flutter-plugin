@@ -15,4 +15,16 @@
     <style name="NormalTheme" parent="@android:style/Theme.Light.NoTitleBar">
         <item name="android:windowBackground">?android:colorBackground</item>
     </style>
+    <style name="IB_AppTheme.Chat">
+        <item name="colorPrimary">@color/primaryColor</item>
+        <item name="colorPrimaryDark">@color/primaryLightColor</item>
+        <item name="colorControlNormal">@color/primaryDarkColor</item>
+        <item name="titleTextColor">@color/primaryTextColor</item>
+    </style>
+    <style name="IB_AppTheme.ChatAttach">
+        <item name="colorPrimary">@color/primaryColor</item>
+        <item name="colorPrimaryDark">@color/primaryLightColor</item>
+        <item name="colorControlNormal">@color/primaryDarkColor</item>
+        <item name="titleTextColor">@color/primaryTextColor</item>
+    </style>
 </resources>

@@ -33,6 +33,9 @@ class LibraryEvent {
   // Occurs when new message arrives, see separate section for all available message fields
   static const String MESSAGE_RECEIVED = "messageReceived";
 
+  // Occurs when in-app chat counter is updated.
+  static const String UNREAD_MESSAGE_COUNTER_UPDATED = "inAppChat.unreadMessageCounterUpdated";
+
   LibraryEvent({
     required this.eventName,
     this.payload

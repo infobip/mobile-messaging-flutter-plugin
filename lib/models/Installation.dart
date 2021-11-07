@@ -1,6 +1,6 @@
 enum OS { Android, iOS }
 
-enum PushServiceType { GCM, Firebase }
+enum PushServiceType { GCM, Firebase, APNS }
 
 class Installation {
   final String? pushRegistrationId;
