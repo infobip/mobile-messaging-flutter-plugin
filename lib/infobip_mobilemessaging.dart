@@ -77,25 +77,27 @@ class InfobipMobilemessaging {
   }
 
   static Future<UserData> fetchUser() async {
-    return await _channel.invokeMethod('fetchUser');
+    return UserData.fromJson(await _channel.invokeMethod('fetchUser'));
   }
 
   static Future<UserData> getUser() async {
-    String result = await _channel.invokeMethod('getUser');
-    return UserData.fromJson(jsonDecode(result));
+    return UserData.fromJson(
+        jsonDecode(await _channel.invokeMethod('getUser')));
   }
 
   static Future<void> saveInstallation(Installation installation) async {
-    await _channel.invokeMethod('saveInstallation', jsonEncode(installation.toJson()));
+    await _channel.invokeMethod(
+        'saveInstallation', jsonEncode(installation.toJson()));
   }
 
   static Future<Installation> fetchInstallation() async {
-    return await _channel.invokeMethod('fetchInstallation');
+    return Installation.fromJson(
+        jsonDecode(await _channel.invokeMethod('fetchInstallation')));
   }
 
   static Future<Installation> getInstallation() async {
-    String result = await _channel.invokeMethod('getInstallation');
-    return Installation.fromJson(jsonDecode(result));
+    return Installation.fromJson(
+        jsonDecode(await _channel.invokeMethod('getInstallation')));
   }
 
   static Future<void> personalize(PersonalizeContext context) async {
@@ -107,22 +109,23 @@ class InfobipMobilemessaging {
   }
 
   static void depersonalizeInstallation(String pushRegistrationId) async {
-    await _channel.invokeMethod('depersonalizeInstallation', pushRegistrationId);
+    await _channel.invokeMethod(
+        'depersonalizeInstallation', pushRegistrationId);
   }
 
-  static void setInstallationAsPrimary(InstallationPrimary installationPrimary) async {
-    await _channel.invokeMethod('setInstallationAsPrimary',installationPrimary.toJson());
+  static void setInstallationAsPrimary(
+      InstallationPrimary installationPrimary) async {
+    await _channel.invokeMethod(
+        'setInstallationAsPrimary', installationPrimary.toJson());
   }
 
-  static Future<void> showChat({bool shouldBePresentedModallyIOS = false}) async {
-    print("showChat");
+  static Future<void> showChat(
+      {bool shouldBePresentedModallyIOS = false}) async {
     await _channel.invokeMethod('showChat', shouldBePresentedModallyIOS);
   }
 
   static Future<void> setupiOSChatSettings(IOSChatSettings settings) async {
-    print("setupiOSChatSettings");
     if (Platform.isIOS) {
-      print("setupiOSChatSettings for iOS");
       await _channel.invokeMethod(
           'setupiOSChatSettings', jsonEncode(settings.toJson()));
     }

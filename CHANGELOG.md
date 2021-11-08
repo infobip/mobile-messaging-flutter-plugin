@@ -37,3 +37,7 @@
 ## 0.3.0
 * Added in-app chat methods getMessageCounter and resetMessageCounter
 * Updated Android and iOS SDKs with new bug-fix versions
+
+## 0.3.1
+* Added iOS WebViewSettings
+* fetchInstallation and fetchUser methods fixed

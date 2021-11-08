@@ -63,14 +63,33 @@ class IOSSettings {
   final List<String>? notificationTypes;
   final bool? forceCleanup;
   final bool? logging;
+  final WebViewSettings? webViewSettings;
 
-  IOSSettings({this.notificationTypes, this.forceCleanup, this.logging});
+  IOSSettings({this.notificationTypes, this.forceCleanup, this.logging, this.webViewSettings});
 
   Map<String, dynamic> toJson() =>
       {
         'notificationTypes': notificationTypes,
         'forceCleanup': forceCleanup,
-        'logging': logging
+        'logging': logging,
+        'webViewSettings': (this.webViewSettings != null)? this.webViewSettings!.toJson() : null
+      };
+}
+
+class WebViewSettings {
+  final String? title;
+  final String? barTintColor;
+  final String? titleColor;
+  final String? tintColor;
+
+  WebViewSettings({this.title, this.barTintColor, this.tintColor, this.titleColor});
+
+  Map<String, dynamic> toJson() =>
+      {
+        'title': title,
+        'barTintColor': barTintColor,
+        'titleColor': titleColor,
+        'tintColor': tintColor
       };
 }
 
@@ -80,10 +99,10 @@ class PrivacySettings {
   final bool? carrierInfoSendingDisabled;
   final bool? systemInfoSendingDisabled;
 
-  PrivacySettings(this.applicationCodePersistingDisabled,
+  PrivacySettings({this.applicationCodePersistingDisabled,
       this.userDataPersistingDisabled,
       this.carrierInfoSendingDisabled,
-      this.systemInfoSendingDisabled);
+      this.systemInfoSendingDisabled});
 
   Map<String, dynamic> toJson() =>
       {
@@ -105,7 +124,7 @@ class NotificationAction {
   final String? textInputActionButtonTitle;
   final String? textInputPlaceholder;
 
-  NotificationAction(this.identifier,
+  NotificationAction({this.identifier,
       this.title,
       this.foreground,
       this.authenticationRequired,
@@ -113,7 +132,7 @@ class NotificationAction {
       this.destructive,
       this.icon,
       this.textInputActionButtonTitle,
-      this.textInputPlaceholder);
+      this.textInputPlaceholder});
 
   Map<String, dynamic> toJson() =>
       {
@@ -134,7 +153,7 @@ class NotificationCategory {
   final String? identifier;
   final List<NotificationAction>? actions;
 
-  NotificationCategory(this.identifier, this.actions);
+  NotificationCategory({this.identifier, this.actions});
 
   Map<String, dynamic> toJson() {
     List<Map<String, dynamic>>? actions = this.actions!.map((i) => i.toJson()).toList();

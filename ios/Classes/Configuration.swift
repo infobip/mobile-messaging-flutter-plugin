@@ -25,6 +25,7 @@ class Configuration {
         // static let messageStorage = "messageStorage"
         static let pluginVersion = "pluginVersion"
         static let notificationCategories = "notificationCategories"
+        static let webViewSettings = "webViewSettings"
     }
     
     let appCode: String
@@ -38,13 +39,14 @@ class Configuration {
     let privacySettings: [String: Any]
     let pluginVersion: String
     let categories: [MMNotificationCategory]?
+    let webViewSettings: [String: AnyObject]?
     
     init?(rawConfig: [String: AnyObject]) {
         guard let appCode = rawConfig[Configuration.Keys.applicationCode] as? String,
               let ios = rawConfig["iosSettings"] as? [String: AnyObject] else
-        {
-            return nil
-        }
+              {
+                  return nil
+              }
         
         self.appCode = appCode
         self.inAppChatEnabled = rawConfig[Configuration.Keys.inAppChatEnabled].unwrap(orDefault: false)
@@ -82,6 +84,12 @@ class Configuration {
             self.notificationType = MMUserNotificationType(options: options)
         } else {
             self.notificationType = MMUserNotificationType.none
+        }
+        
+        if let rawWebViewSettings = ios[Configuration.Keys.webViewSettings] as? [String: AnyObject] {
+            self.webViewSettings = rawWebViewSettings
+        } else {
+            self.webViewSettings = nil
         }
     }
 }

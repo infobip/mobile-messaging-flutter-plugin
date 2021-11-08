@@ -50,7 +50,8 @@ public class SwiftInfobipMobilemessagingPlugin: NSObject, FlutterPlugin {
             EventName.messageStorage_save,
             EventName.messageStorage_find,
             EventName.messageStorage_findAll,
-            EventName.inAppChat_availabilityUpdated
+            EventName.inAppChat_availabilityUpdated,
+            EventName.inAppChat_unreadMessageCounterUpdated
         ]
     }
     
@@ -131,6 +132,10 @@ public class SwiftInfobipMobilemessagingPlugin: NSObject, FlutterPlugin {
         
         if let categories = configuration.categories {
             mobileMessaging = mobileMessaging?.withInteractiveNotificationCategories(Set(categories))
+        }
+        
+        if let webViewSettings = configuration.webViewSettings {
+            mobileMessaging?.webViewSettings.configureWith(rawConfig: webViewSettings)
         }
         
         MobileMessaging.userAgent.pluginVersion = "flutter \(configuration.pluginVersion)"
