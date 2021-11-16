@@ -41,3 +41,7 @@
 ## 0.3.1
 * Added iOS WebViewSettings
 * fetchInstallation and fetchUser methods fixed
+
+## 0.4.0
+* Added unregister option for events
+* iOS personalization fixed
