@@ -1,28 +1,30 @@
+import 'package:flutter/foundation.dart';
+
 enum Gender { Male, Female }
 
 class UserData {
-  final String? externalUserId;
-  final String? firstName;
-  final String? lastName;
-  final String? middleName;
-  final Gender? gender;
-  final String? birthday;
-  final List<String>? phones;
-  final List<String>? emails;
-  final List<String>? tags;
-  final Map<String, dynamic>? customAttributes;
+  String? externalUserId;
+  String? firstName;
+  String? lastName;
+  String? middleName;
+  Gender? gender;
+  String? birthday;
+  List<String>? phones;
+  List<String>? emails;
+  List<String>? tags;
+  Map<String, dynamic>? customAttributes;
 
   UserData(
       {this.externalUserId,
-        this.firstName,
-        this.lastName,
-        this.middleName,
-        this.gender,
-        this.birthday,
-        this.phones,
-        this.emails,
-        this.tags,
-        this.customAttributes});
+      this.firstName,
+      this.lastName,
+      this.middleName,
+      this.gender,
+      this.birthday,
+      this.phones,
+      this.emails,
+      this.tags,
+      this.customAttributes});
 
   static Gender? resolveGender(String? str) {
     if (str == null) {
@@ -56,15 +58,15 @@ class UserData {
         customAttributes = json['customAttributes'];
 
   Map<String, dynamic> toJson() => {
-    'externalUserId': externalUserId,
-    'firstName': firstName,
-    'lastName': lastName,
-    'middleName': middleName,
-    'gender': gender,
-    'birthday': birthday,
-    'phones': phones,
-    'emails': emails,
-    'tags': tags,
-    'customAttributes': customAttributes
-  };
+        'externalUserId': externalUserId,
+        'firstName': firstName,
+        'lastName': lastName,
+        'middleName': middleName,
+        'gender': gender != null ? describeEnum(gender!) : null,
+        'birthday': birthday,
+        'phones': phones,
+        'emails': emails,
+        'tags': tags,
+        'customAttributes': customAttributes
+      };
 }

@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'dart:async';
 
@@ -238,7 +240,7 @@ class _HomePageState extends State<HomePage> {
           ListTile(
               title: Text('Save User Data'),
               onTap: () {
-                InfobipMobilemessaging.saveUser(UserData(
+                UserData user = UserData(
                     externalUserId: null,
                     firstName: null,
                     lastName: null,
@@ -246,8 +248,21 @@ class _HomePageState extends State<HomePage> {
                     //gender: Gender.Male,
                     birthday: null,
                     //phones: ['79123456789'],
-                    //emails: ['some.email@gmail.com'],
-                    tags: []));
+                    //emails: ['some.email@email.com'],
+                    tags: [],
+                    customAttributes: {
+                      'alList': [
+                        {
+                          'alDate': '2021-10-11',
+                          'alWhole': 2,
+                          'alString': 'someAnotherString',
+                          'alBoolean': true,
+                          'alDecimal': 0.66
+                        }
+                      ]
+                    });
+                print(user.toJson());
+                InfobipMobilemessaging.saveUser(user);
               }),
           ListTile(
               title: Text('Get User Data'),
@@ -311,12 +326,12 @@ class _HomePageState extends State<HomePage> {
               onTap: () {
                 print("Trying to send event");
                 InfobipMobilemessaging.submitEvent({
-                  "definitionId": "alEvent1",
-                  "properties": {
-                    "alEvent1String": "SomeString",
-                    "alEvent1Number": 12345,
-                    "alEvent1Boolean": true,
-                    "alEvent1Date": "2021-10-19"
+                  'definitionId': 'alEvent1',
+                  'properties': {
+                    'alEvent1String': 'SomeString',
+                    'alEvent1Number': 12345,
+                    'alEvent1Boolean': true,
+                    'alEvent1Date': '2021-10-19'
                   }
                 });
               }),
