@@ -41,3 +41,10 @@
 ## 0.3.1
 * Added iOS WebViewSettings
 * fetchInstallation and fetchUser methods fixed
+
+## 0.4.0
+* Added unregister option for events
+* iOS personalization fixed
+
+## 0.4.1
+* Fixed support for lists in customAttributes for Installation and User classes on Android

@@ -232,8 +232,8 @@ public class SwiftInfobipMobilemessagingPlugin: NSObject, FlutterPlugin {
             
             return result(
                 FlutterError( code: "invalidArguments",
-                              message: "iOS could not recognize flutter arguments",
-                              details: "iOS could not recognize flutter arguments" ))
+                              message: "iOS could not recognize Flutter arguments",
+                              details: "iOS could not recognize Flutter arguments" ))
         }
         guard let pushRegId = args["pushRegistrationId"] as? String,
               let primary = args["primary"] as? Bool else
@@ -256,22 +256,21 @@ public class SwiftInfobipMobilemessagingPlugin: NSObject, FlutterPlugin {
     }
     
     func personalize(call: FlutterMethodCall, result: @escaping FlutterResult) {
-        guard let args = call.arguments as? Dictionary<String, Any> else {
-            
-            return result(
-                FlutterError( code: "invalidArguments",
-                              message: "iOS could not recognize flutter arguments",
-                              details: "iOS could not recognize flutter arguments" ))
-        }
-        guard let context = args["context"] as? [String: Any],
-              let uiDict = context["userIdentity"] as? [String: Any] else
-              {
+        guard let jsonString = call.arguments as? String,
+              let context = convertStringToDictionary(text: jsonString) else {
                   return result(
-                    FlutterError( code: "invalidContext",
-                                  message: "Error parsing Context Data",
-                                  details: "Error parsing Context Data" ))
+                    FlutterError( code: "invalidArguments",
+                                  message: "iOS could not recognize Flutter arguments",
+                                  details: "iOS could not recognize Flutter arguments" ))
               }
-        guard let ui = MMUserIdentity(phones: uiDict["phones"] as? [String], emails: uiDict["emails"] as? [String], externalUserId: uiDict["externalUserId"] as? String) else
+        guard let uiDict = context["userIdentity"] as? [String: Any] else
+        {
+            return result(
+                FlutterError( code: "invalidContext",
+                              message: "Error parsing Context Data",
+                              details: "Error parsing Context Data" ))
+        }
+        guard let ui = MMUserIdentity(phones: uiDict["phones"] as? [String], emails: uiDict["emails"] as? [String], externalUserId: uiDict["externalUserId"] as? String)    else
         {
             return result(
                 FlutterError( code: "invalidContext",
@@ -332,8 +331,8 @@ public class SwiftInfobipMobilemessagingPlugin: NSObject, FlutterPlugin {
             
             return result(
                 FlutterError( code: "invalidArguments",
-                              message: "iOS could not recognize flutter arguments",
-                              details: "iOS could not recognize flutter arguments" ))
+                              message: "iOS could not recognize Flutter arguments",
+                              details: "iOS could not recognize Flutter arguments" ))
         }
         
         let vc = shouldBePresentedModallyIOS ? MMChatViewController.makeRootNavigationViewController(): MMChatViewController.makeRootNavigationViewControllerWithCustomTransition()
@@ -412,8 +411,8 @@ public class SwiftInfobipMobilemessagingPlugin: NSObject, FlutterPlugin {
         } catch {
             return result(
                 FlutterError( code: "errorSerializingResult",
-                              message: "Error while serializing result Data",
-                              details: "Error while serializing result Data" ))
+                              message: "Error while serializing Result Data",
+                              details: "Error while serializing Result Data" ))
         }
     }
     

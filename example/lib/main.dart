@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'dart:async';
 
@@ -9,6 +11,8 @@ import 'package:infobip_mobilemessaging/models/UserData.dart';
 import 'package:infobip_mobilemessaging/models/Installation.dart';
 import 'package:infobip_mobilemessaging/models/LibraryEvent.dart';
 import 'package:infobip_mobilemessaging/models/Message.dart';
+import 'screen_one.dart';
+import 'screen_two.dart';
 import 'sign_in_http.dart';
 import 'package:infobip_mobilemessaging/models/PersonalizeContext.dart';
 
@@ -22,6 +26,16 @@ final pages = [
     route: '/signin_http',
     builder: (context) => SignInHttpDemo(),
   ),
+  Page(
+    name: 'screen_one',
+    route: '/screen_one',
+    builder: (context) => ScreenOneDemo(),
+  ),
+  Page(
+    name: 'screen_two',
+    route: '/screen_two',
+    builder: (context) => ScreenTwoDemo(),
+  )
 ];
 
 class MyApp extends StatefulWidget {
@@ -30,6 +44,20 @@ class MyApp extends StatefulWidget {
   @override
   _MyAppState createState() => _MyAppState();
 }
+
+final GlobalKey<NavigatorState> navigatorKey = new GlobalKey<NavigatorState>();
+
+handleDeeplinkEvent(Message message) {
+  if (message.deeplink != null) {
+    Uri uri = Uri.parse(message.deeplink.toString());
+    List<String> pathSegments = uri.pathSegments;
+    for (var pathSegment in pathSegments) {
+      navigatorKey.currentState.pushNamed('/' + pathSegment);
+    }
+  }
+}
+
+var storedFunction = (Message message) => handleDeeplinkEvent(message);
 
 class _MyAppState extends State<MyApp> {
   @override
@@ -47,8 +75,8 @@ class _MyAppState extends State<MyApp> {
 
     await InfobipMobilemessaging.init(Configuration(
         applicationCode: "Your Application Code",
-        inAppChatEnabled: true,
         androidSettings: AndroidSettings(firebaseSenderId: "Your Firebase ID"),
+        inAppChatEnabled: true,
         iosSettings: IOSSettings(
             notificationTypes: ["alert", "badge", "sound"],
             forceCleanup: false,
@@ -105,11 +133,12 @@ class _MyAppState extends State<MyApp> {
                   event.toString()),
               _HomePageState.addLibraryEvent("Notification Action Tapped")
             });
+
     InfobipMobilemessaging.on(
         LibraryEvent.NOTIFICATION_TAPPED,
         (Message message) => {
               print(
-                  "Callback. NOTIFICATION_TAPPED event:" + message.toString()),
+                  'Callback. NOTIFICATION_TAPPED event: ' + message.toString()),
               _HomePageState.addLibraryEvent("Notification Tapped"),
               if (message.chat) {print('Chat Message Tapped')}
             });
@@ -125,9 +154,16 @@ class _MyAppState extends State<MyApp> {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Form Samples',
-      theme: ThemeData(primarySwatch: Colors.teal),
       routes: Map.fromEntries(pages.map((d) => MapEntry(d.route, d.builder))),
       home: HomePage(),
+      navigatorKey: navigatorKey,
+      theme: ThemeData(
+          primarySwatch: Colors.deepOrange,
+          pageTransitionsTheme: const PageTransitionsTheme(
+              builders: <TargetPlatform, PageTransitionsBuilder>{
+                TargetPlatform.android: FadeUpwardsPageTransitionsBuilder(),
+                TargetPlatform.iOS: CupertinoPageTransitionsBuilder(),
+              })),
     );
   }
 }
@@ -204,7 +240,7 @@ class _HomePageState extends State<HomePage> {
           ListTile(
               title: Text('Save User Data'),
               onTap: () {
-                InfobipMobilemessaging.saveUser(UserData(
+                UserData user = UserData(
                     externalUserId: null,
                     firstName: null,
                     lastName: null,
@@ -212,8 +248,21 @@ class _HomePageState extends State<HomePage> {
                     //gender: Gender.Male,
                     birthday: null,
                     //phones: ['79123456789'],
-                    //emails: ['some.email@gmail.com'],
-                    tags: []));
+                    //emails: ['some.email@email.com'],
+                    tags: [],
+                    customAttributes: {
+                      'alList': [
+                        {
+                          'alDate': '2021-10-11',
+                          'alWhole': 2,
+                          'alString': 'someAnotherString',
+                          'alBoolean': true,
+                          'alDecimal': 0.66
+                        }
+                      ]
+                    });
+                print(user.toJson());
+                InfobipMobilemessaging.saveUser(user);
               }),
           ListTile(
               title: Text('Get User Data'),
@@ -277,14 +326,34 @@ class _HomePageState extends State<HomePage> {
               onTap: () {
                 print("Trying to send event");
                 InfobipMobilemessaging.submitEvent({
-                  "definitionId": "alEvent1",
-                  "properties": {
-                    "alEvent1String": "SomeString",
-                    "alEvent1Number": 12345,
-                    "alEvent1Boolean": true,
-                    "alEvent1Date": "2021-10-19"
+                  'definitionId': 'alEvent1',
+                  'properties': {
+                    'alEvent1String': 'SomeString',
+                    'alEvent1Number': 12345,
+                    'alEvent1Boolean': true,
+                    'alEvent1Date': '2021-10-19'
                   }
                 });
+              }),
+          ListTile(
+              title: Text('Register Deeplink on Tap'),
+              onTap: () {
+                print('Tile "Register Deeplink on Tap" tapped');
+                InfobipMobilemessaging.on('notificationTapped', storedFunction);
+              }),
+          ListTile(
+              title: Text('Unregister Deeplink on Tap'),
+              onTap: () {
+                print('Tile "Unregister Deeplink on Tap" tapped');
+                InfobipMobilemessaging.unregister(
+                    LibraryEvent.NOTIFICATION_TAPPED, storedFunction);
+              }),
+          ListTile(
+              title: Text('Unregister All Handlers'),
+              onTap: () {
+                print('Tile "Unregister All Handlers" tapped');
+                InfobipMobilemessaging.unregisterAllHandlers(
+                    'notificationTapped');
               }),
         ],
       ),

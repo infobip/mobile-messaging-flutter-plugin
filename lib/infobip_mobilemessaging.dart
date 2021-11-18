@@ -66,6 +66,23 @@ class InfobipMobilemessaging {
     _libraryEventSubscription.resume();
   }
 
+  static Future<void> unregister(String eventName, Function? callack) async {
+    if (callbacks.containsKey(eventName)){
+      var existed = callbacks[eventName];
+      existed?.remove(callack);
+      callbacks.remove(eventName);
+      callbacks.putIfAbsent(eventName, () => existed);
+    }
+    _libraryEventSubscription.resume();
+  }
+
+  static Future<void> unregisterAllHandlers(String eventName) async {
+    if (callbacks.containsKey(eventName)){
+      callbacks.removeWhere((key, value) => key == eventName);
+    }
+    _libraryEventSubscription.resume();
+  }
+
   static Future<void> init(Configuration configuration) async {
     PackageInfo packageInfo = await PackageInfo.fromPlatform();
     configuration.pluginVersion = packageInfo.version;

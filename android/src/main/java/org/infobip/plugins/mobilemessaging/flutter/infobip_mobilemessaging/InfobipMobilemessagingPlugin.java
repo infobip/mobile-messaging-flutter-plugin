@@ -408,7 +408,7 @@ public class InfobipMobilemessagingPlugin implements FlutterPlugin, MethodCallHa
       }
 
       if (eventSink != null) {
-        Log.d(TAG, "Send  event to flutter: " + event);
+        Log.d(TAG, "Send event to Flutter: " + event);
         eventSink.success(eventData.toString());
       } else {
         Log.d(TAG, "add event to cached: " + event);
@@ -434,7 +434,7 @@ public class InfobipMobilemessagingPlugin implements FlutterPlugin, MethodCallHa
       }
 
       if (eventSink != null) {
-        Log.d(TAG, "Send  event to flutter: " + event);
+        Log.d(TAG, "Send event to Flutter: " + event);
         eventSink.success(eventData.toString());
       } else {
         Log.d(TAG, "add event to cached: " + event);
@@ -453,13 +453,12 @@ public class InfobipMobilemessagingPlugin implements FlutterPlugin, MethodCallHa
 
   /*User Profile Management*/
 
-  // public void saveUser(ReadableMap args, final Callback successCallback, final Callback errorCallback) throws JSONException {
   public void saveUser(MethodCall call, final MethodChannel.Result result) {
     try {
-      //final User user = UserJson.resolveUser(ReactNativeJson.convertMapToJson(args));
-      final User user = new Gson().fromJson(call.arguments.toString(), User.class);
+      JSONObject jsonObject = new JSONObject(call.arguments.toString());
+      final User user = UserJson.resolveUser(jsonObject);
       mobileMessaging().saveUser(user, userResultListener(result));
-    } catch (IllegalArgumentException e) {
+    } catch (IllegalArgumentException | JSONException e) {
       result.error(ErrorCodes.SAVE_USER.getErrorCode(), e.getMessage(), e.getLocalizedMessage());
     }
   }
@@ -488,8 +487,14 @@ public class InfobipMobilemessagingPlugin implements FlutterPlugin, MethodCallHa
   }
 
   public void saveInstallation(MethodCall call, final MethodChannel.Result result) {
-    final Installation installation = new Gson().fromJson(call.arguments.toString(), Installation.class);
-    mobileMessaging().saveInstallation(installation, installationResultListener(result));
+    try {
+      JSONObject jsonObject = new JSONObject(call.arguments.toString());
+      final Installation installation = InstallationJson.resolveInstallation(jsonObject);
+      mobileMessaging().saveInstallation(installation, installationResultListener(result));
+    } catch (JSONException e) {
+      Log.w(TAG, e.getMessage(), e);
+      result.error(ErrorCodes.SAVE_INSTALLATION.getErrorCode(), e.getMessage(), e.getLocalizedMessage());
+    }
   }
 
   public void fetchInstallation(final MethodChannel.Result result) {
