@@ -28,12 +28,10 @@ android {
 
     defaultConfig {
         minSdkVersion 16
-        multiDexEnabled true
     }
 }
 
 dependencies {
-    implementation "androidx.multidex:multidex:2.0.1"
     implementation ('com.infobip:infobip-mobile-messaging-android-sdk:5.3.5@aar') {
         transitive = true
     }
