@@ -72,7 +72,7 @@ packages:
     source: hosted
     version: "9.0.2"
   firebase_analytics:
-    dependency: transitive
+    dependency: "direct main"
     description:
       name: firebase_analytics
       url: "https://pub.dartlang.org"
@@ -93,7 +93,7 @@ packages:
     source: hosted
     version: "0.3.0+1"
   firebase_core:
-    dependency: transitive
+    dependency: "direct main"
     description:
       name: firebase_core
       url: "https://pub.dartlang.org"
@@ -114,7 +114,7 @@ packages:
     source: hosted
     version: "1.2.0"
   firebase_performance:
-    dependency: transitive
+    dependency: "direct main"
     description:
       name: firebase_performance
       url: "https://pub.dartlang.org"
@@ -169,7 +169,7 @@ packages:
       path: ".."
       relative: true
     source: path
-    version: "0.4.1"
+    version: "0.4.2"
   js:
     dependency: transitive
     description:
