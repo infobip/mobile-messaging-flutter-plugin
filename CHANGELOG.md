@@ -48,3 +48,6 @@
 
 ## 0.4.1
 * Fixed support for lists in customAttributes for Installation and User classes on Android
+
+## 0.4.2
+* Update Android SDK
