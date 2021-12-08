@@ -30,8 +30,9 @@ android {
     defaultConfig {
         // TODO: Specify your own unique Application ID (https://developer.android.com/studio/build/application-id.html).
         applicationId "org.infobip.plugins.mobilemessaging.flutter.infobip_mobilemessaging_example"
-        minSdkVersion 16
+        minSdkVersion 19
         targetSdkVersion 30
+        multiDexEnabled true
         versionCode flutterVersionCode.toInteger()
         versionName flutterVersionName
     }
@@ -45,6 +46,14 @@ android {
     }
 }
 
+dependencies {
+    implementation "androidx.multidex:multidex:2.0.1"
+    implementation 'com.google.firebase:firebase-iid'
+    implementation 'com.google.android.gms:play-services-basement:17.6.0'
+}
+
 flutter {
     source '../..'
 }
+
+apply plugin: 'com.google.gms.google-services'
