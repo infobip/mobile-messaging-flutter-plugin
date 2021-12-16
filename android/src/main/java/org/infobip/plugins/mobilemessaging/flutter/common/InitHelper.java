@@ -14,6 +14,7 @@ import org.infobip.mobile.messaging.app.ActivityLifecycleMonitor;
 import org.infobip.mobile.messaging.interactive.NotificationAction;
 import org.infobip.mobile.messaging.interactive.NotificationCategory;
 import org.infobip.mobile.messaging.chat.InAppChat;
+import org.infobip.mobile.messaging.storage.SQLiteMessageStore;
 
 import java.util.List;
 
@@ -44,6 +45,10 @@ public class InitHelper {
             if (configuration.getPrivacySettings().isSystemInfoSendingDisabled()) {
                 builder.withoutSystemInfo();
             }
+        }
+
+        if (configuration.defaultMessageStorage) {
+            builder.withMessageStore(SQLiteMessageStore.class);
         }
 
         // Notification

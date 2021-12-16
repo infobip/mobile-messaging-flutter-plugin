@@ -101,6 +101,18 @@ public class SwiftInfobipMobilemessagingPlugin: NSObject, FlutterPlugin {
             getMessageCounter(call: call, result: result)
         } else if call.method == "resetMessageCounter" {
             resetMessageCounter()
+        } else if call.method == "defaultMessageStorage_find" {
+            defaultMessageStorage_find(call: call, result: result)
+        } else if call.method == "defaultMessageStorage_findAll" {
+            defaultMessageStorage_findAll(result: result)
+        } else if call.method == "defaultMessageStorage_delete" {
+            defaultMessageStorage_delete(call: call, result: result)
+        } else if call.method == "defaultMessageStorage_deleteAll" {
+            defaultMessageStorage_deleteAll(result: result)
+        } else {
+            result(FlutterError( code: "NotImplemented",
+                          message: "Error NotImplemented",
+                          details: "Error NotImplemented" ))
         }
     }
     
@@ -137,14 +149,17 @@ public class SwiftInfobipMobilemessagingPlugin: NSObject, FlutterPlugin {
         if let webViewSettings = configuration.webViewSettings {
             mobileMessaging?.webViewSettings.configureWith(rawConfig: webViewSettings)
         }
-        
+ 
         MobileMessaging.userAgent.pluginVersion = "flutter \(configuration.pluginVersion)"
         if (configuration.logging) {
             MobileMessaging.logger = MMDefaultLogger()
         }
         
+        if configuration.defaultMessageStorage {
+            mobileMessaging = mobileMessaging?.withDefaultMessageStorage()
+        }
+        
         mobileMessaging?.start()
-        MobileMessaging.sync()
     }
     
     func saveUser(call: FlutterMethodCall, result: @escaping FlutterResult) {
@@ -165,7 +180,7 @@ public class SwiftInfobipMobilemessagingPlugin: NSObject, FlutterPlugin {
                                   message: error.mm_message,
                                   details: error.description ))
             } else {
-                return self.dictionaryResulut(result: result, dict: MobileMessaging.getUser()?.dictionaryRepresentation)
+                return self.dictionaryResult(result: result, dict: MobileMessaging.getUser()?.dictionaryRepresentation)
             }
         })
     }
@@ -178,13 +193,13 @@ public class SwiftInfobipMobilemessagingPlugin: NSObject, FlutterPlugin {
                                   message: error.mm_message,
                                   details: error.description ))
             } else {
-                return self.dictionaryResulut(result: result, dict: MobileMessaging.getUser()?.dictionaryRepresentation)
+                return self.dictionaryResult(result: result, dict: MobileMessaging.getUser()?.dictionaryRepresentation)
             }
         })
     }
     
     func getUser(result: @escaping FlutterResult) {
-        return self.dictionaryResulut(result: result, dict: MobileMessaging.getUser()?.dictionaryRepresentation)
+        return self.dictionaryResult(result: result, dict: MobileMessaging.getUser()?.dictionaryRepresentation)
     }
     
     func saveInstallation(call: FlutterMethodCall, result: @escaping FlutterResult) {
@@ -205,7 +220,7 @@ public class SwiftInfobipMobilemessagingPlugin: NSObject, FlutterPlugin {
                                   message: error.mm_message,
                                   details: error.description ))
             } else {
-                return self.dictionaryResulut(result: result, dict: MobileMessaging.getInstallation()?.dictionaryRepresentation)
+                return self.dictionaryResult(result: result, dict: MobileMessaging.getInstallation()?.dictionaryRepresentation)
             }
         })
     }
@@ -218,13 +233,13 @@ public class SwiftInfobipMobilemessagingPlugin: NSObject, FlutterPlugin {
                                   message: error.mm_message,
                                   details: error.description ))
             } else {
-                return self.dictionaryResulut(result: result, dict: installation?.dictionaryRepresentation)
+                return self.dictionaryResult(result: result, dict: installation?.dictionaryRepresentation)
             }
         })
     }
     
     func getInstallation(result: @escaping FlutterResult) {
-        return self.dictionaryResulut(result: result, dict: MobileMessaging.getInstallation()?.dictionaryRepresentation)
+        return self.dictionaryResult(result: result, dict: MobileMessaging.getInstallation()?.dictionaryRepresentation)
     }
     
     func setInstallationAsPrimary(call: FlutterMethodCall, result: @escaping FlutterResult) {
@@ -286,7 +301,7 @@ public class SwiftInfobipMobilemessagingPlugin: NSObject, FlutterPlugin {
                                   message: error.mm_message,
                                   details: error.description ))
             } else {
-                return self.dictionaryResulut(result: result, dict: MobileMessaging.getUser()?.dictionaryRepresentation)
+                return self.dictionaryResult(result: result, dict: MobileMessaging.getUser()?.dictionaryRepresentation)
             }
         }
     }
@@ -403,10 +418,86 @@ public class SwiftInfobipMobilemessagingPlugin: NSObject, FlutterPlugin {
     }
     
     
-    private func dictionaryResulut(result: @escaping FlutterResult, dict: DictionaryRepresentation?) {
+    func defaultMessageStorage_find(call: FlutterMethodCall, result: @escaping FlutterResult) {
+        guard let messageId = call.arguments as? String else
+        {
+            return result(
+                FlutterError( code: "invalidMessageId",
+                              message: "Error parsing messageId Data",
+                              details: "Error parsing messageId Data" ))
+        }
+        
+        guard let storage = MobileMessaging.defaultMessageStorage else {
+            return result(
+              FlutterError( code: "invalidMessageStorage",
+                            message: "Error fetching MessageStorage",
+                            details: "Error fetching MessageStorage" ))
+        }
+
+        storage.findMessages(withIds: [(messageId as MessageId)], completion: { messages in
+            let res = [messages?[0].dictionary() ?? [:]]
+            return self.dictionaryResult(result: result, dict: res)
+        })
+    }
+
+    func defaultMessageStorage_findAll(result: @escaping FlutterResult) {
+        guard let storage = MobileMessaging.defaultMessageStorage else {
+            return result(
+              FlutterError( code: "invalidMessageStorage",
+                            message: "Error fetching MessageStorage",
+                            details: "Error fetching MessageStorage" ))
+        }
+
+        storage.findAllMessages(completion: { messages in
+            let res = messages?.map({$0.dictionary()})
+            return self.dictionaryResult(result: result, dict: res ?? [])
+        })
+    }
+
+    func defaultMessageStorage_delete(call: FlutterMethodCall, result: @escaping FlutterResult) {
+        guard let messageId = call.arguments as? String else
+        {
+            return result(
+                FlutterError( code: "invalidMessageId",
+                              message: "Error parsing messageId Data",
+                              details: "Error parsing messageId Data" ))
+        }
+        
+        guard let storage = MobileMessaging.defaultMessageStorage else {
+            return result(
+              FlutterError( code: "invalidMessageStorage",
+                            message: "Error fetching MessageStorage",
+                            details: "Error fetching MessageStorage" ))
+        }
+
+        storage.remove(withIds: [(messageId as MessageId)]) { _ in
+            return result("success")
+        }
+    }
+
+    func defaultMessageStorage_deleteAll(result: @escaping FlutterResult) {
+        MobileMessaging.defaultMessageStorage?.removeAllMessages() { _ in
+            return result("success")
+        }
+    }
+    
+    private func dictionaryResult(result: @escaping FlutterResult, dict: DictionaryRepresentation?) {
         do {
             return result(String(data:
                                     try JSONSerialization.data(withJSONObject: dict ?? [:]),
+                                 encoding: String.Encoding.utf8))
+        } catch {
+            return result(
+                FlutterError( code: "errorSerializingResult",
+                              message: "Error while serializing Result Data",
+                              details: "Error while serializing Result Data" ))
+        }
+    }
+    
+    private func dictionaryResult(result: @escaping FlutterResult, dict: [[String: Any]]) {
+        do {
+            return result(String(data:
+                                    try JSONSerialization.data(withJSONObject: dict),
                                  encoding: String.Encoding.utf8))
         } catch {
             return result(

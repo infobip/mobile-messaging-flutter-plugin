@@ -20,9 +20,8 @@ class Configuration {
         static let inAppChatEnabled = "inAppChatEnabled"
         static let forceCleanup = "forceCleanup"
         static let logging = "logging"
-        // static let defaultMessageStorage = "defaultMessageStorage"
+        static let defaultMessageStorage = "defaultMessageStorage"
         static let notificationTypes = "notificationTypes"
-        // static let messageStorage = "messageStorage"
         static let pluginVersion = "pluginVersion"
         static let notificationCategories = "notificationCategories"
         static let webViewSettings = "webViewSettings"
@@ -32,7 +31,7 @@ class Configuration {
     // let geofencingEnabled: Bool
     let inAppChatEnabled: Bool
     // let messageStorageEnabled: Bool
-    // let defaultMessageStorage: Bool
+    let defaultMessageStorage: Bool
     let notificationType: MMUserNotificationType
     let forceCleanup: Bool
     let logging: Bool
@@ -44,9 +43,9 @@ class Configuration {
     init?(rawConfig: [String: AnyObject]) {
         guard let appCode = rawConfig[Configuration.Keys.applicationCode] as? String,
               let ios = rawConfig["iosSettings"] as? [String: AnyObject] else
-              {
-                  return nil
-              }
+        {
+            return nil
+        }
         
         self.appCode = appCode
         self.inAppChatEnabled = rawConfig[Configuration.Keys.inAppChatEnabled].unwrap(orDefault: false)
@@ -66,6 +65,8 @@ class Configuration {
         }
         
         self.pluginVersion = rawConfig[Configuration.Keys.pluginVersion].unwrap(orDefault: "unknown")
+        
+        self.defaultMessageStorage = rawConfig[Configuration.Keys.defaultMessageStorage].unwrap(orDefault: false)
         
         self.categories = (rawConfig[Configuration.Keys.notificationCategories] as? [[String: Any]])?.compactMap(MMNotificationCategory.init)
         

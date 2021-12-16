@@ -51,3 +51,6 @@
 
 ## 0.4.2
 * Update Android SDK
+
+## 0.5.0
+* Added Default MessageStorage support

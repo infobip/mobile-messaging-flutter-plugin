@@ -16,6 +16,8 @@ public class Configuration {
 
     List<NotificationCategory> notificationCategories;
 
+    boolean defaultMessageStorage;
+
     public class AndroidSettings {
         /// The firebase sender ID of your Application
         String firebaseSenderId;

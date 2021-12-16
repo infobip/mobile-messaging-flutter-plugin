@@ -27,24 +27,24 @@ class Installation {
 
   Installation(
       {this.pushRegistrationId,
-      this.pushServiceType,
-      this.pushServiceToken,
-      this.isPrimaryDevice,
-      this.isPushRegistrationEnabled,
-      this.notificationsEnabled,
-      this.geoEnabled,
-      this.sdkVersion,
-      this.appVersion,
-      this.os,
-      this.osVersion,
-      this.deviceManufacturer,
-      this.deviceModel,
-      this.deviceSecure,
-      this.language,
-      this.deviceTimezoneOffset,
-      this.applicationUserId,
-      this.deviceName,
-      this.customAttributes});
+        this.pushServiceType,
+        this.pushServiceToken,
+        this.isPrimaryDevice,
+        this.isPushRegistrationEnabled,
+        this.notificationsEnabled,
+        this.geoEnabled,
+        this.sdkVersion,
+        this.appVersion,
+        this.os,
+        this.osVersion,
+        this.deviceManufacturer,
+        this.deviceModel,
+        this.deviceSecure,
+        this.language,
+        this.deviceTimezoneOffset,
+        this.applicationUserId,
+        this.deviceName,
+        this.customAttributes});
 
   static PushServiceType? resolvePushServiceType(String? pst) {
     if (pst == null) {
@@ -70,27 +70,27 @@ class Installation {
   }
 
   Map<String, dynamic> toJson() => {
-        'pushRegistrationId': pushRegistrationId,
-        'pushServiceToken': pushServiceToken,
-        'pushServiceType':
-            pushServiceType != null ? describeEnum(pushServiceType!) : null,
-        'isPrimaryDevice': isPrimaryDevice,
-        'isPushRegistrationEnabled': isPushRegistrationEnabled,
-        'notificationsEnabled': notificationsEnabled,
-        'geoEnabled': geoEnabled,
-        'sdkVersion': sdkVersion,
-        'appVersion': appVersion,
-        'os': os != null ? describeEnum(os!) : null,
-        'osVersion': osVersion,
-        'deviceManufacturer': deviceManufacturer,
-        'deviceModel': deviceModel,
-        'deviceSecure': deviceSecure,
-        'language': language,
-        'deviceTimezoneOffset': deviceTimezoneOffset,
-        'applicationUserId': applicationUserId,
-        'deviceName': deviceName,
-        'customAttributes': customAttributes,
-      };
+    'pushRegistrationId': pushRegistrationId,
+    'pushServiceToken': pushServiceToken,
+    'pushServiceType':
+    pushServiceType != null ? describeEnum(pushServiceType!) : null,
+    'isPrimaryDevice': isPrimaryDevice,
+    'isPushRegistrationEnabled': isPushRegistrationEnabled,
+    'notificationsEnabled': notificationsEnabled,
+    'geoEnabled': geoEnabled,
+    'sdkVersion': sdkVersion,
+    'appVersion': appVersion,
+    'os': os != null ? describeEnum(os!) : null,
+    'osVersion': osVersion,
+    'deviceManufacturer': deviceManufacturer,
+    'deviceModel': deviceModel,
+    'deviceSecure': deviceSecure,
+    'language': language,
+    'deviceTimezoneOffset': deviceTimezoneOffset,
+    'applicationUserId': applicationUserId,
+    'deviceName': deviceName,
+    'customAttributes': customAttributes,
+  };
 
   Installation.fromJson(Map<String, dynamic> json)
       : isPrimaryDevice = json['isPrimaryDevice'],

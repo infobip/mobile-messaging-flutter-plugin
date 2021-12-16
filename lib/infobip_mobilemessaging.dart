@@ -3,6 +3,7 @@ import 'dart:collection';
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/services.dart';
 import 'package:infobip_mobilemessaging/models/Installation.dart';
 import 'package:infobip_mobilemessaging/models/PersonalizeContext.dart';
@@ -13,6 +14,7 @@ import 'models/Configuration.dart';
 import 'models/IOSChatSettings.dart';
 import 'models/LibraryEvent.dart';
 import 'models/Message.dart';
+import 'models/MessageStorage.dart';
 
 class InfobipMobilemessaging {
   static const MethodChannel _channel =
@@ -55,6 +57,10 @@ class InfobipMobilemessaging {
 
   static Map<String, List<Function>?> callbacks = new HashMap();
 
+  static Configuration? _configuration;
+
+  static MessageStorage? _defaultMessageStorage;
+
   static Future<void> on(String eventName, Function callack) async {
     if (callbacks.containsKey(eventName)) {
       var existed = callbacks[eventName];
@@ -84,6 +90,8 @@ class InfobipMobilemessaging {
   }
 
   static Future<void> init(Configuration configuration) async {
+    InfobipMobilemessaging._configuration = configuration;
+
     PackageInfo packageInfo = await PackageInfo.fromPlatform();
     configuration.pluginVersion = packageInfo.version;
     await _channel.invokeMethod('init', jsonEncode(configuration.toJson()));
@@ -163,4 +171,59 @@ class InfobipMobilemessaging {
   static void resetMessageCounter() async {
     await _channel.invokeMethod('resetMessageCounter');
   }
+
+  static MessageStorage? defaultMessageStorage() {
+
+    if (_configuration == null) {
+      return null;
+    }
+    if (_configuration?.defaultMessageStorage == null) {
+      return null;
+    }
+    if (_configuration?.defaultMessageStorage == false) {
+      return null;
+    }
+
+    if (_defaultMessageStorage == null) {
+      _defaultMessageStorage = new _DefaultMessageStorage();
+    }
+
+    return _defaultMessageStorage;
+  }
+
 }
+
+class _DefaultMessageStorage extends MessageStorage {
+
+  late MethodChannel _channel;
+
+  constructor(MethodChannel channel ) {
+    _channel = channel;
+  }
+
+  @override
+  delete(String messageId) async {
+    await _channel.invokeMethod('defaultMessageStorage_delete', messageId);
+  }
+
+  @override
+  deleteAll() async {
+    await _channel.invokeMethod('defaultMessageStorage_deleteAll');
+  }
+
+  @override
+  Future<Message?> find(String messageId) async {
+    return Message.fromJson(jsonDecode(await _channel.invokeMethod('defaultMessageStorage_find', messageId)));
+  }
+
+  @override
+  Future<List<Message>?> findAll() async {
+    String result = await _channel.invokeMethod('defaultMessageStorage_findAll');
+    Iterable l = json.decode(result);
+    return List<Message>.from(l.map((model)=> Message.fromJson(model)));
+  }
+
+}
+
+
+

@@ -1,4 +1,6 @@
 
+import 'package:infobip_mobilemessaging/models/MessageStorage.dart';
+
 class Configuration {
   /// The application code of your Application from Push Portal website
   final String applicationCode;
@@ -15,6 +17,8 @@ class Configuration {
 
   final List<NotificationCategory>? notificationCategories;
 
+  final bool? defaultMessageStorage;
+
   Configuration({
     required this.applicationCode,
     this.pluginVersion,
@@ -22,7 +26,8 @@ class Configuration {
     this.androidSettings,
     this.iosSettings,
     this.privacySettings,
-    this.notificationCategories
+    this.notificationCategories,
+    this.defaultMessageStorage,
   });
 
   Map<String, dynamic> toJson() {
@@ -33,7 +38,8 @@ class Configuration {
       'androidSettings': (this.androidSettings !=null)? this.androidSettings!.toJson() : null,
       'iosSettings': (this.iosSettings !=null)? this.iosSettings!.toJson(): null,
       'privacySettings': (this.privacySettings !=null)? this.privacySettings!.toJson() : null,
-      'notificationCategories': (this.notificationCategories !=null)? this.notificationCategories!.map((e) => e.toJson()) : null
+      'notificationCategories': (this.notificationCategories !=null)? this.notificationCategories!.map((e) => e.toJson()) : null,
+      'defaultMessageStorage': defaultMessageStorage
     };
   }
 }

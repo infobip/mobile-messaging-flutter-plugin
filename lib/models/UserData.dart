@@ -16,15 +16,15 @@ class UserData {
 
   UserData(
       {this.externalUserId,
-      this.firstName,
-      this.lastName,
-      this.middleName,
-      this.gender,
-      this.birthday,
-      this.phones,
-      this.emails,
-      this.tags,
-      this.customAttributes});
+        this.firstName,
+        this.lastName,
+        this.middleName,
+        this.gender,
+        this.birthday,
+        this.phones,
+        this.emails,
+        this.tags,
+        this.customAttributes});
 
   static Gender? resolveGender(String? str) {
     if (str == null) {
@@ -58,15 +58,15 @@ class UserData {
         customAttributes = json['customAttributes'];
 
   Map<String, dynamic> toJson() => {
-        'externalUserId': externalUserId,
-        'firstName': firstName,
-        'lastName': lastName,
-        'middleName': middleName,
-        'gender': gender != null ? describeEnum(gender!) : null,
-        'birthday': birthday,
-        'phones': phones,
-        'emails': emails,
-        'tags': tags,
-        'customAttributes': customAttributes
-      };
+    'externalUserId': externalUserId,
+    'firstName': firstName,
+    'lastName': lastName,
+    'middleName': middleName,
+    'gender': gender != null ? describeEnum(gender!) : null,
+    'birthday': birthday,
+    'phones': phones,
+    'emails': emails,
+    'tags': tags,
+    'customAttributes': customAttributes
+  };
 }

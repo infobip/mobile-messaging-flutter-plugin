@@ -58,7 +58,6 @@ handleDeeplinkEvent(Message message) {
 }
 
 var storedFunction = (Message message) => handleDeeplinkEvent(message);
-
 class _MyAppState extends State<MyApp> {
   @override
   void initState() {
@@ -75,8 +74,9 @@ class _MyAppState extends State<MyApp> {
 
     await InfobipMobilemessaging.init(Configuration(
         applicationCode: "Your Application Code",
-        androidSettings: AndroidSettings(firebaseSenderId: "Your Firebase ID"),
         inAppChatEnabled: true,
+        androidSettings: AndroidSettings(firebaseSenderId: "Your Firebase ID"),
+        defaultMessageStorage: true,
         iosSettings: IOSSettings(
             notificationTypes: ["alert", "badge", "sound"],
             forceCleanup: false,
@@ -100,7 +100,9 @@ class _MyAppState extends State<MyApp> {
                   message.title +
                   " body: " +
                   message.body),
-              _HomePageState.addLibraryEvent("Message Received")
+              _HomePageState.addLibraryEvent("Message Received"),
+              print("defaultMessageStorage().findAll():"),
+              print(InfobipMobilemessaging.defaultMessageStorage().findAll())
             });
     InfobipMobilemessaging.on(
         LibraryEvent.USER_UPDATED,
@@ -133,12 +135,11 @@ class _MyAppState extends State<MyApp> {
                   event.toString()),
               _HomePageState.addLibraryEvent("Notification Action Tapped")
             });
-
     InfobipMobilemessaging.on(
         LibraryEvent.NOTIFICATION_TAPPED,
         (Message message) => {
               print(
-                  'Callback. NOTIFICATION_TAPPED event: ' + message.toString()),
+                  "Callback. NOTIFICATION_TAPPED event:" + message.toString()),
               _HomePageState.addLibraryEvent("Notification Tapped"),
               if (message.chat) {print('Chat Message Tapped')}
             });

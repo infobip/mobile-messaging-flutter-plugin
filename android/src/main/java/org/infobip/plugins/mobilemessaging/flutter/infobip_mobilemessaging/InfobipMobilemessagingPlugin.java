@@ -38,6 +38,7 @@ import org.infobip.mobile.messaging.interactive.NotificationCategory;
 import org.infobip.mobile.messaging.mobileapi.InternalSdkError;
 import org.infobip.mobile.messaging.mobileapi.MobileMessagingError;
 import org.infobip.mobile.messaging.mobileapi.Result;
+import org.infobip.mobile.messaging.storage.MessageStore;
 import org.infobip.mobile.messaging.util.PreferenceHelper;
 import org.infobip.plugins.mobilemessaging.flutter.common.Configuration;
 import org.infobip.plugins.mobilemessaging.flutter.common.ErrorCodes;
@@ -45,6 +46,7 @@ import org.infobip.plugins.mobilemessaging.flutter.common.InitHelper;
 import org.infobip.plugins.mobilemessaging.flutter.common.InstallationJson;
 import org.infobip.plugins.mobilemessaging.flutter.common.PersonalizationCtx;
 import org.infobip.plugins.mobilemessaging.flutter.common.UserJson;
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -153,6 +155,18 @@ public class InfobipMobilemessagingPlugin implements FlutterPlugin, MethodCallHa
         break;
       case "resetMessageCounter":
         resetMessageCounter();
+        break;
+      case "defaultMessageStorage_find":
+        defaultMessageStorage_find(call, result);
+        break;
+      case "defaultMessageStorage_findAll":
+        defaultMessageStorage_findAll(result);
+        break;
+      case "defaultMessageStorage_delete":
+        defaultMessageStorage_delete(call, result);
+        break;
+      case "defaultMessageStorage_deleteAll":
+        defaultMessageStorage_deleteAll(result);
         break;
       default:
         result.notImplemented();
@@ -367,6 +381,24 @@ public class InfobipMobilemessagingPlugin implements FlutterPlugin, MethodCallHa
     }
   }
 
+  /**
+   * Creates array of json objects from list of messages
+   *
+   * @param messages list of messages
+   * @return array of jsons representing messages
+   */
+  private static JSONArray messagesToJSONArray(@NonNull Message messages[]) {
+    JSONArray array = new JSONArray();
+    for (Message message : messages) {
+      JSONObject json = messageToJSON(message);
+      if (json == null) {
+        continue;
+      }
+      array.put(json);
+    }
+    return array;
+  }
+
   public static class StreamHandler implements EventChannel.StreamHandler {
 
     private EventChannel.EventSink eventSink;
@@ -408,7 +440,7 @@ public class InfobipMobilemessagingPlugin implements FlutterPlugin, MethodCallHa
       }
 
       if (eventSink != null) {
-        Log.d(TAG, "Send event to Flutter: " + event);
+        Log.d(TAG, "Send  event to flutter: " + event);
         eventSink.success(eventData.toString());
       } else {
         Log.d(TAG, "add event to cached: " + event);
@@ -434,7 +466,7 @@ public class InfobipMobilemessagingPlugin implements FlutterPlugin, MethodCallHa
       }
 
       if (eventSink != null) {
-        Log.d(TAG, "Send event to Flutter: " + event);
+        Log.d(TAG, "Send  event to flutter: " + event);
         eventSink.success(eventData.toString());
       } else {
         Log.d(TAG, "add event to cached: " + event);
@@ -614,6 +646,63 @@ public class InfobipMobilemessagingPlugin implements FlutterPlugin, MethodCallHa
 
   private void resetMessageCounter() {
     InAppChat.getInstance(activity.getApplication()).resetMessageCounter();
+  }
+
+  private synchronized void defaultMessageStorage_find(MethodCall call, final MethodChannel.Result result) {
+    String messageId = call.argument("messageId");
+    MessageStore messageStore = MobileMessaging.getInstance(activity.getApplicationContext()).getMessageStore();
+    if (messageStore == null) {
+      result.error(ErrorCodes.MESSAGE_STORAGE_ERROR.getErrorCode(), "Message storage does not exist", null);
+      return;
+    }
+
+    for (Message m : messageStore.findAll(activity.getApplicationContext())) {
+      if (messageId.equals(m.getMessageId())) {
+        result.success(messageToJSON(m).toString());
+        return;
+      }
+    }
+    result.success(null);
+  }
+
+  private synchronized void defaultMessageStorage_findAll(final MethodChannel.Result result) {
+    MessageStore messageStore = MobileMessaging.getInstance(activity.getApplicationContext()).getMessageStore();
+    if (messageStore == null) {
+      result.error(ErrorCodes.MESSAGE_STORAGE_ERROR.getErrorCode(), "Message storage does not exist", null);
+      return;
+    }
+    List<Message> messages = messageStore.findAll(activity.getApplicationContext());
+    result.success(messagesToJSONArray(messages.toArray(new Message[messages.size()])));
+  }
+
+  private synchronized void defaultMessageStorage_delete(MethodCall call, final MethodChannel.Result result) {
+    String messageId = call.argument("messageId");
+    MessageStore messageStore = MobileMessaging.getInstance(activity.getApplicationContext()).getMessageStore();
+    if (messageStore == null) {
+      result.error(ErrorCodes.MESSAGE_STORAGE_ERROR.getErrorCode(), "Message storage does not exist", null);
+      return;
+    }
+
+    List<Message> messagesToKeep = new ArrayList<Message>();
+    for (Message m : messageStore.findAll(activity.getApplicationContext())) {
+      if (messageId.equals(m.getMessageId())) {
+        continue;
+      }
+      messagesToKeep.add(m);
+    }
+    messageStore.deleteAll(activity.getApplicationContext());
+    messageStore.save(activity.getApplicationContext(), messagesToKeep.toArray(new Message[messagesToKeep.size()]));
+    result.success(null);
+  }
+
+  private synchronized void defaultMessageStorage_deleteAll(final MethodChannel.Result result) {
+    MessageStore messageStore = MobileMessaging.getInstance(activity.getApplicationContext()).getMessageStore();
+    if (messageStore == null) {
+      result.error(ErrorCodes.MESSAGE_STORAGE_ERROR.getErrorCode(), "Message storage does not exist", null);
+      return;
+    }
+    messageStore.deleteAll(activity.getApplicationContext());
+    result.success(null);
   }
 
   @NonNull
