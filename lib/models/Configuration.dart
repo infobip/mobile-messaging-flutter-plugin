@@ -1,6 +1,4 @@
 
-import 'package:infobip_mobilemessaging/models/MessageStorage.dart';
-
 class Configuration {
   /// The application code of your Application from Push Portal website
   final String applicationCode;

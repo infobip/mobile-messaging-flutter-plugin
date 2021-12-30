@@ -1,3 +1,5 @@
+import 'package:flutter/foundation.dart';
+
 class Message {
   final String messageId;
   final String? title;
@@ -69,4 +71,57 @@ class Message {
         inAppOpenTitle = json['inAppOpenTitle'],
         inAppDismissTitle = json['inAppDismissTitle'],
         chat = json['chat'];
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is Message &&
+          runtimeType == other.runtimeType &&
+          messageId == other.messageId &&
+          title == other.title &&
+          body == other.body &&
+          sound == other.sound &&
+          vibrate == other.vibrate &&
+          icon == other.icon &&
+          silent == other.silent &&
+          category == other.category &&
+          mapEquals(customPayload, other.customPayload) &&
+          internalData == other.internalData &&
+          receivedTimestamp == other.receivedTimestamp &&
+          seenDate == other.seenDate &&
+          contentUrl == other.contentUrl &&
+          seen == other.seen &&
+          geo == other.geo &&
+          mapEquals(originalPayload, other.originalPayload) &&
+          browserUrl == other.browserUrl &&
+          deeplink == other.deeplink &&
+          webViewUrl == other.webViewUrl &&
+          inAppOpenTitle == other.inAppOpenTitle &&
+          inAppDismissTitle == other.inAppDismissTitle &&
+          chat == other.chat;
+
+  @override
+  int get hashCode =>
+      messageId.hashCode ^
+      title.hashCode ^
+      body.hashCode ^
+      sound.hashCode ^
+      vibrate.hashCode ^
+      icon.hashCode ^
+      silent.hashCode ^
+      category.hashCode ^
+      customPayload.hashCode ^
+      internalData.hashCode ^
+      receivedTimestamp.hashCode ^
+      seenDate.hashCode ^
+      contentUrl.hashCode ^
+      seen.hashCode ^
+      geo.hashCode ^
+      originalPayload.hashCode ^
+      browserUrl.hashCode ^
+      deeplink.hashCode ^
+      webViewUrl.hashCode ^
+      inAppOpenTitle.hashCode ^
+      inAppDismissTitle.hashCode ^
+      chat.hashCode;
 }

@@ -1,9 +1,6 @@
-import 'dart:convert';
-
 import 'package:flutter/material.dart';
 import 'dart:async';
 
-import 'package:flutter/services.dart';
 import 'package:infobip_mobilemessaging/models/IOSChatSettings.dart';
 import 'package:infobip_mobilemessaging/infobip_mobilemessaging.dart';
 import 'package:infobip_mobilemessaging/models/Configuration.dart';
@@ -14,7 +11,6 @@ import 'package:infobip_mobilemessaging/models/Message.dart';
 import 'screen_one.dart';
 import 'screen_two.dart';
 import 'sign_in_http.dart';
-import 'package:infobip_mobilemessaging/models/PersonalizeContext.dart';
 
 void main() async {
   runApp(MyApp());

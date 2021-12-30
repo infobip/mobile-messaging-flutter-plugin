@@ -11,17 +11,25 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:infobip_mobilemessaging_example/main.dart';
 
 void main() {
-  testWidgets('Verify Platform version', (WidgetTester tester) async {
+  testWidgets('Verify menu list', (WidgetTester tester) async {
     // Build our app and trigger a frame.
     await tester.pumpWidget(MyApp());
 
-    // Verify that platform version is retrieved.
-    expect(
-      find.byWidgetPredicate(
-        (Widget widget) => widget is Text &&
-                           widget.data.startsWith('Running on:'),
-      ),
-      findsOneWidget,
-    );
+    List<String> listItems = ["Personalize", "screen_one", "screen_two", "Depersonalize","Get Installation Data","Save User Data",
+      "Get User Data", "Depersonalize Installation", "Set Installation as Primary", "Show Library Events",
+      "Push Demo Application", "Send Event", "Register Deeplink on Tap", "Unregister Deeplink on Tap", "Unregister All Handlers",
+      "Show Chat"];
+
+    //find all text widgets
+    List<Widget> asd = tester.widgetList(find.byType(Text)).toList();
+    int n = 0;
+
+    //verify
+    asd.forEach((element) {
+      print("element.toString(): " + element.toString());
+      print("listItems[n].toString(): " + listItems[n].toString());
+      expect(element.toString().contains(listItems[n]), true, reason: "Not found");
+      n += 1;
+    });
   });
 }
