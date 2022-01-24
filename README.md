@@ -26,7 +26,7 @@ The document describes plugin integration steps for your Flutter project.
 
   ```yaml
   dependencies:
-      infobip_mobilemessaging: '^0.1.0'
+      infobip_mobilemessaging: '^0.5.1'
 
   ```
 

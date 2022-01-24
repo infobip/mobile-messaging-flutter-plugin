@@ -54,3 +54,6 @@
 
 ## 0.5.0
 * Added Default MessageStorage support
+
+## 0.5.1
+* Fixed obfuscation parameters for configuration
