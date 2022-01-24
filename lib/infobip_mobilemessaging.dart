@@ -94,6 +94,16 @@ class InfobipMobilemessaging {
 
     PackageInfo packageInfo = await PackageInfo.fromPlatform();
     configuration.pluginVersion = packageInfo.version;
+    print("configuration:");
+    print(configuration);
+    print("configuration.toJson()!!:");
+    print(configuration.toJson());
+    print("----");
+    if (_channel == null) {
+      print("!!!!!!!!!");
+    }
+    print("_channel: " + _channel.toString());
+    print("_channel.invokeMethod: " + _channel.invokeMethod.toString());
     await _channel.invokeMethod('init', jsonEncode(configuration.toJson()));
   }
 

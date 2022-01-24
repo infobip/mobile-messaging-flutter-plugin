@@ -1,5 +1,7 @@
 package org.infobip.plugins.mobilemessaging.flutter.common;
 
+import io.flutter.Log;
+
 import android.app.Activity;
 import android.content.Context;
 import android.content.res.Resources;
@@ -23,12 +25,16 @@ public class InitHelper {
     private final Configuration configuration;
     private final Activity activity;
 
+    private static final String TAG = "MobileMessagingFlutter";
+
     public InitHelper(Configuration configuration, Activity activity) {
         this.configuration = configuration;
         this.activity = activity;
     }
 
     public MobileMessaging.Builder configurationBuilder() {
+        Log.d(TAG, "configuration.getApplicationCode(): " + configuration.getApplicationCode());
+        System.out.println("configuration.getApplicationCode()2: " + configuration.getApplicationCode());
         MobileMessaging.Builder builder = new MobileMessaging
                 .Builder(activity.getApplication())
                 .withApplicationCode(configuration.getApplicationCode())

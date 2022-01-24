@@ -5,6 +5,7 @@
    <application
         android:label="infobip_mobilemessaging_example"
         android:icon="@mipmap/ic_launcher"
+        android:debuggable="true"
         android:requestLegacyExternalStorage="true">
         <activity
             android:name=".MainActivity"
