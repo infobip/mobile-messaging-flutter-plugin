@@ -29,6 +29,13 @@ android {
     defaultConfig {
         minSdkVersion 16
     }
+
+    buildTypes {
+        release {
+            // Applying ProGuard rules for application classes that will be serialized/deserialized over Gson
+            consumerProguardFiles 'infobip-mm-proguard-rules.pro'
+        }
+    }
 }
 
 dependencies {

@@ -102,7 +102,7 @@ class InfobipMobilemessaging {
   }
 
   static Future<UserData> fetchUser() async {
-    return UserData.fromJson(await _channel.invokeMethod('fetchUser'));
+    return UserData.fromJson(jsonDecode(await _channel.invokeMethod('fetchUser')));
   }
 
   static Future<UserData> getUser() async {

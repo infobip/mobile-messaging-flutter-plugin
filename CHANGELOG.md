@@ -57,3 +57,6 @@
 
 ## 0.5.1
 * Fixed obfuscation parameters for configuration
+
+## 0.5.2
+* Added ProGuard rules

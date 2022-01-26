@@ -6,40 +6,19 @@ import java.util.List;
 
 public class Configuration {
     /// The application code of your Application from Push Portal website
-    @SerializedName("applicationCode")
     String applicationCode;
-
-    @SerializedName("pluginVersion")
     String pluginVersion = "unknown";
-
-    @SerializedName("inAppChatEnabled")
     boolean inAppChatEnabled;
-
-    @SerializedName("androidSettings")
     AndroidSettings androidSettings;
-
-    @SerializedName("privacySettings")
     PrivacySettings privacySettings;
-
-    @SerializedName("notificationCategories")
     List<NotificationCategory> notificationCategories;
-
-    @SerializedName("defaultMessageStorage")
     boolean defaultMessageStorage;
 
     public class AndroidSettings {
         /// The firebase sender ID of your Application
-        @SerializedName("firebaseSenderId")
         String firebaseSenderId;
-
-        // A resource name for a status bar icon (without extension), located in '/platforms/android/app/src/main/res/mipmap'
-        @SerializedName("notificationIcon")
         String notificationIcon;
-
-        @SerializedName("multipleNotifications")
         boolean multipleNotifications;
-
-        @SerializedName("notificationAccentColor")
         String notificationAccentColor;
 
         public String getFirebaseSenderId() {
@@ -76,16 +55,9 @@ public class Configuration {
     }
 
     public class PrivacySettings {
-        @SerializedName("applicationCodePersistingDisabled")
         boolean applicationCodePersistingDisabled;
-
-        @SerializedName("userDataPersistingDisabled")
         boolean userDataPersistingDisabled;
-
-        @SerializedName("carrierInfoSendingDisabled")
         boolean carrierInfoSendingDisabled;
-
-        @SerializedName("systemInfoSendingDisabled")
         boolean systemInfoSendingDisabled;
 
         public boolean isApplicationCodePersistingDisabled() {
