@@ -105,7 +105,7 @@ public class InfobipMobilemessagingPlugin implements FlutterPlugin, MethodCallHa
 
   @Override
   public void onMethodCall(@NonNull MethodCall call, @NonNull MethodChannel.Result result) {
-    Log.d(TAG, "onMethodCall");
+    Log.d(TAG, "onMethodCall: " + call.method.toString());
     Log.i(TAG, "activity: " + activity.toString());
     switch (call.method) {
       case "init":
@@ -168,6 +168,9 @@ public class InfobipMobilemessagingPlugin implements FlutterPlugin, MethodCallHa
       case "defaultMessageStorage_deleteAll":
         defaultMessageStorage_deleteAll(result);
         break;
+      case "setLanguage":
+        setLanguage(call, result);
+      break;
       default:
         result.notImplemented();
         break;
@@ -646,6 +649,15 @@ public class InfobipMobilemessagingPlugin implements FlutterPlugin, MethodCallHa
 
   private void resetMessageCounter() {
     InAppChat.getInstance(activity.getApplication()).resetMessageCounter();
+  }
+
+  private void setLanguage(MethodCall call, final MethodChannel.Result result) {
+      String language = call.arguments.toString();
+      if (language == null || language.isEmpty()) {
+          result.error(ErrorCodes.SET_LANGUAGE_ERROR.getErrorCode(), "Cannot set in app chat language.", null);
+          return;
+      }
+      InAppChat.getInstance(activity.getApplication()).setLanguage(language);
   }
 
   private synchronized void defaultMessageStorage_find(MethodCall call, final MethodChannel.Result result) {

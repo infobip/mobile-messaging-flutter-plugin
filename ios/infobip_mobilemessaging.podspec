@@ -15,11 +15,11 @@ A new flutter plugin project.
   s.source           = { :path => '.' }
   s.source_files = 'Classes/**/*'
   s.dependency 'Flutter'
-  s.dependency "MobileMessaging/Core", "9.2.11"
-  s.dependency "MobileMessaging/Geofencing", "9.2.11"
-  s.dependency "MobileMessaging/InAppChat", "9.2.11"
+  s.dependency "MobileMessaging/Core", "10.2.2"
+  s.dependency "MobileMessaging/Geofencing", "10.2.2"
+  s.dependency "MobileMessaging/InAppChat", "10.2.2"
 
-  s.platform = :ios, '10.0'
+  s.platform = :ios, '12.0'
 
   # Flutter.framework does not contain a i386 slice.
   s.pod_target_xcconfig = { 'DEFINES_MODULE' => 'YES', 'EXCLUDED_ARCHS[sdk=iphonesimulator*]' => 'i386' }

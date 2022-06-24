@@ -2,21 +2,6 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
-    <key>FlutterDeepLinkingEnabled</key>
-    <true/>
-    <key>CFBundleURLTypes</key>
-    <array>
-        <dict>
-        <key>CFBundleTypeRole</key>
-        <string>Editor</string>
-        <key>CFBundleURLName</key>
-        <string>com.infobip.mobilemessaging</string>
-        <key>CFBundleURLSchemes</key>
-        <array>
-        <string>customscheme</string>
-        </array>
-        </dict>
-    </array>
 	<key>CFBundleDevelopmentRegion</key>
 	<string>$(DEVELOPMENT_LANGUAGE)</string>
 	<key>CFBundleExecutable</key>
@@ -33,10 +18,33 @@
 	<string>$(FLUTTER_BUILD_NAME)</string>
 	<key>CFBundleSignature</key>
 	<string>????</string>
+	<key>CFBundleURLTypes</key>
+	<array>
+		<dict>
+			<key>CFBundleTypeRole</key>
+			<string>Editor</string>
+			<key>CFBundleURLName</key>
+			<string>com.infobip.mobilemessaging</string>
+			<key>CFBundleURLSchemes</key>
+			<array>
+				<string>customscheme</string>
+			</array>
+		</dict>
+	</array>
 	<key>CFBundleVersion</key>
 	<string>$(FLUTTER_BUILD_NUMBER)</string>
+	<key>FlutterDeepLinkingEnabled</key>
+	<true/>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
+	<key>NSCameraUsageDescription</key>
+	<string>Example app would like to use your camera to be able to send captured photo and video attachments in the chat</string>
+	<key>NSMicrophoneUsageDescription</key>
+	<string>Example app would like to use microphone to be able to send attachments with audio in the chat</string>
+	<key>NSPhotoLibraryAddUsageDescription</key>
+	<string>Example app would like to save chat attachments to photo library</string>
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>Example app would like to use photo library to be able to send photos in the chat</string>
 	<key>UIBackgroundModes</key>
 	<array>
 		<string>remote-notification</string>
@@ -60,13 +68,5 @@
 	</array>
 	<key>UIViewControllerBasedStatusBarAppearance</key>
 	<false/>
-	<key>NSCameraUsageDescription</key>
-	<string>Example app would like to use your camera to be able to send captured photo and video attachments in the chat</string>
-	<key>NSMicrophoneUsageDescription</key>
-	<string>Example app would like to use microphone to be able to send attachments with audio in the chat</string>
-	<key>NSPhotoLibraryAddUsageDescription</key>
-	<string>Example app would like to save chat attachments to photo library</string>
-	<key>NSPhotoLibraryUsageDescription</key>
-	<string>Example app would like to use photo library to be able to send photos in the chat</string>
 </dict>
 </plist>

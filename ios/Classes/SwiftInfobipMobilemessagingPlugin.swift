@@ -93,6 +93,8 @@ public class SwiftInfobipMobilemessagingPlugin: NSObject, FlutterPlugin {
             showChat(call: call, result: result)
         } else if call.method == "setupiOSChatSettings" {
             setupiOSChatSettings(call: call, result: result)
+        } else if call.method == "setLanguage" {
+            setLanguage(call: call, result: result)
         } else if call.method == "submitEvent" {
             submitEvent(call: call, result: result)
         } else if call.method == "submitEventImmediately" {
@@ -372,6 +374,18 @@ public class SwiftInfobipMobilemessagingPlugin: NSObject, FlutterPlugin {
               }
         
         MobileMessaging.inAppChat?.settings.configureWith(rawConfig: chatSettings)
+    }
+    
+    func setLanguage(call: FlutterMethodCall, result: @escaping FlutterResult) {
+        guard let localeString = call.arguments as? String else {
+                  return result(
+                    FlutterError( code: "invalidSetLanguage",
+                                  message: "Error parsing locale string",
+                                  details: "Error parsing locale string" ))
+              }
+        
+        MobileMessaging.inAppChat?.setLanguage(localeString)
+        return result("success")
     }
     
     func submitEvent(call: FlutterMethodCall, result: @escaping FlutterResult){

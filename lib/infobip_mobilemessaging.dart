@@ -172,6 +172,10 @@ class InfobipMobilemessaging {
     await _channel.invokeMethod('resetMessageCounter');
   }
 
+  static void setLanguage(String language) async {
+    await _channel.invokeMethod('setLanguage', language);
+  }
+
   static MessageStorage? defaultMessageStorage() {
 
     if (_configuration == null) {

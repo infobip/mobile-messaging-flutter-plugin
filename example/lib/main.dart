@@ -8,6 +8,7 @@ import 'package:infobip_mobilemessaging/models/UserData.dart';
 import 'package:infobip_mobilemessaging/models/Installation.dart';
 import 'package:infobip_mobilemessaging/models/LibraryEvent.dart';
 import 'package:infobip_mobilemessaging/models/Message.dart';
+import 'language.dart';
 import 'screen_one.dart';
 import 'screen_two.dart';
 import 'sign_in_http.dart';
@@ -314,6 +315,11 @@ class _HomePageState extends State<HomePage> {
                 );
               }),
           ListTile(
+              title: Text('Set chat language'),
+              onTap: () {
+                showChatLanguageDialog(context);
+              }),
+          ListTile(
               title: Text('Show Chat'),
               onTap: () {
                 InfobipMobilemessaging.showChat();
@@ -355,6 +361,64 @@ class _HomePageState extends State<HomePage> {
         ],
       ),
     );
+  }
+
+  // replace this function with the examples above
+  showChatLanguageDialog(BuildContext context) {
+     List<Language> languages = List<Language>();
+     languages.add(Language("ENGLISH","en-US"));
+     languages.add(Language("TURKISH","tr-TR"));
+     languages.add(Language("KOREAN","ko-KR"));
+     languages.add(Language("RUSSIAN","ru-RU"));
+     languages.add(Language("CHINESE","zh-TW"));
+     languages.add(Language("SPANISH","es-ES"));
+     languages.add(Language("SPANISH_LA","es-LA"));
+     languages.add(Language("PORTUGUESE","pt-PT"));
+     languages.add(Language("PORTUGUESE_BR","pt-BR"));
+     languages.add(Language("POLISH","pl-PL"));
+     languages.add(Language("ROMANIAN","ro-RO"));
+     languages.add(Language("ARABIC","ar-AE"));
+     languages.add(Language("BOSNIAN","bs-BA"));
+     languages.add(Language("CROATIAN","hr-HR"));
+     languages.add(Language("GREEK","el-GR"));
+     languages.add(Language("SWEDISH","sv-SE"));
+     languages.add(Language("THAI","th-TH"));
+     languages.add(Language("LITHUANIAN","lt-LT"));
+     languages.add(Language("DANISH","da-DK"));
+     languages.add(Language("LATVIAN","lv-LV"));
+     languages.add(Language("HUNGARIAN","hu-HU"));
+     languages.add(Language("ITALIAN","it-IT"));
+     languages.add(Language("FRENCH","fr-FR"));
+     languages.add(Language("SLOVENIAN","sl-SI"));
+     languages.add(Language("UKRAINIAN","uk-UA"));
+     languages.add(Language("JAPANESE","ja-JP"));
+   
+     final children = <Widget>[];
+     languages.forEach((language) => 
+         children.add(
+           SimpleDialogOption(
+               child: Text(language.name),
+               onPressed: () {
+                 InfobipMobilemessaging.setLanguage(language.code);
+                 Navigator.pop(context, true);
+               },
+           )
+         )
+     );
+   
+     // set up the SimpleDialog
+     SimpleDialog dialog = SimpleDialog(
+       title: const Text('Choose chat language'),
+       children: children
+     );
+   
+     // show chat languages dialog
+     showDialog(
+       context: context,
+       builder: (BuildContext context) {
+         return dialog;
+       },
+     );
   }
 }
 
