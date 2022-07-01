@@ -2,9 +2,15 @@
 # To learn more about a Podspec see http://guides.cocoapods.org/syntax/podspec.html.
 # Run `pod lib lint infobip_mobilemessaging.podspec` to validate before publishing.
 #
+
+require 'yaml'
+
+pubspec = YAML.load_file(File.join('..', 'pubspec.yaml'))
+library_version = pubspec['version'].gsub('+', '-')
+
 Pod::Spec.new do |s|
   s.name             = 'infobip_mobilemessaging'
-  s.version          = '0.0.1'
+  s.version          = library_version
   s.summary          = 'Infobip Mobile Messaging Flutter Plugin.'
   s.description      = <<-DESC
 A new flutter plugin project.
@@ -15,9 +21,9 @@ A new flutter plugin project.
   s.source           = { :path => '.' }
   s.source_files = 'Classes/**/*'
   s.dependency 'Flutter'
-  s.dependency "MobileMessaging/Core", "10.2.2"
-  s.dependency "MobileMessaging/Geofencing", "10.2.2"
-  s.dependency "MobileMessaging/InAppChat", "10.2.2"
+  s.dependency "MobileMessaging/Core", "10.3.2"
+  s.dependency "MobileMessaging/Geofencing", "10.3.2"
+  s.dependency "MobileMessaging/InAppChat", "10.3.2"
 
   s.platform = :ios, '12.0'
 

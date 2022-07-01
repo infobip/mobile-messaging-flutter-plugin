@@ -10,8 +10,8 @@ The document describes plugin integration steps for your Flutter project.
   - Flutter 2.12+
 
   For iOS project:
-  - Xcode 12.5
-  - Minimum deployment target 10.0
+  - Xcode 13.4.1
+  - Minimum deployment target 12.0
 
   For Android project:
   - Android Studio
@@ -32,7 +32,9 @@ The document describes plugin integration steps for your Flutter project.
 
   3. Run `flutter pub get` to install plugin
 
-  4. Configure iOS.
+  4. Configure iOS platform
+
+  - Update the `ios/Podfile` with iOS deployment target platform 12.0 - `platform :ios, '12.0'` if needed and perform in Terminal `cd ios && pod update `
 
   - Import MobileMessaging `@import MobileMessaging;` and add `[MobileMessagingPluginApplicationDelegate install];` into `<ProjectName>/ios/Runner/AppDelegate.m` (this is required for OS callbacks such as `didRegisterForRemoteNotifications` to be intercepted by native MobileMessaging SDK) :
 
@@ -80,6 +82,7 @@ The document describes plugin integration steps for your Flutter project.
   ```dart
   import 'package:infobip_mobilemessaging/infobip_mobilemessaging.dart';
   import 'package:infobip_mobilemessaging/models/Configuration.dart';
+  import 'package:infobip_mobilemessaging/models/LibraryEvent.dart';
 
   ...
 
@@ -94,8 +97,8 @@ The document describes plugin integration steps for your Flutter project.
         )
       ));
 
-      InfobipMobilemessaging.on(LibraryEvent.MESSAGE_RECEIVED, (Map<String, dynamic> event) => {
-        print("Callback. MESSAGE_RECEIVED event,  message title: "  + event["body"])
+      InfobipMobilemessaging.on(LibraryEvent.MESSAGE_RECEIVED, (Message event) => {
+         print("Callback. MESSAGE_RECEIVED event,  message text: ${event.body}")
       });
 
   ...
