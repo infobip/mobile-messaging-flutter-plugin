@@ -43,23 +43,54 @@ class Configuration {
 }
 
 class AndroidSettings {
-  /// The application code of your Application from Push Portal website
-  final String? firebaseSenderId;
+  final FirebaseOptions firebaseOptions;
 
   // A resource name for a status bar icon (without extension), located in '/platforms/android/app/src/main/res/mipmap'
   final String? notificationIcon;
   final bool? multipleNotifications;
   final String? notificationAccentColor;
 
-  AndroidSettings({this.firebaseSenderId, this.notificationIcon,
-    this.multipleNotifications, this.notificationAccentColor});
+  AndroidSettings({required this.firebaseOptions,
+    this.notificationIcon, this.multipleNotifications,
+    this.notificationAccentColor});
 
   Map<String, dynamic> toJson() =>
       {
-        'firebaseSenderId': firebaseSenderId,
+        'firebaseOptions': firebaseOptions,
         'notificationIcon': notificationIcon,
         'multipleNotifications': multipleNotifications,
         'notificationAccentColor': notificationAccentColor
+      };
+}
+
+class FirebaseOptions {
+  final String apiKey;
+  final String applicationId;
+  final String? projectId;
+  final String? databaseUrl;
+  final String? gaTrackingId;
+  final String? gcmSenderId;
+  final String? storageBucket;
+
+  FirebaseOptions({
+      required this.apiKey,
+      required this.applicationId,
+      required this.projectId,
+      this.databaseUrl,
+      this.gaTrackingId,
+      this.gcmSenderId,
+      this.storageBucket
+  });
+
+  Map<String, dynamic> toJson() =>
+      {
+        'apiKey': apiKey,
+        'applicationId': applicationId,
+        'databaseUrl': databaseUrl,
+        'gaTrackingId': gaTrackingId,
+        'gcmSenderId': gcmSenderId,
+        'storageBucket': storageBucket,
+        'projectId': projectId
       };
 }
 

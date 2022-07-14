@@ -4,6 +4,8 @@ import com.google.gson.annotations.SerializedName;
 
 import java.util.List;
 
+import com.google.firebase.FirebaseOptions;
+
 public class Configuration {
     /// The application code of your Application from Push Portal website
     String applicationCode;
@@ -15,19 +17,10 @@ public class Configuration {
     boolean defaultMessageStorage;
 
     public class AndroidSettings {
-        /// The firebase sender ID of your Application
-        String firebaseSenderId;
         String notificationIcon;
         boolean multipleNotifications;
         String notificationAccentColor;
-
-        public String getFirebaseSenderId() {
-            return firebaseSenderId;
-        }
-
-        public void setFirebaseSenderId(String firebaseSenderId) {
-            this.firebaseSenderId = firebaseSenderId;
-        }
+        FirebaseOptions firebaseOptions;
 
         public String getNotificationIcon() {
             return notificationIcon;
@@ -51,6 +44,14 @@ public class Configuration {
 
         public void setNotificationAccentColor(String notificationAccentColor) {
             this.notificationAccentColor = notificationAccentColor;
+        }
+
+        public FirebaseOptions getFirebaseOptions() {
+            return firebaseOptions;
+        }
+
+        public void setFirebaseOptions(FirebaseOptions firebaseOptions) {
+            this.firebaseOptions = firebaseOptions;
         }
     }
 

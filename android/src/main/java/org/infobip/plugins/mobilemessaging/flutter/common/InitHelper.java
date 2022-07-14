@@ -31,8 +31,7 @@ public class InitHelper {
     public MobileMessaging.Builder configurationBuilder() {
         MobileMessaging.Builder builder = new MobileMessaging
                 .Builder(activity.getApplication())
-                .withApplicationCode(configuration.getApplicationCode())
-                .withSenderId(configuration.getAndroidSettings().getFirebaseSenderId());
+                .withApplicationCode(configuration.getApplicationCode());
 
         // Privacy
         if (configuration.getPrivacySettings() != null) {
@@ -56,17 +55,17 @@ public class InitHelper {
         NotificationSettings.Builder notificationBuilder = new NotificationSettings.Builder(activity.getApplicationContext());
         Configuration.AndroidSettings androidSettings = configuration.getAndroidSettings();
 
-        if (androidSettings.getNotificationIcon() != null) {
+        if (androidSettings != null && androidSettings.getNotificationIcon() != null) {
             int resId = getResId(context.getResources(), androidSettings.getNotificationIcon(), context.getPackageName());
             if (resId != 0) {
                 notificationBuilder.withDefaultIcon(resId);
             }
         }
 
-        if (androidSettings.isMultipleNotifications()) {
+        if (androidSettings != null && androidSettings.isMultipleNotifications()) {
             notificationBuilder.withMultipleNotifications();
         }
-        if (androidSettings.getNotificationAccentColor() != null) {
+        if (androidSettings != null && androidSettings.getNotificationAccentColor() != null) {
             int color = Color.parseColor(androidSettings.getNotificationAccentColor());
             notificationBuilder.withColor(color);
         }
@@ -76,6 +75,11 @@ public class InitHelper {
         }
 
         builder.withDisplayNotification(notificationBuilder.build());
+
+        if (androidSettings != null && androidSettings.firebaseOptions != null) {
+            builder.withFirebaseOptions(androidSettings.firebaseOptions);
+        }
+
         return builder;
     }
 

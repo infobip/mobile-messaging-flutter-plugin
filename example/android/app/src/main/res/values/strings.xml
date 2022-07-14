@@ -1,7 +1,5 @@
 <resources>
-    <string name="google_app_id">Your Firebase Sender ID</string>
-    <string name="infobip_application_code">Your Application Code</string>
-    <string name="ib_chat_view_title">Chat Name</string>
+
     <!--  If title commented out, it will be set from web widget settings from the Infobip Portal-->
     <!--    <string name="ib_chat_view_title">My Chat Title</string>-->
 </resources>
