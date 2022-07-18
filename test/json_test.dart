@@ -9,7 +9,11 @@ void main() {
       pluginVersion: "1.2.3",
       inAppChatEnabled: true,
       androidSettings: AndroidSettings(
-          firebaseSenderId: "ABC-XYZ",
+          firebaseOptions: FirebaseOptions(
+              apiKey: "Some-API-Key",
+              applicationId: "1:1234567890:android:abc123",
+              projectId: "project-123ab"
+          ),
           notificationIcon: 'icon.png',
           multipleNotifications: true,
           notificationAccentColor: "#ABCDEF"),

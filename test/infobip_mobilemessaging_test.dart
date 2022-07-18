@@ -43,7 +43,11 @@ void main() {
     await InfobipMobilemessaging.init(Configuration(
         applicationCode: "<Your app code>",
         androidSettings: AndroidSettings(
-            firebaseSenderId: "123456"
+            firebaseOptions: FirebaseOptions(
+                apiKey: "Some-API-Key",
+                applicationId: "1:1234567890:android:abc123",
+                projectId: "project-123ab"
+            ),
         ),
         iosSettings: IOSSettings(
             notificationTypes: ["alert", "badge", "sound"],
