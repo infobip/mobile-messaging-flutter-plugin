@@ -60,3 +60,6 @@
 
 ## 0.5.2
 * Added ProGuard rules
+
+## 0.6.0
+* Added Android 12 support
