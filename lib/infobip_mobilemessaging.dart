@@ -189,7 +189,7 @@ class InfobipMobilemessaging {
     }
 
     if (_defaultMessageStorage == null) {
-      _defaultMessageStorage = new _DefaultMessageStorage();
+      _defaultMessageStorage = new _DefaultMessageStorage(_channel);
     }
 
     return _defaultMessageStorage;
@@ -199,11 +199,9 @@ class InfobipMobilemessaging {
 
 class _DefaultMessageStorage extends MessageStorage {
 
-  late MethodChannel _channel;
+  MethodChannel _channel;
 
-  constructor(MethodChannel channel ) {
-    _channel = channel;
-  }
+  _DefaultMessageStorage(this._channel);
 
   @override
   delete(String messageId) async {

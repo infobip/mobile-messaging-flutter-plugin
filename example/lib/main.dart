@@ -84,6 +84,7 @@ class _MyAppState extends State<MyApp> {
             notificationTypes: ["alert", "badge", "sound"],
             forceCleanup: false,
             logging: true)));
+    ));
     InfobipMobilemessaging.setupiOSChatSettings(IOSChatSettings(
       title: 'Flutter Example Chat',
       sendButtonColor: '#ff5722',
@@ -198,6 +199,21 @@ class _HomePageState extends State<HomePage> {
     } else {
       libraryEvents.forEach((element) {
         str += element + '\n';
+      });
+    }
+    return str;
+  }
+
+  static Future<String> printAllMesages() async {
+    String str = '';
+    List<Message> messages = await InfobipMobilemessaging.defaultMessageStorage().findAll();
+    if (messages == null || messages.isEmpty) {
+      str = 'Empty message storage';
+    } else {
+      messages.forEach((element) {
+        print("element:");
+        print(element.messageId);
+        str += element.toString() + '\n';
       });
     }
     return str;
@@ -363,6 +379,104 @@ class _HomePageState extends State<HomePage> {
                 print('Tile "Unregister All Handlers" tapped');
                 InfobipMobilemessaging.unregisterAllHandlers(
                     'notificationTapped');
+              }),
+          ListTile(
+              title: Text('Default MessageStorage findAll'),
+              onTap: () async {
+                var res = await printAllMesages();
+                showDialog<void>(
+                  context: context,
+                  builder: (context) => AlertDialog(
+                    title: const Text('findAll'),
+                    content: Text(res),
+                    actions: [
+                      TextButton(
+                        child: const Text('Done'),
+                        onPressed: () {
+                          Navigator.of(context).pop();
+                        },
+                      ),
+                    ],
+                  ),
+                );
+              }),
+          ListTile(
+              title: Text('MessageStorage find first message'),
+              onTap: () async {
+                String str = '';
+                List<Message> messages = await InfobipMobilemessaging.defaultMessageStorage().findAll();
+                if (messages == null || messages.isEmpty) {
+                  str = 'Empty message storage';
+                } else {
+                  Message message = messages.first;
+                  Message foundedMessage = await InfobipMobilemessaging.defaultMessageStorage().find(message.messageId);
+                  str = 'Find message for ${message.messageId}: $foundedMessage';
+                }
+
+                showDialog<void>(
+                  context: context,
+                  builder: (context) => AlertDialog(
+                    title: const Text('find'),
+                    content: Text(str),
+                    actions: [
+                      TextButton(
+                        child: const Text('Done'),
+                        onPressed: () {
+                          Navigator.of(context).pop();
+                        },
+                      ),
+                    ],
+                  ),
+                );
+              }),
+          ListTile(
+              title: Text('MessageStorage: delete first message'),
+              onTap: () async {
+                String str = '';
+                List<Message> messages = await InfobipMobilemessaging.defaultMessageStorage().findAll();
+                if (messages == null || messages.isEmpty) {
+                  str = 'Empty message storage';
+                } else {
+                  Message message = messages.first;
+                  await InfobipMobilemessaging.defaultMessageStorage().delete(message.messageId);
+                  str = 'Delete message with ID: ${message.messageId}';
+                }
+
+                showDialog<void>(
+                  context: context,
+                  builder: (context) => AlertDialog(
+                    title: const Text('delete'),
+                    content: Text(str),
+                    actions: [
+                      TextButton(
+                        child: const Text('Done'),
+                        onPressed: () {
+                          Navigator.of(context).pop();
+                        },
+                      ),
+                    ],
+                  ),
+                );
+              }),
+          ListTile(
+              title: Text('Default MessageStorage deleteAll'),
+              onTap: () async {
+                var res = InfobipMobilemessaging.defaultMessageStorage().deleteAll();
+                showDialog<void>(
+                  context: context,
+                  builder: (context) => AlertDialog(
+                    title: const Text('deleteAll'),
+                    content: Text(res),
+                    actions: [
+                      TextButton(
+                        child: const Text('Done'),
+                        onPressed: () {
+                          Navigator.of(context).pop();
+                        },
+                      ),
+                    ],
+                  ),
+                );
               }),
         ],
       ),

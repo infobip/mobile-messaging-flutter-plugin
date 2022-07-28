@@ -661,7 +661,7 @@ public class InfobipMobilemessagingPlugin implements FlutterPlugin, MethodCallHa
   }
 
   private synchronized void defaultMessageStorage_find(MethodCall call, final MethodChannel.Result result) {
-    String messageId = call.argument("messageId");
+    String messageId = call.arguments.toString();
     MessageStore messageStore = MobileMessaging.getInstance(activity.getApplicationContext()).getMessageStore();
     if (messageStore == null) {
       result.error(ErrorCodes.MESSAGE_STORAGE_ERROR.getErrorCode(), "Message storage does not exist", null);
@@ -684,11 +684,11 @@ public class InfobipMobilemessagingPlugin implements FlutterPlugin, MethodCallHa
       return;
     }
     List<Message> messages = messageStore.findAll(activity.getApplicationContext());
-    result.success(messagesToJSONArray(messages.toArray(new Message[messages.size()])));
+    result.success(messagesToJSONArray(messages.toArray(new Message[messages.size()])).toString());
   }
 
   private synchronized void defaultMessageStorage_delete(MethodCall call, final MethodChannel.Result result) {
-    String messageId = call.argument("messageId");
+    String messageId = call.arguments.toString();
     MessageStore messageStore = MobileMessaging.getInstance(activity.getApplicationContext()).getMessageStore();
     if (messageStore == null) {
       result.error(ErrorCodes.MESSAGE_STORAGE_ERROR.getErrorCode(), "Message storage does not exist", null);
