@@ -83,7 +83,8 @@ class _MyAppState extends State<MyApp> {
         iosSettings: IOSSettings(
             notificationTypes: ["alert", "badge", "sound"],
             forceCleanup: false,
-            logging: true)));
+            logging: true
+        )
     ));
     InfobipMobilemessaging.setupiOSChatSettings(IOSChatSettings(
       title: 'Flutter Example Chat',
@@ -512,9 +513,9 @@ class _HomePageState extends State<HomePage> {
      languages.add(Language("SLOVENIAN","sl-SI"));
      languages.add(Language("UKRAINIAN","uk-UA"));
      languages.add(Language("JAPANESE","ja-JP"));
-   
+
      final children = <Widget>[];
-     languages.forEach((language) => 
+     languages.forEach((language) =>
          children.add(
            SimpleDialogOption(
                child: Text(language.name),
@@ -525,13 +526,13 @@ class _HomePageState extends State<HomePage> {
            )
          )
      );
-   
+
      // set up the SimpleDialog
      SimpleDialog dialog = SimpleDialog(
        title: const Text('Choose chat language'),
        children: children
      );
-   
+
      // show chat languages dialog
      showDialog(
        context: context,
