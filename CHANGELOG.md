@@ -1,3 +1,6 @@
+# 0.6.5
+## Changed
+- Message storage improvements - https://github.com/infobip/mobile-messaging-flutter-plugin/wiki/Message-storage.
 # 0.6.4
 ## Changed
 - Message storage improvements - https://github.com/infobip/mobile-messaging-flutter-plugin/wiki/Message-storage.
