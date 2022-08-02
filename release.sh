@@ -13,12 +13,12 @@ function updateChangelog () {
 git remote rm github
 
 # Find last git tag and create commit log
-LAST_TAG=`git describe --tags --abbrev=0`
-RELEASE_COMMIT_LOG=`git log $LAST_TAG..HEAD --oneline`
+#LAST_TAG=`git describe --tags --abbrev=0`
+#RELEASE_COMMIT_LOG=`git log $LAST_TAG..HEAD --oneline`
 
 # Save commit log to property file as a property
 # (replacing newlines with "\n")
-echo RELEASE_COMMIT_LOG="${RELEASE_COMMIT_LOG//$'\n'/\\n}" > $PROPERTIES_FILE
+#echo RELEASE_COMMIT_LOG="${RELEASE_COMMIT_LOG//$'\n'/\\n}" > $PROPERTIES_FILE
 
 echo "*** [DEBUG] Setting version $RELEASE_VERSION"
 
@@ -37,6 +37,8 @@ git commit -a -m "Release: $RELEASE_VERSION"
 
 # Create and push tag
 git tag $RELEASE_VERSION -m "Release: $RELEASE_VERSION"
+
+git show-ref
 
 # Push changes
 git push origin $BRANCH_NAME_TO_BUILD --tags
