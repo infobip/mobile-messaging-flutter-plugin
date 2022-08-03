@@ -28,7 +28,7 @@ setVersion $RELEASE_VERSION
 updateChangelog $RELEASE_VERSION
 
 # Remove package lock (temporary)
-rm -f pubspec.lock
+# rm -f pubspec.lock
 
 git add .
 
@@ -38,7 +38,7 @@ git commit -a -m "Release: $RELEASE_VERSION"
 # Create and push tag
 git tag $RELEASE_VERSION -m "Release: $RELEASE_VERSION"
 
-git show-ref
+# git show-ref
 
 # Push changes
 git push origin $BRANCH_NAME_TO_BUILD --tags
