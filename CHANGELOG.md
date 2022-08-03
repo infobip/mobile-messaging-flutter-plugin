@@ -1,3 +1,6 @@
+# 0.6.13
+## Changed
+- Minor improvements.
 # 0.6.11
 ## Changed
 - Minor improvements.
