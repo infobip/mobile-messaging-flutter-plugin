@@ -1,3 +1,6 @@
+# 0.7.0
+## Changed
+- Message storage improvements - https://github.com/infobip/mobile-messaging-flutter-plugin/wiki/Message-storage
 ## 0.6.0
 * Added Android 12 support
 
