@@ -38,7 +38,7 @@ The document describes plugin integration steps for your Flutter project.
 
      2. Import MobileMessaging `@import MobileMessaging;` and add `[MobileMessagingPluginApplicationDelegate install];` into `<ProjectName>/ios/Runner/AppDelegate.m` (this is required for OS callbacks such as `didRegisterForRemoteNotifications` to be intercepted by native MobileMessaging SDK) :
 
-  ```objc
+     ```objc
               ...
               @import MobileMessaging;
 
@@ -51,12 +51,11 @@ The document describes plugin integration steps for your Flutter project.
                   ...
               }
               ...
-  ```
+     ```
+  
+     <details><summary>expand to see Swift code</summary>
 
-
-  <details><summary>expand to see Swift code</summary>
-
-  ```swift
+     ```swift
 
               import MobileMessaging
               ...
@@ -72,9 +71,8 @@ The document describes plugin integration steps for your Flutter project.
                  }
                }
               ...
-  ```
-  </details>
-
+     ```
+     </details>
 
       3. Configure your project to support Push Notification as described in item 2 of [iOS integration quick start guide](https://github.com/infobip/mobile-messaging-sdk-ios#quick-start-guide)
       4. [Integrate Notification Service Extension](https://github.com/infobip/mobile-messaging-flutter-plugin/wiki/Delivery-improvements-and-rich-content-notifications) into your app in order to obtain:
