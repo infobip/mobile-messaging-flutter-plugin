@@ -34,9 +34,9 @@ The document describes plugin integration steps for your Flutter project.
 
   4. Configure iOS platform
 
-  - Update the `ios/Podfile` with iOS deployment target platform 12.0 - `platform :ios, '12.0'` if needed and perform in Terminal `cd ios && pod update `
+     1. Update the `ios/Podfile` with iOS deployment target platform 12.0 - `platform :ios, '12.0'` if needed and perform in Terminal `cd ios && pod update `
 
-  - Import MobileMessaging `@import MobileMessaging;` and add `[MobileMessagingPluginApplicationDelegate install];` into `<ProjectName>/ios/Runner/AppDelegate.m` (this is required for OS callbacks such as `didRegisterForRemoteNotifications` to be intercepted by native MobileMessaging SDK) :
+     2. Import MobileMessaging `@import MobileMessaging;` and add `[MobileMessagingPluginApplicationDelegate install];` into `<ProjectName>/ios/Runner/AppDelegate.m` (this is required for OS callbacks such as `didRegisterForRemoteNotifications` to be intercepted by native MobileMessaging SDK) :
 
   ```objc
               ...
@@ -76,8 +76,10 @@ The document describes plugin integration steps for your Flutter project.
   </details>
 
 
-  - Configure your project to support Push Notification as described in item 2 of [iOS integration quick start guide](https://github.com/infobip/mobile-messaging-sdk-ios#quick-start-guide)
-
+      3. Configure your project to support Push Notification as described in item 2 of [iOS integration quick start guide](https://github.com/infobip/mobile-messaging-sdk-ios#quick-start-guide)
+      4. [Integrate Notification Service Extension](https://github.com/infobip/mobile-messaging-flutter-plugin/wiki/Delivery-improvements-and-rich-content-notifications) into your app in order to obtain:
+          - more accurate processing of messages and delivery stats
+          - support of rich notifications on the lock screen
   5. Use plugin at yours dart code:
   ```dart
   import 'package:infobip_mobilemessaging/infobip_mobilemessaging.dart';
