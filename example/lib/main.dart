@@ -3,7 +3,7 @@ import 'dart:async';
 
 import 'package:infobip_mobilemessaging/models/IOSChatSettings.dart';
 import 'package:infobip_mobilemessaging/infobip_mobilemessaging.dart';
-import 'package:infobip_mobilemessaging/models/Configuration.dart';
+import 'package:infobip_mobilemessaging/models/Configuration.dart' as mmconfiguration;
 import 'package:infobip_mobilemessaging/models/UserData.dart';
 import 'package:infobip_mobilemessaging/models/Installation.dart';
 import 'package:infobip_mobilemessaging/models/LibraryEvent.dart';
@@ -69,18 +69,18 @@ class _MyAppState extends State<MyApp> {
     // setState to update our non-existent appearance.
     if (!mounted) return;
 
-    await InfobipMobilemessaging.init(Configuration(
+    await InfobipMobilemessaging.init(mmconfiguration.Configuration(
         applicationCode: "Your Application Code",
         inAppChatEnabled: true,
-        androidSettings: AndroidSettings(
-          firebaseOptions: FirebaseOptions(
+        androidSettings: mmconfiguration.AndroidSettings(
+          firebaseOptions: mmconfiguration.FirebaseOptions(
               apiKey: "Some-API-Key",
               applicationId: "1:1234567890:android:abc123",
               projectId: "project-123ab"
           ),
         ),
         defaultMessageStorage: true,
-        iosSettings: IOSSettings(
+        iosSettings: mmconfiguration.IOSSettings(
             notificationTypes: ["alert", "badge", "sound"],
             forceCleanup: false,
             logging: true
