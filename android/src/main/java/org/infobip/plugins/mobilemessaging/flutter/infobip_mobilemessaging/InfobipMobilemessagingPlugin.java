@@ -170,7 +170,10 @@ public class InfobipMobilemessagingPlugin implements FlutterPlugin, MethodCallHa
         break;
       case "setLanguage":
         setLanguage(call, result);
-      break;
+        break;
+      case "sendContextualData":
+        sendContextualData(call, result);
+        break;
       default:
         result.notImplemented();
         break;
@@ -652,12 +655,22 @@ public class InfobipMobilemessagingPlugin implements FlutterPlugin, MethodCallHa
   }
 
   private void setLanguage(MethodCall call, final MethodChannel.Result result) {
-      String language = call.arguments.toString();
-      if (language == null || language.isEmpty()) {
-          result.error(ErrorCodes.SET_LANGUAGE_ERROR.getErrorCode(), "Cannot set in app chat language.", null);
-          return;
-      }
-      InAppChat.getInstance(activity.getApplication()).setLanguage(language);
+    String language = call.arguments.toString();
+    if (language == null || language.isEmpty()) {
+      result.error(ErrorCodes.SET_LANGUAGE_ERROR.getErrorCode(), "Cannot set in app chat language.", null);
+      return;
+    }
+    InAppChat.getInstance(activity.getApplication()).setLanguage(language);
+  }
+
+  private void sendContextualData(MethodCall call, final MethodChannel.Result result) {
+    String data = call.argument("data");
+    Boolean allMultiThreadStrategy = call.argument("allMultiThreadStrategy");
+    if (data == null || data.isEmpty() || allMultiThreadStrategy == null) {
+      result.error(ErrorCodes.CONTEXTUAL_METADATA_ERROR.getErrorCode(), "Cannot resolve data or allMultiThreadStrategy from arguments", null);
+      return;
+    }
+    InAppChat.getInstance(activity.getApplication()).sendContextualData(data, allMultiThreadStrategy);
   }
 
   private synchronized void defaultMessageStorage_find(MethodCall call, final MethodChannel.Result result) {

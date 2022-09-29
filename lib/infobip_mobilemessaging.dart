@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:collection';
 import 'dart:convert';
+import 'dart:ffi';
 import 'dart:io';
 
 import 'package:flutter/cupertino.dart';
@@ -174,6 +175,10 @@ class InfobipMobilemessaging {
 
   static void setLanguage(String language) async {
     await _channel.invokeMethod('setLanguage', language);
+  }
+
+  static void sendContextualData(String data, bool allMultiThreadStrategy) async {
+    await _channel.invokeMethod('sendContextualData', {'data': data, 'allMultiThreadStrategy': allMultiThreadStrategy});
   }
 
   static MessageStorage? defaultMessageStorage() {

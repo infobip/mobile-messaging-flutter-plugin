@@ -95,6 +95,8 @@ public class SwiftInfobipMobilemessagingPlugin: NSObject, FlutterPlugin {
             setupiOSChatSettings(call: call, result: result)
         } else if call.method == "setLanguage" {
             setLanguage(call: call, result: result)
+        } else if call.method == "sendContextualData" {
+            sendContextualData(call: call, result: result)
         } else if call.method == "submitEvent" {
             submitEvent(call: call, result: result)
         } else if call.method == "submitEventImmediately" {
@@ -383,11 +385,35 @@ public class SwiftInfobipMobilemessagingPlugin: NSObject, FlutterPlugin {
                                   message: "Error parsing locale string",
                                   details: "Error parsing locale string" ))
               }
-        
+
         MobileMessaging.inAppChat?.setLanguage(localeString)
         return result("success")
     }
-    
+
+    func sendContextualData(call: FlutterMethodCall, result: @escaping FlutterResult) {
+        guard let args = call.arguments as? [String: Any],
+              let data = args["data"] as? String,
+              let multiThreadStrategy = args["allMultiThreadStrategy"] as? Bool else {
+                  return result(
+                    FlutterError( code: "CONTEXTUAL_METADATA_ERROR",
+                                  message: "Cannot resolve data or allMultiThreadStrategy from arguments",
+                                  details: nil ))
+              }
+        if let chatVc = UIApplication.topViewController() as? MMChatViewController {
+            chatVc.sendContextualData(data, multiThreadStrategy: multiThreadStrategy ? .ALL : .ACTIVE) { error in
+                if let error = error {
+                    result(FlutterError( code: String(error.code),
+                                         message: error.mm_message,
+                                         details: error.description ))
+                } else {
+                    return result("success")
+                }
+            }
+        } else {
+            MMLogDebug("[InAppChat] could find chat view controller to send contextual data to")
+        }
+    }
+
     func submitEvent(call: FlutterMethodCall, result: @escaping FlutterResult){
         guard let jsonString = call.arguments as? String,
               let customEventDictionary = convertStringToDictionary(text: jsonString),

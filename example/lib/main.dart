@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:infobip_mobilemessaging/models/Configuration.dart';
 import 'dart:async';
 
 import 'package:infobip_mobilemessaging/models/IOSChatSettings.dart';
@@ -346,6 +347,15 @@ class _HomePageState extends State<HomePage> {
               title: Text('Show Chat'),
               onTap: () {
                 InfobipMobilemessaging.showChat();
+              }),
+          ListTile(
+              title: Text('Show Chat and send Contextual Data'),
+              onTap: () {
+                  Future.delayed(const Duration(milliseconds: 3000), () {
+			               // Metadata must be sent after chat is presented, so we delay it
+			               InfobipMobilemessaging.sendContextualData("{ demoKey: 'InAppChat Metadata Value' }", false);	
+		              });
+		              InfobipMobilemessaging.showChat();
               }),
           ListTile(
               title: Text('Send Event'),
