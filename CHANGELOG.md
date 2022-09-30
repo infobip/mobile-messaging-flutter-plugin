@@ -1,3 +1,6 @@
+# 0.8.0
+Added:
+Method in In-App Chat to send contextual / meta data to Infobip's Conversations backend.
 # 0.7.0
 ## Changed
 - Message storage improvements - https://github.com/infobip/mobile-messaging-flutter-plugin/wiki/Message-storage
