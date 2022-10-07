@@ -1,4 +1,5 @@
 import 'package:flutter/foundation.dart';
+import 'package:collection/collection.dart';
 
 enum OS { Android, iOS }
 
@@ -25,26 +26,27 @@ class Installation {
   final String? deviceName;
   Map<String, dynamic>? customAttributes;
 
-  Installation(
-      {this.pushRegistrationId,
-        this.pushServiceType,
-        this.pushServiceToken,
-        this.isPrimaryDevice,
-        this.isPushRegistrationEnabled,
-        this.notificationsEnabled,
-        this.geoEnabled,
-        this.sdkVersion,
-        this.appVersion,
-        this.os,
-        this.osVersion,
-        this.deviceManufacturer,
-        this.deviceModel,
-        this.deviceSecure,
-        this.language,
-        this.deviceTimezoneOffset,
-        this.applicationUserId,
-        this.deviceName,
-        this.customAttributes});
+  Installation({
+    this.pushRegistrationId,
+    this.pushServiceType,
+    this.pushServiceToken,
+    this.isPrimaryDevice,
+    this.isPushRegistrationEnabled,
+    this.notificationsEnabled,
+    this.geoEnabled,
+    this.sdkVersion,
+    this.appVersion,
+    this.os,
+    this.osVersion,
+    this.deviceManufacturer,
+    this.deviceModel,
+    this.deviceSecure,
+    this.language,
+    this.deviceTimezoneOffset,
+    this.applicationUserId,
+    this.deviceName,
+    this.customAttributes,
+  });
 
   static PushServiceType? resolvePushServiceType(String? pst) {
     if (pst == null) {
@@ -70,27 +72,27 @@ class Installation {
   }
 
   Map<String, dynamic> toJson() => {
-    'pushRegistrationId': pushRegistrationId,
-    'pushServiceToken': pushServiceToken,
-    'pushServiceType':
-    pushServiceType != null ? describeEnum(pushServiceType!) : null,
-    'isPrimaryDevice': isPrimaryDevice,
-    'isPushRegistrationEnabled': isPushRegistrationEnabled,
-    'notificationsEnabled': notificationsEnabled,
-    'geoEnabled': geoEnabled,
-    'sdkVersion': sdkVersion,
-    'appVersion': appVersion,
-    'os': os != null ? describeEnum(os!) : null,
-    'osVersion': osVersion,
-    'deviceManufacturer': deviceManufacturer,
-    'deviceModel': deviceModel,
-    'deviceSecure': deviceSecure,
-    'language': language,
-    'deviceTimezoneOffset': deviceTimezoneOffset,
-    'applicationUserId': applicationUserId,
-    'deviceName': deviceName,
-    'customAttributes': customAttributes,
-  };
+        'pushRegistrationId': pushRegistrationId,
+        'pushServiceToken': pushServiceToken,
+        'pushServiceType':
+            pushServiceType != null ? describeEnum(pushServiceType!) : null,
+        'isPrimaryDevice': isPrimaryDevice,
+        'isPushRegistrationEnabled': isPushRegistrationEnabled,
+        'notificationsEnabled': notificationsEnabled,
+        'geoEnabled': geoEnabled,
+        'sdkVersion': sdkVersion,
+        'appVersion': appVersion,
+        'os': os != null ? describeEnum(os!) : null,
+        'osVersion': osVersion,
+        'deviceManufacturer': deviceManufacturer,
+        'deviceModel': deviceModel,
+        'deviceSecure': deviceSecure,
+        'language': language,
+        'deviceTimezoneOffset': deviceTimezoneOffset,
+        'applicationUserId': applicationUserId,
+        'deviceName': deviceName,
+        'customAttributes': customAttributes,
+      };
 
   Installation.fromJson(Map<String, dynamic> json)
       : isPrimaryDevice = json['isPrimaryDevice'],
@@ -117,6 +119,54 @@ class Installation {
   String? getPushRegistrationId() {
     return this.pushRegistrationId;
   }
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is Installation &&
+          runtimeType == other.runtimeType &&
+          pushRegistrationId == other.pushRegistrationId &&
+          pushServiceToken == other.pushServiceToken &&
+          pushServiceType == other.pushServiceType &&
+          isPrimaryDevice == other.isPrimaryDevice &&
+          isPushRegistrationEnabled == other.isPushRegistrationEnabled &&
+          notificationsEnabled == other.notificationsEnabled &&
+          geoEnabled == other.geoEnabled &&
+          sdkVersion == other.sdkVersion &&
+          appVersion == other.appVersion &&
+          os == other.os &&
+          osVersion == other.osVersion &&
+          deviceManufacturer == other.deviceManufacturer &&
+          deviceModel == other.deviceModel &&
+          deviceSecure == other.deviceSecure &&
+          language == other.language &&
+          deviceTimezoneOffset == other.deviceTimezoneOffset &&
+          applicationUserId == other.applicationUserId &&
+          deviceName == other.deviceName &&
+          DeepCollectionEquality()
+              .equals(customAttributes, other.customAttributes);
+
+  @override
+  int get hashCode =>
+      pushRegistrationId.hashCode ^
+      pushServiceToken.hashCode ^
+      pushServiceType.hashCode ^
+      isPrimaryDevice.hashCode ^
+      isPushRegistrationEnabled.hashCode ^
+      notificationsEnabled.hashCode ^
+      geoEnabled.hashCode ^
+      sdkVersion.hashCode ^
+      appVersion.hashCode ^
+      os.hashCode ^
+      osVersion.hashCode ^
+      deviceManufacturer.hashCode ^
+      deviceModel.hashCode ^
+      deviceSecure.hashCode ^
+      language.hashCode ^
+      deviceTimezoneOffset.hashCode ^
+      applicationUserId.hashCode ^
+      deviceName.hashCode ^
+      customAttributes.hashCode;
 }
 
 class InstallationPrimary {

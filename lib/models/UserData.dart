@@ -1,4 +1,5 @@
 import 'package:flutter/foundation.dart';
+import 'package:collection/collection.dart';
 
 enum Gender { Male, Female }
 
@@ -16,15 +17,15 @@ class UserData {
 
   UserData(
       {this.externalUserId,
-        this.firstName,
-        this.lastName,
-        this.middleName,
-        this.gender,
-        this.birthday,
-        this.phones,
-        this.emails,
-        this.tags,
-        this.customAttributes});
+      this.firstName,
+      this.lastName,
+      this.middleName,
+      this.gender,
+      this.birthday,
+      this.phones,
+      this.emails,
+      this.tags,
+      this.customAttributes});
 
   static Gender? resolveGender(String? str) {
     if (str == null) {
@@ -58,15 +59,45 @@ class UserData {
         customAttributes = json['customAttributes'];
 
   Map<String, dynamic> toJson() => {
-    'externalUserId': externalUserId,
-    'firstName': firstName,
-    'lastName': lastName,
-    'middleName': middleName,
-    'gender': gender != null ? describeEnum(gender!) : null,
-    'birthday': birthday,
-    'phones': phones,
-    'emails': emails,
-    'tags': tags,
-    'customAttributes': customAttributes
-  };
+        'externalUserId': externalUserId,
+        'firstName': firstName,
+        'lastName': lastName,
+        'middleName': middleName,
+        'gender': gender != null ? describeEnum(gender!) : null,
+        'birthday': birthday,
+        'phones': phones,
+        'emails': emails,
+        'tags': tags,
+        'customAttributes': customAttributes
+      };
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is UserData &&
+          runtimeType == other.runtimeType &&
+          externalUserId == other.externalUserId &&
+          firstName == other.firstName &&
+          lastName == other.lastName &&
+          middleName == other.middleName &&
+          gender == other.gender &&
+          birthday == other.birthday &&
+          listEquals(phones, other.phones) &&
+          listEquals(emails, other.emails) &&
+          listEquals(tags, other.tags) &&
+          DeepCollectionEquality()
+              .equals(customAttributes, other.customAttributes);
+
+  @override
+  int get hashCode =>
+      externalUserId.hashCode ^
+      firstName.hashCode ^
+      lastName.hashCode ^
+      middleName.hashCode ^
+      gender.hashCode ^
+      birthday.hashCode ^
+      phones.hashCode ^
+      emails.hashCode ^
+      tags.hashCode ^
+      customAttributes.hashCode;
 }

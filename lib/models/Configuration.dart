@@ -56,7 +56,7 @@ class AndroidSettings {
 
   Map<String, dynamic> toJson() =>
       {
-        'firebaseOptions': firebaseOptions,
+        'firebaseOptions': firebaseOptions.toJson(),
         'notificationIcon': notificationIcon,
         'multipleNotifications': multipleNotifications,
         'notificationAccentColor': notificationAccentColor
