@@ -1,3 +1,9 @@
+# 0.8.1
+## Added
+- Unit tests for json serialization
+
+## Fixed
+- Correctly providing FirebaseOptions to AndroidSettings
 # 0.8.0
 Added:
 Method in In-App Chat to send contextual / meta data to Infobip's Conversations backend.
