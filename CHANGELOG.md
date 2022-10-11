@@ -1,3 +1,9 @@
+# 0.8.2
+## Fixed
+- Library version in User-Agent for iOS platform
+
+## Changed
+- PendingIntent Flag will be IMMUTABLE for all cases except when notification contains reply action
 # 0.8.1
 ## Added
 - Unit tests for json serialization
