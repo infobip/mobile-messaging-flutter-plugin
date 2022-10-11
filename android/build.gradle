@@ -39,10 +39,11 @@ android {
 }
 
 dependencies {
-    implementation ('com.infobip:infobip-mobile-messaging-android-sdk:6.4.1@aar') {
+    def mmVersion = '6.4.2'
+    implementation ("com.infobip:infobip-mobile-messaging-android-sdk:$mmVersion@aar") {
         transitive = true
     }
     implementation 'com.google.android.material:material:1.0.0'
-    implementation "com.infobip:infobip-mobile-messaging-android-chat-sdk:6.4.1@aar"
+    implementation "com.infobip:infobip-mobile-messaging-android-chat-sdk:$mmVersion@aar"
     implementation 'androidx.exifinterface:exifinterface:1.1.0'
 }
