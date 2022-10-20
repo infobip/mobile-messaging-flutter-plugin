@@ -73,13 +73,6 @@ class _MyAppState extends State<MyApp> {
     await InfobipMobilemessaging.init(mmconfiguration.Configuration(
         applicationCode: "Your Application Code",
         inAppChatEnabled: true,
-        androidSettings: mmconfiguration.AndroidSettings(
-          firebaseOptions: mmconfiguration.FirebaseOptions(
-              apiKey: "Some-API-Key",
-              applicationId: "1:1234567890:android:abc123",
-              projectId: "project-123ab"
-          ),
-        ),
         defaultMessageStorage: true,
         iosSettings: mmconfiguration.IOSSettings(
             notificationTypes: ["alert", "badge", "sound"],

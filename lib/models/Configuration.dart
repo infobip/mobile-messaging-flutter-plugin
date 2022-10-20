@@ -43,20 +43,20 @@ class Configuration {
 }
 
 class AndroidSettings {
-  final FirebaseOptions firebaseOptions;
+  final FirebaseOptions? firebaseOptions;
 
   // A resource name for a status bar icon (without extension), located in '/platforms/android/app/src/main/res/mipmap'
   final String? notificationIcon;
   final bool? multipleNotifications;
   final String? notificationAccentColor;
 
-  AndroidSettings({required this.firebaseOptions,
+  AndroidSettings({this.firebaseOptions,
     this.notificationIcon, this.multipleNotifications,
     this.notificationAccentColor});
 
   Map<String, dynamic> toJson() =>
       {
-        'firebaseOptions': firebaseOptions.toJson(),
+        'firebaseOptions': firebaseOptions?.toJson(),
         'notificationIcon': notificationIcon,
         'multipleNotifications': multipleNotifications,
         'notificationAccentColor': notificationAccentColor
@@ -66,7 +66,7 @@ class AndroidSettings {
 class FirebaseOptions {
   final String apiKey;
   final String applicationId;
-  final String? projectId;
+  final String projectId;
   final String? databaseUrl;
   final String? gaTrackingId;
   final String? gcmSenderId;
