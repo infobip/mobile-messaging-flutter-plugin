@@ -1,3 +1,12 @@
+# 0.8.4
+## Added
+- New wiki page about possible possible ways of setting up Firebase
+
+## Changed
+- FirebaseOptions parameter is now optional
+- Update Example app to support Android 12
+- Configure Firebase setup the preferred way inside Example app 
+- Update "How to start Example" app wiki page
 # 0.8.3
 ## Fixed
 - Library version in User-Agent for iOS platform
