@@ -1,10 +1,7 @@
-
-import 'package:infobip_mobilemessaging/models/Message.dart';
-
 class LibraryEvent {
   final String eventName;
 
-  final dynamic? payload;
+  final dynamic payload;
 
   // Occurs when an APNs device token is received. Contains device token - a hex-encoded string received from APNS. Returns device token as hex-encoded string.
   static const String TOKEN_RECEIVED = "tokenReceived";
@@ -38,14 +35,11 @@ class LibraryEvent {
 
   LibraryEvent({
     required this.eventName,
-    this.payload
+    this.payload,
   });
 
-  factory LibraryEvent.fromJson(Map<String, dynamic> json) {
-    return LibraryEvent(
-      eventName: json['eventName'] as String,
-      payload:  (json['payload'] != null)?json['payload'] as dynamic : null,
-    );
-  }
-
+  factory LibraryEvent.fromJson(Map<String, dynamic> json) => LibraryEvent(
+        eventName: json['eventName'] as String,
+        payload: (json['payload'] != null) ? json['payload'] as dynamic : null,
+      );
 }

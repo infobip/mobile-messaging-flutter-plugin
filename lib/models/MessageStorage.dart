@@ -1,4 +1,4 @@
-import 'package:infobip_mobilemessaging/models/Message.dart';
+import 'Message.dart';
 
 abstract class MessageStorage {
 

@@ -9,8 +9,7 @@ class ScreenOneDemo extends StatefulWidget {
 
 class _ScreenOneDemoState extends State<ScreenOneDemo>{
   @override
-  Widget build(BuildContext context) {
-    return Scaffold(
+  Widget build(BuildContext context) => Scaffold(
       appBar: AppBar(
         title: const Text("Screen One"),
       ),
@@ -23,5 +22,4 @@ class _ScreenOneDemoState extends State<ScreenOneDemo>{
         ),
       ),
     );
-  }
 }

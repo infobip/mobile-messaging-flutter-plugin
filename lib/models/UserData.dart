@@ -1,5 +1,5 @@
-import 'package:flutter/foundation.dart';
 import 'package:collection/collection.dart';
+import 'package:flutter/foundation.dart';
 
 enum Gender { Male, Female }
 
@@ -15,25 +15,25 @@ class UserData {
   List<String>? tags;
   Map<String, dynamic>? customAttributes;
 
-  UserData(
-      {this.externalUserId,
-      this.firstName,
-      this.lastName,
-      this.middleName,
-      this.gender,
-      this.birthday,
-      this.phones,
-      this.emails,
-      this.tags,
-      this.customAttributes});
+  UserData({
+    this.externalUserId,
+    this.firstName,
+    this.lastName,
+    this.middleName,
+    this.gender,
+    this.birthday,
+    this.phones,
+    this.emails,
+    this.tags,
+    this.customAttributes,
+  });
 
   static Gender? resolveGender(String? str) {
     if (str == null) {
       return null;
     }
     try {
-      return Gender.values
-          .firstWhere((e) => e.toString().split('.').last == str);
+      return Gender.values.firstWhere((e) => e.toString().split('.').last == str);
     } on Exception {
       return null;
     }
@@ -85,8 +85,7 @@ class UserData {
           listEquals(phones, other.phones) &&
           listEquals(emails, other.emails) &&
           listEquals(tags, other.tags) &&
-          DeepCollectionEquality()
-              .equals(customAttributes, other.customAttributes);
+          const DeepCollectionEquality().equals(customAttributes, other.customAttributes);
 
   @override
   int get hashCode =>

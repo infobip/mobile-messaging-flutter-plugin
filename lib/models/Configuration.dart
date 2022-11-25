@@ -1,4 +1,3 @@
-
 class Configuration {
   /// The application code of your Application from Push Portal website
   final String applicationCode;
@@ -28,18 +27,17 @@ class Configuration {
     this.defaultMessageStorage,
   });
 
-  Map<String, dynamic> toJson() {
-    return {
-      'applicationCode': applicationCode,
-      'pluginVersion': pluginVersion,
-      'inAppChatEnabled': inAppChatEnabled,
-      'androidSettings': (this.androidSettings !=null)? this.androidSettings!.toJson() : null,
-      'iosSettings': (this.iosSettings !=null)? this.iosSettings!.toJson(): null,
-      'privacySettings': (this.privacySettings !=null)? this.privacySettings!.toJson() : null,
-      'notificationCategories': (this.notificationCategories !=null)? this.notificationCategories!.map((e) => e.toJson()) : null,
-      'defaultMessageStorage': defaultMessageStorage
-    };
-  }
+  Map<String, dynamic> toJson() => {
+        'applicationCode': applicationCode,
+        'pluginVersion': pluginVersion,
+        'inAppChatEnabled': inAppChatEnabled,
+        'androidSettings': androidSettings?.toJson(),
+        'iosSettings': iosSettings?.toJson(),
+        'privacySettings': privacySettings?.toJson(),
+        'notificationCategories':
+            (notificationCategories != null) ? notificationCategories!.map((e) => e.toJson()) : null,
+        'defaultMessageStorage': defaultMessageStorage
+      };
 }
 
 class AndroidSettings {
@@ -50,12 +48,14 @@ class AndroidSettings {
   final bool? multipleNotifications;
   final String? notificationAccentColor;
 
-  AndroidSettings({this.firebaseOptions,
-    this.notificationIcon, this.multipleNotifications,
-    this.notificationAccentColor});
+  AndroidSettings({
+    this.firebaseOptions,
+    this.notificationIcon,
+    this.multipleNotifications,
+    this.notificationAccentColor,
+  });
 
-  Map<String, dynamic> toJson() =>
-      {
+  Map<String, dynamic> toJson() => {
         'firebaseOptions': firebaseOptions?.toJson(),
         'notificationIcon': notificationIcon,
         'multipleNotifications': multipleNotifications,
@@ -73,17 +73,16 @@ class FirebaseOptions {
   final String? storageBucket;
 
   FirebaseOptions({
-      required this.apiKey,
-      required this.applicationId,
-      required this.projectId,
-      this.databaseUrl,
-      this.gaTrackingId,
-      this.gcmSenderId,
-      this.storageBucket
+    required this.apiKey,
+    required this.applicationId,
+    required this.projectId,
+    this.databaseUrl,
+    this.gaTrackingId,
+    this.gcmSenderId,
+    this.storageBucket,
   });
 
-  Map<String, dynamic> toJson() =>
-      {
+  Map<String, dynamic> toJson() => {
         'apiKey': apiKey,
         'applicationId': applicationId,
         'databaseUrl': databaseUrl,
@@ -100,14 +99,18 @@ class IOSSettings {
   final bool? logging;
   final WebViewSettings? webViewSettings;
 
-  IOSSettings({this.notificationTypes, this.forceCleanup, this.logging, this.webViewSettings});
+  IOSSettings({
+    this.notificationTypes,
+    this.forceCleanup,
+    this.logging,
+    this.webViewSettings,
+  });
 
-  Map<String, dynamic> toJson() =>
-      {
+  Map<String, dynamic> toJson() => {
         'notificationTypes': notificationTypes,
         'forceCleanup': forceCleanup,
         'logging': logging,
-        'webViewSettings': (this.webViewSettings != null)? this.webViewSettings!.toJson() : null
+        'webViewSettings': webViewSettings?.toJson()
       };
 }
 
@@ -119,12 +122,11 @@ class WebViewSettings {
 
   WebViewSettings({this.title, this.barTintColor, this.tintColor, this.titleColor});
 
-  Map<String, dynamic> toJson() =>
-      {
+  Map<String, dynamic> toJson() => {
         'title': title,
         'barTintColor': barTintColor,
         'titleColor': titleColor,
-        'tintColor': tintColor
+        'tintColor': tintColor,
       };
 }
 
@@ -134,13 +136,14 @@ class PrivacySettings {
   final bool? carrierInfoSendingDisabled;
   final bool? systemInfoSendingDisabled;
 
-  PrivacySettings({this.applicationCodePersistingDisabled,
-      this.userDataPersistingDisabled,
-      this.carrierInfoSendingDisabled,
-      this.systemInfoSendingDisabled});
+  PrivacySettings({
+    this.applicationCodePersistingDisabled,
+    this.userDataPersistingDisabled,
+    this.carrierInfoSendingDisabled,
+    this.systemInfoSendingDisabled,
+  });
 
-  Map<String, dynamic> toJson() =>
-      {
+  Map<String, dynamic> toJson() => {
         'applicationCodePersistingDisabled': applicationCodePersistingDisabled,
         'userDataPersistingDisabled': userDataPersistingDisabled,
         'carrierInfoSendingDisabled': carrierInfoSendingDisabled,
@@ -159,18 +162,19 @@ class NotificationAction {
   final String? textInputActionButtonTitle;
   final String? textInputPlaceholder;
 
-  NotificationAction({this.identifier,
-      this.title,
-      this.foreground,
-      this.authenticationRequired,
-      this.moRequired,
-      this.destructive,
-      this.icon,
-      this.textInputActionButtonTitle,
-      this.textInputPlaceholder});
+  NotificationAction({
+    this.identifier,
+    this.title,
+    this.foreground,
+    this.authenticationRequired,
+    this.moRequired,
+    this.destructive,
+    this.icon,
+    this.textInputActionButtonTitle,
+    this.textInputPlaceholder,
+  });
 
-  Map<String, dynamic> toJson() =>
-      {
+  Map<String, dynamic> toJson() => {
         'identifier': identifier,
         'title': title,
         'foreground': foreground,
@@ -181,21 +185,22 @@ class NotificationAction {
         'textInputActionButtonTitle': textInputActionButtonTitle,
         'textInputPlaceholder': textInputPlaceholder,
       };
-
 }
 
 class NotificationCategory {
   final String? identifier;
   final List<NotificationAction>? actions;
 
-  NotificationCategory({this.identifier, this.actions});
+  NotificationCategory({
+    this.identifier,
+    this.actions,
+  });
 
   Map<String, dynamic> toJson() {
     List<Map<String, dynamic>>? actions = this.actions!.map((i) => i.toJson()).toList();
     return {
       'identifier': identifier,
-      'actions': actions
+      'actions': actions,
     };
   }
-
 }

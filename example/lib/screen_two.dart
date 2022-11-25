@@ -9,8 +9,7 @@ class ScreenTwoDemo extends StatefulWidget {
 
 class _ScreenTwoDemoState extends State<ScreenTwoDemo>{
   @override
-  Widget build(BuildContext context) {
-    return Scaffold(
+  Widget build(BuildContext context) => Scaffold(
       appBar: AppBar(
         title: const Text("Screen Two"),
       ),
@@ -23,5 +22,4 @@ class _ScreenTwoDemoState extends State<ScreenTwoDemo>{
         ),
       ),
     );
-  }
 }

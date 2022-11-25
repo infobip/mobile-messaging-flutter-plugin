@@ -3,15 +3,17 @@ class UserIdentity {
   final List<String>? emails;
   final String? externalUserId;
 
-  UserIdentity({this.phones, this.emails, this.externalUserId});
+  UserIdentity({
+    this.phones,
+    this.emails,
+    this.externalUserId,
+  });
 
-  Map<String, dynamic> toJson() =>
-      {
+  Map<String, dynamic> toJson() => {
         'phones': phones,
         'emails': emails,
-        'externalUserId': externalUserId
+        'externalUserId': externalUserId,
       };
-
 }
 
 class PersonalizeContext {
@@ -20,13 +22,14 @@ class PersonalizeContext {
   final bool? forceDepersonalize;
 
   PersonalizeContext({
-      this.userIdentity, this.userAttributes, this.forceDepersonalize
+    this.userIdentity,
+    this.userAttributes,
+    this.forceDepersonalize,
   });
 
-  Map<String, dynamic> toJson() =>
-      {
+  Map<String, dynamic> toJson() => {
         'userIdentity': userIdentity!.toJson(),
         'userAttributes': userAttributes,
-        'forceDepersonalize': forceDepersonalize
+        'forceDepersonalize': forceDepersonalize,
       };
 }

@@ -5,6 +5,8 @@
 // gestures. You can also use WidgetTester to find child widgets in the widget
 // tree, read text, and verify that the values of widget properties are correct.
 
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
@@ -25,11 +27,11 @@ void main() {
     int n = 0;
 
     //verify
-    asd.forEach((element) {
-      print("element.toString(): " + element.toString());
-      print("listItems[n].toString(): " + listItems[n].toString());
+    for (var element in asd) {
+      log("element.toString(): " + element.toString());
+      log("listItems[n].toString(): " + listItems[n].toString());
       expect(element.toString().contains(listItems[n]), true, reason: "Not found");
       n += 1;
-    });
+    }
   });
 }

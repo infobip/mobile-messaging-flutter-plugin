@@ -24,29 +24,30 @@ class Message {
   final String? inAppDismissTitle;
   final bool? chat;
 
-  Message(
-      {required this.messageId,
-      this.title,
-      this.body,
-      this.sound,
-      this.silent,
-      this.customPayload,
-      this.internalData,
-      this.receivedTimestamp,
-      this.seenDate,
-      this.contentUrl,
-      this.seen,
-      this.geo,
-      this.originalPayload,
-      this.vibrate,
-      this.icon,
-      this.category,
-      this.browserUrl,
-      this.deeplink,
-      this.webViewUrl,
-      this.inAppOpenTitle,
-      this.inAppDismissTitle,
-      this.chat});
+  Message({
+    required this.messageId,
+    this.title,
+    this.body,
+    this.sound,
+    this.silent,
+    this.customPayload,
+    this.internalData,
+    this.receivedTimestamp,
+    this.seenDate,
+    this.contentUrl,
+    this.seen,
+    this.geo,
+    this.originalPayload,
+    this.vibrate,
+    this.icon,
+    this.category,
+    this.browserUrl,
+    this.deeplink,
+    this.webViewUrl,
+    this.inAppOpenTitle,
+    this.inAppDismissTitle,
+    this.chat,
+  });
 
   Message.fromJson(Map<String, dynamic> json)
       : messageId = json['messageId'],

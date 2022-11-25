@@ -1,7 +1,5 @@
-import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
 import 'package:infobip_mobilemessaging/infobip_mobilemessaging.dart';
-import 'package:infobip_mobilemessaging/models/LibraryEvent.dart';
 import 'package:infobip_mobilemessaging/models/PersonalizeContext.dart';
 
 class FormData {
@@ -33,8 +31,7 @@ class _SignInHttpDemoState extends State<SignInHttpDemo> {
   bool externalUserIdUsed = false;
 
   @override
-  Widget build(BuildContext context) {
-    return Scaffold(
+  Widget build(BuildContext context) => Scaffold(
       appBar: AppBar(
         title: const Text('Personalize'),
       ),
@@ -71,7 +68,7 @@ class _SignInHttpDemoState extends State<SignInHttpDemo> {
                       showDialog<void>(
                         context: context,
                         builder: (context) => AlertDialog(
-                          content: Text('Personalized successfully'),
+                          content: const Text('Personalized successfully'),
                           actions: [
                             TextButton(
                               child: const Text('Done'),
@@ -98,7 +95,6 @@ class _SignInHttpDemoState extends State<SignInHttpDemo> {
         ),
       ),
     );
-  }
 
   void _showDialog(String message) {
     showDialog<void>(
@@ -116,12 +112,10 @@ class _SignInHttpDemoState extends State<SignInHttpDemo> {
   }
 }
 
-FormData _$FormDataFromJson(Map<String, dynamic> json) {
-  return FormData(
+FormData _$FormDataFromJson(Map<String, dynamic> json) => FormData(
       email: json['email'] as String,
       phone: json['phone'] as String,
       externalUserId: json['externalUserId'] as String);
-}
 
 Map<String, dynamic> _$FormDataToJson(FormData instance) => <String, dynamic>{
       'email': instance.email,
