@@ -1,3 +1,14 @@
+# 0.8.5
+## Added
+- Added android:exported=true inside example app to correctly run on Android 12
+
+## Fixed
+- Fix render error inside example app for delete all message storage
+
+## Changed
+- Added linter 
+- Reformatted and refactored code according to linter rules
+- Remove redundant null checks 
 # 0.8.4
 ## Added
 - New wiki page about possible possible ways of setting up Firebase
