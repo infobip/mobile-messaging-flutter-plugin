@@ -3,6 +3,7 @@ package org.infobip.plugins.mobilemessaging.flutter.infobip_mobilemessaging;
 import static org.infobip.plugins.mobilemessaging.flutter.common.LibraryEvent.broadcastEventMap;
 import static org.infobip.plugins.mobilemessaging.flutter.common.LibraryEvent.messageBroadcastEventMap;
 
+import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.BroadcastReceiver;
@@ -10,6 +11,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
+import android.os.Build;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -27,8 +29,8 @@ import org.infobip.mobile.messaging.MobileMessagingProperty;
 import org.infobip.mobile.messaging.SuccessPending;
 import org.infobip.mobile.messaging.User;
 import org.infobip.mobile.messaging.api.appinstance.UserCustomEventAtts;
-import org.infobip.mobile.messaging.api.shaded.google.gson.Gson;
-import org.infobip.mobile.messaging.api.shaded.google.gson.reflect.TypeToken;
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 import org.infobip.mobile.messaging.api.support.http.serialization.JsonSerializer;
 import org.infobip.mobile.messaging.chat.InAppChat;
 import org.infobip.mobile.messaging.interactive.InteractiveEvent;
@@ -44,6 +46,7 @@ import org.infobip.plugins.mobilemessaging.flutter.common.Configuration;
 import org.infobip.plugins.mobilemessaging.flutter.common.ErrorCodes;
 import org.infobip.plugins.mobilemessaging.flutter.common.InitHelper;
 import org.infobip.plugins.mobilemessaging.flutter.common.InstallationJson;
+import org.infobip.plugins.mobilemessaging.flutter.common.PermissionsRequestManager;
 import org.infobip.plugins.mobilemessaging.flutter.common.PersonalizationCtx;
 import org.infobip.plugins.mobilemessaging.flutter.common.UserJson;
 import org.json.JSONArray;
@@ -57,7 +60,7 @@ import java.util.List;
 import java.util.Map;
 
 import io.flutter.Log;
-import io.flutter.embedding.android.FlutterActivity;
+import io.flutter.plugin.common.PluginRegistry;
 import io.flutter.embedding.engine.plugins.FlutterPlugin;
 import io.flutter.embedding.engine.plugins.activity.ActivityAware;
 import io.flutter.embedding.engine.plugins.activity.ActivityPluginBinding;
@@ -72,7 +75,7 @@ import io.flutter.plugin.common.MethodChannel.MethodCallHandler;
 /**
  * InfobipMobilemessagingPlugin
  */
-public class InfobipMobilemessagingPlugin implements FlutterPlugin, MethodCallHandler, ActivityAware, ServiceAware {
+public class InfobipMobilemessagingPlugin implements FlutterPlugin, MethodCallHandler, ActivityAware, ServiceAware, PermissionsRequestManager.PermissionsRequester, PluginRegistry.RequestPermissionsResultListener {
 
   private static final String TAG = "MobileMessagingFlutter";
 
@@ -86,6 +89,12 @@ public class InfobipMobilemessagingPlugin implements FlutterPlugin, MethodCallHa
   private StreamHandler broadcastHandler = new StreamHandler();
   private Activity activity = null;
   private BinaryMessenger binaryMessenger = null;
+  private PermissionsRequestManager permissionsRequestManager;
+  @Nullable private ActivityPluginBinding pluginBinding;
+
+  public InfobipMobilemessagingPlugin() {
+    permissionsRequestManager = new PermissionsRequestManager(this);
+  }
 
   @Override
   public void onAttachedToEngine(@NonNull FlutterPluginBinding flutterPluginBinding) {
@@ -174,6 +183,9 @@ public class InfobipMobilemessagingPlugin implements FlutterPlugin, MethodCallHa
       case "sendContextualData":
         sendContextualData(call, result);
         break;
+      case "registerForAndroidRemoteNotifications":
+        registerForAndroidRemoteNotifications();
+        break;
       default:
         result.notImplemented();
         break;
@@ -227,21 +239,34 @@ public class InfobipMobilemessagingPlugin implements FlutterPlugin, MethodCallHa
     methodChannel.setMethodCallHandler(this);
     broadcastChannel.setStreamHandler(broadcastHandler);
     registerReceiver();
+    binding.addRequestPermissionsResultListener(this);
+    pluginBinding = binding;
   }
 
   @Override
   public void onDetachedFromActivityForConfigChanges() {
     Log.d(TAG, "onDetachedFromActivityForConfigChanges");
+    activity = null;
+    if (pluginBinding != null) {
+      pluginBinding.removeRequestPermissionsResultListener(this);
+    }
   }
 
   @Override
   public void onReattachedToActivityForConfigChanges(@NonNull ActivityPluginBinding binding) {
     Log.d(TAG, "onReattachedToActivityForConfigChanges");
+    activity = binding.getActivity();
+    binding.addRequestPermissionsResultListener(this);
+    pluginBinding = binding;
   }
 
   @Override
   public void onDetachedFromActivity() {
     Log.d(TAG, "onDetachedFromActivity");
+    activity = null;
+    if (pluginBinding != null) {
+      pluginBinding.removeRequestPermissionsResultListener(this);
+    }
   }
 
   // ActivityAware end
@@ -810,5 +835,52 @@ public class InfobipMobilemessagingPlugin implements FlutterPlugin, MethodCallHa
 
       return customEvent;
     }
+  }
+
+  public void registerForAndroidRemoteNotifications() {
+    Log.w(TAG, "calling register");
+    if (activity != null) {
+      permissionsRequestManager.isRequiredPermissionsGranted(activity,this);
+    } else {
+      Log.e(TAG, "Cannot register for remote notifications because activity isn't exist");
+    }
+  }
+
+  // PermissionsRequester for Post Notifications Permission
+  @Override
+  public boolean onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+    if (requestCode == PermissionsRequestManager.REQ_CODE_POST_NOTIFICATIONS_PERMISSIONS) {
+      permissionsRequestManager.onRequestPermissionsResult(permissions, grantResults);
+    }
+    return true;
+  }
+
+  @Override
+  public void onPermissionGranted() {
+    Log.i(TAG, "Post Notification permission granted");
+  }
+
+  @NonNull
+  @Override
+  public String[] requiredPermissions() {
+    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+      return new String[]{Manifest.permission.POST_NOTIFICATIONS};
+    }
+    return new String[0];
+  }
+
+  @Override
+  public boolean shouldShowPermissionsNotGrantedDialogIfShownOnce() {
+    return true;
+  }
+
+  @Override
+  public int permissionsNotGrantedDialogTitle() {
+    return org.infobip.mobile.messaging.resources.R.string.mm_post_notifications_settings_title;
+  }
+
+  @Override
+  public int permissionsNotGrantedDialogMessage() {
+    return org.infobip.mobile.messaging.resources.R.string.mm_post_notifications_settings_message;
   }
 }

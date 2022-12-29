@@ -175,6 +175,15 @@ class InfobipMobilemessaging {
 
     return _defaultMessageStorage;
   }
+
+  static Future<void> registerForAndroidRemoteNotifications() async {
+    if (Platform.isIOS) {
+      log("it's not supported on the iOS platform");
+      return;
+    }
+
+    await _channel.invokeMethod('registerForAndroidRemoteNotifications');
+  }
 }
 
 class _DefaultMessageStorage extends MessageStorage {

@@ -15,7 +15,7 @@ The document describes plugin integration steps for your Flutter project.
 
   For Android project:
   - Android Studio
-  - API Level: 19 (Android	4.4 - 4.4.4 KitKat)
+  - Supported API Levels: 19 (Android 4.4 - 4.4.4 KitKat) - 33 (Android 13.0)
 
   ## Quick start guide
   This guide is designed to get you up and running with Mobile Messaging SDK plugin for Flutter
@@ -78,7 +78,12 @@ The document describes plugin integration steps for your Flutter project.
       4. [Integrate Notification Service Extension](https://github.com/infobip/mobile-messaging-flutter-plugin/wiki/Delivery-improvements-and-rich-content-notifications) into your app in order to obtain:
           - more accurate processing of messages and delivery stats
           - support of rich notifications on the lock screen
-  5. Use plugin at yours dart code:
+
+  5. Configure Android
+
+      Starting from Android 13, Google requires to ask user for notification permission. Follow this <a href="https://github.com/infobip/mobile-messaging-flutter-plugin/wiki/Android-13-Notification-Permission-Handling" target="_blank">guide</a> to make a permission request.
+      
+  6. Use plugin at yours dart code:
   ```dart
   import 'package:infobip_mobilemessaging/infobip_mobilemessaging.dart';
   import 'package:infobip_mobilemessaging/models/Configuration.dart';

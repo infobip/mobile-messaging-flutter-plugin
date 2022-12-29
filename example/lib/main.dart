@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:developer';
+import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:infobip_mobilemessaging/infobip_mobilemessaging.dart';
@@ -295,6 +296,14 @@ class _HomePageState extends State<HomePage> {
                   ),
                 );
               }),
+          if (Platform.isAndroid)
+            ListTile(
+              title: const Text('Register For Android 13 Notifications'),
+              onTap: () {
+                log('trying to register for remote notifications');
+                InfobipMobilemessaging.registerForAndroidRemoteNotifications();
+              },
+            ),
           ListTile(
               title: const Text('Depersonalize Installation'),
               onTap: () {

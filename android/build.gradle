@@ -9,7 +9,7 @@ buildscript {
     }
 
     dependencies {
-        classpath 'com.android.tools.build:gradle:4.1.0'
+        classpath 'com.android.tools.build:gradle:7.2.2'
     }
 }
 
@@ -24,7 +24,7 @@ rootProject.allprojects {
 apply plugin: 'com.android.library'
 
 android {
-    compileSdkVersion 31
+    compileSdkVersion 33
 
     defaultConfig {
         minSdkVersion 16
@@ -39,11 +39,13 @@ android {
 }
 
 dependencies {
-    def mmVersion = '6.4.2'
+    def mmVersion = '7.3.1'
     implementation ("com.infobip:infobip-mobile-messaging-android-sdk:$mmVersion@aar") {
         transitive = true
     }
+    implementation 'com.google.code.gson:gson:2.9.0'
     implementation 'com.google.android.material:material:1.0.0'
     implementation "com.infobip:infobip-mobile-messaging-android-chat-sdk:$mmVersion@aar"
     implementation 'androidx.exifinterface:exifinterface:1.1.0'
+    implementation "com.infobip:infobip-mobile-messaging-android-resources:$mmVersion@aar"
 }

@@ -31,6 +31,7 @@ public class InitHelper {
     public MobileMessaging.Builder configurationBuilder() {
         MobileMessaging.Builder builder = new MobileMessaging
                 .Builder(activity.getApplication())
+                .withoutRegisteringForRemoteNotifications()
                 .withApplicationCode(configuration.getApplicationCode());
 
         // Privacy
