@@ -1,3 +1,6 @@
+# 0.9.0
+## Added
+- Android 13 Support
 # 0.8.5
 ## Added
 - Added android:exported=true inside example app to correctly run on Android 12
