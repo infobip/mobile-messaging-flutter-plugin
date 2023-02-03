@@ -81,21 +81,22 @@ public class PermissionsRequestManager {
     }
 
     public boolean isRequiredPermissionsGranted(Activity activity, PluginRegistry.RequestPermissionsResultListener listener) {
+        final Activity _activity = activity;
         final Set<String> permissionsToAsk = new ArraySet<>();
         final Set<String> neverAskPermissions = new ArraySet<>();
 
         for (String permission : permissionsRequester.requiredPermissions()) {
-            if (!permissionsHelper.hasPermissionInManifest(activity, permission)) {
+            if (!permissionsHelper.hasPermissionInManifest(_activity, permission)) {
                 return false;
             }
-            checkPermission(activity, permission, permissionsToAsk, neverAskPermissions);
+            checkPermission(_activity, permission, permissionsToAsk, neverAskPermissions);
         }
 
         if (neverAskPermissions.size() > 0) {
-            showSettingsDialog(activity, new DialogInterface.OnClickListener() {
+            showSettingsDialog(_activity, new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
-                    openSettings((Activity) activity);
+                    openSettings(_activity);
                     dialog.dismiss();
                 }
             }, neverAskPermissions.toString());
