@@ -1,3 +1,6 @@
+# 0.9.1
+## Fixed
+- minor improvement of the android related code connected with asking the permissions
 # 0.9.0
 ## Added
 - Android 13 Support
