@@ -39,7 +39,7 @@ android {
 }
 
 dependencies {
-    def mmVersion = '7.3.1'
+    def mmVersion = '7.6.2'
     implementation ("com.infobip:infobip-mobile-messaging-android-sdk:$mmVersion@aar") {
         transitive = true
     }

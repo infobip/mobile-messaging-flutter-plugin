@@ -471,7 +471,7 @@ public class InfobipMobilemessagingPlugin implements FlutterPlugin, MethodCallHa
       }
 
       if (eventSink != null) {
-        Log.d(TAG, "Send  event to flutter: " + event);
+        Log.d(TAG, "Sending event to flutter: " + event);
         eventSink.success(eventData.toString());
       } else {
         Log.d(TAG, "add event to cached: " + event);
