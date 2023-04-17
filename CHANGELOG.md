@@ -1,3 +1,6 @@
+# 0.9.2
+## Fixed
+- Bug with using account's location baseUrl on Android.
 # 0.9.1
 ## Fixed
 - minor improvement of the android related code connected with asking the permissions
