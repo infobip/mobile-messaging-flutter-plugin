@@ -21,6 +21,7 @@ Configuration get configurationModelExample => Configuration(
           notificationTypes: ['sound'],
           forceCleanup: true,
           logging: true,
+          withoutRegisteringForRemoteNotifications: true,
           webViewSettings: WebViewSettings(
               title: 'webViewTitle',
               barTintColor: '#012345',

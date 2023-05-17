@@ -98,19 +98,22 @@ class IOSSettings {
   final bool? forceCleanup;
   final bool? logging;
   final WebViewSettings? webViewSettings;
+  final bool? withoutRegisteringForRemoteNotifications;
 
   IOSSettings({
     this.notificationTypes,
     this.forceCleanup,
     this.logging,
     this.webViewSettings,
+    this.withoutRegisteringForRemoteNotifications
   });
 
   Map<String, dynamic> toJson() => {
         'notificationTypes': notificationTypes,
         'forceCleanup': forceCleanup,
         'logging': logging,
-        'webViewSettings': webViewSettings?.toJson()
+        'webViewSettings': webViewSettings?.toJson(),
+        'withoutRegisteringForRemoteNotifications': withoutRegisteringForRemoteNotifications
       };
 }
 

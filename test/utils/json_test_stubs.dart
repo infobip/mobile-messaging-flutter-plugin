@@ -20,6 +20,7 @@ Map<String, dynamic> get configurationExampleJson => {
         'notificationTypes': ['sound'],
         'forceCleanup': true,
         'logging': true,
+        'withoutRegisteringForRemoteNotifications': true,
         'webViewSettings': {
           'title': 'webViewTitle',
           'barTintColor': '#012345',

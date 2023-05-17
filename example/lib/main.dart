@@ -79,7 +79,8 @@ class _MyAppState extends State<MyApp> {
         iosSettings: mmconfiguration.IOSSettings(
             notificationTypes: ["alert", "badge", "sound"],
             forceCleanup: false,
-            logging: true
+            logging: true,
+            withoutRegisteringForRemoteNotifications: false
         )
     ));
     InfobipMobilemessaging.setupiOSChatSettings(IOSChatSettings(
@@ -302,6 +303,14 @@ class _HomePageState extends State<HomePage> {
               onTap: () {
                 log('trying to register for remote notifications');
                 InfobipMobilemessaging.registerForAndroidRemoteNotifications();
+              },
+            ),
+          if (Platform.isIOS)
+            ListTile(
+              title: const Text('Register For iOS Notifications'),
+              onTap: () {
+                log('trying to register for ios remote notifications');
+                InfobipMobilemessaging.registerForRemoteNotifications();
               },
             ),
           ListTile(

@@ -113,6 +113,8 @@ public class SwiftInfobipMobilemessagingPlugin: NSObject, FlutterPlugin {
             defaultMessageStorage_delete(call: call, result: result)
         } else if call.method == "defaultMessageStorage_deleteAll" {
             defaultMessageStorage_deleteAll(result: result)
+        } else if call.method == "registerForRemoteNotifications" {
+            registerForRemoteNotifications()
         } else {
             result(FlutterError( code: "NotImplemented",
                           message: "Error NotImplemented",
@@ -161,6 +163,10 @@ public class SwiftInfobipMobilemessagingPlugin: NSObject, FlutterPlugin {
         
         if configuration.defaultMessageStorage {
             mobileMessaging = mobileMessaging?.withDefaultMessageStorage()
+        }
+
+        if (configuration.withoutRegisteringForRemoteNotifications) {
+            mobileMessaging = mobileMessaging?.withoutRegisteringForRemoteNotifications()
         }
         
         mobileMessaging?.start()
@@ -455,6 +461,10 @@ public class SwiftInfobipMobilemessagingPlugin: NSObject, FlutterPlugin {
     
     func resetMessageCounter(){
         MobileMessaging.inAppChat?.resetMessageCounter()
+    }
+
+    func registerForRemoteNotifications(){
+        MobileMessaging.registerForRemoteNotifications()
     }
     
     

@@ -25,6 +25,7 @@ class Configuration {
         static let pluginVersion = "pluginVersion"
         static let notificationCategories = "notificationCategories"
         static let webViewSettings = "webViewSettings"
+        static let withoutRegisteringForRemoteNotifications = "withoutRegisteringForRemoteNotifications"
     }
     
     let appCode: String
@@ -39,6 +40,7 @@ class Configuration {
     let pluginVersion: String
     let categories: [MMNotificationCategory]?
     let webViewSettings: [String: AnyObject]?
+    let withoutRegisteringForRemoteNotifications: Bool
     
     init?(rawConfig: [String: AnyObject]) {
         guard let appCode = rawConfig[Configuration.Keys.applicationCode] as? String,
@@ -51,6 +53,7 @@ class Configuration {
         self.inAppChatEnabled = rawConfig[Configuration.Keys.inAppChatEnabled].unwrap(orDefault: false)
         self.forceCleanup = ios[Configuration.Keys.forceCleanup].unwrap(orDefault: false)
         self.logging = ios[Configuration.Keys.logging].unwrap(orDefault: false)
+        self.withoutRegisteringForRemoteNotifications = ios[Configuration.Keys.withoutRegisteringForRemoteNotifications].unwrap(orDefault: false)
         
         if let rawPrivacySettings = rawConfig[Configuration.Keys.privacySettings] as? [String: Any] {
             var ps = [String: Any]()
