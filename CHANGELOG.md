@@ -1,3 +1,6 @@
+# 0.9.3
+## Added
+- option to not start mobileMessaging plugin on iOS - withoutRegisteringForRemoteNotifications.
 # 0.9.2
 ## Fixed
 - Bug with using account's location baseUrl on Android.
