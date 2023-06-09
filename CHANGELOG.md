@@ -1,3 +1,10 @@
+# 1.0.0
+## Changed
+- Android minimum SDK level is 19 now
+- Minimum Flutter version is 3.3.0+
+- Naming of files and events
+## Fixed
+- Plugin events' logging
 # 0.9.3
 ## Added
 - option to not start mobileMessaging plugin on iOS - withoutRegisteringForRemoteNotifications.
