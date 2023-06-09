@@ -1,9 +1,9 @@
-import 'package:infobip_mobilemessaging/models/Configuration.dart';
-import 'package:infobip_mobilemessaging/models/IOSChatSettings.dart';
-import 'package:infobip_mobilemessaging/models/Installation.dart';
-import 'package:infobip_mobilemessaging/models/Message.dart';
-import 'package:infobip_mobilemessaging/models/PersonalizeContext.dart';
-import 'package:infobip_mobilemessaging/models/UserData.dart';
+import 'package:infobip_mobilemessaging/models/configuration.dart';
+import 'package:infobip_mobilemessaging/models/installation.dart';
+import 'package:infobip_mobilemessaging/models/ios_chat_settings.dart';
+import 'package:infobip_mobilemessaging/models/message.dart';
+import 'package:infobip_mobilemessaging/models/personalize_context.dart';
+import 'package:infobip_mobilemessaging/models/user_data.dart';
 
 Configuration get configurationModelExample => Configuration(
       applicationCode: 'abc',

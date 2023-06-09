@@ -4,34 +4,34 @@ class LibraryEvent {
   final dynamic payload;
 
   // Occurs when an APNs device token is received. Contains device token - a hex-encoded string received from APNS. Returns device token as hex-encoded string.
-  static const String TOKEN_RECEIVED = "tokenReceived";
+  static const String tokenReceived = "tokenReceived";
 
   // Occurs when the registration is updated on backend server. Returns internalId - string for the registered user.
-  static const String REGISTRATION_UPDATED = "registrationUpdated";
+  static const String registrationUpdated = "registrationUpdated";
 
   // Occurs when save request to the server is successfully sent.
-  static const String INSTALLATION_UPDATED = "installationUpdated";
+  static const String installationUpdated = "installationUpdated";
 
   // Occurs when save request to the server is successfully sent.
-  static const String USER_UPDATED = "userUpdated";
+  static const String userUpdated = "userUpdated";
 
   // Occurs when request for personalization is successfully sent to the server.
-  static const String PERSONALIZED = "personalized";
+  static const String personalized = "personalized";
 
   // Occurs when request for depersonalization is successfully sent to the server.
-  static const String DEPERSONALIZED = "depersonalized";
+  static const String depersonalized = "depersonalized";
 
   // Occurs when notification is tapped.
-  static const String NOTIFICATION_TAPPED = "notificationTapped";
+  static const String notificationTapped = "notificationTapped";
 
   // Occurs when user taps on action inside notification or enters text as part of the notification response.
-  static const String NOTIFICATION_ACTION_TAPPED = "actionTapped";
+  static const String actionTapped = "actionTapped";
 
   // Occurs when new message arrives, see separate section for all available message fields
-  static const String MESSAGE_RECEIVED = "messageReceived";
+  static const String messageReceived = "messageReceived";
 
   // Occurs when in-app chat counter is updated.
-  static const String UNREAD_MESSAGE_COUNTER_UPDATED = "inAppChat.unreadMessageCounterUpdated";
+  static const String unreadMessageCounterUpdated = "inAppChat.unreadMessageCounterUpdated";
 
   LibraryEvent({
     required this.eventName,

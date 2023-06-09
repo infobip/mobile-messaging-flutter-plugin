@@ -7,7 +7,7 @@ The document describes plugin integration steps for your Flutter project.
 * [Quick start guide](#quick-start-guide)
 
 ## Requirements
-- Flutter 2.12+
+- Flutter 3.3.0+
 
 For iOS project:
 - Xcode 13.4.1
@@ -102,8 +102,8 @@ This guide is designed to get you up and running with Mobile Messaging SDK plugi
 4. Use plugin in your Dart code:
     ```dart
     import 'package:infobip_mobilemessaging/infobip_mobilemessaging.dart';
-    import 'package:infobip_mobilemessaging/models/Configuration.dart';
-    import 'package:infobip_mobilemessaging/models/LibraryEvent.dart';
+    import 'package:infobip_mobilemessaging/models/configuration.dart';
+    import 'package:infobip_mobilemessaging/models/library_event.dart';
 
     ...
 

@@ -4,12 +4,12 @@ class ScreenTwoDemo extends StatefulWidget {
   const ScreenTwoDemo({Key key,}) : super(key: key);
 
   @override
-  _ScreenTwoDemoState createState() => _ScreenTwoDemoState();
+  State createState() => _ScreenTwoDemoState();
 }
 
 class _ScreenTwoDemoState extends State<ScreenTwoDemo>{
   @override
-  Widget build(BuildContext context) => Scaffold(
+  Widget build(context) => Scaffold(
       appBar: AppBar(
         title: const Text("Screen Two"),
       ),

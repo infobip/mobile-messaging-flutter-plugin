@@ -7,14 +7,14 @@ import 'dart:io';
 import 'package:flutter/services.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 
-import 'models/Configuration.dart';
-import 'models/IOSChatSettings.dart';
-import 'models/Installation.dart';
-import 'models/LibraryEvent.dart';
-import 'models/Message.dart';
-import 'models/MessageStorage.dart';
-import 'models/PersonalizeContext.dart';
-import 'models/UserData.dart';
+import 'models/configuration.dart';
+import 'models/installation.dart';
+import 'models/ios_chat_settings.dart';
+import 'models/library_event.dart';
+import 'models/message.dart';
+import 'models/message_storage.dart';
+import 'models/personalize_context.dart';
+import 'models/user_data.dart';
 
 class InfobipMobilemessaging {
   static const MethodChannel _channel = MethodChannel('infobip_mobilemessaging');
@@ -26,12 +26,12 @@ class InfobipMobilemessaging {
     if (callbacks.containsKey(libraryEvent.eventName)) {
       callbacks[libraryEvent.eventName]?.forEach((callback) {
         log('Calling ${libraryEvent.eventName} with payload ${libraryEvent.payload == null ? 'NULL' : libraryEvent.payload.toString()}');
-        if (libraryEvent.eventName == LibraryEvent.MESSAGE_RECEIVED ||
-            libraryEvent.eventName == LibraryEvent.NOTIFICATION_TAPPED) {
+        if (libraryEvent.eventName == LibraryEvent.messageReceived ||
+            libraryEvent.eventName == LibraryEvent.notificationTapped) {
           callback(Message.fromJson(libraryEvent.payload));
-        } else if (libraryEvent.eventName == LibraryEvent.INSTALLATION_UPDATED) {
+        } else if (libraryEvent.eventName == LibraryEvent.installationUpdated) {
           callback(Installation.fromJson(libraryEvent.payload).toString());
-        } else if (libraryEvent.eventName == LibraryEvent.USER_UPDATED) {
+        } else if (libraryEvent.eventName == LibraryEvent.userUpdated) {
           callback(UserData.fromJson(libraryEvent.payload));
         } else if (libraryEvent.payload != null) {
           callback(libraryEvent.payload);

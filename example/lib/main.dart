@@ -4,12 +4,12 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:infobip_mobilemessaging/infobip_mobilemessaging.dart';
-import 'package:infobip_mobilemessaging/models/Configuration.dart' as mmconfiguration;
-import 'package:infobip_mobilemessaging/models/IOSChatSettings.dart';
-import 'package:infobip_mobilemessaging/models/Installation.dart';
-import 'package:infobip_mobilemessaging/models/LibraryEvent.dart';
-import 'package:infobip_mobilemessaging/models/Message.dart';
-import 'package:infobip_mobilemessaging/models/UserData.dart';
+import 'package:infobip_mobilemessaging/models/configuration.dart' as mmconfiguration;
+import 'package:infobip_mobilemessaging/models/installation.dart';
+import 'package:infobip_mobilemessaging/models/ios_chat_settings.dart';
+import 'package:infobip_mobilemessaging/models/library_event.dart';
+import 'package:infobip_mobilemessaging/models/message.dart';
+import 'package:infobip_mobilemessaging/models/user_data.dart';
 
 import 'language.dart';
 import 'screen_one.dart';
@@ -92,12 +92,12 @@ class _MyAppState extends State<MyApp> {
       navigationBarTitleColor: '#000000',
     ));
 
-    InfobipMobilemessaging.on(LibraryEvent.TOKEN_RECEIVED, (String token) {
+    InfobipMobilemessaging.on(LibraryEvent.tokenReceived, (String token) {
       log('Callback. TOKEN_RECEIVED event: $token');
       _HomePageState.addLibraryEvent('Token Received');
     });
     InfobipMobilemessaging.on(
-        LibraryEvent.MESSAGE_RECEIVED,
+        LibraryEvent.messageReceived,
         (Message message) => {
               log('Callback. MESSAGE_RECEIVED event, message title: ${message.title} body: ${message.body}'),
               _HomePageState.addLibraryEvent('Message Received'),
@@ -105,44 +105,44 @@ class _MyAppState extends State<MyApp> {
               log(InfobipMobilemessaging.defaultMessageStorage().findAll().toString())
             });
     InfobipMobilemessaging.on(
-        LibraryEvent.USER_UPDATED,
+        LibraryEvent.userUpdated,
         (UserData userData) => {
               log('Callback. USER_UPDATED event: $userData'),
               _HomePageState.addLibraryEvent('User Updated')
             });
     InfobipMobilemessaging.on(
-        LibraryEvent.PERSONALIZED,
+        LibraryEvent.personalized,
         (event) => {
               log('Callback. PERSONALIZED event: $event'),
               _HomePageState.addLibraryEvent('Personalized')
             });
     InfobipMobilemessaging.on(
-        LibraryEvent.INSTALLATION_UPDATED,
+        LibraryEvent.installationUpdated,
         (String event) => {
               log('Callback. INSTALLATION_UPDATED event: $event'),
               _HomePageState.addLibraryEvent('Installation Updated')
             });
     InfobipMobilemessaging.on(
-        LibraryEvent.DEPERSONALIZED,
+        LibraryEvent.depersonalized,
         (event) => {
               log('Callback. DEPERSONALIZED event: $event'),
               _HomePageState.addLibraryEvent('Depersonalized')
             });
     InfobipMobilemessaging.on(
-        LibraryEvent.NOTIFICATION_ACTION_TAPPED,
+        LibraryEvent.actionTapped,
         (event) => {
               log('Callback. NOTIFICATION_ACTION_TAPPED event: $event'),
               _HomePageState.addLibraryEvent('Notification Action Tapped')
             });
     InfobipMobilemessaging.on(
-        LibraryEvent.NOTIFICATION_TAPPED,
+        LibraryEvent.notificationTapped,
         (Message message) => {
               log('Callback. NOTIFICATION_TAPPED event: $message'),
               _HomePageState.addLibraryEvent('Notification Tapped'),
               if (message.chat) {log('Chat Message Tapped')}
             });
     InfobipMobilemessaging.on(
-        LibraryEvent.REGISTRATION_UPDATED,
+        LibraryEvent.registrationUpdated,
         (String token) => {
               log('Callback. REGISTRATION_UPDATED event: $token'),
               _HomePageState.addLibraryEvent('Registration Updated')
@@ -385,7 +385,7 @@ class _HomePageState extends State<HomePage> {
               onTap: () {
                 log('Tile "Unregister Deeplink on Tap" tapped');
                 InfobipMobilemessaging.unregister(
-                    LibraryEvent.NOTIFICATION_TAPPED, storedFunction);
+                    LibraryEvent.notificationTapped, storedFunction);
               }),
           ListTile(
               title: const Text('Unregister All Handlers'),

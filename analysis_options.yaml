@@ -22,6 +22,8 @@ linter:
   # `// ignore_for_file: name_of_lint` syntax on the line or in the file
   # producing the lint.
   rules:
+    constant_identifier_names:
+      ignore_for_file: installation.dart
     directives_ordering: true
     prefer_relative_imports: true
     prefer_expression_function_bodies: true

@@ -1,7 +1,7 @@
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:infobip_mobilemessaging/infobip_mobilemessaging.dart';
-import 'package:infobip_mobilemessaging/models/Configuration.dart';
+import 'package:infobip_mobilemessaging/models/configuration.dart';
 
 void main() {
   const MethodChannel infobipChannel = MethodChannel('infobip_mobilemessaging');
