@@ -42,7 +42,7 @@ class MyApp extends StatefulWidget {
   const MyApp({Key key}) : super(key: key);
 
   @override
-  _MyAppState createState() => _MyAppState();
+  State createState() => _MyAppState();
 }
 
 final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
@@ -52,12 +52,13 @@ handleDeeplinkEvent(Message message) {
     Uri uri = Uri.parse(message.deeplink.toString());
     List<String> pathSegments = uri.pathSegments;
     for (var pathSegment in pathSegments) {
-      navigatorKey.currentState.pushNamed('/' + pathSegment);
+      navigatorKey.currentState.pushNamed('/$pathSegment');
     }
   }
 }
 
 var storedFunction = (Message message) => handleDeeplinkEvent(message);
+
 class _MyAppState extends State<MyApp> {
   @override
   void initState() {
@@ -90,66 +91,61 @@ class _MyAppState extends State<MyApp> {
       navigationBarColor: '#c41c00',
       navigationBarTitleColor: '#000000',
     ));
-    InfobipMobilemessaging.on(LibraryEvent.TOKEN_RECEIVED, (String token) {
-      log("Callback. TOKEN_RECEIVED event:" + token);
-      _HomePageState.addLibraryEvent("Token Received");
-    });
 
+    InfobipMobilemessaging.on(LibraryEvent.TOKEN_RECEIVED, (String token) {
+      log('Callback. TOKEN_RECEIVED event: $token');
+      _HomePageState.addLibraryEvent('Token Received');
+    });
     InfobipMobilemessaging.on(
         LibraryEvent.MESSAGE_RECEIVED,
         (Message message) => {
-              log("Callback. MESSAGE_RECEIVED event, message title: " +
-                  message.title +
-                  " body: " +
-                  message.body),
-              _HomePageState.addLibraryEvent("Message Received"),
-              log("defaultMessageStorage().findAll():"),
+              log('Callback. MESSAGE_RECEIVED event, message title: ${message.title} body: ${message.body}'),
+              _HomePageState.addLibraryEvent('Message Received'),
+              log('defaultMessageStorage().findAll():'),
               log(InfobipMobilemessaging.defaultMessageStorage().findAll().toString())
             });
     InfobipMobilemessaging.on(
         LibraryEvent.USER_UPDATED,
-        (event) => {
-              log("Callback. USER_UPDATED event:" + event.toString()),
-              _HomePageState.addLibraryEvent("User Updated")
+        (UserData userData) => {
+              log('Callback. USER_UPDATED event: $userData'),
+              _HomePageState.addLibraryEvent('User Updated')
             });
     InfobipMobilemessaging.on(
         LibraryEvent.PERSONALIZED,
         (event) => {
-              log("Callback. PERSONALIZED event:" + event.toString()),
-              _HomePageState.addLibraryEvent("Personalized")
+              log('Callback. PERSONALIZED event: $event'),
+              _HomePageState.addLibraryEvent('Personalized')
             });
     InfobipMobilemessaging.on(
         LibraryEvent.INSTALLATION_UPDATED,
         (String event) => {
-              log("Callback. INSTALLATION_UPDATED event:" + event.toString()),
-              _HomePageState.addLibraryEvent("Installation Updated")
+              log('Callback. INSTALLATION_UPDATED event: $event'),
+              _HomePageState.addLibraryEvent('Installation Updated')
             });
     InfobipMobilemessaging.on(
         LibraryEvent.DEPERSONALIZED,
         (event) => {
-              log("Callback. DEPERSONALIZED event:" + event.toString()),
-              _HomePageState.addLibraryEvent("Depersonalized")
+              log('Callback. DEPERSONALIZED event: $event'),
+              _HomePageState.addLibraryEvent('Depersonalized')
             });
     InfobipMobilemessaging.on(
         LibraryEvent.NOTIFICATION_ACTION_TAPPED,
         (event) => {
-              log("Callback. NOTIFICATION_ACTION_TAPPED event:" +
-                  event.toString()),
-              _HomePageState.addLibraryEvent("Notification Action Tapped")
+              log('Callback. NOTIFICATION_ACTION_TAPPED event: $event'),
+              _HomePageState.addLibraryEvent('Notification Action Tapped')
             });
     InfobipMobilemessaging.on(
         LibraryEvent.NOTIFICATION_TAPPED,
         (Message message) => {
-              log(
-                  "Callback. NOTIFICATION_TAPPED event:" + message.toString()),
-              _HomePageState.addLibraryEvent("Notification Tapped"),
+              log('Callback. NOTIFICATION_TAPPED event: $message'),
+              _HomePageState.addLibraryEvent('Notification Tapped'),
               if (message.chat) {log('Chat Message Tapped')}
             });
     InfobipMobilemessaging.on(
         LibraryEvent.REGISTRATION_UPDATED,
         (String token) => {
-              log("Callback. REGISTRATION_UPDATED event:" + token),
-              _HomePageState.addLibraryEvent("Registration Updated")
+              log('Callback. REGISTRATION_UPDATED event: $token'),
+              _HomePageState.addLibraryEvent('Registration Updated')
             });
   }
 
@@ -173,7 +169,7 @@ class HomePage extends StatefulWidget {
   const HomePage({Key key}) : super(key: key);
 
   @override
-  _HomePageState createState() => _HomePageState();
+  State createState() => _HomePageState();
 }
 
 class _HomePageState extends State<HomePage> {
@@ -192,22 +188,22 @@ class _HomePageState extends State<HomePage> {
       str = 'Zero library events so far!';
     } else {
       for (var element in libraryEvents) {
-        str += element + '\n';
+        str += '$element\n';
       }
     }
     return str;
   }
 
-  static Future<String> logAllMesages() async {
+  static Future<String> logAllMessages() async {
     String str = '';
-    List<Message> messages = await InfobipMobilemessaging.defaultMessageStorage().findAll();
+    List<Message> messages =
+        await InfobipMobilemessaging.defaultMessageStorage().findAll();
     if (messages == null || messages.isEmpty) {
       str = 'Empty message storage';
     } else {
       for (var element in messages) {
-        log("element:");
-        log(element.messageId);
-        str += element.toString() + '\n';
+        log('element: ${element.messageId}');
+        str += '$element\n';
       }
     }
     return str;
@@ -346,7 +342,7 @@ class _HomePageState extends State<HomePage> {
                 );
               }),
           ListTile(
-              title: const Text('Set chat language'),
+              title: const Text('Set Chat Language'),
               onTap: () {
                 showChatLanguageDialog(context);
               }),
@@ -356,7 +352,7 @@ class _HomePageState extends State<HomePage> {
                 InfobipMobilemessaging.showChat();
               }),
           ListTile(
-              title: const Text('Show Chat and send Contextual Data'),
+              title: const Text('Show Chat and Send Contextual Data'),
               onTap: () {
                   Future.delayed(const Duration(milliseconds: 3000), () {
 			               // Metadata must be sent after chat is presented, so we delay it
@@ -367,7 +363,7 @@ class _HomePageState extends State<HomePage> {
           ListTile(
               title: const Text('Send Event'),
               onTap: () {
-                log("Trying to send event");
+                log('Trying to send event');
                 InfobipMobilemessaging.submitEvent({
                   'definitionId': 'alEvent1',
                   'properties': {
@@ -399,9 +395,9 @@ class _HomePageState extends State<HomePage> {
                     'notificationTapped');
               }),
           ListTile(
-              title: const Text('Default MessageStorage findAll'),
+              title: const Text('MessageStorage: findAll'),
               onTap: () async {
-                var res = await logAllMesages();
+                var res = await logAllMessages();
                 showDialog<void>(
                   context: context,
                   builder: (context) => AlertDialog(
@@ -419,7 +415,7 @@ class _HomePageState extends State<HomePage> {
                 );
               }),
           ListTile(
-              title: const Text('MessageStorage find first message'),
+              title: const Text('MessageStorage: Find First Message'),
               onTap: () async {
                 String str = '';
                 List<Message> messages = await InfobipMobilemessaging.defaultMessageStorage().findAll();
@@ -448,7 +444,7 @@ class _HomePageState extends State<HomePage> {
                 );
               }),
           ListTile(
-              title: const Text('MessageStorage: delete first message'),
+              title: const Text('MessageStorage: Delete First Message'),
               onTap: () async {
                 String str = '';
                 List<Message> messages = await InfobipMobilemessaging.defaultMessageStorage().findAll();
@@ -477,7 +473,7 @@ class _HomePageState extends State<HomePage> {
                 );
               }),
           ListTile(
-              title: const Text('Default MessageStorage deleteAll'),
+              title: const Text('MessageStorage: deleteAll'),
               onTap: () async {
                 await InfobipMobilemessaging.defaultMessageStorage().deleteAll();
                 showDialog<void>(
@@ -545,7 +541,7 @@ class _HomePageState extends State<HomePage> {
 
      // set up the SimpleDialog
      SimpleDialog dialog = SimpleDialog(
-       title: const Text('Choose chat language'),
+       title: const Text('Choose Chat Language'),
        children: children
      );
 

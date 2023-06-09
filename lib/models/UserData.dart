@@ -69,7 +69,7 @@ class UserData {
         'emails': emails,
         'tags': tags,
         'customAttributes': customAttributes
-      };
+      }..removeWhere((dynamic key, dynamic value) => value == null);
 
   @override
   bool operator ==(Object other) =>

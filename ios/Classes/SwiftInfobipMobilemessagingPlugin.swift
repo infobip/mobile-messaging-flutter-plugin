@@ -203,7 +203,7 @@ public class SwiftInfobipMobilemessagingPlugin: NSObject, FlutterPlugin {
                                   message: error.mm_message,
                                   details: error.description ))
             } else {
-                return self.dictionaryResult(result: result, dict: MobileMessaging.getUser()?.dictionaryRepresentation)
+                return self.dictionaryResult(result: result, dict: user?.dictionaryRepresentation)
             }
         })
     }
@@ -222,7 +222,6 @@ public class SwiftInfobipMobilemessagingPlugin: NSObject, FlutterPlugin {
                                   message: "Error parsing Installation Data",
                                   details: "Error parsing Installation Data" ))
               }
-        
         MobileMessaging.saveInstallation(installation, completion: { (error) in
             if let error = error {
                 return result(
@@ -275,7 +274,7 @@ public class SwiftInfobipMobilemessagingPlugin: NSObject, FlutterPlugin {
                                   message: error.mm_message,
                                   details: error.description ))
             } else {
-                return result("success")
+                return self.dictionaryResult(result: result, dict: installations?.map({ $0.dictionaryRepresentation }) ?? [])
             }
         })
     }
@@ -346,7 +345,7 @@ public class SwiftInfobipMobilemessagingPlugin: NSObject, FlutterPlugin {
                                   message: error.mm_message,
                                   details: error.description ))
             } else {
-                return result("success")
+                return self.dictionaryResult(result: result, dict: installations?.map({ $0.dictionaryRepresentation }) ?? [])
             }
         })
     }

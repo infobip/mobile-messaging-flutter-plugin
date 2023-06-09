@@ -471,10 +471,10 @@ public class InfobipMobilemessagingPlugin implements FlutterPlugin, MethodCallHa
       }
 
       if (eventSink != null) {
-        Log.d(TAG, "Sending event to flutter: " + event);
+        Log.d(TAG, "Sending event to Flutter: " + event);
         eventSink.success(eventData.toString());
       } else {
-        Log.d(TAG, "add event to cached: " + event);
+        Log.d(TAG, "Adding event to cached: " + event);
         cached.add(eventData);
         return false;
       }
@@ -497,10 +497,10 @@ public class InfobipMobilemessagingPlugin implements FlutterPlugin, MethodCallHa
       }
 
       if (eventSink != null) {
-        Log.d(TAG, "Send  event to flutter: " + event);
+        Log.d(TAG, "Sending event to Flutter: " + event);
         eventSink.success(eventData.toString());
       } else {
-        Log.d(TAG, "add event to cached: " + event);
+        Log.d(TAG, "Adding event to cached: " + event);
         cached.add(eventData);
         return false;
       }

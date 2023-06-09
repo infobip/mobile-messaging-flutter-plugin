@@ -23,24 +23,16 @@ class InfobipMobilemessaging {
       _libraryEvent.receiveBroadcastStream().listen((dynamic event) {
     log('Received event: $event');
     LibraryEvent libraryEvent = LibraryEvent.fromJson(jsonDecode(event));
-    log("callbacks:");
-    log(callbacks.toString());
-    log("libraryEvent.eventName:");
-    log(libraryEvent.eventName);
     if (callbacks.containsKey(libraryEvent.eventName)) {
-      log("libraryEvent.eventName: " + libraryEvent.eventName);
       callbacks[libraryEvent.eventName]?.forEach((callback) {
-        log("Try to call callback " + libraryEvent.eventName);
-        if (libraryEvent.payload != null) {
-          log(libraryEvent.payload);
-        } else {
-          log("Try to call with payload NULL");
-        }
+        log('Calling ${libraryEvent.eventName} with payload ${libraryEvent.payload == null ? 'NULL' : libraryEvent.payload.toString()}');
         if (libraryEvent.eventName == LibraryEvent.MESSAGE_RECEIVED ||
             libraryEvent.eventName == LibraryEvent.NOTIFICATION_TAPPED) {
           callback(Message.fromJson(libraryEvent.payload));
         } else if (libraryEvent.eventName == LibraryEvent.INSTALLATION_UPDATED) {
           callback(Installation.fromJson(libraryEvent.payload).toString());
+        } else if (libraryEvent.eventName == LibraryEvent.USER_UPDATED) {
+          callback(UserData.fromJson(libraryEvent.payload));
         } else if (libraryEvent.payload != null) {
           callback(libraryEvent.payload);
         } else {
@@ -58,21 +50,21 @@ class InfobipMobilemessaging {
 
   static MessageStorage? _defaultMessageStorage;
 
-  static Future<void> on(String eventName, Function callack) async {
+  static Future<void> on(String eventName, Function callback) async {
     if (callbacks.containsKey(eventName)) {
       var existed = callbacks[eventName];
-      existed?.add(callack);
+      existed?.add(callback);
       callbacks.update(eventName, (val) => existed);
     } else {
-      callbacks.putIfAbsent(eventName, () => List.of([callack]));
+      callbacks.putIfAbsent(eventName, () => List.of([callback]));
     }
     _libraryEventSubscription.resume();
   }
 
-  static Future<void> unregister(String eventName, Function? callack) async {
+  static Future<void> unregister(String eventName, Function? callback) async {
     if (callbacks.containsKey(eventName)) {
       var existed = callbacks[eventName];
-      existed?.remove(callack);
+      existed?.remove(callback);
       callbacks.remove(eventName);
       callbacks.putIfAbsent(eventName, () => existed);
     }
@@ -178,7 +170,7 @@ class InfobipMobilemessaging {
 
   static Future<void> registerForAndroidRemoteNotifications() async {
     if (Platform.isIOS) {
-      log("it's not supported on the iOS platform");
+      log("It's not supported on the iOS platform");
       return;
     }
 
@@ -187,7 +179,7 @@ class InfobipMobilemessaging {
 
   static Future<void> registerForRemoteNotifications() async {
     if (!Platform.isIOS) {
-      log("it's supported only on the iOS platform");
+      log("It's supported only on the iOS platform");
       return;
     }
 
