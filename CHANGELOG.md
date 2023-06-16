@@ -1,3 +1,6 @@
+# 1.1.0
+## Added
+- InAppChat authentication with JSON Web Token.
 # 1.0.0
 ## Changed
 - Android minimum SDK level is 19 now
