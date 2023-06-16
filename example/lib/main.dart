@@ -349,6 +349,7 @@ class _HomePageState extends State<HomePage> {
           ListTile(
               title: const Text('Show Chat'),
               onTap: () {
+                // InfobipMobilemessaging.setJwt("your JWT");
                 InfobipMobilemessaging.showChat();
               }),
           ListTile(

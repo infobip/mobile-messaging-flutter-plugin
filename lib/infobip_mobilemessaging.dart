@@ -152,6 +152,10 @@ class InfobipMobilemessaging {
     await _channel.invokeMethod('sendContextualData', {'data': data, 'allMultiThreadStrategy': allMultiThreadStrategy});
   }
 
+  static void setJwt(String jwt) async {
+    await _channel.invokeMethod('setJwt', jwt);
+  }
+
   static MessageStorage? defaultMessageStorage() {
     if (_configuration == null) {
       return null;

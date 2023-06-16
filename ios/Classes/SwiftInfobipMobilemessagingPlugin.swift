@@ -31,6 +31,7 @@ public typealias DictionaryRepresentation = [String : Any]
 public class SwiftInfobipMobilemessagingPlugin: NSObject, FlutterPlugin {
     
     private var eventsManager: MobileMessagingEventsManager?
+    private static var chatVC: MMChatViewController?
     
     @objc
     func supportedEvents() -> [String]! {
@@ -97,6 +98,8 @@ public class SwiftInfobipMobilemessagingPlugin: NSObject, FlutterPlugin {
             setLanguage(call: call, result: result)
         } else if call.method == "sendContextualData" {
             sendContextualData(call: call, result: result)
+        } else if call.method == "setJwt" {
+            setJwt(call: call, result: result)
         } else if call.method == "submitEvent" {
             submitEvent(call: call, result: result)
         } else if call.method == "submitEventImmediately" {
@@ -360,6 +363,7 @@ public class SwiftInfobipMobilemessagingPlugin: NSObject, FlutterPlugin {
         }
         
         let vc = shouldBePresentedModallyIOS ? MMChatViewController.makeRootNavigationViewController(): MMChatViewController.makeRootNavigationViewControllerWithCustomTransition()
+        SwiftInfobipMobilemessagingPlugin.chatVC = vc.children.first as? MMChatViewController
         if shouldBePresentedModallyIOS {
             vc.modalPresentationStyle = .fullScreen
         }
@@ -380,18 +384,46 @@ public class SwiftInfobipMobilemessagingPlugin: NSObject, FlutterPlugin {
                                   details: "Error parsing iOSChatSettings" ))
               }
         
-        MobileMessaging.inAppChat?.settings.configureWith(rawConfig: chatSettings)
+        MMChatSettings.settings.configureWith(rawConfig: chatSettings)
     }
     
     func setLanguage(call: FlutterMethodCall, result: @escaping FlutterResult) {
         guard let localeString = call.arguments as? String else {
-                  return result(
-                    FlutterError( code: "invalidSetLanguage",
-                                  message: "Error parsing locale string",
-                                  details: "Error parsing locale string" ))
-              }
+            return result(
+                FlutterError( code: "invalidSetLanguage",
+                              message: "Error parsing locale string",
+                              details: "Error parsing locale string" ))
+        }
+        guard let chatVC = SwiftInfobipMobilemessagingPlugin.chatVC else {
+            MobileMessaging.inAppChat?.setLanguage(localeString)
+            return result("success")
+        }
 
-        MobileMessaging.inAppChat?.setLanguage(localeString)
+        let localeS = String(localeString)
+        let separator = localeS.contains("_") ? "_" : "-"
+        let components = localeS.components(separatedBy: separator)
+        let lang = MMLanguage.mapLanguage(from: components.first ??
+                                                         String(localeS.prefix(2)))
+        chatVC.setLanguage(lang) { error in
+            if let error = error {
+                return result(
+                    FlutterError( code: "invalidSetLanguage",
+                                  message: "Error setting locale in chat",
+                                  details: "\(error.localizedDescription)" ))
+            } else {
+                return result("success")
+            }
+        }
+    }
+
+    func setJwt(call: FlutterMethodCall, result: @escaping FlutterResult) {
+        guard let jwt = call.arguments as? String else {
+            return result(
+                FlutterError( code: "invalidSetJwt",
+                              message: "Error parsing JWT string",
+                              details: "Error parsing JWT string" ))
+        }
+        MobileMessaging.inAppChat?.jwt = jwt
         return result("success")
     }
 
@@ -404,7 +436,7 @@ public class SwiftInfobipMobilemessagingPlugin: NSObject, FlutterPlugin {
                                   message: "Cannot resolve data or allMultiThreadStrategy from arguments",
                                   details: nil ))
               }
-        if let chatVc = UIApplication.topViewController() as? MMChatViewController {
+        if let chatVc = SwiftInfobipMobilemessagingPlugin.chatVC {
             chatVc.sendContextualData(data, multiThreadStrategy: multiThreadStrategy ? .ALL : .ACTIVE) { error in
                 if let error = error {
                     result(FlutterError( code: String(error.code),

@@ -186,6 +186,9 @@ public class InfobipMobilemessagingPlugin implements FlutterPlugin, MethodCallHa
       case "registerForAndroidRemoteNotifications":
         registerForAndroidRemoteNotifications();
         break;
+      case "setJwt":
+        setJwt(call);
+        break;
       default:
         result.notImplemented();
         break;
@@ -645,7 +648,7 @@ public class InfobipMobilemessagingPlugin implements FlutterPlugin, MethodCallHa
   }
 
   public void showChat(MethodCall call, final MethodChannel.Result result) {
-    InAppChat.getInstance(activity.getApplication()).inAppChatView().show();
+    InAppChat.getInstance(activity.getApplication()).inAppChatScreen().show();
   }
 
   public void submitEvent(MethodCall call, final MethodChannel.Result result) {
@@ -696,6 +699,11 @@ public class InfobipMobilemessagingPlugin implements FlutterPlugin, MethodCallHa
       return;
     }
     InAppChat.getInstance(activity.getApplication()).sendContextualData(data, allMultiThreadStrategy);
+  }
+
+  private void setJwt(MethodCall call) {
+      String jwt = call.arguments.toString();
+      InAppChat.getInstance(activity.getApplication()).setJwtProvider(() -> jwt);
   }
 
   private synchronized void defaultMessageStorage_find(MethodCall call, final MethodChannel.Result result) {
