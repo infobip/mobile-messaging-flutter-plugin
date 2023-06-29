@@ -1,3 +1,6 @@
+# 1.1.1
+## Fixed
+- Getting plugin version for installations
 # 1.1.0
 ## Added
 - InAppChat authentication with JSON Web Token.
