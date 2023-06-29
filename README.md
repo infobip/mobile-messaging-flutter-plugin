@@ -27,7 +27,7 @@ This guide is designed to get you up and running with Mobile Messaging SDK plugi
 
   ```yaml
   dependencies:
-    infobip_mobilemessaging: '^0.9.3'
+    infobip_mobilemessaging: '^1.1.1'
 
   ```
 

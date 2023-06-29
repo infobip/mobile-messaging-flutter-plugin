@@ -5,7 +5,6 @@ import 'dart:developer';
 import 'dart:io';
 
 import 'package:flutter/services.dart';
-import 'package:package_info_plus/package_info_plus.dart';
 
 import 'models/configuration.dart';
 import 'models/installation.dart';
@@ -80,10 +79,23 @@ class InfobipMobilemessaging {
 
   static Future<void> init(Configuration configuration) async {
     InfobipMobilemessaging._configuration = configuration;
+    String str = await getVersion();
+    configuration.pluginVersion = str;
 
-    PackageInfo packageInfo = await PackageInfo.fromPlatform();
-    configuration.pluginVersion = packageInfo.version;
     await _channel.invokeMethod('init', jsonEncode(configuration.toJson()));
+  }
+
+  static Future<String> getVersion() async {
+    final fileContent = await rootBundle.loadString(
+      'packages/infobip_mobilemessaging/pubspec.yaml',
+    );
+
+    if (fileContent.isNotEmpty) {
+      String versionStr = fileContent.substring(fileContent.indexOf('version:'), fileContent.indexOf('\nhomepage:'));
+      versionStr = versionStr.substring(9, versionStr.length);
+      return versionStr;
+    }
+    return '';
   }
 
   static Future<void> saveUser(UserData userData) async {
