@@ -9,6 +9,8 @@ import Foundation
 import MobileMessaging
 
 class Configuration {
+    static let userDefaultsConfigKey = "com.mobile-messaging.flutterPluginConfiguration"
+    
     struct Keys {
         static let iosSettings = "iosSettings"
         static let privacySettings = "privacySettings"
@@ -95,5 +97,18 @@ class Configuration {
         } else {
             self.webViewSettings = nil
         }
+    }
+    
+    static func saveConfigToDefaults(rawConfig: [String: AnyObject]) {
+        let data: Data = NSKeyedArchiver.archivedData(withRootObject: rawConfig)
+        UserDefaults.standard.set(data, forKey: userDefaultsConfigKey)
+    }
+    
+    static func getRawConfigFromDefaults() -> [String: AnyObject]? {
+        let data = UserDefaults.standard.data(forKey: userDefaultsConfigKey)
+        guard let data = data else {
+            return nil
+        }
+        return NSKeyedUnarchiver.unarchiveObject(with: data) as? [String : AnyObject]
     }
 }

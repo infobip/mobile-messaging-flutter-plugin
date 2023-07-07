@@ -32,6 +32,7 @@ public class SwiftInfobipMobilemessagingPlugin: NSObject, FlutterPlugin {
     
     private var eventsManager: MobileMessagingEventsManager?
     private static var chatVC: MMChatViewController?
+    private var isStarted: Bool = false
     
     @objc
     func supportedEvents() -> [String]! {
@@ -120,26 +121,47 @@ public class SwiftInfobipMobilemessagingPlugin: NSObject, FlutterPlugin {
             registerForRemoteNotifications()
         } else {
             result(FlutterError( code: "NotImplemented",
-                          message: "Error NotImplemented",
-                          details: "Error NotImplemented" ))
+                                 message: "Error NotImplemented",
+                                 details: "Error NotImplemented" ))
         }
     }
     
-    public func initPlugin(call: FlutterMethodCall, result: FlutterResult) {
+    public func initPlugin(call: FlutterMethodCall, result: @escaping FlutterResult) {
         guard let jsonString = call.arguments as? String,
               let json = jsonString.toJSON() as? [String: AnyObject],
               let configuration = Configuration.init(rawConfig: json) else {
-                  return result(
-                    FlutterError( code: "invalidConfig",
-                                  message: "Error parsing Configuration",
-                                  details: "Error parsing Configuration" ))
-              }
+            return result(
+                FlutterError( code: "invalidConfig",
+                              message: "Error parsing Configuration",
+                              details: "Error parsing Configuration" ))
+        }
         
-        start(configuration: configuration)
-        return result("success")
+        let successCallback: FlutterResult = { [weak self] response in
+            Configuration.saveConfigToDefaults(rawConfig: json)
+            self?.isStarted = true
+            return result(response)
+        }
+        
+        let cachedConfigDict = Configuration.getRawConfigFromDefaults()
+        if let cachedConfigDict = cachedConfigDict, (json as NSDictionary) != (cachedConfigDict as NSDictionary)
+        {
+            stop {
+                self.start(configuration: configuration, result: successCallback)
+            }
+        } else if cachedConfigDict == nil || !isStarted {
+            start(configuration: configuration, result: successCallback)
+        } else {
+            return result("success")
+        }
     }
     
-    private func start(configuration: Configuration) {
+    private func stop(completion: @escaping () -> Void) {
+        self.isStarted = false
+        eventsManager?.stop()
+        MobileMessaging.stop(false, completion: completion)
+    }
+    
+    private func start(configuration: Configuration, result: @escaping FlutterResult) {
         MobileMessaging.privacySettings.applicationCodePersistingDisabled = configuration.privacySettings[Configuration.Keys.applicationCodePersistingDisabled].unwrap(orDefault: false)
         MobileMessaging.privacySettings.systemInfoSendingDisabled = configuration.privacySettings[Configuration.Keys.systemInfoSendingDisabled].unwrap(orDefault: false)
         MobileMessaging.privacySettings.carrierInfoSendingDisabled = configuration.privacySettings[Configuration.Keys.carrierInfoSendingDisabled].unwrap(orDefault: false)
@@ -158,7 +180,7 @@ public class SwiftInfobipMobilemessagingPlugin: NSObject, FlutterPlugin {
         if let webViewSettings = configuration.webViewSettings {
             mobileMessaging?.webViewSettings.configureWith(rawConfig: webViewSettings)
         }
- 
+        
         MobileMessaging.userAgent.pluginVersion = "flutter \(configuration.pluginVersion)"
         if (configuration.logging) {
             MobileMessaging.logger = MMDefaultLogger()
@@ -167,29 +189,31 @@ public class SwiftInfobipMobilemessagingPlugin: NSObject, FlutterPlugin {
         if configuration.defaultMessageStorage {
             mobileMessaging = mobileMessaging?.withDefaultMessageStorage()
         }
-
+        
         if (configuration.withoutRegisteringForRemoteNotifications) {
             mobileMessaging = mobileMessaging?.withoutRegisteringForRemoteNotifications()
         }
         
-        mobileMessaging?.start()
+        mobileMessaging?.start({
+            return result("success")
+        })
     }
     
     func saveUser(call: FlutterMethodCall, result: @escaping FlutterResult) {
         guard let jsonString = call.arguments as? String,
               let userDataDictionary = convertStringToDictionary(text: jsonString),
               let user = MMUser(dictRepresentation: userDataDictionary) else
-              {
-                  return result(
-                    FlutterError( code: "invalidUser",
-                                  message: "Error parsing User Data",
-                                  details: "Error parsing User Data" ))
-              }
+        {
+            return result(
+                FlutterError( code: "invalidUser",
+                              message: "Error parsing User Data",
+                              details: "Error parsing User Data" ))
+        }
         
         MobileMessaging.saveUser(user, completion: { (error) in
             if let error = error {
                 return result(
-                    FlutterError( code: String(error.code),
+                    FlutterError( code: error.mm_code ?? "0",
                                   message: error.mm_message,
                                   details: error.description ))
             } else {
@@ -202,7 +226,7 @@ public class SwiftInfobipMobilemessagingPlugin: NSObject, FlutterPlugin {
         MobileMessaging.fetchUser(completion: { (user, error) in
             if let error = error {
                 return result(
-                    FlutterError( code: String(error.code),
+                    FlutterError( code: error.mm_code ?? "0",
                                   message: error.mm_message,
                                   details: error.description ))
             } else {
@@ -219,16 +243,16 @@ public class SwiftInfobipMobilemessagingPlugin: NSObject, FlutterPlugin {
         guard let jsonString = call.arguments as? String,
               let installationDictionary = convertStringToDictionary(text: jsonString),
               let installation = MMInstallation(dictRepresentation: installationDictionary) else
-              {
-                  return result(
-                    FlutterError( code: "invalidInstallation",
-                                  message: "Error parsing Installation Data",
-                                  details: "Error parsing Installation Data" ))
-              }
+        {
+            return result(
+                FlutterError( code: "invalidInstallation",
+                              message: "Error parsing Installation Data",
+                              details: "Error parsing Installation Data" ))
+        }
         MobileMessaging.saveInstallation(installation, completion: { (error) in
             if let error = error {
                 return result(
-                    FlutterError( code: String(error.code),
+                    FlutterError( code: error.mm_code ?? "0",
                                   message: error.mm_message,
                                   details: error.description ))
             } else {
@@ -241,7 +265,7 @@ public class SwiftInfobipMobilemessagingPlugin: NSObject, FlutterPlugin {
         MobileMessaging.fetchInstallation(completion: { (installation, error) in
             if let error = error {
                 return result(
-                    FlutterError( code: String(error.code),
+                    FlutterError( code: error.mm_code ?? "0",
                                   message: error.mm_message,
                                   details: error.description ))
             } else {
@@ -264,12 +288,12 @@ public class SwiftInfobipMobilemessagingPlugin: NSObject, FlutterPlugin {
         }
         guard let pushRegId = args["pushRegistrationId"] as? String,
               let primary = args["primary"] as? Bool else
-              {
-                  return result(
-                    FlutterError( code: "invalidInstallation",
-                                  message: "Error parsing Installation Data",
-                                  details: "Error parsing Installation Data" ))
-              }
+        {
+            return result(
+                FlutterError( code: "invalidInstallation",
+                              message: "Error parsing Installation Data",
+                              details: "Error parsing Installation Data" ))
+        }
         MobileMessaging.setInstallation(withPushRegistrationId: pushRegId, asPrimary: primary, completion: { (installations, error) in
             if let error = error {
                 return result(
@@ -285,11 +309,11 @@ public class SwiftInfobipMobilemessagingPlugin: NSObject, FlutterPlugin {
     func personalize(call: FlutterMethodCall, result: @escaping FlutterResult) {
         guard let jsonString = call.arguments as? String,
               let context = convertStringToDictionary(text: jsonString) else {
-                  return result(
-                    FlutterError( code: "invalidArguments",
-                                  message: "iOS could not recognize Flutter arguments",
-                                  details: "iOS could not recognize Flutter arguments" ))
-              }
+            return result(
+                FlutterError( code: "invalidArguments",
+                              message: "iOS could not recognize Flutter arguments",
+                              details: "iOS could not recognize Flutter arguments" ))
+        }
         guard let uiDict = context["userIdentity"] as? [String: Any] else
         {
             return result(
@@ -309,7 +333,7 @@ public class SwiftInfobipMobilemessagingPlugin: NSObject, FlutterPlugin {
         MobileMessaging.personalize(withUserIdentity: ui, userAttributes: ua) { (error) in
             if let error = error {
                 return result(
-                    FlutterError( code: String(error.code),
+                    FlutterError( code: error.mm_code ?? "0",
                                   message: error.mm_message,
                                   details: error.description ))
             } else {
@@ -324,7 +348,7 @@ public class SwiftInfobipMobilemessagingPlugin: NSObject, FlutterPlugin {
                 return result("pending")
             } else if let error = error {
                 return result(
-                    FlutterError( code: String(error.code),
+                    FlutterError( code: error.mm_code ?? "0",
                                   message: error.mm_message,
                                   details: error.description ))
             } else {
@@ -344,7 +368,7 @@ public class SwiftInfobipMobilemessagingPlugin: NSObject, FlutterPlugin {
         MobileMessaging.depersonalizeInstallation(withPushRegistrationId: pushRegId, completion: { (installations, error) in
             if let error = error {
                 return result(
-                    FlutterError( code: String(error.code),
+                    FlutterError( code: error.mm_code ?? "0",
                                   message: error.mm_message,
                                   details: error.description ))
             } else {
@@ -378,11 +402,11 @@ public class SwiftInfobipMobilemessagingPlugin: NSObject, FlutterPlugin {
     func setupiOSChatSettings(call: FlutterMethodCall, result: @escaping FlutterResult) {
         guard let jsonString = call.arguments as? String,
               let chatSettings = convertStringToDictionary(text: jsonString) else {
-                  return result(
-                    FlutterError( code: "invalidiOSChatSettings",
-                                  message: "Error parsing iOSChatSettings",
-                                  details: "Error parsing iOSChatSettings" ))
-              }
+            return result(
+                FlutterError( code: "invalidiOSChatSettings",
+                              message: "Error parsing iOSChatSettings",
+                              details: "Error parsing iOSChatSettings" ))
+        }
         
         MMChatSettings.settings.configureWith(rawConfig: chatSettings)
     }
@@ -398,12 +422,12 @@ public class SwiftInfobipMobilemessagingPlugin: NSObject, FlutterPlugin {
             MobileMessaging.inAppChat?.setLanguage(localeString)
             return result("success")
         }
-
+        
         let localeS = String(localeString)
         let separator = localeS.contains("_") ? "_" : "-"
         let components = localeS.components(separatedBy: separator)
         let lang = MMLanguage.mapLanguage(from: components.first ??
-                                                         String(localeS.prefix(2)))
+                                          String(localeS.prefix(2)))
         chatVC.setLanguage(lang) { error in
             if let error = error {
                 return result(
@@ -415,7 +439,7 @@ public class SwiftInfobipMobilemessagingPlugin: NSObject, FlutterPlugin {
             }
         }
     }
-
+    
     func setJwt(call: FlutterMethodCall, result: @escaping FlutterResult) {
         guard let jwt = call.arguments as? String else {
             return result(
@@ -426,20 +450,20 @@ public class SwiftInfobipMobilemessagingPlugin: NSObject, FlutterPlugin {
         MobileMessaging.inAppChat?.jwt = jwt
         return result("success")
     }
-
+    
     func sendContextualData(call: FlutterMethodCall, result: @escaping FlutterResult) {
         guard let args = call.arguments as? [String: Any],
               let data = args["data"] as? String,
               let multiThreadStrategy = args["allMultiThreadStrategy"] as? Bool else {
-                  return result(
-                    FlutterError( code: "CONTEXTUAL_METADATA_ERROR",
-                                  message: "Cannot resolve data or allMultiThreadStrategy from arguments",
-                                  details: nil ))
-              }
+            return result(
+                FlutterError( code: "CONTEXTUAL_METADATA_ERROR",
+                              message: "Cannot resolve data or allMultiThreadStrategy from arguments",
+                              details: nil ))
+        }
         if let chatVc = SwiftInfobipMobilemessagingPlugin.chatVC {
             chatVc.sendContextualData(data, multiThreadStrategy: multiThreadStrategy ? .ALL : .ACTIVE) { error in
                 if let error = error {
-                    result(FlutterError( code: String(error.code),
+                    result(FlutterError( code: error.mm_code ?? "0",
                                          message: error.mm_message,
                                          details: error.description ))
                 } else {
@@ -450,17 +474,17 @@ public class SwiftInfobipMobilemessagingPlugin: NSObject, FlutterPlugin {
             MMLogDebug("[InAppChat] could find chat view controller to send contextual data to")
         }
     }
-
+    
     func submitEvent(call: FlutterMethodCall, result: @escaping FlutterResult){
         guard let jsonString = call.arguments as? String,
               let customEventDictionary = convertStringToDictionary(text: jsonString),
               let customEvent = MMCustomEvent(dictRepresentation: customEventDictionary) else
-              {
-                  return result(
-                    FlutterError( code: "invalidEvent",
-                                  message: "Error parsing Custom Event Data",
-                                  details: "Error parsing Custom Event Data" ))
-              }
+        {
+            return result(
+                FlutterError( code: "invalidEvent",
+                              message: "Error parsing Custom Event Data",
+                              details: "Error parsing Custom Event Data" ))
+        }
         MobileMessaging.submitEvent(customEvent)
     }
     
@@ -468,16 +492,16 @@ public class SwiftInfobipMobilemessagingPlugin: NSObject, FlutterPlugin {
         guard let jsonString = call.arguments as? String,
               let customEventDictionary = convertStringToDictionary(text: jsonString),
               let customEvent = MMCustomEvent(dictRepresentation: customEventDictionary) else
-              {
-                  return result(
-                    FlutterError( code: "invalidEvent",
-                                  message: "Error parsing Custom Event Data",
-                                  details: "Error parsing Custom Event Data" ))
-              }
+        {
+            return result(
+                FlutterError( code: "invalidEvent",
+                              message: "Error parsing Custom Event Data",
+                              details: "Error parsing Custom Event Data" ))
+        }
         MobileMessaging.submitEvent(customEvent) { (error) in
             if let error = error {
                 return result(
-                    FlutterError( code: String(error.code),
+                    FlutterError( code: error.mm_code ?? "0",
                                   message: error.mm_message,
                                   details: error.description ))
             } else {
@@ -493,7 +517,7 @@ public class SwiftInfobipMobilemessagingPlugin: NSObject, FlutterPlugin {
     func resetMessageCounter(){
         MobileMessaging.inAppChat?.resetMessageCounter()
     }
-
+    
     func registerForRemoteNotifications(){
         MobileMessaging.registerForRemoteNotifications()
     }
@@ -510,31 +534,31 @@ public class SwiftInfobipMobilemessagingPlugin: NSObject, FlutterPlugin {
         
         guard let storage = MobileMessaging.defaultMessageStorage else {
             return result(
-              FlutterError( code: "invalidMessageStorage",
-                            message: "Error fetching MessageStorage",
-                            details: "Error fetching MessageStorage" ))
+                FlutterError( code: "invalidMessageStorage",
+                              message: "Error fetching MessageStorage",
+                              details: "Error fetching MessageStorage" ))
         }
-
+        
         storage.findMessages(withIds: [(messageId as MessageId)], completion: { messages in
             let res = [messages?[0].dictionary() ?? [:]]
             return self.dictionaryResult(result: result, dict: res)
         })
     }
-
+    
     func defaultMessageStorage_findAll(result: @escaping FlutterResult) {
         guard let storage = MobileMessaging.defaultMessageStorage else {
             return result(
-              FlutterError( code: "invalidMessageStorage",
-                            message: "Error fetching MessageStorage",
-                            details: "Error fetching MessageStorage" ))
+                FlutterError( code: "invalidMessageStorage",
+                              message: "Error fetching MessageStorage",
+                              details: "Error fetching MessageStorage" ))
         }
-
+        
         storage.findAllMessages(completion: { messages in
             let res = messages?.map({$0.dictionary()})
             return self.dictionaryResult(result: result, dict: res ?? [])
         })
     }
-
+    
     func defaultMessageStorage_delete(call: FlutterMethodCall, result: @escaping FlutterResult) {
         guard let messageId = call.arguments as? String else
         {
@@ -546,16 +570,16 @@ public class SwiftInfobipMobilemessagingPlugin: NSObject, FlutterPlugin {
         
         guard let storage = MobileMessaging.defaultMessageStorage else {
             return result(
-              FlutterError( code: "invalidMessageStorage",
-                            message: "Error fetching MessageStorage",
-                            details: "Error fetching MessageStorage" ))
+                FlutterError( code: "invalidMessageStorage",
+                              message: "Error fetching MessageStorage",
+                              details: "Error fetching MessageStorage" ))
         }
-
+        
         storage.remove(withIds: [(messageId as MessageId)]) { _ in
             return result("success")
         }
     }
-
+    
     func defaultMessageStorage_deleteAll(result: @escaping FlutterResult) {
         MobileMessaging.defaultMessageStorage?.removeAllMessages() { _ in
             return result("success")

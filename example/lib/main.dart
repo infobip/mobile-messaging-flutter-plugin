@@ -248,7 +248,7 @@ class _HomePageState extends State<HomePage> {
               }),
           ListTile(
               title: const Text('Save User Data'),
-              onTap: () {
+              onTap: () async {
                 UserData user = UserData(
                     externalUserId: null,
                     firstName: null,
@@ -271,7 +271,31 @@ class _HomePageState extends State<HomePage> {
                       ]
                     });
                 log(user.toJson().toString());
-                InfobipMobilemessaging.saveUser(user);
+                try {
+                  await InfobipMobilemessaging.saveUser(user);
+                } catch (e) {
+                  log('MobileMessaging: details ' + e.details);
+                  log('MobileMessaging: code ' + e.code);
+
+                  switch (e.code) {
+                    case 'USER_MERGE_INTERRUPTED': {
+                        //do something with the error
+                      }
+                      break;
+                    case 'PHONE_INVALID': {
+                      //the phone provided was not recognized as a valid one
+                    }
+                    break;
+                    case 'EMAIL_INVALID': {
+                      //the email provided was not recognized as a valid one
+                    }
+                    break;
+                    default: {
+                      log('MobileMessaging: error is $e');
+                    }
+                    break;
+                  }
+                }
               }),
           ListTile(
               title: const Text('Get User Data'),
