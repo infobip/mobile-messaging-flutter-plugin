@@ -1,3 +1,8 @@
+# 1.1.2
+## Fixed
+- iOS crash on Hot Restart
+## Changed
+- iOS better error descriptions
 # 1.1.1
 ## Fixed
 - Getting plugin version for installations
