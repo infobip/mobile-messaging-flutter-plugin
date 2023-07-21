@@ -1,3 +1,6 @@
+# 1.2.0
+## Added
+- Support for WebRTC audio and video calls, with built-in user interface.
 # 1.1.2
 ## Fixed
 - iOS crash on Hot Restart
