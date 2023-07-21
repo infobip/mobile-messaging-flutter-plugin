@@ -1,5 +1,6 @@
 # Uncomment this line to define a global platform for your project
 platform :ios, '12.0'
+$WebRTCUIEnabled = true
 
 # CocoaPods analytics sends network stats synchronously affecting flutter build latency.
 ENV['COCOAPODS_DISABLE_STATS'] = 'true'
@@ -42,5 +43,13 @@ end
 post_install do |installer|
   installer.pods_project.targets.each do |target|
     flutter_additional_ios_build_settings(target)
+    
+    if (target.name&.eql?('infobip_mobilemessaging'))
+          target.build_configurations.each do |config|
+            config.build_settings['GCC_PREPROCESSOR_DEFINITIONS'] = '$(inherited) COCOAPODS=1 WEBRTCUI_ENABLED=1'
+            config.build_settings['OTHER_SWIFT_FLAGS'] = '$(inherited) -D WEBRTCUI_ENABLED'
+        end
+    end
+
   end
 end

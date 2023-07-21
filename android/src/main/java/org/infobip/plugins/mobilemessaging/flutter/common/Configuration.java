@@ -15,8 +15,21 @@ public class Configuration {
     PrivacySettings privacySettings;
     List<NotificationCategory> notificationCategories;
     boolean defaultMessageStorage;
+    WebRTCUI webRTCUI;
 
-    public class AndroidSettings {
+    public static class WebRTCUI {
+        private String applicationId;
+
+        public String getApplicationId() {
+            return applicationId;
+        }
+
+        public void setApplicationId(String applicationId) {
+            this.applicationId = applicationId;
+        }
+    }
+
+    public static class AndroidSettings {
         String notificationIcon;
         boolean multipleNotifications;
         String notificationAccentColor;
@@ -55,7 +68,7 @@ public class Configuration {
         }
     }
 
-    public class PrivacySettings {
+    public static class PrivacySettings {
         boolean applicationCodePersistingDisabled;
         boolean userDataPersistingDisabled;
         boolean carrierInfoSendingDisabled;
@@ -94,7 +107,7 @@ public class Configuration {
         }
     }
 
-    public class NotificationAction {
+    public static class NotificationAction {
         String identifier;
         String title;
         boolean foreground;
@@ -178,7 +191,7 @@ public class Configuration {
         }
     }
 
-    public class NotificationCategory {
+    public static class NotificationCategory {
         String identifier;
         List<NotificationAction> actions;
 
@@ -237,5 +250,13 @@ public class Configuration {
 
     public void setNotificationCategories(List<NotificationCategory> notificationCategories) {
         this.notificationCategories = notificationCategories;
+    }
+
+    public WebRTCUI getWebRTCUI() {
+        return webRTCUI;
+    }
+
+    public void setWebRTCUI(WebRTCUI webRTCUI) {
+        this.webRTCUI = webRTCUI;
     }
 }

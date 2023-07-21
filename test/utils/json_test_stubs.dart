@@ -53,6 +53,7 @@ Map<String, dynamic> get configurationExampleJson => {
         },
       ],
       'defaultMessageStorage': true,
+      'webRTCUI': null
     };
 
 Map<String, dynamic> get installationExampleJson => {

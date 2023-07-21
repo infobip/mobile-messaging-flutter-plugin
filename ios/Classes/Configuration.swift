@@ -28,12 +28,15 @@ class Configuration {
         static let notificationCategories = "notificationCategories"
         static let webViewSettings = "webViewSettings"
         static let withoutRegisteringForRemoteNotifications = "withoutRegisteringForRemoteNotifications"
+        static let webRTCUI = "webRTCUI"
+        static let applicationId = "applicationId"
     }
     
     let appCode: String
     // let geofencingEnabled: Bool
     let inAppChatEnabled: Bool
     // let messageStorageEnabled: Bool
+    let webRTCUI: [String: Any]?
     let defaultMessageStorage: Bool
     let notificationType: MMUserNotificationType
     let forceCleanup: Bool
@@ -50,7 +53,7 @@ class Configuration {
         {
             return nil
         }
-        
+        self.webRTCUI = rawConfig[Configuration.Keys.webRTCUI] as? [String: Any]
         self.appCode = appCode
         self.inAppChatEnabled = rawConfig[Configuration.Keys.inAppChatEnabled].unwrap(orDefault: false)
         self.forceCleanup = ios[Configuration.Keys.forceCleanup].unwrap(orDefault: false)

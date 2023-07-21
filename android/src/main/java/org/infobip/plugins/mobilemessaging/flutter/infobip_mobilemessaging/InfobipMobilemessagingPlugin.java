@@ -2,6 +2,7 @@ package org.infobip.plugins.mobilemessaging.flutter.infobip_mobilemessaging;
 
 import static org.infobip.plugins.mobilemessaging.flutter.common.LibraryEvent.broadcastEventMap;
 import static org.infobip.plugins.mobilemessaging.flutter.common.LibraryEvent.messageBroadcastEventMap;
+import static org.infobip.plugins.mobilemessaging.flutter.infobip_mobilemessaging.WebRTCUI.defaultWebrtcError;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
@@ -42,6 +43,7 @@ import org.infobip.mobile.messaging.mobileapi.MobileMessagingError;
 import org.infobip.mobile.messaging.mobileapi.Result;
 import org.infobip.mobile.messaging.storage.MessageStore;
 import org.infobip.mobile.messaging.util.PreferenceHelper;
+import org.infobip.plugins.mobilemessaging.flutter.common.ConfigCache;
 import org.infobip.plugins.mobilemessaging.flutter.common.Configuration;
 import org.infobip.plugins.mobilemessaging.flutter.common.ErrorCodes;
 import org.infobip.plugins.mobilemessaging.flutter.common.InitHelper;
@@ -91,7 +93,7 @@ public class InfobipMobilemessagingPlugin implements FlutterPlugin, MethodCallHa
   private BinaryMessenger binaryMessenger = null;
   private PermissionsRequestManager permissionsRequestManager;
   @Nullable private ActivityPluginBinding pluginBinding;
-
+  private WebRTCUI webRTCUI = null;
   public InfobipMobilemessagingPlugin() {
     permissionsRequestManager = new PermissionsRequestManager(this);
   }
@@ -103,6 +105,7 @@ public class InfobipMobilemessagingPlugin implements FlutterPlugin, MethodCallHa
 
     binaryMessenger = flutterPluginBinding.getBinaryMessenger();
     broadcastChannel = new EventChannel(binaryMessenger, "infobip_mobilemessaging/broadcast");
+    webRTCUI = new WebRTCUI(flutterPluginBinding.getApplicationContext());
   }
 
   @Override
@@ -189,16 +192,31 @@ public class InfobipMobilemessagingPlugin implements FlutterPlugin, MethodCallHa
       case "setJwt":
         setJwt(call);
         break;
+      case "enableCalls":
+        enableCalls(result);
+        break;
+      case "disableCalls":
+        disableCalls(result);
+        break;
       default:
         result.notImplemented();
         break;
     }
   }
 
+  private void disableCalls(MethodChannel.Result result) {
+    webRTCUI.disableCalls(()-> result.success(null), defaultWebrtcError(result));
+  }
+
+  private void enableCalls(MethodChannel.Result result) {
+    webRTCUI.enableCalls(() -> result.success(null), defaultWebrtcError(result));
+  }
+
   private void init(MethodCall call, final MethodChannel.Result result) {
     Log.d(TAG, "init");
 
     final Configuration configuration = new Gson().fromJson(call.arguments.toString(), Configuration.class);
+    ConfigCache.getInstance().setConfiguration(configuration);
 
     final InitHelper initHelper = new InitHelper(configuration, activity);
     MobileMessaging.Builder builder = initHelper.configurationBuilder();

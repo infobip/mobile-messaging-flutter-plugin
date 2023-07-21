@@ -201,6 +201,14 @@ class InfobipMobilemessaging {
 
     await _channel.invokeMethod('registerForRemoteNotifications');
   }
+
+  static Future<void> enableCalls() async {
+    await _channel.invokeMethod('enableCalls');
+  }
+
+  static Future<void> disableCalls() async {
+    await _channel.invokeMethod('disableCalls');
+  }
 }
 
 class _DefaultMessageStorage extends MessageStorage {

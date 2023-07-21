@@ -16,6 +16,8 @@ class Configuration {
 
   final bool? defaultMessageStorage;
 
+  final WebRTCUI? webRTCUI;
+
   Configuration({
     required this.applicationCode,
     this.pluginVersion,
@@ -25,6 +27,7 @@ class Configuration {
     this.privacySettings,
     this.notificationCategories,
     this.defaultMessageStorage,
+    this.webRTCUI
   });
 
   Map<String, dynamic> toJson() => {
@@ -36,7 +39,8 @@ class Configuration {
         'privacySettings': privacySettings?.toJson(),
         'notificationCategories':
             (notificationCategories != null) ? notificationCategories!.map((e) => e.toJson()) : null,
-        'defaultMessageStorage': defaultMessageStorage
+        'defaultMessageStorage': defaultMessageStorage,
+        'webRTCUI': webRTCUI?.toJson()
       };
 }
 
@@ -206,4 +210,16 @@ class NotificationCategory {
       'actions': actions,
     };
   }
+}
+
+class WebRTCUI {
+  final String? applicationId;
+
+  WebRTCUI({
+    this.applicationId
+  });
+
+  Map<String, dynamic> toJson() => {
+      'applicationId': applicationId
+    };
 }

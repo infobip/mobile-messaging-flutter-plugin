@@ -74,7 +74,7 @@ class _MyAppState extends State<MyApp> {
     if (!mounted) return;
 
     await InfobipMobilemessaging.init(mmconfiguration.Configuration(
-        applicationCode: "Your Application Code",
+        applicationCode: 'Your Application Code',
         inAppChatEnabled: true,
         defaultMessageStorage: true,
         iosSettings: mmconfiguration.IOSSettings(
@@ -82,8 +82,12 @@ class _MyAppState extends State<MyApp> {
             forceCleanup: false,
             logging: true,
             withoutRegisteringForRemoteNotifications: false
+        ),
+        webRTCUI: mmconfiguration.WebRTCUI(
+          applicationId: 'Your WebRTC application id'
         )
     ));
+    // await InfobipMobilemessaging.enableCalls(); // Comment out to automatically enable WebRTC
     InfobipMobilemessaging.setupiOSChatSettings(IOSChatSettings(
       title: 'Flutter Example Chat',
       sendButtonColor: '#ff5722',
@@ -373,7 +377,7 @@ class _HomePageState extends State<HomePage> {
           ListTile(
               title: const Text('Show Chat'),
               onTap: () {
-                // InfobipMobilemessaging.setJwt("your JWT");
+                // InfobipMobilemessaging.setJwt('your JWT'); // Comment out to automatically log-in using authentication
                 InfobipMobilemessaging.showChat();
               }),
           ListTile(
@@ -517,6 +521,26 @@ class _HomePageState extends State<HomePage> {
                   ),
                 );
               }),
+          ListTile(
+              title: const Text('Enable calls'),
+              onTap: () {
+                log('Enabling calls');
+                try {
+                  InfobipMobilemessaging.enableCalls();
+                } catch(e) {
+                  log("Failed to enable calls. "+e);
+                }
+              }),
+          ListTile(
+              title: const Text('Disable calls'),
+              onTap: () {
+                log('Disabling calls');
+                try {
+                  InfobipMobilemessaging.disableCalls();
+                } catch (e) {
+                  log("Failed to disable calls. "+e);
+                }
+              })
         ],
       ),
     );

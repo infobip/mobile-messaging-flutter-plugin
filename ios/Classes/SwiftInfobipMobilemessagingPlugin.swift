@@ -33,6 +33,7 @@ public class SwiftInfobipMobilemessagingPlugin: NSObject, FlutterPlugin {
     private var eventsManager: MobileMessagingEventsManager?
     private static var chatVC: MMChatViewController?
     private var isStarted: Bool = false
+    private var webrtcAppId: String?
     
     @objc
     func supportedEvents() -> [String]! {
@@ -119,6 +120,10 @@ public class SwiftInfobipMobilemessagingPlugin: NSObject, FlutterPlugin {
             defaultMessageStorage_deleteAll(result: result)
         } else if call.method == "registerForRemoteNotifications" {
             registerForRemoteNotifications()
+        } else if call.method == "enableCalls" {
+            enableCalls(result: result)
+        } else if call.method == "disableCalls" {
+            disableCalls(result: result)
         } else {
             result(FlutterError( code: "NotImplemented",
                                  message: "Error NotImplemented",
@@ -167,12 +172,13 @@ public class SwiftInfobipMobilemessagingPlugin: NSObject, FlutterPlugin {
         MobileMessaging.privacySettings.carrierInfoSendingDisabled = configuration.privacySettings[Configuration.Keys.carrierInfoSendingDisabled].unwrap(orDefault: false)
         MobileMessaging.privacySettings.userDataPersistingDisabled = configuration.privacySettings[Configuration.Keys.userDataPersistingDisabled].unwrap(orDefault: false)
         
-        var mobileMessaging = MobileMessaging.withApplicationCode(configuration.appCode, notificationType: configuration.notificationType, forceCleanup: configuration.forceCleanup)
-        
+        var mobileMessaging = MobileMessaging
+            .withApplicationCode(configuration.appCode, notificationType: configuration.notificationType)
+
         if configuration.inAppChatEnabled {
             mobileMessaging = mobileMessaging?.withInAppChat()
         }
-        
+
         if let categories = configuration.categories {
             mobileMessaging = mobileMessaging?.withInteractiveNotificationCategories(Set(categories))
         }
@@ -193,6 +199,13 @@ public class SwiftInfobipMobilemessagingPlugin: NSObject, FlutterPlugin {
         if (configuration.withoutRegisteringForRemoteNotifications) {
             mobileMessaging = mobileMessaging?.withoutRegisteringForRemoteNotifications()
         }
+
+#if WEBRTCUI_ENABLED
+        if let webrtcDict = configuration.webRTCUI,
+           let appId = webrtcDict[Configuration.Keys.applicationId] as? String {
+            webrtcAppId = appId
+        }
+#endif
         
         mobileMessaging?.start({
             return result("success")
@@ -622,6 +635,57 @@ public class SwiftInfobipMobilemessagingPlugin: NSObject, FlutterPlugin {
             }
         }
         return nil
+    }
+
+    func enableCalls(result: @escaping FlutterResult) {
+#if WEBRTCUI_ENABLED
+        if let webrtcAppId = webrtcAppId {
+            MobileMessaging.webRTCService?.applicationId = webrtcAppId
+            MobileMessaging.webRTCService?.start({ response in
+                switch response {
+                case true:
+                    return result("[WebRTCUI] Request for enabling calls ended with success.")
+                case false:
+                    return result(
+                        FlutterError( code: "errorWebRTCUIResult",
+                                      message: "[WebRTCUI] Request for enabling calls ended with failure - See further logs.",
+                                      details: "[WebRTCUI] Request for enabling calls ended with failure - See further logs." ))
+                }
+            })
+        } else {
+            return result(
+                FlutterError( code: "errorWebRTCUIResult",
+                              message: "[WebRTCUI] WebRTC's applicationId not defined in the configuration, calls were not enabled.",
+                              details: "[WebRTCUI] WebRTC's applicationId not defined in the configuration, calls were not enabled." ))
+        }
+
+#else
+        return result(
+            FlutterError( code: "errorWebRTCUIResult",
+                          message: "[WebRTCUI] Not imported properly in podfile: library cannot be used.",
+                          details: "[WebRTCUI] Not imported properly in podfile: library cannot be used." ))
+#endif
+    }
+
+    func disableCalls(result: @escaping FlutterResult) {
+#if WEBRTCUI_ENABLED
+        MobileMessaging.webRTCService?.stopService({ response in
+            switch response {
+            case true:
+                return result("[WebRTCUI] Request for disabling calls ended with success")
+            case false:
+                return result(
+                    FlutterError( code: "errorWebRTCUIResult",
+                                  message: "[WebRTCUI] Request for disabling calls ended with failure - See further logs.",
+                                  details: "[WebRTCUI] Request for disabling calls ended with failure - See further logs." ))
+            }
+        })
+#else
+        return result(
+            FlutterError( code: "errorWebRTCUIResult",
+                          message: "[WebRTCUI] Not imported properly in podfile: library cannot be used.",
+                          details: "[WebRTCUI] Not imported properly in podfile: library cannot be used." ))
+#endif
     }
     
 }
