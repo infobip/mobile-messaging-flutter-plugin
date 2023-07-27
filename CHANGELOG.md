@@ -1,3 +1,9 @@
+# 1.3.0
+## Added
+- Option to control In-app chat connection with new methods stopConnection and restartConnection on iOS.
+
+## Changed
+- In-app chat now automatically stops and restarts its connection when going to background/locking, and going to foreground/unlocking, optimising push notifications from chat events.
 # 1.2.0
 ## Added
 - Support for WebRTC audio and video calls, with built-in user interface.
