@@ -209,6 +209,22 @@ class InfobipMobilemessaging {
   static Future<void> disableCalls() async {
     await _channel.invokeMethod('disableCalls');
   }
+
+  static Future<void> restartConnection() async {
+    if (!Platform.isIOS) {
+      log("It's supported only on the iOS platform");
+      return;
+    }
+    await _channel.invokeMethod('restartConnection');
+  }
+
+  static Future<void> stopConnection() async {
+    if (!Platform.isIOS) {
+      log("It's supported only on the iOS platform");
+      return;
+    }
+    await _channel.invokeMethod('stopConnection');
+  }
 }
 
 class _DefaultMessageStorage extends MessageStorage {

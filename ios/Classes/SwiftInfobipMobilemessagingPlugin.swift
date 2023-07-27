@@ -34,7 +34,7 @@ public class SwiftInfobipMobilemessagingPlugin: NSObject, FlutterPlugin {
     private static var chatVC: MMChatViewController?
     private var isStarted: Bool = false
     private var webrtcAppId: String?
-    
+
     @objc
     func supportedEvents() -> [String]! {
         return [
@@ -124,6 +124,10 @@ public class SwiftInfobipMobilemessagingPlugin: NSObject, FlutterPlugin {
             enableCalls(result: result)
         } else if call.method == "disableCalls" {
             disableCalls(result: result)
+        } else if call.method == "restartConnection" {
+            restartConnection()
+        } else if call.method == "stopConnection" {
+            stopConnection()
         } else {
             result(FlutterError( code: "NotImplemented",
                                  message: "Error NotImplemented",
@@ -206,7 +210,7 @@ public class SwiftInfobipMobilemessagingPlugin: NSObject, FlutterPlugin {
             webrtcAppId = appId
         }
 #endif
-        
+
         mobileMessaging?.start({
             return result("success")
         })
@@ -687,5 +691,14 @@ public class SwiftInfobipMobilemessagingPlugin: NSObject, FlutterPlugin {
                           details: "[WebRTCUI] Not imported properly in podfile: library cannot be used." ))
 #endif
     }
-    
+
+    func restartConnection() {
+        guard let chatVC = SwiftInfobipMobilemessagingPlugin.chatVC else { return }
+        chatVC.restartConnection()
+    }
+
+    func stopConnection() {
+        guard let chatVC = SwiftInfobipMobilemessagingPlugin.chatVC else { return }
+        chatVC.stopConnection()
+    }
 }
