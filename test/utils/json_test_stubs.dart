@@ -53,7 +53,8 @@ Map<String, dynamic> get configurationExampleJson => {
         },
       ],
       'defaultMessageStorage': true,
-      'webRTCUI': null
+      'webRTCUI': null,
+      'inAppChatCustomization': null
     };
 
 Map<String, dynamic> get installationExampleJson => {

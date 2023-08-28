@@ -30,6 +30,7 @@ class Configuration {
         static let withoutRegisteringForRemoteNotifications = "withoutRegisteringForRemoteNotifications"
         static let webRTCUI = "webRTCUI"
         static let applicationId = "applicationId"
+        static let customisation = "customisation"
     }
     
     let appCode: String
@@ -46,6 +47,7 @@ class Configuration {
     let categories: [MMNotificationCategory]?
     let webViewSettings: [String: AnyObject]?
     let withoutRegisteringForRemoteNotifications: Bool
+    let customisation: Customisation?
     
     init?(rawConfig: [String: AnyObject]) {
         guard let appCode = rawConfig[Configuration.Keys.applicationCode] as? String,
@@ -53,6 +55,17 @@ class Configuration {
         {
             return nil
         }
+        
+        if let rawConfig = rawConfig[Configuration.Keys.customisation] as? [String: Any],
+           let jsonObject = try? JSONSerialization.data(
+            withJSONObject: rawConfig
+           ),
+           let customisation = try? JSONDecoder().decode(Customisation.self, from: jsonObject) {
+            self.customisation = customisation
+        } else {
+            self.customisation = nil
+        }
+        
         self.webRTCUI = rawConfig[Configuration.Keys.webRTCUI] as? [String: Any]
         self.appCode = appCode
         self.inAppChatEnabled = rawConfig[Configuration.Keys.inAppChatEnabled].unwrap(orDefault: false)

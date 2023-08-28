@@ -18,17 +18,19 @@ class Configuration {
 
   final WebRTCUI? webRTCUI;
 
-  Configuration({
-    required this.applicationCode,
-    this.pluginVersion,
-    this.inAppChatEnabled,
-    this.androidSettings,
-    this.iosSettings,
-    this.privacySettings,
-    this.notificationCategories,
-    this.defaultMessageStorage,
-    this.webRTCUI
-  });
+  final InAppChatCustomization? inAppChatCustomization;
+
+  Configuration(
+      {required this.applicationCode,
+      this.pluginVersion,
+      this.inAppChatEnabled,
+      this.androidSettings,
+      this.iosSettings,
+      this.privacySettings,
+      this.notificationCategories,
+      this.defaultMessageStorage,
+      this.webRTCUI,
+      this.inAppChatCustomization});
 
   Map<String, dynamic> toJson() => {
         'applicationCode': applicationCode,
@@ -37,10 +39,12 @@ class Configuration {
         'androidSettings': androidSettings?.toJson(),
         'iosSettings': iosSettings?.toJson(),
         'privacySettings': privacySettings?.toJson(),
-        'notificationCategories':
-            (notificationCategories != null) ? notificationCategories!.map((e) => e.toJson()) : null,
+        'notificationCategories': (notificationCategories != null)
+            ? notificationCategories!.map((e) => e.toJson())
+            : null,
         'defaultMessageStorage': defaultMessageStorage,
-        'webRTCUI': webRTCUI?.toJson()
+        'webRTCUI': webRTCUI?.toJson(),
+        'inAppChatCustomization': inAppChatCustomization?.toJson()
       };
 }
 
@@ -104,20 +108,20 @@ class IOSSettings {
   final WebViewSettings? webViewSettings;
   final bool? withoutRegisteringForRemoteNotifications;
 
-  IOSSettings({
-    this.notificationTypes,
-    this.forceCleanup,
-    this.logging,
-    this.webViewSettings,
-    this.withoutRegisteringForRemoteNotifications
-  });
+  IOSSettings(
+      {this.notificationTypes,
+      this.forceCleanup,
+      this.logging,
+      this.webViewSettings,
+      this.withoutRegisteringForRemoteNotifications});
 
   Map<String, dynamic> toJson() => {
         'notificationTypes': notificationTypes,
         'forceCleanup': forceCleanup,
         'logging': logging,
         'webViewSettings': webViewSettings?.toJson(),
-        'withoutRegisteringForRemoteNotifications': withoutRegisteringForRemoteNotifications
+        'withoutRegisteringForRemoteNotifications':
+            withoutRegisteringForRemoteNotifications
       };
 }
 
@@ -127,7 +131,8 @@ class WebViewSettings {
   final String? titleColor;
   final String? tintColor;
 
-  WebViewSettings({this.title, this.barTintColor, this.tintColor, this.titleColor});
+  WebViewSettings(
+      {this.title, this.barTintColor, this.tintColor, this.titleColor});
 
   Map<String, dynamic> toJson() => {
         'title': title,
@@ -204,7 +209,8 @@ class NotificationCategory {
   });
 
   Map<String, dynamic> toJson() {
-    List<Map<String, dynamic>>? actions = this.actions!.map((i) => i.toJson()).toList();
+    List<Map<String, dynamic>>? actions =
+        this.actions!.map((i) => i.toJson()).toList();
     return {
       'identifier': identifier,
       'actions': actions,
@@ -215,11 +221,184 @@ class NotificationCategory {
 class WebRTCUI {
   final String? applicationId;
 
-  WebRTCUI({
-    this.applicationId
-  });
+  WebRTCUI({this.applicationId});
+
+  Map<String, dynamic> toJson() => {'applicationId': applicationId};
+}
+
+class InAppChatCustomization {
+  final String? toolbarTitle;
+  final String? toolbarTitleColor;
+  final String? toolbarTintColor;
+  final String? toolbarBackgroundColor;
+  final String? sendButtonTintColor;
+  final String? chatBackgroundColor;
+  final String? noConnectionAlertTextColor;
+  final String? noConnectionAlertBackgroundColor;
+  final String? chatInputPlaceholderColor;
+  final String? chatInputCursorColor;
+  final String? chatInputBackgroundColor;
+  final String? sendButtonIcon;
+  final String? attachmentButtonIcon;
+  final bool? chatInputSeparatorVisible;
+  final AndroidInAppChatCustomization? android;
+  final IOSInAppChatCustomization? ios;
+
+  InAppChatCustomization({
+      this.toolbarTitle,
+      this.toolbarTitleColor,
+      this.toolbarTintColor,
+      this.toolbarBackgroundColor,
+      this.sendButtonTintColor,
+      this.chatBackgroundColor,
+      this.noConnectionAlertTextColor,
+      this.noConnectionAlertBackgroundColor,
+      this.chatInputPlaceholderColor,
+      this.chatInputCursorColor,
+      this.chatInputBackgroundColor,
+      this.sendButtonIcon,
+      this.attachmentButtonIcon,
+      this.chatInputSeparatorVisible,
+      this.android,
+      this.ios});
 
   Map<String, dynamic> toJson() => {
-      'applicationId': applicationId
-    };
+        'toolbarTitle': toolbarTitle,
+        'toolbarTitleColor': toolbarTitleColor,
+        'toolbarTintColor': toolbarTintColor,
+        'toolbarBackgroundColor': toolbarBackgroundColor,
+        'sendButtonTintColor': sendButtonTintColor,
+        'chatBackgroundColor': chatBackgroundColor,
+        'noConnectionAlertTextColor': noConnectionAlertTextColor,
+        'noConnectionAlertBackgroundColor': noConnectionAlertBackgroundColor,
+        'chatInputPlaceholderColor': chatInputPlaceholderColor,
+        'chatInputCursorColor': chatInputCursorColor,
+        'chatInputBackgroundColor': chatInputBackgroundColor,
+        'sendButtonIcon': sendButtonIcon,
+        'attachmentButtonIcon': attachmentButtonIcon,
+        'chatInputSeparatorVisible': chatInputSeparatorVisible,
+        'android': android?.toJson(),
+        'ios': ios?.toJson()
+      };
+}
+
+class AndroidInAppChatCustomization {
+  final String? chatNavigationIconTint;
+  final String? chatSubtitleTextColor;
+  final String? chatInputTextColor;
+  final String? chatProgressBarColor;
+  final String? chatInputAttachmentIconTint;
+  final String? chatInputSendIconTint;
+  final String? chatInputSeparatorLineColor;
+  final String? chatInputHintText;
+  final String? chatSubtitleText;
+  final String? chatSubtitleTextAppearanceRes;
+  final bool? chatSubtitleCentered;
+  final bool? chatTitleCentered;
+  final String? chatInputTextAppearance;
+  final String? chatNetworkConnectionErrorTextAppearanceRes;
+  final String? chatNetworkConnectionErrorText;
+  final String? chatNavigationIcon;
+  final bool? chatStatusBarColorLight;
+  final String? chatTitleTextAppearanceRes;
+  final String? chatStatusBarBackgroundColor;
+
+  AndroidInAppChatCustomization({
+      this.chatNavigationIconTint,
+      this.chatSubtitleTextColor,
+      this.chatInputTextColor,
+      this.chatProgressBarColor,
+      this.chatInputAttachmentIconTint,
+      this.chatInputSendIconTint,
+      this.chatInputSeparatorLineColor,
+      this.chatInputHintText,
+      this.chatSubtitleText,
+      this.chatSubtitleTextAppearanceRes,
+      this.chatSubtitleCentered,
+      this.chatTitleCentered,
+      this.chatInputTextAppearance,
+      this.chatNetworkConnectionErrorTextAppearanceRes,
+      this.chatNetworkConnectionErrorText,
+      this.chatNavigationIcon,
+      this.chatStatusBarColorLight,
+      this.chatTitleTextAppearanceRes,
+      this.chatStatusBarBackgroundColor});
+
+  Map<String, dynamic> toJson() => {
+        'chatNavigationIconTint': chatNavigationIconTint,
+        'chatSubtitleTextColor': chatSubtitleTextColor,
+        'chatInputTextColor': chatInputTextColor,
+        'chatProgressBarColor': chatProgressBarColor,
+        'chatInputAttachmentIconTint': chatInputAttachmentIconTint,
+        'chatInputSendIconTint': chatInputSendIconTint,
+        'chatInputSeparatorLineColor': chatInputSeparatorLineColor,
+        'chatInputHintText': chatInputHintText,
+        'chatSubtitleText': chatSubtitleText,
+        'chatSubtitleTextAppearanceRes': chatSubtitleTextAppearanceRes,
+        'chatNetworkConnectionErrorText': chatNetworkConnectionErrorText,
+        'chatSubtitleCentered': chatSubtitleCentered,
+        'chatTitleCentered': chatTitleCentered,
+        'chatInputTextAppearance': chatInputTextAppearance,
+        'chatNetworkConnectionErrorTextAppearanceRes': chatNetworkConnectionErrorTextAppearanceRes,
+        'chatNavigationIcon': chatNavigationIcon,
+        'chatStatusBarColorLight': chatStatusBarColorLight,
+        'chatTitleTextAppearanceRes': chatTitleTextAppearanceRes,
+        'chatStatusBarBackgroundColor': chatStatusBarBackgroundColor
+      };
+}
+
+class IOSInAppChatCustomization {
+  final String? attachmentPreviewBarsColor;
+  final String? attachmentPreviewItemsColor;
+  final double? textContainerTopMargin;
+  final double? textContainerLeftPadding;
+  final double? textContainerCornerRadius;
+  final double? textViewTopMargin;
+  final double? placeholderHeight;
+  final double? placeholderSideMargin;
+  final double? buttonHeight;
+  final double? buttonTouchableOverlap;
+  final double? buttonRightMargin;
+  final double? utilityButtonWidth;
+  final double? utilityButtonBottomMargin;
+  final double? initialHeight;
+  final String? mainFont;
+  final String? charCountFont;
+
+  IOSInAppChatCustomization({
+      this.attachmentPreviewBarsColor,
+      this.attachmentPreviewItemsColor,
+      this.textContainerTopMargin,
+      this.textContainerLeftPadding,
+      this.textContainerCornerRadius,
+      this.textViewTopMargin,
+      this.placeholderHeight,
+      this.placeholderSideMargin,
+      this.buttonHeight,
+      this.buttonTouchableOverlap,
+      this.buttonRightMargin,
+      this.utilityButtonWidth,
+      this.utilityButtonBottomMargin,
+      this.initialHeight,
+      this.mainFont,
+      this.charCountFont});
+
+  Map<String, dynamic> toJson() => {
+        'attachmentPreviewBarsColor': attachmentPreviewBarsColor,
+        'attachmentPreviewItemsColor': attachmentPreviewItemsColor,
+        'textContainerTopMargin': textContainerTopMargin,
+        'textContainerLeftPadding': textContainerLeftPadding,
+        'textContainerCornerRadius': textContainerCornerRadius,
+        'textViewTopMargin': textViewTopMargin,
+        'placeholderHeight': placeholderHeight,
+        'placeholderSideMargin': placeholderSideMargin,
+        'buttonHeight': buttonHeight,
+        'buttonTouchableOverlap': buttonTouchableOverlap,
+        'buttonRightMargin': buttonRightMargin,
+        'utilityButtonWidth': utilityButtonWidth,
+        'utilityButtonBottomMargin': utilityButtonBottomMargin,
+        'initialHeight': initialHeight,
+        'mainFont': mainFont,
+        'charCountFont': charCountFont
+      };
 }

@@ -40,7 +40,13 @@ android {
 def withWebRTCUI = getRootProjectProperty('withWebRTCUI', false)
 
 dependencies {
-    def mmVersion = '8.4.0'
+    def mmVersion = '8.5.1'
+    //flutter and mm dependencies clash
+    implementation ("org.jetbrains.kotlin:kotlin-stdlib-jdk8") {
+        version {
+            strictly "1.8.10"
+        }
+    }
     implementation ("com.infobip:infobip-mobile-messaging-android-sdk:$mmVersion@aar") {
         transitive = true
     }

@@ -34,7 +34,8 @@ public class SwiftInfobipMobilemessagingPlugin: NSObject, FlutterPlugin {
     private static var chatVC: MMChatViewController?
     private var isStarted: Bool = false
     private var webrtcAppId: String?
-
+    private var controller: FlutterPluginRegistrar?
+    
     @objc
     func supportedEvents() -> [String]! {
         return [
@@ -62,6 +63,7 @@ public class SwiftInfobipMobilemessagingPlugin: NSObject, FlutterPlugin {
         let channel = FlutterMethodChannel(name: "infobip_mobilemessaging", binaryMessenger: registrar.messenger())
         let instance = SwiftInfobipMobilemessagingPlugin()
         registrar.addMethodCallDelegate(instance, channel: channel)
+        instance.controller = registrar
         
         let eventChannel = FlutterEventChannel(name: "infobip_mobilemessaging/broadcast", binaryMessenger: registrar.messenger())
         instance.eventsManager = MobileMessagingEventsManager()
@@ -214,6 +216,17 @@ public class SwiftInfobipMobilemessagingPlugin: NSObject, FlutterPlugin {
         mobileMessaging?.start({
             return result("success")
         })
+        
+        if let customisation = configuration.customisation {
+            setupCustomisation(customisation: customisation)
+        }
+    }
+    
+    func setupCustomisation(customisation: Customisation) {
+        let settings = MMChatSettings.sharedInstance
+        if let controller = self.controller {
+            CustomisationUtils().setup(customisation: customisation, with: controller, in: settings)
+        }
     }
     
     func saveUser(call: FlutterMethodCall, result: @escaping FlutterResult) {
@@ -700,5 +713,31 @@ public class SwiftInfobipMobilemessagingPlugin: NSObject, FlutterPlugin {
     func stopConnection() {
         guard let chatVC = SwiftInfobipMobilemessagingPlugin.chatVC else { return }
         chatVC.stopConnection()
+    }
+}
+
+extension UIColor {
+    convenience init(hexString: String, alpha: CGFloat = 1.0) {
+        let hexString: String = hexString.trimmingCharacters(in: CharacterSet.whitespacesAndNewlines)
+        let scanner = Scanner(string: hexString)
+        if (hexString.hasPrefix("#")) {
+            scanner.scanLocation = 1
+        }
+        var color: UInt32 = 0
+        scanner.scanHexInt32(&color)
+        let mask = 0x000000FF
+        let r = Int(color >> 16) & mask
+        let g = Int(color >> 8) & mask
+        let b = Int(color) & mask
+        let red   = CGFloat(r) / 255.0
+        let green = CGFloat(g) / 255.0
+        let blue  = CGFloat(b) / 255.0
+        self.init(red:red, green:green, blue:blue, alpha:alpha)
+    }
+}
+
+extension String {
+    func toColor() -> UIColor? {
+        return UIColor(hexString: self)
     }
 }

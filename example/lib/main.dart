@@ -4,7 +4,8 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:infobip_mobilemessaging/infobip_mobilemessaging.dart';
-import 'package:infobip_mobilemessaging/models/configuration.dart' as mmconfiguration;
+import 'package:infobip_mobilemessaging/models/configuration.dart'
+    as mmconfiguration;
 import 'package:infobip_mobilemessaging/models/installation.dart';
 import 'package:infobip_mobilemessaging/models/ios_chat_settings.dart';
 import 'package:infobip_mobilemessaging/models/library_event.dart';
@@ -78,15 +79,51 @@ class _MyAppState extends State<MyApp> {
         inAppChatEnabled: true,
         defaultMessageStorage: true,
         iosSettings: mmconfiguration.IOSSettings(
-            notificationTypes: ["alert", "badge", "sound"],
+            notificationTypes: ['alert', 'badge', 'sound'],
             forceCleanup: false,
             logging: true,
-            withoutRegisteringForRemoteNotifications: false
-        ),
+            withoutRegisteringForRemoteNotifications: false),
         webRTCUI: mmconfiguration.WebRTCUI(
-          applicationId: 'Your WebRTC application id'
-        )
-    ));
+            applicationId: 'Your WebRTC application id'),
+        inAppChatCustomization: mmconfiguration.InAppChatCustomization(
+            toolbarTitle: 'Chat',
+            toolbarTitleColor: '#FFFFFF',
+            toolbarTintColor: '#FFFFFF',
+            toolbarBackgroundColor: '#673AB7',
+            sendButtonTintColor: '#9E9E9E',
+            chatBackgroundColor: '#D1C4E9',
+            noConnectionAlertTextColor: '#FFFFFF',
+            noConnectionAlertBackgroundColor: '#212121',
+            chatInputPlaceholderColor: '#757575',
+            chatInputCursorColor: '#9E9E9E',
+            chatInputBackgroundColor: '#D1C4E9',
+            sendButtonIcon: 'assets/ic_send.png',
+            attachmentButtonIcon: 'assets/ic_add_circle.png',
+            chatInputSeparatorVisible: true,
+            android: mmconfiguration.AndroidInAppChatCustomization(
+                chatNavigationIconTint: '#FFFFFF',
+                chatSubtitleTextColor: '#FFFFFF',
+                chatInputTextColor: '#212121',
+                chatProgressBarColor: '#9E9E9E',
+                chatInputAttachmentIconTint: '#9E9E9E',
+                chatInputSendIconTint: '#9E9E9E',
+                chatInputSeparatorLineColor: '#BDBDBD',
+                chatInputHintText: 'Message',
+                chatSubtitleText: '#1',
+                chatSubtitleTextAppearanceRes:
+                    'TextAppearance_AppCompat_Subtitle',
+                chatSubtitleCentered: true,
+                chatTitleCentered: true,
+                chatInputTextAppearance: 'TextAppearance_AppCompat',
+                chatNetworkConnectionErrorTextAppearanceRes:
+                    'TextAppearance_AppCompat_Small',
+                chatNetworkConnectionErrorText: 'Offline',
+                chatNavigationIcon: 'assets/ic_back.png',
+                chatStatusBarColorLight: true,
+                chatTitleTextAppearanceRes: 'TextAppearance_AppCompat_Title',
+                chatStatusBarBackgroundColor: '#673AB7'),
+            ios: mmconfiguration.IOSInAppChatCustomization(
+                initialHeight: 150))));
     // await InfobipMobilemessaging.enableCalls(); // Comment out to automatically enable WebRTC
     InfobipMobilemessaging.setupiOSChatSettings(IOSChatSettings(
       title: 'Flutter Example Chat',
@@ -106,7 +143,9 @@ class _MyAppState extends State<MyApp> {
               log('Callback. MESSAGE_RECEIVED event, message title: ${message.title} body: ${message.body}'),
               _HomePageState.addLibraryEvent('Message Received'),
               log('defaultMessageStorage().findAll():'),
-              log(InfobipMobilemessaging.defaultMessageStorage().findAll().toString())
+              log(InfobipMobilemessaging.defaultMessageStorage()
+                  .findAll()
+                  .toString())
             });
     InfobipMobilemessaging.on(
         LibraryEvent.userUpdated,
@@ -155,18 +194,18 @@ class _MyAppState extends State<MyApp> {
 
   @override
   Widget build(BuildContext context) => MaterialApp(
-      title: 'Form Samples',
-      routes: Map.fromEntries(pages.map((d) => MapEntry(d.route, d.builder))),
-      home: const HomePage(),
-      navigatorKey: navigatorKey,
-      theme: ThemeData(
-          primarySwatch: Colors.deepOrange,
-          pageTransitionsTheme: const PageTransitionsTheme(
-              builders: <TargetPlatform, PageTransitionsBuilder>{
-                TargetPlatform.android: FadeUpwardsPageTransitionsBuilder(),
-                TargetPlatform.iOS: CupertinoPageTransitionsBuilder(),
-              })),
-    );
+        title: 'Form Samples',
+        routes: Map.fromEntries(pages.map((d) => MapEntry(d.route, d.builder))),
+        home: const HomePage(),
+        navigatorKey: navigatorKey,
+        theme: ThemeData(
+            primarySwatch: Colors.deepOrange,
+            pageTransitionsTheme: const PageTransitionsTheme(
+                builders: <TargetPlatform, PageTransitionsBuilder>{
+                  TargetPlatform.android: FadeUpwardsPageTransitionsBuilder(),
+                  TargetPlatform.iOS: CupertinoPageTransitionsBuilder(),
+                })),
+      );
 }
 
 class HomePage extends StatefulWidget {
@@ -219,386 +258,398 @@ class _HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) => Scaffold(
-      appBar: AppBar(
-        title: const Text('Push Demo Application'),
-      ),
-      body: ListView(
-        children: [
-          ...pages.map((d) => DemoTile(demo: d)),
-          ListTile(
-              title: const Text('Depersonalize'),
-              onTap: () {
-                InfobipMobilemessaging.depersonalize();
-              }),
-          ListTile(
-              title: const Text('Get Installation Data'),
-              onTap: () async {
-                var res = await InfobipMobilemessaging.getInstallation();
-                showDialog<void>(
-                  context: context,
-                  builder: (context) => AlertDialog(
-                    title: const Text('Installation Data'),
-                    content: Text(res.toJson().toString() + '\n'),
-                    actions: [
-                      TextButton(
-                        child: const Text('Done'),
-                        onPressed: () {
-                          Navigator.of(context).pop();
-                        },
-                      ),
-                    ],
-                  ),
-                );
-              }),
-          ListTile(
-              title: const Text('Save User Data'),
-              onTap: () async {
-                UserData user = UserData(
-                    externalUserId: null,
-                    firstName: null,
-                    lastName: null,
-                    middleName: 'Middle Name',
-                    //gender: Gender.Male,
-                    birthday: null,
-                    //phones: ['79123456789'],
-                    //emails: ['some.email@email.com'],
-                    tags: [],
-                    customAttributes: {
-                      'alList': [
+        appBar: AppBar(
+          title: const Text('Push Demo Application'),
+        ),
+        body: ListView(
+          children: [
+            ...pages.map((d) => DemoTile(demo: d)),
+            ListTile(
+                title: const Text('Depersonalize'),
+                onTap: () {
+                  InfobipMobilemessaging.depersonalize();
+                }),
+            ListTile(
+                title: const Text('Get Installation Data'),
+                onTap: () async {
+                  var res = await InfobipMobilemessaging.getInstallation();
+                  showDialog<void>(
+                    context: context,
+                    builder: (context) => AlertDialog(
+                      title: const Text('Installation Data'),
+                      content: Text(res.toJson().toString() + '\n'),
+                      actions: [
+                        TextButton(
+                          child: const Text('Done'),
+                          onPressed: () {
+                            Navigator.of(context).pop();
+                          },
+                        ),
+                      ],
+                    ),
+                  );
+                }),
+            ListTile(
+                title: const Text('Save User Data'),
+                onTap: () async {
+                  UserData user = UserData(
+                      externalUserId: null,
+                      firstName: null,
+                      lastName: null,
+                      middleName: 'Middle Name',
+                      //gender: Gender.Male,
+                      birthday: null,
+                      //phones: ['79123456789'],
+                      //emails: ['some.email@email.com'],
+                      tags: [],
+                      customAttributes: {
+                        'alList': [
+                          {
+                            'alDate': '2021-10-11',
+                            'alWhole': 2,
+                            'alString': 'someAnotherString',
+                            'alBoolean': true,
+                            'alDecimal': 0.66
+                          }
+                        ]
+                      });
+                  log(user.toJson().toString());
+                  try {
+                    await InfobipMobilemessaging.saveUser(user);
+                  } catch (e) {
+                    log('MobileMessaging: details ' + e.details);
+                    log('MobileMessaging: code ' + e.code);
+
+                    switch (e.code) {
+                      case 'USER_MERGE_INTERRUPTED':
                         {
-                          'alDate': '2021-10-11',
-                          'alWhole': 2,
-                          'alString': 'someAnotherString',
-                          'alBoolean': true,
-                          'alDecimal': 0.66
+                          //do something with the error
                         }
-                      ]
-                    });
-                log(user.toJson().toString());
-                try {
-                  await InfobipMobilemessaging.saveUser(user);
-                } catch (e) {
-                  log('MobileMessaging: details ' + e.details);
-                  log('MobileMessaging: code ' + e.code);
-
-                  switch (e.code) {
-                    case 'USER_MERGE_INTERRUPTED': {
-                        //do something with the error
-                      }
-                      break;
-                    case 'PHONE_INVALID': {
-                      //the phone provided was not recognized as a valid one
+                        break;
+                      case 'PHONE_INVALID':
+                        {
+                          //the phone provided was not recognized as a valid one
+                        }
+                        break;
+                      case 'EMAIL_INVALID':
+                        {
+                          //the email provided was not recognized as a valid one
+                        }
+                        break;
+                      default:
+                        {
+                          log('MobileMessaging: error is $e');
+                        }
+                        break;
                     }
-                    break;
-                    case 'EMAIL_INVALID': {
-                      //the email provided was not recognized as a valid one
-                    }
-                    break;
-                    default: {
-                      log('MobileMessaging: error is $e');
-                    }
-                    break;
                   }
-                }
-              }),
-          ListTile(
-              title: const Text('Get User Data'),
-              onTap: () async {
-                var res = await InfobipMobilemessaging.getUser();
-                showDialog<void>(
-                  context: context,
-                  builder: (context) => AlertDialog(
-                    title: const Text('Get User Data'),
-                    content: Text(res.toJson().toString() + '\n'),
-                    actions: [
-                      TextButton(
-                        child: const Text('Done'),
-                        onPressed: () {
-                          Navigator.of(context).pop();
-                        },
-                      ),
-                    ],
-                  ),
-                );
-              }),
-          if (Platform.isAndroid)
+                }),
             ListTile(
-              title: const Text('Register For Android 13 Notifications'),
-              onTap: () {
-                log('trying to register for remote notifications');
-                InfobipMobilemessaging.registerForAndroidRemoteNotifications();
-              },
-            ),
-          if (Platform.isIOS)
+                title: const Text('Get User Data'),
+                onTap: () async {
+                  var res = await InfobipMobilemessaging.getUser();
+                  showDialog<void>(
+                    context: context,
+                    builder: (context) => AlertDialog(
+                      title: const Text('Get User Data'),
+                      content: Text(res.toJson().toString() + '\n'),
+                      actions: [
+                        TextButton(
+                          child: const Text('Done'),
+                          onPressed: () {
+                            Navigator.of(context).pop();
+                          },
+                        ),
+                      ],
+                    ),
+                  );
+                }),
+            if (Platform.isAndroid)
+              ListTile(
+                title: const Text('Register For Android 13 Notifications'),
+                onTap: () {
+                  log('trying to register for remote notifications');
+                  InfobipMobilemessaging
+                      .registerForAndroidRemoteNotifications();
+                },
+              ),
+            if (Platform.isIOS)
+              ListTile(
+                title: const Text('Register For iOS Notifications'),
+                onTap: () {
+                  log('trying to register for ios remote notifications');
+                  InfobipMobilemessaging.registerForRemoteNotifications();
+                },
+              ),
             ListTile(
-              title: const Text('Register For iOS Notifications'),
-              onTap: () {
-                log('trying to register for ios remote notifications');
-                InfobipMobilemessaging.registerForRemoteNotifications();
-              },
-            ),
-          ListTile(
-              title: const Text('Depersonalize Installation'),
-              onTap: () {
-                InfobipMobilemessaging.depersonalizeInstallation(
-                    'pushRegistrationId to depersonalize');
-              }),
-          ListTile(
-              title: const Text('Set Installation as Primary'),
-              onTap: () async {
-                InstallationPrimary installation = InstallationPrimary(
-                    'pushRegistrationId to set as primary', true);
-                InfobipMobilemessaging.setInstallationAsPrimary(installation);
-              }),
-          ListTile(
-              title: const Text('Show Library Events'),
-              onTap: () {
-                showDialog<void>(
-                  context: context,
-                  builder: (context) => AlertDialog(
-                    title: const Text('Library Events'),
-                    content: Text(getLibraryEvents()),
-                    actions: [
-                      TextButton(
-                        child: const Text('Done'),
-                        onPressed: () {
-                          Navigator.of(context).pop();
-                        },
-                      ),
-                    ],
-                  ),
-                );
-              }),
-          ListTile(
-              title: const Text('Set Chat Language'),
-              onTap: () {
-                showChatLanguageDialog(context);
-              }),
-          ListTile(
-              title: const Text('Show Chat'),
-              onTap: () {
-                // InfobipMobilemessaging.setJwt('your JWT'); // Comment out to automatically log-in using authentication
-                InfobipMobilemessaging.showChat();
-              }),
-          ListTile(
-              title: const Text('Show Chat and Send Contextual Data'),
-              onTap: () {
+                title: const Text('Depersonalize Installation'),
+                onTap: () {
+                  InfobipMobilemessaging.depersonalizeInstallation(
+                      'pushRegistrationId to depersonalize');
+                }),
+            ListTile(
+                title: const Text('Set Installation as Primary'),
+                onTap: () async {
+                  InstallationPrimary installation = InstallationPrimary(
+                      'pushRegistrationId to set as primary', true);
+                  InfobipMobilemessaging.setInstallationAsPrimary(installation);
+                }),
+            ListTile(
+                title: const Text('Show Library Events'),
+                onTap: () {
+                  showDialog<void>(
+                    context: context,
+                    builder: (context) => AlertDialog(
+                      title: const Text('Library Events'),
+                      content: Text(getLibraryEvents()),
+                      actions: [
+                        TextButton(
+                          child: const Text('Done'),
+                          onPressed: () {
+                            Navigator.of(context).pop();
+                          },
+                        ),
+                      ],
+                    ),
+                  );
+                }),
+            ListTile(
+                title: const Text('Set Chat Language'),
+                onTap: () {
+                  showChatLanguageDialog(context);
+                }),
+            ListTile(
+                title: const Text('Show Chat'),
+                onTap: () {
+                  // InfobipMobilemessaging.setJwt('your JWT'); // Comment out to automatically log-in using authentication
+                  InfobipMobilemessaging.showChat();
+                }),
+            ListTile(
+                title: const Text('Show Chat and Send Contextual Data'),
+                onTap: () {
                   Future.delayed(const Duration(milliseconds: 3000), () {
-			               // Metadata must be sent after chat is presented, so we delay it
-			               InfobipMobilemessaging.sendContextualData("{ demoKey: 'InAppChat Metadata Value' }", false);
-		              });
-		              InfobipMobilemessaging.showChat();
-              }),
-          ListTile(
-              title: const Text('Send Event'),
-              onTap: () {
-                log('Trying to send event');
-                InfobipMobilemessaging.submitEvent({
-                  'definitionId': 'alEvent1',
-                  'properties': {
-                    'alEvent1String': 'SomeString',
-                    'alEvent1Number': 12345,
-                    'alEvent1Boolean': true,
-                    'alEvent1Date': '2021-10-19'
+                    // Metadata must be sent after chat is presented, so we delay it
+                    InfobipMobilemessaging.sendContextualData(
+                        "{ demoKey: 'InAppChat Metadata Value' }", false);
+                  });
+                  InfobipMobilemessaging.showChat();
+                }),
+            ListTile(
+                title: const Text('Send Event'),
+                onTap: () {
+                  log('Trying to send event');
+                  InfobipMobilemessaging.submitEvent({
+                    'definitionId': 'alEvent1',
+                    'properties': {
+                      'alEvent1String': 'SomeString',
+                      'alEvent1Number': 12345,
+                      'alEvent1Boolean': true,
+                      'alEvent1Date': '2021-10-19'
+                    }
+                  });
+                }),
+            ListTile(
+                title: const Text('Register Deeplink on Tap'),
+                onTap: () {
+                  log('Tile "Register Deeplink on Tap" tapped');
+                  InfobipMobilemessaging.on(
+                      'notificationTapped', storedFunction);
+                }),
+            ListTile(
+                title: const Text('Unregister Deeplink on Tap'),
+                onTap: () {
+                  log('Tile "Unregister Deeplink on Tap" tapped');
+                  InfobipMobilemessaging.unregister(
+                      LibraryEvent.notificationTapped, storedFunction);
+                }),
+            ListTile(
+                title: const Text('Unregister All Handlers'),
+                onTap: () {
+                  log('Tile "Unregister All Handlers" tapped');
+                  InfobipMobilemessaging.unregisterAllHandlers(
+                      'notificationTapped');
+                }),
+            ListTile(
+                title: const Text('MessageStorage: findAll'),
+                onTap: () async {
+                  var res = await logAllMessages();
+                  showDialog<void>(
+                    context: context,
+                    builder: (context) => AlertDialog(
+                      title: const Text('findAll'),
+                      content: Text(res),
+                      actions: [
+                        TextButton(
+                          child: const Text('Done'),
+                          onPressed: () {
+                            Navigator.of(context).pop();
+                          },
+                        ),
+                      ],
+                    ),
+                  );
+                }),
+            ListTile(
+                title: const Text('MessageStorage: Find First Message'),
+                onTap: () async {
+                  String str = '';
+                  List<Message> messages =
+                      await InfobipMobilemessaging.defaultMessageStorage()
+                          .findAll();
+                  if (messages == null || messages.isEmpty) {
+                    str = 'Empty message storage';
+                  } else {
+                    Message message = messages.first;
+                    Message foundedMessage =
+                        await InfobipMobilemessaging.defaultMessageStorage()
+                            .find(message.messageId);
+                    str =
+                        'Find message for ${message.messageId}: $foundedMessage';
                   }
-                });
-              }),
-          ListTile(
-              title: const Text('Register Deeplink on Tap'),
-              onTap: () {
-                log('Tile "Register Deeplink on Tap" tapped');
-                InfobipMobilemessaging.on('notificationTapped', storedFunction);
-              }),
-          ListTile(
-              title: const Text('Unregister Deeplink on Tap'),
-              onTap: () {
-                log('Tile "Unregister Deeplink on Tap" tapped');
-                InfobipMobilemessaging.unregister(
-                    LibraryEvent.notificationTapped, storedFunction);
-              }),
-          ListTile(
-              title: const Text('Unregister All Handlers'),
-              onTap: () {
-                log('Tile "Unregister All Handlers" tapped');
-                InfobipMobilemessaging.unregisterAllHandlers(
-                    'notificationTapped');
-              }),
-          ListTile(
-              title: const Text('MessageStorage: findAll'),
-              onTap: () async {
-                var res = await logAllMessages();
-                showDialog<void>(
-                  context: context,
-                  builder: (context) => AlertDialog(
-                    title: const Text('findAll'),
-                    content: Text(res),
-                    actions: [
-                      TextButton(
-                        child: const Text('Done'),
-                        onPressed: () {
-                          Navigator.of(context).pop();
-                        },
-                      ),
-                    ],
-                  ),
-                );
-              }),
-          ListTile(
-              title: const Text('MessageStorage: Find First Message'),
-              onTap: () async {
-                String str = '';
-                List<Message> messages = await InfobipMobilemessaging.defaultMessageStorage().findAll();
-                if (messages == null || messages.isEmpty) {
-                  str = 'Empty message storage';
-                } else {
-                  Message message = messages.first;
-                  Message foundedMessage = await InfobipMobilemessaging.defaultMessageStorage().find(message.messageId);
-                  str = 'Find message for ${message.messageId}: $foundedMessage';
-                }
 
-                showDialog<void>(
-                  context: context,
-                  builder: (context) => AlertDialog(
-                    title: const Text('find'),
-                    content: Text(str),
-                    actions: [
-                      TextButton(
-                        child: const Text('Done'),
-                        onPressed: () {
-                          Navigator.of(context).pop();
-                        },
-                      ),
-                    ],
-                  ),
-                );
-              }),
-          ListTile(
-              title: const Text('MessageStorage: Delete First Message'),
-              onTap: () async {
-                String str = '';
-                List<Message> messages = await InfobipMobilemessaging.defaultMessageStorage().findAll();
-                if (messages == null || messages.isEmpty) {
-                  str = 'Empty message storage';
-                } else {
-                  Message message = messages.first;
-                  await InfobipMobilemessaging.defaultMessageStorage().delete(message.messageId);
-                  str = 'Delete message with ID: ${message.messageId}';
-                }
+                  showDialog<void>(
+                    context: context,
+                    builder: (context) => AlertDialog(
+                      title: const Text('find'),
+                      content: Text(str),
+                      actions: [
+                        TextButton(
+                          child: const Text('Done'),
+                          onPressed: () {
+                            Navigator.of(context).pop();
+                          },
+                        ),
+                      ],
+                    ),
+                  );
+                }),
+            ListTile(
+                title: const Text('MessageStorage: Delete First Message'),
+                onTap: () async {
+                  String str = '';
+                  List<Message> messages =
+                      await InfobipMobilemessaging.defaultMessageStorage()
+                          .findAll();
+                  if (messages == null || messages.isEmpty) {
+                    str = 'Empty message storage';
+                  } else {
+                    Message message = messages.first;
+                    await InfobipMobilemessaging.defaultMessageStorage()
+                        .delete(message.messageId);
+                    str = 'Delete message with ID: ${message.messageId}';
+                  }
 
-                showDialog<void>(
-                  context: context,
-                  builder: (context) => AlertDialog(
-                    title: const Text('delete'),
-                    content: Text(str),
-                    actions: [
-                      TextButton(
-                        child: const Text('Done'),
-                        onPressed: () {
-                          Navigator.of(context).pop();
-                        },
-                      ),
-                    ],
-                  ),
-                );
-              }),
-          ListTile(
-              title: const Text('MessageStorage: deleteAll'),
-              onTap: () async {
-                await InfobipMobilemessaging.defaultMessageStorage().deleteAll();
-                showDialog<void>(
-                  context: context,
-                  builder: (context) => AlertDialog(
-                    title: const Text('deleteAll'),
-                    content: const Text('All messages deleted'),
-                    actions: [
-                      TextButton(
-                        child: const Text('Done'),
-                        onPressed: () {
-                          Navigator.of(context).pop();
-                        },
-                      ),
-                    ],
-                  ),
-                );
-              }),
-          ListTile(
-              title: const Text('Enable calls'),
-              onTap: () {
-                log('Enabling calls');
-                try {
-                  InfobipMobilemessaging.enableCalls();
-                } catch(e) {
-                  log("Failed to enable calls. "+e);
-                }
-              }),
-          ListTile(
-              title: const Text('Disable calls'),
-              onTap: () {
-                log('Disabling calls');
-                try {
-                  InfobipMobilemessaging.disableCalls();
-                } catch (e) {
-                  log("Failed to disable calls. "+e);
-                }
-              })
-        ],
-      ),
-    );
+                  showDialog<void>(
+                    context: context,
+                    builder: (context) => AlertDialog(
+                      title: const Text('delete'),
+                      content: Text(str),
+                      actions: [
+                        TextButton(
+                          child: const Text('Done'),
+                          onPressed: () {
+                            Navigator.of(context).pop();
+                          },
+                        ),
+                      ],
+                    ),
+                  );
+                }),
+            ListTile(
+                title: const Text('MessageStorage: deleteAll'),
+                onTap: () async {
+                  await InfobipMobilemessaging.defaultMessageStorage()
+                      .deleteAll();
+                  showDialog<void>(
+                    context: context,
+                    builder: (context) => AlertDialog(
+                      title: const Text('deleteAll'),
+                      content: const Text('All messages deleted'),
+                      actions: [
+                        TextButton(
+                          child: const Text('Done'),
+                          onPressed: () {
+                            Navigator.of(context).pop();
+                          },
+                        ),
+                      ],
+                    ),
+                  );
+                }),
+            ListTile(
+                title: const Text('Enable calls'),
+                onTap: () {
+                  log('Enabling calls');
+                  try {
+                    InfobipMobilemessaging.enableCalls();
+                  } catch (e) {
+                    log('Failed to enable calls. ' + e);
+                  }
+                }),
+            ListTile(
+                title: const Text('Disable calls'),
+                onTap: () {
+                  log('Disabling calls');
+                  try {
+                    InfobipMobilemessaging.disableCalls();
+                  } catch (e) {
+                    log('Failed to disable calls. ' + e);
+                  }
+                })
+          ],
+        ),
+      );
 
   // replace this function with the examples above
   showChatLanguageDialog(BuildContext context) {
-     List<Language> languages = <Language>[];
-     languages.add(Language("ENGLISH","en-US"));
-     languages.add(Language("TURKISH","tr-TR"));
-     languages.add(Language("KOREAN","ko-KR"));
-     languages.add(Language("RUSSIAN","ru-RU"));
-     languages.add(Language("CHINESE","zh-TW"));
-     languages.add(Language("SPANISH","es-ES"));
-     languages.add(Language("SPANISH_LA","es-LA"));
-     languages.add(Language("PORTUGUESE","pt-PT"));
-     languages.add(Language("PORTUGUESE_BR","pt-BR"));
-     languages.add(Language("POLISH","pl-PL"));
-     languages.add(Language("ROMANIAN","ro-RO"));
-     languages.add(Language("ARABIC","ar-AE"));
-     languages.add(Language("BOSNIAN","bs-BA"));
-     languages.add(Language("CROATIAN","hr-HR"));
-     languages.add(Language("GREEK","el-GR"));
-     languages.add(Language("SWEDISH","sv-SE"));
-     languages.add(Language("THAI","th-TH"));
-     languages.add(Language("LITHUANIAN","lt-LT"));
-     languages.add(Language("DANISH","da-DK"));
-     languages.add(Language("LATVIAN","lv-LV"));
-     languages.add(Language("HUNGARIAN","hu-HU"));
-     languages.add(Language("ITALIAN","it-IT"));
-     languages.add(Language("FRENCH","fr-FR"));
-     languages.add(Language("SLOVENIAN","sl-SI"));
-     languages.add(Language("UKRAINIAN","uk-UA"));
-     languages.add(Language("JAPANESE","ja-JP"));
+    List<Language> languages = <Language>[];
+    languages.add(Language('ENGLISH', 'en-US'));
+    languages.add(Language('TURKISH', 'tr-TR'));
+    languages.add(Language('KOREAN', 'ko-KR'));
+    languages.add(Language('RUSSIAN', 'ru-RU'));
+    languages.add(Language('CHINESE', 'zh-TW'));
+    languages.add(Language('SPANISH', 'es-ES'));
+    languages.add(Language('SPANISH_LA', 'es-LA'));
+    languages.add(Language('PORTUGUESE', 'pt-PT'));
+    languages.add(Language('PORTUGUESE_BR', 'pt-BR'));
+    languages.add(Language('POLISH', 'pl-PL'));
+    languages.add(Language('ROMANIAN', 'ro-RO'));
+    languages.add(Language('ARABIC', 'ar-AE'));
+    languages.add(Language('BOSNIAN', 'bs-BA'));
+    languages.add(Language('CROATIAN', 'hr-HR'));
+    languages.add(Language('GREEK', 'el-GR'));
+    languages.add(Language('SWEDISH', 'sv-SE'));
+    languages.add(Language('THAI', 'th-TH'));
+    languages.add(Language('LITHUANIAN', 'lt-LT'));
+    languages.add(Language('DANISH', 'da-DK'));
+    languages.add(Language('LATVIAN', 'lv-LV'));
+    languages.add(Language('HUNGARIAN', 'hu-HU'));
+    languages.add(Language('ITALIAN', 'it-IT'));
+    languages.add(Language('FRENCH', 'fr-FR'));
+    languages.add(Language('SLOVENIAN', 'sl-SI'));
+    languages.add(Language('UKRAINIAN', 'uk-UA'));
+    languages.add(Language('JAPANESE', 'ja-JP'));
 
-     final children = <Widget>[];
-     for (var language in languages) {
-       children.add(
-           SimpleDialogOption(
-               child: Text(language.name),
-               onPressed: () {
-                 InfobipMobilemessaging.setLanguage(language.code);
-                 Navigator.pop(context, true);
-               },
-           )
-         );
-     }
+    final children = <Widget>[];
+    for (var language in languages) {
+      children.add(SimpleDialogOption(
+        child: Text(language.name),
+        onPressed: () {
+          InfobipMobilemessaging.setLanguage(language.code);
+          Navigator.pop(context, true);
+        },
+      ));
+    }
 
-     // set up the SimpleDialog
-     SimpleDialog dialog = SimpleDialog(
-       title: const Text('Choose Chat Language'),
-       children: children
-     );
+    // set up the SimpleDialog
+    SimpleDialog dialog = SimpleDialog(
+        title: const Text('Choose Chat Language'), children: children);
 
-     // show chat languages dialog
-     showDialog(
-       context: context,
-       builder: (BuildContext context) => dialog,
-     );
+    // show chat languages dialog
+    showDialog(
+      context: context,
+      builder: (BuildContext context) => dialog,
+    );
   }
 }
 
@@ -609,11 +660,11 @@ class DemoTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => ListTile(
-      title: Text(demo.name),
-      onTap: () {
-        Navigator.pushNamed(context, demo.route);
-      },
-    );
+        title: Text(demo.name),
+        onTap: () {
+          Navigator.pushNamed(context, demo.route);
+        },
+      );
 }
 
 class Page {
