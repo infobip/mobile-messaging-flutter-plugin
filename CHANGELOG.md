@@ -1,3 +1,6 @@
+# 1.4.0
+## Changed
+- InAppChat customizations, check Migration guide
 # 1.3.0
 ## Added
 - Option to control In-app chat connection with new methods stopConnection and restartConnection on iOS.
