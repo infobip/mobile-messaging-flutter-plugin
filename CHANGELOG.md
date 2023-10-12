@@ -1,3 +1,10 @@
+# 2.0.0
+## Added
+- In-app chat support for Serbian (Latin) language
+- In-app chat messages exceeding the max text length are now automatically sent as smaller messages
+ 
+## Changed
+- WebRTCUI using new `configurationId` and provides new options to register for calls. Check [Migration guide](https://github.com/infobip/mobile-messaging-flutter-plugin/wiki/Migration-Guides#migration-from-1x-to-2x) for more details.
 # 1.4.0
 ## Changed
 - InAppChat customizations, check Migration guide
