@@ -178,7 +178,7 @@ public class InitHelper {
 
     private InAppChatTheme createTheme() {
         FlutterLoader loader = FlutterInjector.instance().flutterLoader();
-        Configuration.InAppChatCustomization inAppChatCustomization = ConfigCache.getInstance().getConfiguration().getCustomisation();
+        Configuration.InAppChatCustomization inAppChatCustomization = ConfigCache.getInstance().getConfiguration().getCustomization();
         if (inAppChatCustomization != null && inAppChatCustomization.getAndroid() != null) {
             try {
                 InAppChatToolbarStyle toolbarStyle = new InAppChatToolbarStyle(
@@ -215,14 +215,18 @@ public class InitHelper {
                         new InAppChatInputViewStyle(
                                 getResId(activity.getResources(), inAppChatCustomization.getAndroid().getChatInputTextAppearance(), activity.getPackageName()),
                                 Color.parseColor(inAppChatCustomization.getAndroid().getChatInputTextColor()),
-                                Color.parseColor(inAppChatCustomization.getChatBackgroundColor()),
+                                Color.parseColor(inAppChatCustomization.getChatInputBackgroundColor()),
                                 inAppChatCustomization.getAndroid().getChatInputHintText(),
                                 null,
                                 Color.parseColor(inAppChatCustomization.getChatInputPlaceholderColor()),
                                 loadDrawable(inAppChatCustomization.getAttachmentButtonIcon(), loader),
                                 ColorStateList.valueOf(Color.parseColor(inAppChatCustomization.getAndroid().getChatInputAttachmentIconTint())),
+                                loadDrawable(inAppChatCustomization.getAndroid().getChatInputAttachmentBackgroundDrawable(), loader),
+                                Color.parseColor(inAppChatCustomization.getAndroid().getChatInputAttachmentBackgroundColor()),
                                 loadDrawable(inAppChatCustomization.getSendButtonIcon(), loader),
                                 ColorStateList.valueOf(Color.parseColor(inAppChatCustomization.getAndroid().getChatInputSendIconTint())),
+                                loadDrawable(inAppChatCustomization.getAndroid().getChatInputSendBackgroundDrawable(), loader),
+                                Color.parseColor(inAppChatCustomization.getAndroid().getChatInputSendBackgroundColor()),
                                 Color.parseColor(inAppChatCustomization.getAndroid().getChatInputSeparatorLineColor()),
                                 inAppChatCustomization.getChatInputSeparatorVisible(),
                                 Color.parseColor(inAppChatCustomization.getChatInputCursorColor())

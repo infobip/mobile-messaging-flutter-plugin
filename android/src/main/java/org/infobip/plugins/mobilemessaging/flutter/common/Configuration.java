@@ -17,14 +17,14 @@ public class Configuration {
     InAppChatCustomization inAppChatCustomization;
 
     public static class WebRTCUI {
-        private String applicationId;
+        private String configurationId;
 
-        public String getApplicationId() {
-            return applicationId;
+        public String getConfigurationId() {
+            return configurationId;
         }
 
-        public void setApplicationId(String applicationId) {
-            this.applicationId = applicationId;
+        public void setConfigurationId(String configurationId) {
+            this.configurationId = configurationId;
         }
     }
 
@@ -226,7 +226,7 @@ public class Configuration {
         String sendButtonIcon;
         String attachmentButtonIcon;
         Boolean chatInputSeparatorVisible;
-        AndroidInAppChatCustomisation android;
+        AndroidInAppChatCustomization android;
 
         public String getToolbarTitle() {
             return toolbarTitle;
@@ -340,16 +340,16 @@ public class Configuration {
             this.chatInputSeparatorVisible = chatInputSeparatorVisible;
         }
 
-        public AndroidInAppChatCustomisation getAndroid() {
+        public AndroidInAppChatCustomization getAndroid() {
             return android;
         }
 
-        public void setAndroid(AndroidInAppChatCustomisation android) {
+        public void setAndroid(AndroidInAppChatCustomization android) {
             this.android = android;
         }
     }
 
-    public static class AndroidInAppChatCustomisation {
+    public static class AndroidInAppChatCustomization {
         String chatNavigationIconTint;
         String chatSubtitleTextColor;
         String chatInputTextColor;
@@ -369,6 +369,10 @@ public class Configuration {
         Boolean chatStatusBarColorLight;
         String chatStatusBarBackgroundColor;
         String chatTitleTextAppearanceRes;
+        String chatInputAttachmentBackgroundDrawable;
+        String chatInputAttachmentBackgroundColor;
+        String chatInputSendBackgroundDrawable;
+        String chatInputSendBackgroundColor;
 
         public String getChatNavigationIconTint() {
             return chatNavigationIconTint;
@@ -521,6 +525,38 @@ public class Configuration {
         public void setChatStatusBarBackgroundColor(String chatStatusBarBackgroundColor) {
             this.chatStatusBarBackgroundColor = chatStatusBarBackgroundColor;
         }
+
+        public String getChatInputAttachmentBackgroundDrawable() {
+            return chatInputAttachmentBackgroundDrawable;
+        }
+
+        public void setChatInputAttachmentBackgroundDrawable(String chatInputAttachmentBackgroundDrawable) {
+            this.chatInputAttachmentBackgroundDrawable = chatInputAttachmentBackgroundDrawable;
+        }
+
+        public String getChatInputAttachmentBackgroundColor() {
+            return chatInputAttachmentBackgroundColor;
+        }
+
+        public void setChatInputAttachmentBackgroundColor(String chatInputAttachmentBackgroundColor) {
+            this.chatInputAttachmentBackgroundColor = chatInputAttachmentBackgroundColor;
+        }
+
+        public String getChatInputSendBackgroundDrawable() {
+            return chatInputSendBackgroundDrawable;
+        }
+
+        public void setChatInputSendBackgroundDrawable(String chatInputSendBackgroundDrawable) {
+            this.chatInputSendBackgroundDrawable = chatInputSendBackgroundDrawable;
+        }
+
+        public String getChatInputSendBackgroundColor() {
+            return chatInputSendBackgroundColor;
+        }
+
+        public void setChatInputSendBackgroundColor(String chatInputSendBackgroundColor) {
+            this.chatInputSendBackgroundColor = chatInputSendBackgroundColor;
+        }
     }
 
     public String getApplicationCode() {
@@ -571,11 +607,11 @@ public class Configuration {
         this.webRTCUI = webRTCUI;
     }
 
-    public InAppChatCustomization getCustomisation() {
+    public InAppChatCustomization getCustomization() {
         return inAppChatCustomization;
     }
 
-    public void setCustomisation(InAppChatCustomization inAppChatCustomization) {
+    public void setCustomization(InAppChatCustomization inAppChatCustomization) {
         this.inAppChatCustomization = inAppChatCustomization;
     }
 

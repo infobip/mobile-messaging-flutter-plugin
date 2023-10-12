@@ -43,6 +43,7 @@ import org.infobip.mobile.messaging.mobileapi.MobileMessagingError;
 import org.infobip.mobile.messaging.mobileapi.Result;
 import org.infobip.mobile.messaging.storage.MessageStore;
 import org.infobip.mobile.messaging.util.PreferenceHelper;
+import org.infobip.mobile.messaging.chat.core.InAppChatEvent;
 import org.infobip.plugins.mobilemessaging.flutter.common.ConfigCache;
 import org.infobip.plugins.mobilemessaging.flutter.common.Configuration;
 import org.infobip.plugins.mobilemessaging.flutter.common.ErrorCodes;
@@ -193,7 +194,10 @@ public class InfobipMobilemessagingPlugin implements FlutterPlugin, MethodCallHa
         setJwt(call);
         break;
       case "enableCalls":
-        enableCalls(result);
+        enableCalls(call, result);
+        break;
+      case "enableChatCalls":
+        enableChatCalls(result);
         break;
       case "disableCalls":
         disableCalls(result);
@@ -208,8 +212,17 @@ public class InfobipMobilemessagingPlugin implements FlutterPlugin, MethodCallHa
     webRTCUI.disableCalls(()-> result.success(null), defaultWebrtcError(result));
   }
 
-  private void enableCalls(MethodChannel.Result result) {
-    webRTCUI.enableCalls(() -> result.success(null), defaultWebrtcError(result));
+  private void enableCalls(MethodCall call, MethodChannel.Result result) {
+    Object args = call.arguments;
+    String identity = null;
+    if (args != null){
+      identity = args.toString();
+    }
+    webRTCUI.enableCalls(identity, () -> result.success(null), defaultWebrtcError(result));
+  }
+
+  private void enableChatCalls(MethodChannel.Result result) {
+    webRTCUI.enableChatCalls(() -> result.success(null), defaultWebrtcError(result));
   }
 
   private void init(MethodCall call, final MethodChannel.Result result) {
@@ -355,6 +368,16 @@ public class InfobipMobilemessagingPlugin implements FlutterPlugin, MethodCallHa
         broadcastHandler.sendEvent(event, data);
       } else if (Event.REGISTRATION_CREATED.getKey().equals(intent.getAction())) {
         data = intent.getStringExtra(BroadcastParameter.EXTRA_INFOBIP_ID);
+        broadcastHandler.sendEvent(event, data);
+      } else if (InAppChatEvent.CHAT_VIEW_CHANGED.getKey().equals(intent.getAction())) {
+        data = intent.getStringExtra(BroadcastParameter.EXTRA_CHAT_VIEW);
+        broadcastHandler.sendEvent(event, data);
+      } else if (InAppChatEvent.LIVECHAT_REGISTRATION_ID_UPDATED.getKey().equals(intent.getAction())) {
+        data = intent.getStringExtra(BroadcastParameter.EXTRA_LIVECHAT_REGISTRATION_ID);
+        broadcastHandler.sendEvent(event, data);
+      } else if (InAppChatEvent.UNREAD_MESSAGES_COUNTER_UPDATED.getKey().equals(intent.getAction())) {
+        int unreadMessagesCount = intent.getIntExtra(BroadcastParameter.EXTRA_UNREAD_CHAT_MESSAGES_COUNT, 0);
+        data = String.valueOf(unreadMessagesCount);
         broadcastHandler.sendEvent(event, data);
       } else {
         broadcastHandler.sendEvent(event);

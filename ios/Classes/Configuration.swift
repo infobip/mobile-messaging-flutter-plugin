@@ -29,7 +29,7 @@ class Configuration {
         static let webViewSettings = "webViewSettings"
         static let withoutRegisteringForRemoteNotifications = "withoutRegisteringForRemoteNotifications"
         static let webRTCUI = "webRTCUI"
-        static let applicationId = "applicationId"
+        static let configurationId = "configurationId"
         static let customisation = "customisation"
     }
     

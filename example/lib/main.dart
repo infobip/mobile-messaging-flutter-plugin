@@ -84,7 +84,7 @@ class _MyAppState extends State<MyApp> {
             logging: true,
             withoutRegisteringForRemoteNotifications: false),
         webRTCUI: mmconfiguration.WebRTCUI(
-            applicationId: 'Your WebRTC application id'),
+            configurationId: 'Your WEBRTC push configuration id'),
         inAppChatCustomization: mmconfiguration.InAppChatCustomization(
             toolbarTitle: 'Chat',
             toolbarTitleColor: '#FFFFFF',
@@ -101,30 +101,39 @@ class _MyAppState extends State<MyApp> {
             attachmentButtonIcon: 'assets/ic_add_circle.png',
             chatInputSeparatorVisible: true,
             android: mmconfiguration.AndroidInAppChatCustomization(
-                chatNavigationIconTint: '#FFFFFF',
-                chatSubtitleTextColor: '#FFFFFF',
-                chatInputTextColor: '#212121',
-                chatProgressBarColor: '#9E9E9E',
-                chatInputAttachmentIconTint: '#9E9E9E',
-                chatInputSendIconTint: '#9E9E9E',
-                chatInputSeparatorLineColor: '#BDBDBD',
-                chatInputHintText: 'Message',
-                chatSubtitleText: '#1',
-                chatSubtitleTextAppearanceRes:
-                    'TextAppearance_AppCompat_Subtitle',
-                chatSubtitleCentered: true,
-                chatTitleCentered: true,
-                chatInputTextAppearance: 'TextAppearance_AppCompat',
-                chatNetworkConnectionErrorTextAppearanceRes:
-                    'TextAppearance_AppCompat_Small',
-                chatNetworkConnectionErrorText: 'Offline',
-                chatNavigationIcon: 'assets/ic_back.png',
-                chatStatusBarColorLight: true,
-                chatTitleTextAppearanceRes: 'TextAppearance_AppCompat_Title',
-                chatStatusBarBackgroundColor: '#673AB7'),
+              chatNavigationIconTint: '#FFFFFF',
+              chatSubtitleTextColor: '#FFFFFF',
+              chatInputTextColor: '#212121',
+              chatProgressBarColor: '#9E9E9E',
+              chatInputAttachmentIconTint: '#9E9E9E',
+              chatInputSendIconTint: '#9E9E9E',
+              chatInputSeparatorLineColor: '#BDBDBD',
+              chatInputHintText: 'Message',
+              chatSubtitleText: '#1',
+              chatSubtitleTextAppearanceRes: 'TextAppearance_AppCompat_Subtitle',
+              chatSubtitleCentered: true,
+              chatTitleCentered: true,
+              chatInputTextAppearance: 'TextAppearance_AppCompat',
+              chatNetworkConnectionErrorTextAppearanceRes: 'TextAppearance_AppCompat_Small',
+              chatNetworkConnectionErrorText: 'Offline',
+              chatNavigationIcon: 'assets/ic_back.png',
+              chatStatusBarColorLight: true,
+              chatTitleTextAppearanceRes: 'TextAppearance_AppCompat_Title',
+              chatStatusBarBackgroundColor: '#673AB7',
+              chatInputAttachmentBackgroundDrawable: 'assets/ic_circle.png',
+              chatInputAttachmentBackgroundColor: '#673AB7',
+              chatInputSendBackgroundDrawable: 'assets/ic_circle.png',
+              chatInputSendBackgroundColor: '#673AB7',
+            ),
             ios: mmconfiguration.IOSInAppChatCustomization(
                 initialHeight: 150))));
-    // await InfobipMobilemessaging.enableCalls(); // Comment out to automatically enable WebRTC
+    // Comment out to automatically enable WebRTC
+    // try {
+    //   await InfobipMobilemessaging.enableChatCalls();
+    //   print('Calls enabled.');
+    // } catch (err) {
+    //   print('Calls enable error: $err');
+    // }
     InfobipMobilemessaging.setupiOSChatSettings(IOSChatSettings(
       title: 'Flutter Example Chat',
       sendButtonColor: '#ff5722',
@@ -132,7 +141,6 @@ class _MyAppState extends State<MyApp> {
       navigationBarColor: '#c41c00',
       navigationBarTitleColor: '#000000',
     ));
-
     InfobipMobilemessaging.on(LibraryEvent.tokenReceived, (String token) {
       log('Callback. TOKEN_RECEIVED event: $token');
       _HomePageState.addLibraryEvent('Token Received');
@@ -581,7 +589,7 @@ class _HomePageState extends State<HomePage> {
                 onTap: () {
                   log('Enabling calls');
                   try {
-                    InfobipMobilemessaging.enableCalls();
+                    InfobipMobilemessaging.enableChatCalls();
                   } catch (e) {
                     log('Failed to enable calls. ' + e);
                   }

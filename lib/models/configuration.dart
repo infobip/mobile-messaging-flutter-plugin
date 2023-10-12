@@ -219,11 +219,11 @@ class NotificationCategory {
 }
 
 class WebRTCUI {
-  final String? applicationId;
+  final String? configurationId;
 
-  WebRTCUI({this.applicationId});
+  WebRTCUI({this.configurationId});
 
-  Map<String, dynamic> toJson() => {'applicationId': applicationId};
+  Map<String, dynamic> toJson() => {'configurationId': configurationId};
 }
 
 class InAppChatCustomization {
@@ -302,48 +302,69 @@ class AndroidInAppChatCustomization {
   final bool? chatStatusBarColorLight;
   final String? chatTitleTextAppearanceRes;
   final String? chatStatusBarBackgroundColor;
+  final String? chatInputAttachmentBackgroundDrawable;
+  final String? chatInputAttachmentBackgroundColor;
+  final String? chatInputSendBackgroundDrawable;
+  final String? chatInputSendBackgroundColor;
 
   AndroidInAppChatCustomization({
-      this.chatNavigationIconTint,
-      this.chatSubtitleTextColor,
-      this.chatInputTextColor,
-      this.chatProgressBarColor,
-      this.chatInputAttachmentIconTint,
-      this.chatInputSendIconTint,
-      this.chatInputSeparatorLineColor,
-      this.chatInputHintText,
-      this.chatSubtitleText,
-      this.chatSubtitleTextAppearanceRes,
-      this.chatSubtitleCentered,
-      this.chatTitleCentered,
-      this.chatInputTextAppearance,
-      this.chatNetworkConnectionErrorTextAppearanceRes,
-      this.chatNetworkConnectionErrorText,
-      this.chatNavigationIcon,
-      this.chatStatusBarColorLight,
-      this.chatTitleTextAppearanceRes,
-      this.chatStatusBarBackgroundColor});
+    //status bar
+    this.chatStatusBarColorLight,
+    this.chatStatusBarBackgroundColor,
+    //toolbar
+    this.chatNavigationIcon,
+    this.chatNavigationIconTint,
+    this.chatSubtitleText,
+    this.chatSubtitleTextColor,
+    this.chatSubtitleTextAppearanceRes,
+    this.chatSubtitleCentered,
+    this.chatTitleCentered,
+    this.chatTitleTextAppearanceRes,
+    //chat
+    this.chatProgressBarColor,
+    this.chatNetworkConnectionErrorTextAppearanceRes,
+    this.chatNetworkConnectionErrorText,
+    //input
+    this.chatInputTextColor,
+    this.chatInputAttachmentIconTint,
+    this.chatInputAttachmentBackgroundColor,
+    this.chatInputAttachmentBackgroundDrawable,
+    this.chatInputSendIconTint,
+    this.chatInputSendBackgroundColor,
+    this.chatInputSendBackgroundDrawable,
+    this.chatInputSeparatorLineColor,
+    this.chatInputHintText,
+    this.chatInputTextAppearance
+  });
 
   Map<String, dynamic> toJson() => {
+        //status bar
+        'chatStatusBarColorLight': chatStatusBarColorLight,
+        'chatStatusBarBackgroundColor': chatStatusBarBackgroundColor,
+        //toolbar
+        'chatNavigationIcon': chatNavigationIcon,
         'chatNavigationIconTint': chatNavigationIconTint,
-        'chatSubtitleTextColor': chatSubtitleTextColor,
-        'chatInputTextColor': chatInputTextColor,
-        'chatProgressBarColor': chatProgressBarColor,
-        'chatInputAttachmentIconTint': chatInputAttachmentIconTint,
-        'chatInputSendIconTint': chatInputSendIconTint,
-        'chatInputSeparatorLineColor': chatInputSeparatorLineColor,
-        'chatInputHintText': chatInputHintText,
         'chatSubtitleText': chatSubtitleText,
+        'chatSubtitleTextColor': chatSubtitleTextColor,
         'chatSubtitleTextAppearanceRes': chatSubtitleTextAppearanceRes,
-        'chatNetworkConnectionErrorText': chatNetworkConnectionErrorText,
         'chatSubtitleCentered': chatSubtitleCentered,
         'chatTitleCentered': chatTitleCentered,
-        'chatInputTextAppearance': chatInputTextAppearance,
-        'chatNetworkConnectionErrorTextAppearanceRes': chatNetworkConnectionErrorTextAppearanceRes,
-        'chatNavigationIcon': chatNavigationIcon,
-        'chatStatusBarColorLight': chatStatusBarColorLight,
         'chatTitleTextAppearanceRes': chatTitleTextAppearanceRes,
-        'chatStatusBarBackgroundColor': chatStatusBarBackgroundColor
+        //chat
+        'chatProgressBarColor': chatProgressBarColor,
+        'chatNetworkConnectionErrorTextAppearanceRes': chatNetworkConnectionErrorTextAppearanceRes,
+        'chatNetworkConnectionErrorText': chatNetworkConnectionErrorText,
+        //input
+        'chatInputTextColor': chatInputTextColor,
+        'chatInputAttachmentIconTint': chatInputAttachmentIconTint,
+        'chatInputAttachmentBackgroundColor': chatInputAttachmentBackgroundColor,
+        'chatInputAttachmentBackgroundDrawable': chatInputAttachmentBackgroundDrawable,
+        'chatInputSendIconTint': chatInputSendIconTint,
+        'chatInputSendBackgroundColor': chatInputSendBackgroundColor,
+        'chatInputSendBackgroundDrawable': chatInputSendBackgroundDrawable,
+        'chatInputSeparatorLineColor': chatInputSeparatorLineColor,
+        'chatInputHintText': chatInputHintText,
+        'chatInputTextAppearance': chatInputTextAppearance
       };
 }
 
@@ -365,8 +386,7 @@ class IOSInAppChatCustomization {
   final String? mainFont;
   final String? charCountFont;
 
-  IOSInAppChatCustomization({
-      this.attachmentPreviewBarsColor,
+  IOSInAppChatCustomization({this.attachmentPreviewBarsColor,
       this.attachmentPreviewItemsColor,
       this.textContainerTopMargin,
       this.textContainerLeftPadding,

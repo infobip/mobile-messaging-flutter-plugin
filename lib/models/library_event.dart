@@ -33,6 +33,15 @@ class LibraryEvent {
   // Occurs when in-app chat counter is updated.
   static const String unreadMessageCounterUpdated = "inAppChat.unreadMessageCounterUpdated";
 
+  // Occurs when in-app chat view is changed.
+  static const String chatViewStateChanged = "inAppChat.viewStateChanged";
+
+  // Occurs when in-app chat configuration is synced.
+  static const String chatConfigurationSynced = "inAppChat.configurationSynced";
+
+  // Occurs when livechat registration id is updated.
+  static const String chatLivechatRegistrationIdUpdated = "inAppChat.livechatRegistrationIdUpdated";
+
   LibraryEvent({
     required this.eventName,
     this.payload,

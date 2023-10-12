@@ -33,7 +33,7 @@ public class SwiftInfobipMobilemessagingPlugin: NSObject, FlutterPlugin {
     private var eventsManager: MobileMessagingEventsManager?
     private static var chatVC: MMChatViewController?
     private var isStarted: Bool = false
-    private var webrtcAppId: String?
+    private var webrtcConfigId: String?
     private var controller: FlutterPluginRegistrar?
     
     @objc
@@ -123,7 +123,9 @@ public class SwiftInfobipMobilemessagingPlugin: NSObject, FlutterPlugin {
         } else if call.method == "registerForRemoteNotifications" {
             registerForRemoteNotifications()
         } else if call.method == "enableCalls" {
-            enableCalls(result: result)
+            enableCalls(call: call, result: result)
+        } else if call.method == "enableChatCalls" {
+            enableChatCalls(result: result)
         } else if call.method == "disableCalls" {
             disableCalls(result: result)
         } else if call.method == "restartConnection" {
@@ -208,8 +210,8 @@ public class SwiftInfobipMobilemessagingPlugin: NSObject, FlutterPlugin {
 
 #if WEBRTCUI_ENABLED
         if let webrtcDict = configuration.webRTCUI,
-           let appId = webrtcDict[Configuration.Keys.applicationId] as? String {
-            webrtcAppId = appId
+           let configId = webrtcDict[Configuration.Keys.configurationId] as? String {
+            webrtcConfigId = configId
         }
 #endif
 
@@ -654,10 +656,14 @@ public class SwiftInfobipMobilemessagingPlugin: NSObject, FlutterPlugin {
         return nil
     }
 
-    func enableCalls(result: @escaping FlutterResult) {
 #if WEBRTCUI_ENABLED
-        if let webrtcAppId = webrtcAppId {
-            MobileMessaging.webRTCService?.applicationId = webrtcAppId
+    private func handleCalls(
+        _ identity: MMWebRTCIdentityMode,
+        result: @escaping FlutterResult)
+    {
+        if let webRTCId = webrtcConfigId {
+            MobileMessaging.webRTCService?.configurationId = webRTCId
+            MobileMessaging.webRTCService?.identityMode = identity
             MobileMessaging.webRTCService?.start({ response in
                 switch response {
                 case true:
@@ -667,6 +673,7 @@ public class SwiftInfobipMobilemessagingPlugin: NSObject, FlutterPlugin {
                         FlutterError( code: "errorWebRTCUIResult",
                                       message: "[WebRTCUI] Request for enabling calls ended with failure - See further logs.",
                                       details: "[WebRTCUI] Request for enabling calls ended with failure - See further logs." ))
+
                 }
             })
         } else {
@@ -675,7 +682,30 @@ public class SwiftInfobipMobilemessagingPlugin: NSObject, FlutterPlugin {
                               message: "[WebRTCUI] WebRTC's applicationId not defined in the configuration, calls were not enabled.",
                               details: "[WebRTCUI] WebRTC's applicationId not defined in the configuration, calls were not enabled." ))
         }
+    }
+#endif
 
+    func enableCalls(call: FlutterMethodCall, result: @escaping FlutterResult) {
+#if WEBRTCUI_ENABLED
+        guard let identityString = call.arguments as? String else {
+            return result(
+                FlutterError( code: "errorWebRTCUIResult",
+                              message: "[WebRTCUI] No identity was provided.",
+                              details: "[WebRTCUI] No identity was provided." ))
+        }
+        let identityMode: MMWebRTCIdentityMode = identityString.isEmpty ? .default : .custom(identityString)
+        handleCalls(identityMode, result: result)
+#else
+        return result(
+            FlutterError( code: "errorWebRTCUIResult",
+                          message: "[WebRTCUI] Not imported properly in podfile: library cannot be used.",
+                          details: "[WebRTCUI] Not imported properly in podfile: library cannot be used." ))
+#endif
+    }
+
+    func enableChatCalls(result: @escaping FlutterResult) {
+#if WEBRTCUI_ENABLED
+        handleCalls(.inAppChat, result: result)
 #else
         return result(
             FlutterError( code: "errorWebRTCUIResult",
