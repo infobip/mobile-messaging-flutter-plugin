@@ -1,3 +1,12 @@
+# 2.1.0
+## Added
+- New WebRTCUI reconnection indicator.
+ 
+## Changed
+- We improved In-app chat attachments feature permissions requesting, and chat connection handling.
+ 
+## Fixed
+- In-app chat bug when sending message with special characters.
 # 2.0.0
 ## Added
 - In-app chat support for Serbian (Latin) language
