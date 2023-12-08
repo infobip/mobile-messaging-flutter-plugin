@@ -1,3 +1,6 @@
+# 2.1.1
+## Fixed
+- Send In-app chat message issue in Android
 # 2.1.0
 ## Added
 - New WebRTCUI reconnection indicator.
