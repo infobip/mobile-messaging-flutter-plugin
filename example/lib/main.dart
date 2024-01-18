@@ -615,7 +615,8 @@ class _HomePageState extends State<HomePage> {
     languages.add(Language('TURKISH', 'tr-TR'));
     languages.add(Language('KOREAN', 'ko-KR'));
     languages.add(Language('RUSSIAN', 'ru-RU'));
-    languages.add(Language('CHINESE', 'zh-TW'));
+    languages.add(Language('CHINESE SIMPLIFIED', 'zh-Hans'));
+    languages.add(Language('CHINESE TRADITIONAL', 'zh-TW'));
     languages.add(Language('SPANISH', 'es-ES'));
     languages.add(Language('SPANISH_LA', 'es-LA'));
     languages.add(Language('PORTUGUESE', 'pt-PT'));
