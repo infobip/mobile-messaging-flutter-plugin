@@ -1,3 +1,10 @@
+# 3.0.0
+## Added
+- In-app chat support for Simplified Chinese (zh-Hans) language
+
+## Changed
+- Android minimum SDK level is 21 (Android 5.0 - Lollipop) now
+- In-app chat message limit increased to 4096 characters
 # 2.1.1
 ## Fixed
 - Send In-app chat message issue in Android
