@@ -9,6 +9,7 @@ public class Configuration {
     String applicationCode;
     String pluginVersion = "unknown";
     boolean inAppChatEnabled;
+    boolean fullFeaturedInAppsEnabled;
     AndroidSettings androidSettings;
     PrivacySettings privacySettings;
     List<NotificationCategory> notificationCategories;
@@ -621,5 +622,13 @@ public class Configuration {
 
     public void setInAppChatEnabled(boolean inAppChatEnabled) {
         this.inAppChatEnabled = inAppChatEnabled;
+    }
+
+    public boolean isFullFeaturedInAppsEnabled() {
+        return fullFeaturedInAppsEnabled;
+    }
+
+    public void setFullFeaturedInAppsEnabled(boolean fullFeaturedInAppsEnabled) {
+        this.fullFeaturedInAppsEnabled = fullFeaturedInAppsEnabled;
     }
 }

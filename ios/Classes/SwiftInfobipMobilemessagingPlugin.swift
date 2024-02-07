@@ -187,6 +187,10 @@ public class SwiftInfobipMobilemessagingPlugin: NSObject, FlutterPlugin {
             mobileMessaging = mobileMessaging?.withInAppChat()
         }
 
+        if configuration.fullFeaturedInAppsEnabled {
+            mobileMessaging = mobileMessaging?.withFullFeaturedInApps()
+        }
+
         if let categories = configuration.categories {
             mobileMessaging = mobileMessaging?.withInteractiveNotificationCategories(Set(categories))
         }

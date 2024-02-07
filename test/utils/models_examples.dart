@@ -9,6 +9,7 @@ Configuration get configurationModelExample => Configuration(
       applicationCode: 'abc',
       pluginVersion: "1.2.3",
       inAppChatEnabled: true,
+      fullFeaturedInAppsEnabled: true,
       androidSettings: AndroidSettings(
           firebaseOptions: FirebaseOptions(
               apiKey: "Some-API-Key",

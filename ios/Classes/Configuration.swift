@@ -20,6 +20,7 @@ class Configuration {
         static let applicationCodePersistingDisabled = "applicationCodePersistingDisabled"
         static let applicationCode = "applicationCode"
         static let inAppChatEnabled = "inAppChatEnabled"
+        static let fullFeaturedInAppsEnabled = "fullFeaturedInAppsEnabled"
         static let forceCleanup = "forceCleanup"
         static let logging = "logging"
         static let defaultMessageStorage = "defaultMessageStorage"
@@ -36,6 +37,7 @@ class Configuration {
     let appCode: String
     // let geofencingEnabled: Bool
     let inAppChatEnabled: Bool
+    let fullFeaturedInAppsEnabled: Bool
     // let messageStorageEnabled: Bool
     let webRTCUI: [String: Any]?
     let defaultMessageStorage: Bool
@@ -69,6 +71,7 @@ class Configuration {
         self.webRTCUI = rawConfig[Configuration.Keys.webRTCUI] as? [String: Any]
         self.appCode = appCode
         self.inAppChatEnabled = rawConfig[Configuration.Keys.inAppChatEnabled].unwrap(orDefault: false)
+        self.fullFeaturedInAppsEnabled = rawConfig[Configuration.Keys.fullFeaturedInAppsEnabled].unwrap(orDefault: false)
         self.forceCleanup = ios[Configuration.Keys.forceCleanup].unwrap(orDefault: false)
         self.logging = ios[Configuration.Keys.logging].unwrap(orDefault: false)
         self.withoutRegisteringForRemoteNotifications = ios[Configuration.Keys.withoutRegisteringForRemoteNotifications].unwrap(orDefault: false)

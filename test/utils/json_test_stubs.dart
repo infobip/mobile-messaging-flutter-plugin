@@ -2,6 +2,7 @@ Map<String, dynamic> get configurationExampleJson => {
       'applicationCode': 'abc',
       'pluginVersion': '1.2.3',
       'inAppChatEnabled': true,
+      'fullFeaturedInAppsEnabled': true,
       'androidSettings': {
         'firebaseOptions': {
           'apiKey': 'Some-API-Key',

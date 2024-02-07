@@ -6,6 +6,8 @@ class Configuration {
 
   final bool? inAppChatEnabled;
 
+  final bool? fullFeaturedInAppsEnabled;
+
   final AndroidSettings? androidSettings;
 
   final IOSSettings? iosSettings;
@@ -24,6 +26,7 @@ class Configuration {
       {required this.applicationCode,
       this.pluginVersion,
       this.inAppChatEnabled,
+      this.fullFeaturedInAppsEnabled,
       this.androidSettings,
       this.iosSettings,
       this.privacySettings,
@@ -36,6 +39,7 @@ class Configuration {
         'applicationCode': applicationCode,
         'pluginVersion': pluginVersion,
         'inAppChatEnabled': inAppChatEnabled,
+        'fullFeaturedInAppsEnabled': fullFeaturedInAppsEnabled,
         'androidSettings': androidSettings?.toJson(),
         'iosSettings': iosSettings?.toJson(),
         'privacySettings': privacySettings?.toJson(),

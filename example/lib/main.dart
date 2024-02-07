@@ -77,6 +77,7 @@ class _MyAppState extends State<MyApp> {
     await InfobipMobilemessaging.init(mmconfiguration.Configuration(
         applicationCode: 'Your Application Code',
         inAppChatEnabled: true,
+        fullFeaturedInAppsEnabled: false,
         defaultMessageStorage: true,
         iosSettings: mmconfiguration.IOSSettings(
             notificationTypes: ['alert', 'badge', 'sound'],

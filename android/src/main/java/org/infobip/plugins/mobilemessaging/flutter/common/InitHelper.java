@@ -93,6 +93,10 @@ public class InitHelper {
             chat.setTheme(createTheme());
         }
 
+        if (configuration.isFullFeaturedInAppsEnabled()) {
+            builder.withFullFeaturedInApps();
+        }
+
         builder.withDisplayNotification(notificationBuilder.build());
 
         if (androidSettings != null && androidSettings.firebaseOptions != null) {
