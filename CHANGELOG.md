@@ -1,3 +1,11 @@
+# 4.1.0
+## Added
+- new [In-App Chat customisations](https://github.com/infobip/mobile-messaging-flutter-plugin/wiki/In-app-chat#customize-in-app-chat-view) attributes:
+    - common:
+       - `widgetTheme` 
+    - Android only:
+       - `chatMenuItemsIconTint` 
+       - `chatMenuItemSaveAttachmentIcon` 
 # 4.0.0
 ## Added
 [Full-featured In-app notifications](https://github.com/infobip/mobile-messaging-flutter-plugin/wiki/In-app-notifications#full-featured-in-app-notifications). Check [Migration guide](https://github.com/infobip/mobile-messaging-flutter-plugin/wiki/Migration-Guides#migration-from-30x-to-40x)
