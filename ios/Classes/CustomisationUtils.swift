@@ -21,6 +21,7 @@ struct Customisation: Decodable {
     var noConnectionAlertBackgroundColor: String?
     var chatInputPlaceholderTextColor: String?
     var chatInputCursorColor: String?
+    var widgetTheme: String?
     var sendButtonIcon: String?
     var attachmentButtonIcon: String?
     var chatInputSeparatorVisible: Bool?
@@ -56,6 +57,7 @@ class CustomisationUtils {
         setNotNil(&settings.navBarColor, customisation.toolbarBackgroundColor?.toColor())
         setNotNil(&settings.navBarTitleColor, customisation.toolbarTitleColor?.toColor())
         setNotNil(&settings.backgroungColor, customisation.chatBackgroundColor?.toColor())
+        setNotNil(&settings.widgetTheme, customisation.widgetTheme)
         setNotNil(&settings.errorLabelTextColor, customisation.noConnectionAlertTextColor?.toColor())
         setNotNil(&settings.errorLabelBackgroundColor, customisation.noConnectionAlertBackgroundColor?.toColor())
         setNotNil(&settings.advancedSettings.mainPlaceholderTextColor, customisation.chatInputPlaceholderTextColor?.toColor())

@@ -4,8 +4,7 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:infobip_mobilemessaging/infobip_mobilemessaging.dart';
-import 'package:infobip_mobilemessaging/models/configuration.dart'
-    as mmconfiguration;
+import 'package:infobip_mobilemessaging/models/configuration.dart' as mmconfiguration;
 import 'package:infobip_mobilemessaging/models/installation.dart';
 import 'package:infobip_mobilemessaging/models/ios_chat_settings.dart';
 import 'package:infobip_mobilemessaging/models/library_event.dart';
@@ -16,6 +15,7 @@ import 'language.dart';
 import 'screen_one.dart';
 import 'screen_two.dart';
 import 'sign_in_http.dart';
+import 'chat_customization.dart' as chatCustomization;
 
 void main() async {
   runApp(const MyApp());
@@ -75,70 +75,30 @@ class _MyAppState extends State<MyApp> {
     if (!mounted) return;
 
     await InfobipMobilemessaging.init(mmconfiguration.Configuration(
-        applicationCode: 'Your Application Code',
-        inAppChatEnabled: true,
-        fullFeaturedInAppsEnabled: false,
-        defaultMessageStorage: true,
-        iosSettings: mmconfiguration.IOSSettings(
-            notificationTypes: ['alert', 'badge', 'sound'],
-            forceCleanup: false,
-            logging: true,
-            withoutRegisteringForRemoteNotifications: false),
-        webRTCUI: mmconfiguration.WebRTCUI(
-            configurationId: 'Your WEBRTC push configuration id'),
-        inAppChatCustomization: mmconfiguration.InAppChatCustomization(
-            toolbarTitle: 'Chat',
-            toolbarTitleColor: '#FFFFFF',
-            toolbarTintColor: '#FFFFFF',
-            toolbarBackgroundColor: '#673AB7',
-            sendButtonTintColor: '#9E9E9E',
-            chatBackgroundColor: '#D1C4E9',
-            noConnectionAlertTextColor: '#FFFFFF',
-            noConnectionAlertBackgroundColor: '#212121',
-            chatInputPlaceholderColor: '#757575',
-            chatInputCursorColor: '#9E9E9E',
-            chatInputBackgroundColor: '#D1C4E9',
-            sendButtonIcon: 'assets/ic_send.png',
-            attachmentButtonIcon: 'assets/ic_add_circle.png',
-            chatInputSeparatorVisible: true,
-            android: mmconfiguration.AndroidInAppChatCustomization(
-              chatNavigationIconTint: '#FFFFFF',
-              chatSubtitleTextColor: '#FFFFFF',
-              chatInputTextColor: '#212121',
-              chatProgressBarColor: '#9E9E9E',
-              chatInputAttachmentIconTint: '#9E9E9E',
-              chatInputSendIconTint: '#9E9E9E',
-              chatInputSeparatorLineColor: '#BDBDBD',
-              chatInputHintText: 'Message',
-              chatSubtitleText: '#1',
-              chatSubtitleTextAppearanceRes: 'TextAppearance_AppCompat_Subtitle',
-              chatSubtitleCentered: true,
-              chatTitleCentered: true,
-              chatInputTextAppearance: 'TextAppearance_AppCompat',
-              chatNetworkConnectionErrorTextAppearanceRes: 'TextAppearance_AppCompat_Small',
-              chatNetworkConnectionErrorText: 'Offline',
-              chatNavigationIcon: 'assets/ic_back.png',
-              chatStatusBarColorLight: true,
-              chatTitleTextAppearanceRes: 'TextAppearance_AppCompat_Title',
-              chatStatusBarBackgroundColor: '#673AB7',
-              chatInputAttachmentBackgroundDrawable: 'assets/ic_circle.png',
-              chatInputAttachmentBackgroundColor: '#673AB7',
-              chatInputSendBackgroundDrawable: 'assets/ic_circle.png',
-              chatInputSendBackgroundColor: '#673AB7',
-            ),
-            ios: mmconfiguration.IOSInAppChatCustomization(
-                initialHeight: 150))));
-    // Comment out to automatically enable WebRTC
-    // try {
-    //   await InfobipMobilemessaging.enableChatCalls();
-    //   print('Calls enabled.');
-    // } catch (err) {
-    //   print('Calls enable error: $err');
-    // }
+      applicationCode: 'Your Application Code',
+      inAppChatEnabled: true,
+      fullFeaturedInAppsEnabled: false,
+      defaultMessageStorage: true,
+      iosSettings: mmconfiguration.IOSSettings(
+          notificationTypes: ['alert', 'badge', 'sound'],
+          forceCleanup: false,
+          logging: true,
+          withoutRegisteringForRemoteNotifications: false),
+      webRTCUI: mmconfiguration.WebRTCUI(configurationId: 'Your WEBRTC push configuration id'),
+      // Comment out to apply In-app chat customization
+      //inAppChatCustomization: chatCustomization.customTheme,
+    ));
+      // Comment out to automatically enable WebRTC
+      // try {
+      //   await InfobipMobilemessaging.enableChatCalls();
+      //   print('Calls enabled.');
+      // } catch (err) {
+      //   print('Calls enable error: $err');
+      // }
     InfobipMobilemessaging.setupiOSChatSettings(IOSChatSettings(
       title: 'Flutter Example Chat',
       sendButtonColor: '#ff5722',
-      navigationBarItemsColor: '#ff8a50',
+      navigationBarItemsColor: '#8DFF33',
       navigationBarColor: '#c41c00',
       navigationBarTitleColor: '#000000',
     ));

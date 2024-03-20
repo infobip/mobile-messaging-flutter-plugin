@@ -90,7 +90,11 @@ public class InitHelper {
         if (configuration.isInAppChatEnabled()) {
             InAppChat chat = InAppChat.getInstance(context);
             chat.activate();
-            chat.setTheme(createTheme());
+            chat.setTheme(createTheme(configuration));
+            String widgetTheme = getWidgetTheme(configuration);
+            if (widgetTheme != null){
+                chat.setWidgetTheme(widgetTheme);
+            }
         }
 
         if (configuration.isFullFeaturedInAppsEnabled()) {
@@ -180,9 +184,17 @@ public class InitHelper {
         }
     }
 
-    private InAppChatTheme createTheme() {
+    private String getWidgetTheme(Configuration configuration){
+        Configuration.InAppChatCustomization inAppChatCustomization = configuration.getCustomization();
+        if (inAppChatCustomization != null) {
+            return inAppChatCustomization.getWidgetTheme();
+        }
+        return null;
+    }
+
+    private InAppChatTheme createTheme(Configuration configuration) {
         FlutterLoader loader = FlutterInjector.instance().flutterLoader();
-        Configuration.InAppChatCustomization inAppChatCustomization = ConfigCache.getInstance().getConfiguration().getCustomization();
+        Configuration.InAppChatCustomization inAppChatCustomization = configuration.getCustomization();
         if (inAppChatCustomization != null && inAppChatCustomization.getAndroid() != null) {
             try {
                 InAppChatToolbarStyle toolbarStyle = new InAppChatToolbarStyle(
@@ -191,6 +203,8 @@ public class InitHelper {
                         inAppChatCustomization.getAndroid().getChatStatusBarColorLight(),
                         loadDrawable(inAppChatCustomization.getAndroid().getChatNavigationIcon(), loader),
                         Color.parseColor(inAppChatCustomization.getAndroid().getChatNavigationIconTint()),
+                        loadDrawable(inAppChatCustomization.getAndroid().getChatMenuItemSaveAttachmentIcon(), loader),
+                        Color.parseColor(inAppChatCustomization.getAndroid().getChatMenuItemsIconTint()),
                         getResId(activity.getResources(), inAppChatCustomization.getAndroid().getChatTitleTextAppearanceRes(), activity.getPackageName()),
                         Color.parseColor(inAppChatCustomization.getToolbarTitleColor()),
                         inAppChatCustomization.getToolbarTitle(),
@@ -200,8 +214,7 @@ public class InitHelper {
                         Color.parseColor(inAppChatCustomization.getAndroid().getChatSubtitleTextColor()),
                         inAppChatCustomization.getAndroid().getChatSubtitleText(),
                         null,
-                        inAppChatCustomization.getAndroid().getChatSubtitleCentered(),
-                        false
+                        inAppChatCustomization.getAndroid().getChatSubtitleCentered()
                 );
                 return new InAppChatTheme(
                         toolbarStyle,
@@ -213,8 +226,7 @@ public class InitHelper {
                                 null,
                                 getResId(activity.getResources(), inAppChatCustomization.getAndroid().getChatNetworkConnectionErrorTextAppearanceRes(), activity.getPackageName()),
                                 Color.parseColor(inAppChatCustomization.getNoConnectionAlertTextColor()),
-                                Color.parseColor(inAppChatCustomization.getNoConnectionAlertBackgroundColor()),
-                                false
+                                Color.parseColor(inAppChatCustomization.getNoConnectionAlertBackgroundColor())
                         ),
                         new InAppChatInputViewStyle(
                                 getResId(activity.getResources(), inAppChatCustomization.getAndroid().getChatInputTextAppearance(), activity.getPackageName()),

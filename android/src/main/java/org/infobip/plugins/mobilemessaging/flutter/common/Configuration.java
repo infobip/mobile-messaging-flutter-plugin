@@ -213,6 +213,7 @@ public class Configuration {
     }
 
     public static class InAppChatCustomization {
+        String widgetTheme;
         String toolbarTitle;
         String toolbarTitleColor;
         String toolbarTintColor;
@@ -228,6 +229,14 @@ public class Configuration {
         String attachmentButtonIcon;
         Boolean chatInputSeparatorVisible;
         AndroidInAppChatCustomization android;
+
+        public String getWidgetTheme() {
+            return widgetTheme;
+        }
+
+        public void setWidgetTheme(String widgetTheme) {
+            this.widgetTheme = widgetTheme;
+        }
 
         public String getToolbarTitle() {
             return toolbarTitle;
@@ -374,6 +383,8 @@ public class Configuration {
         String chatInputAttachmentBackgroundColor;
         String chatInputSendBackgroundDrawable;
         String chatInputSendBackgroundColor;
+        String chatMenuItemsIconTint;
+        String chatMenuItemSaveAttachmentIcon;
 
         public String getChatNavigationIconTint() {
             return chatNavigationIconTint;
@@ -557,6 +568,22 @@ public class Configuration {
 
         public void setChatInputSendBackgroundColor(String chatInputSendBackgroundColor) {
             this.chatInputSendBackgroundColor = chatInputSendBackgroundColor;
+        }
+
+        public String getChatMenuItemsIconTint() {
+            return chatMenuItemsIconTint;
+        }
+
+        public void setChatMenuItemsIconTint(String chatMenuItemsIconTint) {
+            this.chatMenuItemsIconTint = chatMenuItemsIconTint;
+        }
+
+        public String getChatMenuItemSaveAttachmentIcon() {
+            return chatMenuItemSaveAttachmentIcon;
+        }
+
+        public void setChatMenuItemSaveAttachmentIcon(String chatMenuItemSaveAttachmentIcon) {
+            this.chatMenuItemSaveAttachmentIcon = chatMenuItemSaveAttachmentIcon;
         }
     }
 

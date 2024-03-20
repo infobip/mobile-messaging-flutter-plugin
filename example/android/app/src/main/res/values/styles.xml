@@ -15,16 +15,18 @@
     <style name="NormalTheme" parent="@android:style/Theme.Light.NoTitleBar">
         <item name="android:windowBackground">?android:colorBackground</item>
     </style>
-    <style name="IB_AppTheme.Chat">
-        <item name="colorPrimary">@color/primaryColor</item>
-        <item name="colorPrimaryDark">@color/primaryLightColor</item>
-        <item name="colorControlNormal">@color/primaryDarkColor</item>
-        <item name="titleTextColor">@color/primaryTextColor</item>
-    </style>
-    <style name="IB_AppTheme.ChatAttach">
-        <item name="colorPrimary">@color/primaryColor</item>
-        <item name="colorPrimaryDark">@color/primaryLightColor</item>
-        <item name="colorControlNormal">@color/primaryDarkColor</item>
-        <item name="titleTextColor">@color/primaryTextColor</item>
-    </style>
+    <!--Uncomment to set custom In-app chat theme-->
+    <!--    <style name="IB_AppTheme.Chat">-->
+    <!--        <item name="ibChatToolbarStyle">@style/InAppChat.Demo.Toolbar</item> &lt;!&ndash; In-app chat toolbar style &ndash;&gt;-->
+    <!--        <item name="ibChatAttachmentToolbarStyle">@style/InAppChat.Demo.Toolbar</item> &lt;!&ndash; In-app chat attachment preview toolbar style &ndash;&gt;-->
+    <!--    </style>-->
+
+    <!--    <style name="Demo"/>-->
+
+    <!--    <style name="InAppChat.Demo.Toolbar" parent="Demo">-->
+    <!--        <item name="ibChatToolbarBackgroundColor">@color/primaryColor</item> &lt;!&ndash; color of toolbar background and send chat button tint &ndash;&gt;-->
+    <!--        <item name="ibChatStatusBarBackgroundColor">@color/primaryDarkColor</item> &lt;!&ndash; color of status / notification bar &ndash;&gt;-->
+    <!--        <item name="ibChatNavigationIconTint">@android:color/white</item> &lt;!&ndash; color of navigation icon in toolbar &ndash;&gt;-->
+    <!--        <item name="ibChatTitleTextColor">@android:color/white</item> &lt;!&ndash; color of toolbar title text &ndash;&gt;-->
+    <!--    </style>-->
 </resources>

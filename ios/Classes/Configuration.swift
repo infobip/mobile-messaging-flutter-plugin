@@ -31,7 +31,7 @@ class Configuration {
         static let withoutRegisteringForRemoteNotifications = "withoutRegisteringForRemoteNotifications"
         static let webRTCUI = "webRTCUI"
         static let configurationId = "configurationId"
-        static let customisation = "customisation"
+        static let customisation = "inAppChatCustomization"
     }
     
     let appCode: String

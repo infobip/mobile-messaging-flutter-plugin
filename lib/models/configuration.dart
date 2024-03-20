@@ -237,6 +237,7 @@ class InAppChatCustomization {
   final String? toolbarBackgroundColor;
   final String? sendButtonTintColor;
   final String? chatBackgroundColor;
+  final String? widgetTheme;
   final String? noConnectionAlertTextColor;
   final String? noConnectionAlertBackgroundColor;
   final String? chatInputPlaceholderColor;
@@ -255,6 +256,7 @@ class InAppChatCustomization {
       this.toolbarBackgroundColor,
       this.sendButtonTintColor,
       this.chatBackgroundColor,
+      this.widgetTheme,
       this.noConnectionAlertTextColor,
       this.noConnectionAlertBackgroundColor,
       this.chatInputPlaceholderColor,
@@ -273,6 +275,7 @@ class InAppChatCustomization {
         'toolbarBackgroundColor': toolbarBackgroundColor,
         'sendButtonTintColor': sendButtonTintColor,
         'chatBackgroundColor': chatBackgroundColor,
+        'widgetTheme': widgetTheme,
         'noConnectionAlertTextColor': noConnectionAlertTextColor,
         'noConnectionAlertBackgroundColor': noConnectionAlertBackgroundColor,
         'chatInputPlaceholderColor': chatInputPlaceholderColor,
@@ -287,29 +290,35 @@ class InAppChatCustomization {
 }
 
 class AndroidInAppChatCustomization {
+  //status bar
+  final bool? chatStatusBarColorLight;
+  final String? chatStatusBarBackgroundColor;
+  //toolbar
+  final String? chatNavigationIcon;
   final String? chatNavigationIconTint;
-  final String? chatSubtitleTextColor;
-  final String? chatInputTextColor;
-  final String? chatProgressBarColor;
-  final String? chatInputAttachmentIconTint;
-  final String? chatInputSendIconTint;
-  final String? chatInputSeparatorLineColor;
-  final String? chatInputHintText;
   final String? chatSubtitleText;
+  final String? chatSubtitleTextColor;
   final String? chatSubtitleTextAppearanceRes;
   final bool? chatSubtitleCentered;
   final bool? chatTitleCentered;
-  final String? chatInputTextAppearance;
+  final String? chatTitleTextAppearanceRes;
+  final String? chatMenuItemsIconTint;
+  final String? chatMenuItemSaveAttachmentIcon;
+  //chat
+  final String? chatProgressBarColor;
   final String? chatNetworkConnectionErrorTextAppearanceRes;
   final String? chatNetworkConnectionErrorText;
-  final String? chatNavigationIcon;
-  final bool? chatStatusBarColorLight;
-  final String? chatTitleTextAppearanceRes;
-  final String? chatStatusBarBackgroundColor;
-  final String? chatInputAttachmentBackgroundDrawable;
+  //input
+  final String? chatInputTextColor;
+  final String? chatInputAttachmentIconTint;
   final String? chatInputAttachmentBackgroundColor;
-  final String? chatInputSendBackgroundDrawable;
+  final String? chatInputAttachmentBackgroundDrawable;
+  final String? chatInputSendIconTint;
   final String? chatInputSendBackgroundColor;
+  final String? chatInputSendBackgroundDrawable;
+  final String? chatInputSeparatorLineColor;
+  final String? chatInputHintText;
+  final String? chatInputTextAppearance;
 
   AndroidInAppChatCustomization({
     //status bar
@@ -324,6 +333,8 @@ class AndroidInAppChatCustomization {
     this.chatSubtitleCentered,
     this.chatTitleCentered,
     this.chatTitleTextAppearanceRes,
+    this.chatMenuItemsIconTint,
+    this.chatMenuItemSaveAttachmentIcon,
     //chat
     this.chatProgressBarColor,
     this.chatNetworkConnectionErrorTextAppearanceRes,
@@ -354,6 +365,8 @@ class AndroidInAppChatCustomization {
         'chatSubtitleCentered': chatSubtitleCentered,
         'chatTitleCentered': chatTitleCentered,
         'chatTitleTextAppearanceRes': chatTitleTextAppearanceRes,
+        'chatMenuItemsIconTint': chatMenuItemsIconTint,
+        'chatMenuItemSaveAttachmentIcon': chatMenuItemSaveAttachmentIcon,
         //chat
         'chatProgressBarColor': chatProgressBarColor,
         'chatNetworkConnectionErrorTextAppearanceRes': chatNetworkConnectionErrorTextAppearanceRes,
