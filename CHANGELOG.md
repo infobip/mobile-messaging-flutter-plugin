@@ -1,3 +1,6 @@
+# 5.0.0
+## Added
+- Introducing support for [Inbox](https://github.com/infobip/mobile-messaging-flutter-plugin/wiki/Inbox)
 # 4.1.0
 ## Added
 - new [In-App Chat customisations](https://github.com/infobip/mobile-messaging-flutter-plugin/wiki/In-app-chat#customize-in-app-chat-view) attributes:
