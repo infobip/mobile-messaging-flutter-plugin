@@ -132,6 +132,14 @@ public class SwiftInfobipMobilemessagingPlugin: NSObject, FlutterPlugin {
             restartConnection()
         } else if call.method == "stopConnection" {
             stopConnection()
+        } else if call.method == "fetchInboxMessages" {
+            fetchInboxMessages(call: call, result: result)
+        } else if call.method == "fetchInboxMessagesWithoutToken" {
+            fetchInboxMessagesWithoutToken(call: call, result: result)
+        } else if call.method == "setInboxMessagesSeen" {
+            setInboxMessagesSeen(call: call, result: result)
+        } else if call.method == "markMessagesSeen" {
+            markMessagesSeen(call: call, result: result)
         } else {
             result(FlutterError( code: "NotImplemented",
                                  message: "Error NotImplemented",
@@ -182,15 +190,15 @@ public class SwiftInfobipMobilemessagingPlugin: NSObject, FlutterPlugin {
         
         var mobileMessaging = MobileMessaging
             .withApplicationCode(configuration.appCode, notificationType: configuration.notificationType)
-
+        
         if configuration.inAppChatEnabled {
             mobileMessaging = mobileMessaging?.withInAppChat()
         }
-
+        
         if configuration.fullFeaturedInAppsEnabled {
             mobileMessaging = mobileMessaging?.withFullFeaturedInApps()
         }
-
+        
         if let categories = configuration.categories {
             mobileMessaging = mobileMessaging?.withInteractiveNotificationCategories(Set(categories))
         }
@@ -211,14 +219,14 @@ public class SwiftInfobipMobilemessagingPlugin: NSObject, FlutterPlugin {
         if (configuration.withoutRegisteringForRemoteNotifications) {
             mobileMessaging = mobileMessaging?.withoutRegisteringForRemoteNotifications()
         }
-
+        
 #if WEBRTCUI_ENABLED
         if let webrtcDict = configuration.webRTCUI,
            let configId = webrtcDict[Configuration.Keys.configurationId] as? String {
             webrtcConfigId = configId
         }
 #endif
-
+        
         mobileMessaging?.start({
             return result("success")
         })
@@ -464,7 +472,7 @@ public class SwiftInfobipMobilemessagingPlugin: NSObject, FlutterPlugin {
         let components = localeS.components(separatedBy: separator)
         let langCode = localeS.contains("zh") ? localeS : components.first
         let lang = MMLanguage.mapLanguage(from: langCode ??
-                                                         String(localeS.prefix(2)))
+                                          String(localeS.prefix(2)))
         chatVC.setLanguage(lang) { error in
             if let error = error {
                 return result(
@@ -623,6 +631,89 @@ public class SwiftInfobipMobilemessagingPlugin: NSObject, FlutterPlugin {
         }
     }
     
+    func fetchInboxMessages(call: FlutterMethodCall, result: @escaping FlutterResult) {
+        guard let args = call.arguments as? [String : Any],
+              let token = args["token"] as? String,
+              let extUserId = args["externalUserId"] as? String else {
+            return result(
+                FlutterError( code: "invalidInbox",
+                              message: "Could not retrieve inbox data",
+                              details: "Could not retrieve inbox data" ))
+        }
+        
+        let filters = MMInboxFilterOptions(dictRepresentation: convertStringToDictionary(text: args["filterOptions"] as! String) ?? [:])
+        MobileMessaging.inbox?.fetchInbox(token: token, externalUserId: extUserId, options: filters, completion: { (inbox, error) in
+            if let error = error {
+                return result(
+                    FlutterError( code: error.mm_code ?? "0",
+                                  message: error.mm_message,
+                                  details: error.description ))
+            } else {
+                self.dictionaryResult(result: result, dict: inbox?.dictionary() ?? [:])
+            }
+        })
+    }
+    
+    func fetchInboxMessagesWithoutToken(call: FlutterMethodCall, result: @escaping FlutterResult) {
+        guard let args = call.arguments as? [String : Any],
+              let extUserId = args["externalUserId"] as? String else {
+            return result(
+                FlutterError( code: "invalidInbox",
+                              message: "Could not retrieve inbox data",
+                              details: "Could not retrieve inbox data" ))
+        }
+        
+        let filters = MMInboxFilterOptions(dictRepresentation: convertStringToDictionary(text: args["filterOptions"] as! String) ?? [:])
+        MobileMessaging.inbox?.fetchInbox(externalUserId: extUserId, options: filters, completion: { (inbox, error) in
+            if let error = error {
+                return result(
+                    FlutterError( code: error.mm_code ?? "0",
+                                  message: error.mm_message,
+                                  details: error.description ))
+            } else {
+                self.dictionaryResult(result: result, dict: inbox?.dictionary() ?? [:])
+            }
+        })
+    }
+    
+    func setInboxMessagesSeen(call: FlutterMethodCall, result: @escaping FlutterResult) {
+        guard let args = call.arguments as? [String : Any],
+              let extUserId = args["externalUserId"] as? String,
+              let mIds = args["messageIds"] as? [String]
+        else {
+            return result(
+                FlutterError( code: "invalidInbox",
+                              message: "Could not retrieve inbox data",
+                              details: "Could not retrieve inbox data" ))
+        }
+        
+        
+        MobileMessaging.inbox?.setSeen(externalUserId: extUserId, messageIds: mIds, completion: { error in
+            if let error = error {
+                return result(
+                    FlutterError( code: error.mm_code ?? "0",
+                                  message: error.mm_message,
+                                  details: error.description ))
+            } else {
+                return result("success")
+            }
+        })
+    }
+    
+    func markMessagesSeen(call: FlutterMethodCall, result: @escaping FlutterResult) {
+        guard let messageIds = call.arguments as? [String], !messageIds.isEmpty  else {
+            return result(
+                FlutterError( code: "invalidSeen",
+                              message: "Could not retrieve message ids from data",
+                              details: "Could not retrieve message ids from data" ))
+        }
+        
+        MobileMessaging.setSeen(messageIds: messageIds, completion: {
+            return result("success")
+        })
+        
+    }
+    
     private func dictionaryResult(result: @escaping FlutterResult, dict: DictionaryRepresentation?) {
         do {
             return result(String(data:
@@ -649,7 +740,7 @@ public class SwiftInfobipMobilemessagingPlugin: NSObject, FlutterPlugin {
         }
     }
     
-    private  func convertStringToDictionary(text: String) -> [String:AnyObject]? {
+    private func convertStringToDictionary(text: String) -> [String:AnyObject]? {
         if let data = text.data(using: .utf8) {
             do {
                 let json = try JSONSerialization.jsonObject(with: data, options: .mutableContainers) as? [String:AnyObject]
@@ -660,7 +751,7 @@ public class SwiftInfobipMobilemessagingPlugin: NSObject, FlutterPlugin {
         }
         return nil
     }
-
+    
 #if WEBRTCUI_ENABLED
     private func handleCalls(
         _ identity: MMWebRTCIdentityMode,
@@ -678,7 +769,7 @@ public class SwiftInfobipMobilemessagingPlugin: NSObject, FlutterPlugin {
                         FlutterError( code: "errorWebRTCUIResult",
                                       message: "[WebRTCUI] Request for enabling calls ended with failure - See further logs.",
                                       details: "[WebRTCUI] Request for enabling calls ended with failure - See further logs." ))
-
+                    
                 }
             })
         } else {
@@ -689,7 +780,7 @@ public class SwiftInfobipMobilemessagingPlugin: NSObject, FlutterPlugin {
         }
     }
 #endif
-
+    
     func enableCalls(call: FlutterMethodCall, result: @escaping FlutterResult) {
 #if WEBRTCUI_ENABLED
         guard let identityString = call.arguments as? String else {
@@ -707,7 +798,7 @@ public class SwiftInfobipMobilemessagingPlugin: NSObject, FlutterPlugin {
                           details: "[WebRTCUI] Not imported properly in podfile: library cannot be used." ))
 #endif
     }
-
+    
     func enableChatCalls(result: @escaping FlutterResult) {
 #if WEBRTCUI_ENABLED
         handleCalls(.inAppChat, result: result)
@@ -718,7 +809,7 @@ public class SwiftInfobipMobilemessagingPlugin: NSObject, FlutterPlugin {
                           details: "[WebRTCUI] Not imported properly in podfile: library cannot be used." ))
 #endif
     }
-
+    
     func disableCalls(result: @escaping FlutterResult) {
 #if WEBRTCUI_ENABLED
         MobileMessaging.webRTCService?.stopService({ response in
@@ -739,12 +830,12 @@ public class SwiftInfobipMobilemessagingPlugin: NSObject, FlutterPlugin {
                           details: "[WebRTCUI] Not imported properly in podfile: library cannot be used." ))
 #endif
     }
-
+    
     func restartConnection() {
         guard let chatVC = SwiftInfobipMobilemessagingPlugin.chatVC else { return }
         chatVC.restartConnection()
     }
-
+    
     func stopConnection() {
         guard let chatVC = SwiftInfobipMobilemessagingPlugin.chatVC else { return }
         chatVC.stopConnection()

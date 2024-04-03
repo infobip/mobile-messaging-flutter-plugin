@@ -19,9 +19,9 @@ import java.util.Map;
 
 public class InstallationJson extends Installation {
 
-    private final static String IS_PUSH_REGISTRATION_ENABLED =  "isPushRegistrationEnabled";
-    private final static String IS_PRIMARY_DEVICE =  "isPrimaryDevice";
-    private final static String CUSTOM_ATTRIBUTES =  "customAttributes";
+    private final static String IS_PUSH_REGISTRATION_ENABLED = "isPushRegistrationEnabled";
+    private final static String IS_PRIMARY_DEVICE = "isPrimaryDevice";
+    private final static String CUSTOM_ATTRIBUTES = "customAttributes";
 
     public static JSONArray toJSON(final List<Installation> installations) {
         if (installations == null) {

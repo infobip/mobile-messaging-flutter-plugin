@@ -5,6 +5,8 @@ import 'dart:developer';
 import 'dart:io';
 
 import 'package:flutter/services.dart';
+import 'package:infobip_mobilemessaging/models/inbox/filter_options.dart';
+import 'package:infobip_mobilemessaging/models/inbox/inbox.dart';
 
 import 'models/configuration.dart';
 import 'models/installation.dart';
@@ -228,6 +230,42 @@ class InfobipMobilemessaging {
       return;
     }
     await _channel.invokeMethod('stopConnection');
+  }
+
+  static Future<Inbox> fetchInboxMessages(
+      String token, String externalUserId, FilterOptions filterOptions) async {
+    return Inbox.fromJson(jsonDecode(await _channel.invokeMethod(
+      'fetchInboxMessages',
+      {
+        'token': token,
+        'externalUserId': externalUserId,
+        'filterOptions': jsonEncode(filterOptions.toJson()),
+      },
+    )));
+  }
+
+  static Future<Inbox> fetchInboxMessagesWithoutToken(
+      String externalUserId, FilterOptions filterOptions) async {
+    return Inbox.fromJson(jsonDecode(await _channel.invokeMethod(
+      'fetchInboxMessagesWithoutToken',
+      {
+        'externalUserId': externalUserId,
+        'filterOptions': jsonEncode(filterOptions.toJson()),
+      },
+    )));
+  }
+
+  static Future<void> setInboxMessagesSeen(
+      String externalUserId, List<String> messageIds) async {
+    await _channel.invokeMethod('setInboxMessagesSeen',
+        {
+          'externalUserId': externalUserId,
+          'messageIds': messageIds,
+        },);
+  }
+
+  static Future<void> markMessagesSeen(List<String> messageIds) async {
+    await _channel.invokeMethod('markMessagesSeen', messageIds);
   }
 }
 

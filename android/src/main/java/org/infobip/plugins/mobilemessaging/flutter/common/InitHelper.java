@@ -248,7 +248,7 @@ public class InitHelper {
                                 Color.parseColor(inAppChatCustomization.getChatInputCursorColor())
                         )
                 );
-            } catch (IllegalArgumentException e){
+            } catch (IllegalArgumentException e) {
                 Log.e(TAG, "Color in invalid format.", e);
                 return null;
             }

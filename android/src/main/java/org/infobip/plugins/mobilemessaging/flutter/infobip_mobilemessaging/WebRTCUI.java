@@ -54,8 +54,7 @@ public class WebRTCUI {
             final Configuration configuration = ConfigCache.getInstance().getConfiguration();
             if (configuration == null) {
                 errorCallback.error(new IllegalStateException("Mobile messaging not initialized. Please call InfobipMobilemessaging.init()."));
-            }
-            else {
+            } else {
                 String configurationId = configuration.getWebRTCUI().getConfigurationId();
                 if (configuration.getWebRTCUI() != null && configurationId != null) {
                     Class<?> rtcUiBuilderClass = Class.forName("com.infobip.webrtc.ui.InfobipRtcUi$Builder");
@@ -71,8 +70,7 @@ public class WebRTCUI {
                                 successListener,
                                 errorListener
                         );
-                    }
-                    else if (StringUtils.isNotBlank(identity)) {
+                    } else if (StringUtils.isNotBlank(identity)) {
                         rtcUiBuilderFinalStep = rtcUiBuilderClass.getMethod("withCalls", String.class, getListenTypeClass(), getSuccessListenerClass(), getErrorListenerClass()).invoke(
                                 rtcUiBuilder,
                                 identity,
@@ -80,8 +78,7 @@ public class WebRTCUI {
                                 successListener,
                                 errorListener
                         );
-                    }
-                    else {
+                    } else {
                         rtcUiBuilderFinalStep = rtcUiBuilderClass.getMethod("withCalls", getSuccessListenerClass(), getErrorListenerClass()).invoke(
                                 rtcUiBuilder,
                                 successListener,
@@ -89,8 +86,7 @@ public class WebRTCUI {
                         );
                     }
                     infobipRtcUiInstance = rtcUiBuilderFinalStepClass.getMethod("build").invoke(rtcUiBuilderFinalStep);
-                }
-                else {
+                } else {
                     errorCallback.error(new IllegalStateException("Configuration does not contain webRTCUI data."));
                 }
             }
@@ -167,8 +163,7 @@ public class WebRTCUI {
     public void disableCalls(final SuccessCallback successCallback, final ErrorCallback errorCallback) {
         if (infobipRtcUiInstance == null) {
             errorCallback.error(new IllegalStateException(("Calls are not enabled.")));
-        }
-        else {
+        } else {
             try {
                 Class<?> infobipRtcUiClass = Class.forName("com.infobip.webrtc.ui.InfobipRtcUi");
                 infobipRtcUiClass.getMethod("disableCalls", getSuccessListenerClass(), getErrorListenerClass())

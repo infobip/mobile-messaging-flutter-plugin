@@ -14,6 +14,7 @@ import 'package:infobip_mobilemessaging/models/user_data.dart';
 import 'language.dart';
 import 'screen_one.dart';
 import 'screen_two.dart';
+import 'screens/cloud_inbox.dart';
 import 'sign_in_http.dart';
 import 'chat_customization.dart' as chatCustomization;
 
@@ -22,6 +23,11 @@ void main() async {
 }
 
 final pages = [
+  Page(
+    name: 'Cloud Inbox Demo',
+    route: '/cloud_inbox',
+    builder: (context) => const CloudInboxScreen(),
+  ),
   Page(
     name: 'Personalize',
     route: '/signin_http',
@@ -36,7 +42,7 @@ final pages = [
     name: 'screen_two',
     route: '/screen_two',
     builder: (context) => const ScreenTwoDemo(),
-  )
+  ),
 ];
 
 class MyApp extends StatefulWidget {
@@ -552,7 +558,7 @@ class _HomePageState extends State<HomePage> {
                   try {
                     InfobipMobilemessaging.enableChatCalls();
                   } catch (e) {
-                    log('Failed to enable calls. ' + e);
+                    log('Failed to enable calls. ' + e.toString());
                   }
                 }),
             ListTile(
@@ -562,7 +568,7 @@ class _HomePageState extends State<HomePage> {
                   try {
                     InfobipMobilemessaging.disableCalls();
                   } catch (e) {
-                    log('Failed to disable calls. ' + e);
+                    log('Failed to disable calls. ' + e.toString());
                   }
                 })
           ],

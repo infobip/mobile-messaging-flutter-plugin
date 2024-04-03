@@ -21,9 +21,10 @@ extension MM_MTMessage {
         result["webViewUrl"] = webViewUrl?.absoluteString
         result["inAppOpenTitle"] = inAppOpenTitle
         result["inAppDismissTitle"] = inAppDismissTitle
+        result["topic"] = topic
         return result
     }
-
+    
     var isGeoMessage: Bool {
         let geoAreasDicts = (originalPayload["internalData"] as? [String: Any])?["geo"] as? [[String: Any]]
         return geoAreasDicts != nil
@@ -33,32 +34,32 @@ extension MM_MTMessage {
 extension MMBaseMessage {
     class func createFrom(dictionary: [String: Any]) -> MMBaseMessage? {
         guard let messageId = dictionary["messageId"] as? String,
-            let originalPayload = dictionary["originalPayload"] as? MMStringKeyPayload else
+              let originalPayload = dictionary["originalPayload"] as? MMStringKeyPayload else
         {
             return nil
         }
-
+        
         return MMBaseMessage(messageId: messageId, direction: MMMessageDirection.MT, originalPayload: originalPayload, deliveryMethod: .undefined)
     }
-
+    
     func dictionary() -> [String: Any] {
         var result = [String: Any]()
         result["messageId"] = messageId
         result["customPayload"] = originalPayload["customPayload"]
         result["originalPayload"] = originalPayload
-
+        
         if let aps = originalPayload["aps"] as? MMStringKeyPayload {
             result["body"] = aps["body"]
             result["sound"] = aps["sound"]
         }
-
+        
         if let internalData = originalPayload["internalData"] as? MMStringKeyPayload,
-            let _ = internalData["silent"] as? MMStringKeyPayload {
+           let _ = internalData["silent"] as? MMStringKeyPayload {
             result["silent"] = true
         } else if let silent = originalPayload["silent"] as? Bool {
             result["silent"] = silent
         }
-
+        
         return result
     }
 }
@@ -68,13 +69,13 @@ extension MMRegion {
         var areaCenter = [String: Any]()
         areaCenter["lat"] = center.latitude
         areaCenter["lon"] = center.longitude
-
+        
         var area = [String: Any]()
         area["id"] = identifier
         area["center"] = areaCenter
         area["radius"] = radius
         area["title"] = title
-
+        
         var result = [String: Any]()
         result["area"] = area
         return result
@@ -89,6 +90,16 @@ extension Optional {
         default:
             return fallbackValue
         }
+    }
+}
+
+extension MMInbox {
+    func dictionary() -> [String: Any] {
+        var result = [String: Any]()
+        result["countTotal"] = countTotal
+        result["countUnread"] = countUnread
+        result["messages"] = messages.map({ return $0.dictionary() })
+        return result
     }
 }
 
