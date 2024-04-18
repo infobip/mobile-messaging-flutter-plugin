@@ -1,3 +1,6 @@
+# 5.0.1
+## Changed
+- provided dictionary representation of Message object for iOS
 # 5.0.0
 ## Added
 - Introducing support for [Inbox](https://github.com/infobip/mobile-messaging-flutter-plugin/wiki/Inbox)
