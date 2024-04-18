@@ -79,7 +79,7 @@ class MobileMessagingEventsManager: NSObject, FlutterStreamHandler {
         case MMNotificationMessageReceived:
             eventName = EventName.messageReceived
             if let message = notification.userInfo?[MMNotificationKeyMessage] as? MM_MTMessage {
-                notificationResult = message.dictionary()
+                notificationResult = message.dictionaryRepresentation
             }
         case MMNotificationDeviceTokenReceived:
             eventName = EventName.tokenReceived
@@ -99,7 +99,7 @@ class MobileMessagingEventsManager: NSObject, FlutterStreamHandler {
         case MMNotificationMessageTapped:
             eventName = EventName.notificationTapped
             if let message = notification.userInfo?[MMNotificationKeyMessage] as? MM_MTMessage {
-                notificationResult = message.dictionary()
+                notificationResult = message.dictionaryRepresentation
             }
         case MMNotificationActionTapped:
             eventName = EventName.actionTapped

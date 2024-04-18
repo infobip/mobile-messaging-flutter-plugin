@@ -2,29 +2,6 @@ import Foundation
 import MobileMessaging
 
 extension MM_MTMessage {
-    override func dictionary() -> [String: Any] {
-        var result = [String: Any]()
-        result["messageId"] = messageId
-        result["body"] = text
-        result["sound"] = sound
-        result["silent"] = isSilent
-        result["receivedTimestamp"] = UInt64(sendDateTime * 1000)
-        result["customPayload"] = customPayload
-        result["originalPayload"] = originalPayload
-        result["contentUrl"] = contentUrl
-        result["seen"] = seenStatus != .NotSeen
-        result["seenDate"] = seenDate?.timeIntervalSince1970
-        result["geo"] = isGeoMessage
-        result["chat"] = isChatMessage
-        result["browserUrl"] = browserUrl?.absoluteString
-        result["deeplink"] = deeplink?.absoluteString
-        result["webViewUrl"] = webViewUrl?.absoluteString
-        result["inAppOpenTitle"] = inAppOpenTitle
-        result["inAppDismissTitle"] = inAppDismissTitle
-        result["topic"] = topic
-        return result
-    }
-    
     var isGeoMessage: Bool {
         let geoAreasDicts = (originalPayload["internalData"] as? [String: Any])?["geo"] as? [[String: Any]]
         return geoAreasDicts != nil
@@ -98,7 +75,7 @@ extension MMInbox {
         var result = [String: Any]()
         result["countTotal"] = countTotal
         result["countUnread"] = countUnread
-        result["messages"] = messages.map({ return $0.dictionary() })
+        result["messages"] = messages.map({ return $0.dictionaryRepresentation })
         return result
     }
 }
