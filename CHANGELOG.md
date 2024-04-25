@@ -1,3 +1,6 @@
+# 5.0.2
+## Changed
+- Improved message model for Inbox.
 # 5.0.1
 ## Changed
 - provided dictionary representation of Message object for iOS
