@@ -232,6 +232,11 @@ class InfobipMobilemessaging {
     await _channel.invokeMethod('stopConnection');
   }
 
+  /// Fetches messages from Inbox.
+  /// Requires token, externalUserId, and filterOptions.
+  /// Example:
+  /// ```dart
+  /// var inbox = await fetchInboxMessages('jwtToken', 'yourId', FilterOptions());
   static Future<Inbox> fetchInboxMessages(
       String token, String externalUserId, FilterOptions filterOptions) async {
     return Inbox.fromJson(jsonDecode(await _channel.invokeMethod(
@@ -244,6 +249,13 @@ class InfobipMobilemessaging {
     )));
   }
 
+  /// Fetches messages from Inbox without token - recommended only for sandbox
+  /// applications. For production apps use fetchInboxMessages with token.
+  /// Requires externalUserId, and filterOptions.
+  ///
+  /// Example:
+  /// ```dart
+  /// var inbox = await fetchInboxMessagesWithoutToken('yourId', FilterOptions());
   static Future<Inbox> fetchInboxMessagesWithoutToken(
       String externalUserId, FilterOptions filterOptions) async {
     return Inbox.fromJson(jsonDecode(await _channel.invokeMethod(
@@ -255,13 +267,17 @@ class InfobipMobilemessaging {
     )));
   }
 
+  /// Sets Inbox messages as seen.
+  /// Requires externalUserId and List of IDs of messages to be marked as seen.
   static Future<void> setInboxMessagesSeen(
       String externalUserId, List<String> messageIds) async {
-    await _channel.invokeMethod('setInboxMessagesSeen',
-        {
-          'externalUserId': externalUserId,
-          'messageIds': messageIds,
-        },);
+    await _channel.invokeMethod(
+      'setInboxMessagesSeen',
+      {
+        'externalUserId': externalUserId,
+        'messageIds': messageIds,
+      },
+    );
   }
 
   static Future<void> markMessagesSeen(List<String> messageIds) async {
