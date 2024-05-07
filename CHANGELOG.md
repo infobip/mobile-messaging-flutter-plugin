@@ -1,3 +1,6 @@
+# 5.0.3
+## Changed
+- Updated proguard rules for Android.
 # 5.0.2
 ## Changed
 - Improved message model for Inbox.
