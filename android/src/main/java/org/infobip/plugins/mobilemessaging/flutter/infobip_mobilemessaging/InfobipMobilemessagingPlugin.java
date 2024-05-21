@@ -402,6 +402,10 @@ public class InfobipMobilemessagingPlugin implements FlutterPlugin, MethodCallHa
                 int unreadMessagesCount = intent.getIntExtra(BroadcastParameter.EXTRA_UNREAD_CHAT_MESSAGES_COUNT, 0);
                 data = String.valueOf(unreadMessagesCount);
                 broadcastHandler.sendEvent(event, data);
+            } else if (InAppChatEvent.IN_APP_CHAT_AVAILABILITY_UPDATED.getKey().equals(intent.getAction())) {
+                boolean isChatAvailable = intent.getBooleanExtra(BroadcastParameter.EXTRA_IS_CHAT_AVAILABLE, false);
+                data = String.valueOf(isChatAvailable);
+                broadcastHandler.sendEvent(event, data);
             } else {
                 broadcastHandler.sendEvent(event);
             }

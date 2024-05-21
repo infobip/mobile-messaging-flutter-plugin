@@ -41,6 +41,9 @@ class LibraryEvent {
 
   // Occurs when livechat registration id is updated.
   static const String chatLivechatRegistrationIdUpdated = "inAppChat.livechatRegistrationIdUpdated";
+  
+  // Occurs when the connection has been established successfully and chat can be presented
+  static const String chatAvailabilityUpdated = "inAppChat.availabilityUpdated";
 
   LibraryEvent({
     required this.eventName,

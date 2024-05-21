@@ -4,7 +4,6 @@ version '1.0'
 buildscript {
     repositories {
         google()
-        jcenter()
         mavenLocal()
         mavenCentral()
     }
@@ -17,7 +16,6 @@ buildscript {
 rootProject.allprojects {
     repositories {
         google()
-        jcenter()
         mavenLocal()
         mavenCentral()
     }
@@ -42,7 +40,7 @@ android {
 def withWebRTCUI = getRootProjectProperty('withWebRTCUI', false)
 
 dependencies {
-    def mmVersion = '12.6.2'
+    def mmVersion = '12.7.0'
     //flutter and mm dependencies clash
     implementation ("org.jetbrains.kotlin:kotlin-stdlib-jdk8") {
         version {

@@ -165,6 +165,12 @@ class _MyAppState extends State<MyApp> {
               log('Callback. REGISTRATION_UPDATED event: $token'),
               _HomePageState.addLibraryEvent('Registration Updated')
             });
+    InfobipMobilemessaging.on(
+        LibraryEvent.chatAvailabilityUpdated,
+        (isAvailable) => { 
+              log('Callback. IN_APP_CHAT_AVAILABILITY_UPDATED event: $isAvailable'),
+              _HomePageState.addLibraryEvent('Availability Updated')
+          });
   }
 
   @override
