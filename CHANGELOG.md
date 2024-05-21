@@ -1,3 +1,6 @@
+# 5.1.0
+## Added
+- new chatAvailabilityUpdated event to indicate when chat is ready to be presented
 # 5.0.3
 ## Changed
 - Updated proguard rules for Android.
