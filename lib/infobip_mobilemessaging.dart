@@ -126,6 +126,15 @@ class InfobipMobilemessaging {
     await _channel.invokeMethod('depersonalize');
   }
 
+  /// Synchronously cleans up all persisted data.
+  /// This method deletes SDK data related to current application code (also, deletes data for other modules: interactive, chat).
+  /// There might be a situation where you'll want to switch between different Application Codes during development/testing,
+  /// in this case you should manually invoke cleanup().
+  /// After cleanup, you should call init() with a new Application Code in order to use library again.
+  static void cleanup() async {
+    await _channel.invokeMethod('cleanup');
+  }
+
   static void depersonalizeInstallation(String pushRegistrationId) async {
     await _channel.invokeMethod('depersonalizeInstallation', pushRegistrationId);
   }

@@ -171,6 +171,9 @@ public class InfobipMobilemessagingPlugin implements FlutterPlugin, MethodCallHa
             case "showChat":
                 showChat(call, result);
                 break;
+            case "cleanup":
+                cleanup();
+                break;
             case "submitEvent":
                 submitEvent(call, result);
                 break;
@@ -699,6 +702,10 @@ public class InfobipMobilemessagingPlugin implements FlutterPlugin, MethodCallHa
             return;
         }
         mobileMessaging().depersonalizeInstallation(pushRegistrationId, installationsResultListener(result));
+    }
+
+    public void cleanup(){
+        mobileMessaging().cleanup();
     }
 
     public void setInstallationAsPrimary(MethodCall call, final MethodChannel.Result result) {

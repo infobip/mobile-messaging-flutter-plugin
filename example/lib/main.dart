@@ -167,7 +167,7 @@ class _MyAppState extends State<MyApp> {
             });
     InfobipMobilemessaging.on(
         LibraryEvent.chatAvailabilityUpdated,
-        (isAvailable) => { 
+        (isAvailable) => {
               log('Callback. IN_APP_CHAT_AVAILABILITY_UPDATED event: $isAvailable'),
               _HomePageState.addLibraryEvent('Availability Updated')
           });
