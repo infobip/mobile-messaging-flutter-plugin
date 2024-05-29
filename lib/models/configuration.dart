@@ -22,18 +22,19 @@ class Configuration {
 
   final InAppChatCustomization? inAppChatCustomization;
 
-  Configuration(
-      {required this.applicationCode,
-      this.pluginVersion,
-      this.inAppChatEnabled,
-      this.fullFeaturedInAppsEnabled,
-      this.androidSettings,
-      this.iosSettings,
-      this.privacySettings,
-      this.notificationCategories,
-      this.defaultMessageStorage,
-      this.webRTCUI,
-      this.inAppChatCustomization});
+  Configuration({
+    required this.applicationCode,
+    this.pluginVersion,
+    this.inAppChatEnabled,
+    this.fullFeaturedInAppsEnabled,
+    this.androidSettings,
+    this.iosSettings,
+    this.privacySettings,
+    this.notificationCategories,
+    this.defaultMessageStorage,
+    this.webRTCUI,
+    this.inAppChatCustomization,
+  });
 
   Map<String, dynamic> toJson() => {
         'applicationCode': applicationCode,
@@ -112,12 +113,13 @@ class IOSSettings {
   final WebViewSettings? webViewSettings;
   final bool? withoutRegisteringForRemoteNotifications;
 
-  IOSSettings(
-      {this.notificationTypes,
-      this.forceCleanup,
-      this.logging,
-      this.webViewSettings,
-      this.withoutRegisteringForRemoteNotifications});
+  IOSSettings({
+    this.notificationTypes,
+    this.forceCleanup,
+    this.logging,
+    this.webViewSettings,
+    this.withoutRegisteringForRemoteNotifications,
+  });
 
   Map<String, dynamic> toJson() => {
         'notificationTypes': notificationTypes,
@@ -135,8 +137,12 @@ class WebViewSettings {
   final String? titleColor;
   final String? tintColor;
 
-  WebViewSettings(
-      {this.title, this.barTintColor, this.tintColor, this.titleColor});
+  WebViewSettings({
+    this.title,
+    this.barTintColor,
+    this.tintColor,
+    this.titleColor,
+  });
 
   Map<String, dynamic> toJson() => {
         'title': title,
@@ -250,23 +256,24 @@ class InAppChatCustomization {
   final IOSInAppChatCustomization? ios;
 
   InAppChatCustomization({
-      this.toolbarTitle,
-      this.toolbarTitleColor,
-      this.toolbarTintColor,
-      this.toolbarBackgroundColor,
-      this.sendButtonTintColor,
-      this.chatBackgroundColor,
-      this.widgetTheme,
-      this.noConnectionAlertTextColor,
-      this.noConnectionAlertBackgroundColor,
-      this.chatInputPlaceholderColor,
-      this.chatInputCursorColor,
-      this.chatInputBackgroundColor,
-      this.sendButtonIcon,
-      this.attachmentButtonIcon,
-      this.chatInputSeparatorVisible,
-      this.android,
-      this.ios});
+    this.toolbarTitle,
+    this.toolbarTitleColor,
+    this.toolbarTintColor,
+    this.toolbarBackgroundColor,
+    this.sendButtonTintColor,
+    this.chatBackgroundColor,
+    this.widgetTheme,
+    this.noConnectionAlertTextColor,
+    this.noConnectionAlertBackgroundColor,
+    this.chatInputPlaceholderColor,
+    this.chatInputCursorColor,
+    this.chatInputBackgroundColor,
+    this.sendButtonIcon,
+    this.attachmentButtonIcon,
+    this.chatInputSeparatorVisible,
+    this.android,
+    this.ios,
+  });
 
   Map<String, dynamic> toJson() => {
         'toolbarTitle': toolbarTitle,
@@ -293,6 +300,7 @@ class AndroidInAppChatCustomization {
   //status bar
   final bool? chatStatusBarColorLight;
   final String? chatStatusBarBackgroundColor;
+
   //toolbar
   final String? chatNavigationIcon;
   final String? chatNavigationIconTint;
@@ -304,10 +312,12 @@ class AndroidInAppChatCustomization {
   final String? chatTitleTextAppearanceRes;
   final String? chatMenuItemsIconTint;
   final String? chatMenuItemSaveAttachmentIcon;
+
   //chat
   final String? chatProgressBarColor;
   final String? chatNetworkConnectionErrorTextAppearanceRes;
   final String? chatNetworkConnectionErrorText;
+
   //input
   final String? chatInputTextColor;
   final String? chatInputAttachmentIconTint;
@@ -349,7 +359,7 @@ class AndroidInAppChatCustomization {
     this.chatInputSendBackgroundDrawable,
     this.chatInputSeparatorLineColor,
     this.chatInputHintText,
-    this.chatInputTextAppearance
+    this.chatInputTextAppearance,
   });
 
   Map<String, dynamic> toJson() => {
@@ -369,13 +379,16 @@ class AndroidInAppChatCustomization {
         'chatMenuItemSaveAttachmentIcon': chatMenuItemSaveAttachmentIcon,
         //chat
         'chatProgressBarColor': chatProgressBarColor,
-        'chatNetworkConnectionErrorTextAppearanceRes': chatNetworkConnectionErrorTextAppearanceRes,
+        'chatNetworkConnectionErrorTextAppearanceRes':
+            chatNetworkConnectionErrorTextAppearanceRes,
         'chatNetworkConnectionErrorText': chatNetworkConnectionErrorText,
         //input
         'chatInputTextColor': chatInputTextColor,
         'chatInputAttachmentIconTint': chatInputAttachmentIconTint,
-        'chatInputAttachmentBackgroundColor': chatInputAttachmentBackgroundColor,
-        'chatInputAttachmentBackgroundDrawable': chatInputAttachmentBackgroundDrawable,
+        'chatInputAttachmentBackgroundColor':
+            chatInputAttachmentBackgroundColor,
+        'chatInputAttachmentBackgroundDrawable':
+            chatInputAttachmentBackgroundDrawable,
         'chatInputSendIconTint': chatInputSendIconTint,
         'chatInputSendBackgroundColor': chatInputSendBackgroundColor,
         'chatInputSendBackgroundDrawable': chatInputSendBackgroundDrawable,
@@ -403,22 +416,24 @@ class IOSInAppChatCustomization {
   final String? mainFont;
   final String? charCountFont;
 
-  IOSInAppChatCustomization({this.attachmentPreviewBarsColor,
-      this.attachmentPreviewItemsColor,
-      this.textContainerTopMargin,
-      this.textContainerLeftPadding,
-      this.textContainerCornerRadius,
-      this.textViewTopMargin,
-      this.placeholderHeight,
-      this.placeholderSideMargin,
-      this.buttonHeight,
-      this.buttonTouchableOverlap,
-      this.buttonRightMargin,
-      this.utilityButtonWidth,
-      this.utilityButtonBottomMargin,
-      this.initialHeight,
-      this.mainFont,
-      this.charCountFont});
+  IOSInAppChatCustomization({
+    this.attachmentPreviewBarsColor,
+    this.attachmentPreviewItemsColor,
+    this.textContainerTopMargin,
+    this.textContainerLeftPadding,
+    this.textContainerCornerRadius,
+    this.textViewTopMargin,
+    this.placeholderHeight,
+    this.placeholderSideMargin,
+    this.buttonHeight,
+    this.buttonTouchableOverlap,
+    this.buttonRightMargin,
+    this.utilityButtonWidth,
+    this.utilityButtonBottomMargin,
+    this.initialHeight,
+    this.mainFont,
+    this.charCountFont,
+  });
 
   Map<String, dynamic> toJson() => {
         'attachmentPreviewBarsColor': attachmentPreviewBarsColor,

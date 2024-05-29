@@ -3,9 +3,9 @@ import 'package:infobip_mobilemessaging/infobip_mobilemessaging.dart';
 import 'package:infobip_mobilemessaging/models/personalize_context.dart';
 
 class FormData {
-  String email;
-  String phone;
-  String externalUserId;
+  String? email;
+  String? phone;
+  String? externalUserId;
 
   FormData({this.email, this.phone, this.externalUserId});
 
@@ -16,9 +16,7 @@ class FormData {
 }
 
 class SignInHttpDemo extends StatefulWidget {
-  const SignInHttpDemo({
-    Key key,
-  }) : super(key: key);
+  const SignInHttpDemo({super.key});
 
   @override
   State createState() => _SignInHttpDemoState();
@@ -58,7 +56,7 @@ class _SignInHttpDemoState extends State<SignInHttpDemo> {
                       child: const Text('Personalize'),
                       onPressed: () async {
                         UserIdentity userIdentity =
-                            UserIdentity(phones: [formData.phone]);
+                            UserIdentity(phones: [formData.phone!]);
 
                         try {
                           await InfobipMobilemessaging.personalize(
@@ -68,7 +66,7 @@ class _SignInHttpDemoState extends State<SignInHttpDemo> {
                                   forceDepersonalize: true));
                           _showDialog('Personalized successfully', '');
                         } catch (e) {
-                          _showDialog('Unable to personalize', '${e.message}');
+                          _showDialog('Unable to personalize', '$e');
                         }
                       },
                     ),

@@ -1,3 +1,1 @@
-<manifest xmlns:android="http://schemas.android.com/apk/res/android"
-  package="org.infobip.plugins.mobilemessaging.flutter.infobip_mobilemessaging">
-</manifest>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android" />

@@ -1,5 +1,4 @@
 import 'package:collection/collection.dart';
-import 'package:flutter/foundation.dart';
 
 enum OS { Android, iOS }
 
@@ -53,7 +52,8 @@ class Installation {
       return null;
     }
     try {
-      return PushServiceType.values.firstWhere((e) => e.toString().split('.').last == pst);
+      return PushServiceType.values
+          .firstWhere((e) => e.toString().split('.').last == pst);
     } on Exception {
       return null;
     }
@@ -73,14 +73,15 @@ class Installation {
   Map<String, dynamic> toJson() => {
         'pushRegistrationId': pushRegistrationId,
         'pushServiceToken': pushServiceToken,
-        'pushServiceType': pushServiceType != null ? describeEnum(pushServiceType!) : null,
+        'pushServiceType':
+            pushServiceType != null ? pushServiceType!.name : null,
         'isPrimaryDevice': isPrimaryDevice,
         'isPushRegistrationEnabled': isPushRegistrationEnabled,
         'notificationsEnabled': notificationsEnabled,
         'geoEnabled': geoEnabled,
         'sdkVersion': sdkVersion,
         'appVersion': appVersion,
-        'os': os != null ? describeEnum(os!) : null,
+        'os': os != null ? os!.name : null,
         'osVersion': osVersion,
         'deviceManufacturer': deviceManufacturer,
         'deviceModel': deviceModel,
@@ -96,7 +97,8 @@ class Installation {
       : isPrimaryDevice = json['isPrimaryDevice'],
         pushRegistrationId = json['pushRegistrationId'],
         pushServiceToken = json['pushServiceToken'],
-        pushServiceType = Installation.resolvePushServiceType(json['pushServiceType']),
+        pushServiceType =
+            Installation.resolvePushServiceType(json['pushServiceType']),
         isPushRegistrationEnabled = json['isPushRegistrationEnabled'],
         notificationsEnabled = json['notificationsEnabled'],
         geoEnabled = json['geoEnabled'],
@@ -138,7 +140,8 @@ class Installation {
           deviceTimezoneOffset == other.deviceTimezoneOffset &&
           applicationUserId == other.applicationUserId &&
           deviceName == other.deviceName &&
-          const DeepCollectionEquality().equals(customAttributes, other.customAttributes);
+          const DeepCollectionEquality()
+              .equals(customAttributes, other.customAttributes);
 
   @override
   int get hashCode =>
@@ -169,5 +172,6 @@ class InstallationPrimary {
 
   InstallationPrimary(this.pushRegistrationId, this.primary);
 
-  Map<String, dynamic> toJson() => {'pushRegistrationId': pushRegistrationId, 'primary': primary};
+  Map<String, dynamic> toJson() =>
+      {'pushRegistrationId': pushRegistrationId, 'primary': primary};
 }

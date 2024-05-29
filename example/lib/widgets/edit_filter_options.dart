@@ -4,14 +4,13 @@ import 'package:intl/intl.dart';
 
 class EditFilterOptions extends StatefulWidget {
   const EditFilterOptions(
-      {Key key,
-      this.externalUserId,
+      {super.key,
+      required this.externalUserId,
       this.filterOptions,
-      this.onEditFilterOptions})
-      : super(key: key);
+      required this.onEditFilterOptions});
 
   final String externalUserId;
-  final FilterOptions filterOptions;
+  final FilterOptions? filterOptions;
 
   final void Function(String externalUserId, FilterOptions filterOptions)
       onEditFilterOptions;
@@ -24,8 +23,8 @@ class _EditFilterOptionsState extends State<EditFilterOptions> {
   final _externalUserIdController = TextEditingController();
   final _limitController = TextEditingController();
   final _topicController = TextEditingController();
-  DateTime _fromDateTime;
-  DateTime _toDateTime;
+  late DateTime? _fromDateTime;
+  late DateTime? _toDateTime;
 
   final formatter = DateFormat.yMd();
 
@@ -34,10 +33,10 @@ class _EditFilterOptionsState extends State<EditFilterOptions> {
     super.initState();
     _externalUserIdController.text = widget.externalUserId;
     if (widget.filterOptions != null) {
-      _limitController.text = widget.filterOptions.limit?.toString();
-      _topicController.text = widget.filterOptions.topic;
-      _fromDateTime = widget.filterOptions.fromDateTime;
-      _toDateTime = widget.filterOptions.toDateTime;
+      _limitController.text = (widget.filterOptions!.limit ?? '').toString();
+      _topicController.text = widget.filterOptions!.topic ?? '';
+      _fromDateTime = widget.filterOptions!.fromDateTime;
+      _toDateTime = widget.filterOptions!.toDateTime;
     }
   }
 
@@ -50,23 +49,28 @@ class _EditFilterOptionsState extends State<EditFilterOptions> {
       firstDate: firstDate,
       lastDate: now,
     );
-    setState(() {
-      _fromDateTime = pickedDate;
-    });
+    if (pickedDate != null) {
+      setState(() {
+        _fromDateTime = pickedDate;
+      });
+    }
   }
 
   void _toDatePicker() async {
     final now = DateTime.now();
     final firstDate = DateTime(now.year - 1, now.month, now.day);
-    final pickedDate = await showDatePicker(
+    var pickedDate = await showDatePicker(
       context: context,
       initialDate: now,
       firstDate: firstDate,
       lastDate: now,
     );
-    setState(() {
-      _toDateTime = pickedDate;
-    });
+    if (pickedDate != null) {
+      pickedDate = pickedDate.add(const Duration(days: 1, seconds: -1));
+      setState(() {
+        _toDateTime = pickedDate;
+      });
+    }
   }
 
   void _submitFilterOptions() {
@@ -158,7 +162,7 @@ class _EditFilterOptionsState extends State<EditFilterOptions> {
                 const Text('From'),
                 Text(_fromDateTime == null
                     ? 'no datetime'
-                    : formatter.format(_fromDateTime)),
+                    : formatter.format(_fromDateTime!)),
                 IconButton(
                   onPressed: _fromDatePicker,
                   icon: const Icon(
@@ -168,7 +172,7 @@ class _EditFilterOptionsState extends State<EditFilterOptions> {
                 const Text('To'),
                 Text(_toDateTime == null
                     ? 'no datetime'
-                    : formatter.format(_toDateTime)),
+                    : formatter.format(_toDateTime!)),
                 IconButton(
                   onPressed: _toDatePicker,
                   icon: const Icon(

@@ -7,9 +7,7 @@ import '../widgets/edit_filter_options.dart';
 import '../widgets/personalize.dart';
 
 class CloudInboxScreen extends StatefulWidget {
-  const CloudInboxScreen({
-    Key key,
-  }) : super(key: key);
+  const CloudInboxScreen({super.key});
 
   @override
   State<StatefulWidget> createState() => _CloudInboxScreenState();
@@ -21,7 +19,7 @@ class _CloudInboxScreenState extends State<CloudInboxScreen> {
 
   Inbox _inbox = Inbox();
   FilterOptions _filterOptions = FilterOptions();
-  String _externalUserId;
+  String _externalUserId = '';
   List<bool> values = List.generate(1, (index) => false);
 
   @override
@@ -34,7 +32,7 @@ class _CloudInboxScreenState extends State<CloudInboxScreen> {
     var user = await InfobipMobilemessaging.getUser();
     if (user.externalUserId != null) {
       setState(() {
-        _externalUserId = user.externalUserId;
+        _externalUserId = user.externalUserId!;
       });
       await _handleRefresh();
     }
@@ -57,7 +55,6 @@ class _CloudInboxScreenState extends State<CloudInboxScreen> {
 
   void _editFilterOptions(String externalUserId, FilterOptions filterOptions) {
     if (externalUserId.isEmpty ||
-        externalUserId == null ||
         (_externalUserId == externalUserId &&
             filterOptions == _filterOptions)) {
       return;
@@ -91,7 +88,7 @@ class _CloudInboxScreenState extends State<CloudInboxScreen> {
 
     if (externalUserId.isEmpty) {
       setState(() {
-        _inbox = null;
+        _inbox = Inbox();
         _isInboxLoaded = false;
       });
     } else {
@@ -100,7 +97,7 @@ class _CloudInboxScreenState extends State<CloudInboxScreen> {
   }
 
   Future<void> _handleRefresh() async {
-    if (_externalUserId == null || _externalUserId.isEmpty) {
+    if (_externalUserId.isEmpty) {
       const snackBar =
           SnackBar(content: Text('ExternalUserId should be provided'));
       ScaffoldMessenger.of(context).showSnackBar(snackBar);
@@ -112,12 +109,12 @@ class _CloudInboxScreenState extends State<CloudInboxScreen> {
         _externalUserId,
         _filterOptions,
       );
-      if (inbox != null) {
+      if (inbox.messages != null && inbox.messages!.isNotEmpty) {
         setState(() {
           _inbox = inbox;
           values = List.generate(
-            inbox.messages.length,
-            (index) => inbox.messages[index].seen,
+            inbox.messages!.length,
+            (index) => inbox.messages![index].seen,
           );
           _isInboxLoaded = true;
         });
@@ -180,7 +177,7 @@ class _CloudInboxScreenState extends State<CloudInboxScreen> {
                       ],
                     ),
                     Expanded(
-                      child: !_isInboxLoaded || _inbox.messages.isEmpty
+                      child: !_isInboxLoaded || _inbox.messages!.isEmpty
                           ? ListView.builder(
                               itemCount: 1,
                               itemBuilder: (BuildContext context, int index) =>
@@ -190,11 +187,11 @@ class _CloudInboxScreenState extends State<CloudInboxScreen> {
                               ),
                             )
                           : ListView.builder(
-                              itemCount: _inbox.messages.length,
+                              itemCount: _inbox.messages?.length,
                               itemBuilder: (BuildContext context, int index) =>
                                   ListTile(
                                 title: Text(
-                                  _inbox.messages[index].body,
+                                  _inbox.messages![index].body!,
                                   style: values[index]
                                       ? const TextStyle(
                                           fontWeight: FontWeight.normal)
@@ -202,7 +199,7 @@ class _CloudInboxScreenState extends State<CloudInboxScreen> {
                                           fontWeight: FontWeight.bold),
                                 ),
                                 subtitle: Text(
-                                  'topic: ${_inbox.messages[index].topic}, ID: ${_inbox.messages[index].messageId}',
+                                  'topic: ${_inbox.messages![index].topic}, ID: ${_inbox.messages![index].messageId}',
                                 ),
                                 onTap: () {
                                   if (!values[index]) {
@@ -211,7 +208,7 @@ class _CloudInboxScreenState extends State<CloudInboxScreen> {
                                       builder: (ctx) => AlertDialog(
                                         title: const Text('Marking as seen'),
                                         content: Text(
-                                            'Do you want to mark message with id ${_inbox.messages[index].messageId} as seen?'),
+                                            'Do you want to mark message with id ${_inbox.messages![index].messageId} as seen?'),
                                         actions: [
                                           TextButton(
                                             onPressed: () {
@@ -225,8 +222,8 @@ class _CloudInboxScreenState extends State<CloudInboxScreen> {
                                                 InfobipMobilemessaging
                                                     .setInboxMessagesSeen(
                                                         _externalUserId, [
-                                                  _inbox
-                                                      .messages[index].messageId
+                                                  _inbox.messages![index]
+                                                      .messageId
                                                 ]);
                                                 setState(() {
                                                   values[index] = true;

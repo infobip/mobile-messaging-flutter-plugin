@@ -3,7 +3,7 @@ import 'package:infobip_mobilemessaging/infobip_mobilemessaging.dart';
 import 'package:infobip_mobilemessaging/models/personalize_context.dart';
 
 class Personalize extends StatefulWidget {
-  const Personalize({Key key, this.onPersonalize}) : super(key: key);
+  const Personalize({super.key, required this.onPersonalize});
 
   final void Function(String externalUserId) onPersonalize;
 
@@ -32,7 +32,7 @@ class _PersonalizeState extends State<Personalize> {
     var user = await InfobipMobilemessaging.getUser();
     if (user.externalUserId != null) {
       setState(() {
-        _externalUserIdController.text = user.externalUserId;
+        _externalUserIdController.text = user.externalUserId!;
         _isPersonalized = true;
       });
     }

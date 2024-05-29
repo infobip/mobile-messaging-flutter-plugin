@@ -1,7 +1,6 @@
 import 'message.dart';
 
 abstract class MessageStorage {
-
   Future<Message?> find(String messageId);
 
   Future<List<Message>?> findAll();
@@ -9,5 +8,4 @@ abstract class MessageStorage {
   delete(String messageId);
 
   deleteAll();
-
 }

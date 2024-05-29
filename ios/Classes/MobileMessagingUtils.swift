@@ -6,6 +6,10 @@ extension MM_MTMessage {
         let geoAreasDicts = (originalPayload["internalData"] as? [String: Any])?["geo"] as? [[String: Any]]
         return geoAreasDicts != nil
     }
+    
+    override func dictionary() -> [String: Any] {
+        return self.dictionaryRepresentation
+    }
 }
 
 extension MMBaseMessage {

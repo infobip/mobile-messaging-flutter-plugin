@@ -1,17 +1,8 @@
-group 'org.infobip.plugins.mobilemessaging.flutter.infobip_mobilemessaging'
-version '1.0'
-
-buildscript {
-    repositories {
-        google()
-        mavenLocal()
-        mavenCentral()
-    }
-
-    dependencies {
-        classpath 'com.android.tools.build:gradle:7.2.2'
-    }
+plugins {
+    id "com.android.library"
 }
+
+version '1.0'
 
 rootProject.allprojects {
     repositories {
@@ -21,9 +12,8 @@ rootProject.allprojects {
     }
 }
 
-apply plugin: 'com.android.library'
-
 android {
+    namespace 'org.infobip.plugins.mobilemessaging.flutter.infobip_mobilemessaging'
     compileSdkVersion 33
 
     defaultConfig {

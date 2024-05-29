@@ -591,7 +591,7 @@ public class SwiftInfobipMobilemessagingPlugin: NSObject, FlutterPlugin {
         }
         
         storage.findMessages(withIds: [(messageId as MessageId)], completion: { messages in
-            let res = [messages?[0].dictionary() ?? [:]]
+            let res = messages?[0].dictionary()
             return self.dictionaryResult(result: result, dict: res)
         })
     }
