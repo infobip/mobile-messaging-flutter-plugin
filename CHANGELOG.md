@@ -1,3 +1,9 @@
+# 6.0.0
+## Changed
+- Updated dependencies, check [Migration guide](https://github.com/infobip/mobile-messaging-flutter-plugin/wiki/Migration-Guides)
+
+## Fixed
+- Default MessageStorage bug
 # 5.1.0
 ## Added
 - new chatAvailabilityUpdated event to indicate when chat is ready to be presented
