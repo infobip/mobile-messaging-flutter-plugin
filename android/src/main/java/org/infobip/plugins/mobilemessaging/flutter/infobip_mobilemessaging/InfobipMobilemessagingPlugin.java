@@ -1,5 +1,7 @@
 package org.infobip.plugins.mobilemessaging.flutter.infobip_mobilemessaging;
 
+import static androidx.core.content.ContextCompat.RECEIVER_NOT_EXPORTED;
+
 import static org.infobip.plugins.mobilemessaging.flutter.common.LibraryEvent.broadcastEventMap;
 import static org.infobip.plugins.mobilemessaging.flutter.common.LibraryEvent.messageBroadcastEventMap;
 import static org.infobip.plugins.mobilemessaging.flutter.infobip_mobilemessaging.WebRTCUI.defaultWebrtcError;
@@ -17,6 +19,7 @@ import android.util.Log;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.core.content.ContextCompat;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
 import com.google.gson.Gson;
@@ -443,13 +446,22 @@ public class InfobipMobilemessagingPlugin implements FlutterPlugin, MethodCallHa
             intentFilter.addAction(action);
         }
 
-        LocalBroadcastManager.getInstance(activity).registerReceiver(commonLibraryBroadcastReceiver, intentFilter);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            ContextCompat.registerReceiver(activity.getApplicationContext(), commonLibraryBroadcastReceiver, intentFilter, ContextCompat.RECEIVER_NOT_EXPORTED);
+        } else {
+            LocalBroadcastManager.getInstance(activity).registerReceiver(commonLibraryBroadcastReceiver, intentFilter);
+        }
 
         IntentFilter messageIntentFilter = new IntentFilter();
         for (String action : messageBroadcastEventMap.keySet()) {
             messageIntentFilter.addAction(action);
         }
-        LocalBroadcastManager.getInstance(activity).registerReceiver(messageBroadcastReceiver, messageIntentFilter);
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            ContextCompat.registerReceiver(activity.getApplicationContext(), messageBroadcastReceiver, messageIntentFilter, ContextCompat.RECEIVER_NOT_EXPORTED);
+        } else {
+            LocalBroadcastManager.getInstance(activity).registerReceiver(messageBroadcastReceiver, messageIntentFilter);
+        }
     }
 
     /**

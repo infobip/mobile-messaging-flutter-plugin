@@ -15,7 +15,7 @@ For iOS project:
 
 For Android project:
 - Android Studio
-- Supported API Levels: 21 (Android 5.0 - Lollipop) - 33 (Android 13.0)
+- Supported API Levels: 21 (Android 5.0 - Lollipop) - 34 (Android 14)
 
 ## Quick start guide
 
@@ -27,7 +27,7 @@ This guide is designed to get you up and running with Mobile Messaging SDK plugi
 
   ```yaml
   dependencies:
-    infobip_mobilemessaging: '^5.0.1'
+    infobip_mobilemessaging: '^6.1.0'
 
   ```
 
