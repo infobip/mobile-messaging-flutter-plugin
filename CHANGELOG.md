@@ -1,3 +1,9 @@
+# 6.1.0
+## Added
+- Support for Android 34
+
+## Fixed
+- Added workaround for problems with appCode hash check when migrating from version with SHA1 to SHA256
 # 6.0.0
 ## Changed
 - Updated dependencies, check [Migration guide](https://github.com/infobip/mobile-messaging-flutter-plugin/wiki/Migration-Guides)
