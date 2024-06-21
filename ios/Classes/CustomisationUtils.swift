@@ -56,7 +56,7 @@ class CustomisationUtils {
         setNotNil(&settings.navBarItemsTintColor, customisation.toolbarTintColor?.toColor())
         setNotNil(&settings.navBarColor, customisation.toolbarBackgroundColor?.toColor())
         setNotNil(&settings.navBarTitleColor, customisation.toolbarTitleColor?.toColor())
-        setNotNil(&settings.backgroungColor, customisation.chatBackgroundColor?.toColor())
+        setNotNil(&settings.backgroundColor, customisation.chatBackgroundColor?.toColor())
         setNotNil(&settings.widgetTheme, customisation.widgetTheme)
         setNotNil(&settings.errorLabelTextColor, customisation.noConnectionAlertTextColor?.toColor())
         setNotNil(&settings.errorLabelBackgroundColor, customisation.noConnectionAlertBackgroundColor?.toColor())
