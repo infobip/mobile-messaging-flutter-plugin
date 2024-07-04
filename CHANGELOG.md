@@ -1,3 +1,6 @@
+# 6.1.1
+## Fixed
+- Bug with cleanup method on iOS.
 # 6.1.0
 ## Added
 - Support for Android 34
