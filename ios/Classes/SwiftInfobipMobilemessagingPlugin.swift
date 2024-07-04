@@ -97,7 +97,7 @@ public class SwiftInfobipMobilemessagingPlugin: NSObject, FlutterPlugin {
         } else if call.method == "showChat" {
             showChat(call: call, result: result)
         } else if call.method == "cleanup" {
-            cleanup()
+            cleanup(result: result)
         } else if call.method == "setupiOSChatSettings" {
             setupiOSChatSettings(call: call, result: result)
         } else if call.method == "setLanguage" {
@@ -423,8 +423,11 @@ public class SwiftInfobipMobilemessagingPlugin: NSObject, FlutterPlugin {
         })
     }
 
-    func cleanup() {
-        MobileMessaging.cleanUpAndStop(false, completion: {})
+    func cleanup(result: @escaping FlutterResult) {
+        Configuration.saveConfigToDefaults(rawConfig: [:])
+        MobileMessaging.cleanUpAndStop(false, completion: {
+                return result("success")
+            })
     }
     
     func showChat(call: FlutterMethodCall, result: @escaping FlutterResult) {
