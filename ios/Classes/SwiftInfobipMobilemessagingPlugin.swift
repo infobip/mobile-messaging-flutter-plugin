@@ -69,6 +69,9 @@ public class SwiftInfobipMobilemessagingPlugin: NSObject, FlutterPlugin {
         instance.eventsManager = MobileMessagingEventsManager()
         eventChannel.setStreamHandler(instance.eventsManager)
         instance.eventsManager?.startObserving()
+        
+        
+        registrar.register(FLNativeViewFactory(messenger: registrar.messenger()), withId: "infobip_mobilemessaging/flutter_chat_view")
     }
     
     public func handle(_ call: FlutterMethodCall, result: @escaping FlutterResult) {
@@ -174,7 +177,7 @@ public class SwiftInfobipMobilemessagingPlugin: NSObject, FlutterPlugin {
         } else if cachedConfigDict == nil || !isStarted {
             start(configuration: configuration, result: successCallback)
         } else {
-            return result("success")
+            return result(Constants.resultSuccess)
         }
     }
     
@@ -230,7 +233,7 @@ public class SwiftInfobipMobilemessagingPlugin: NSObject, FlutterPlugin {
 #endif
         
         mobileMessaging?.start({
-            return result("success")
+            return result(Constants.resultSuccess)
         })
         
         if let customisation = configuration.customisation {
@@ -398,7 +401,7 @@ public class SwiftInfobipMobilemessagingPlugin: NSObject, FlutterPlugin {
                                   message: error.mm_message,
                                   details: error.description ))
             } else {
-                return result("success")
+                return result(Constants.resultSuccess)
             }
         })
     }
@@ -426,7 +429,7 @@ public class SwiftInfobipMobilemessagingPlugin: NSObject, FlutterPlugin {
     func cleanup(result: @escaping FlutterResult) {
         Configuration.saveConfigToDefaults(rawConfig: [:])
         MobileMessaging.cleanUpAndStop(false, completion: {
-                return result("success")
+                return result(Constants.resultSuccess)
             })
     }
     
@@ -449,7 +452,7 @@ public class SwiftInfobipMobilemessagingPlugin: NSObject, FlutterPlugin {
         } else {
             MMLogDebug("[InAppChat] could not define root vc to present in-app-chat")
         }
-        return result("success")
+        return result(Constants.resultSuccess)
     }
     
     func setupiOSChatSettings(call: FlutterMethodCall, result: @escaping FlutterResult) {
@@ -473,7 +476,7 @@ public class SwiftInfobipMobilemessagingPlugin: NSObject, FlutterPlugin {
         }
         guard let chatVC = SwiftInfobipMobilemessagingPlugin.chatVC else {
             MobileMessaging.inAppChat?.setLanguage(localeString)
-            return result("success")
+            return result(Constants.resultSuccess)
         }
         
         let localeS = String(localeString)
@@ -489,7 +492,7 @@ public class SwiftInfobipMobilemessagingPlugin: NSObject, FlutterPlugin {
                                   message: "Error setting locale in chat",
                                   details: "\(error.localizedDescription)" ))
             } else {
-                return result("success")
+                return result(Constants.resultSuccess)
             }
         }
     }
@@ -502,7 +505,7 @@ public class SwiftInfobipMobilemessagingPlugin: NSObject, FlutterPlugin {
                               details: "Error parsing JWT string" ))
         }
         MobileMessaging.inAppChat?.jwt = jwt
-        return result("success")
+        return result(Constants.resultSuccess)
     }
     
     func sendContextualData(call: FlutterMethodCall, result: @escaping FlutterResult) {
@@ -521,7 +524,7 @@ public class SwiftInfobipMobilemessagingPlugin: NSObject, FlutterPlugin {
                                          message: error.mm_message,
                                          details: error.description ))
                 } else {
-                    return result("success")
+                    return result(Constants.resultSuccess)
                 }
             }
         } else {
@@ -559,7 +562,7 @@ public class SwiftInfobipMobilemessagingPlugin: NSObject, FlutterPlugin {
                                   message: error.mm_message,
                                   details: error.description ))
             } else {
-                return result("success")
+                return result(Constants.resultSuccess)
             }
         }
     }
@@ -630,13 +633,13 @@ public class SwiftInfobipMobilemessagingPlugin: NSObject, FlutterPlugin {
         }
         
         storage.remove(withIds: [(messageId as MessageId)]) { _ in
-            return result("success")
+            return result(Constants.resultSuccess)
         }
     }
     
     func defaultMessageStorage_deleteAll(result: @escaping FlutterResult) {
         MobileMessaging.defaultMessageStorage?.removeAllMessages() { _ in
-            return result("success")
+            return result(Constants.resultSuccess)
         }
     }
     
@@ -704,7 +707,7 @@ public class SwiftInfobipMobilemessagingPlugin: NSObject, FlutterPlugin {
                                   message: error.mm_message,
                                   details: error.description ))
             } else {
-                return result("success")
+                return result(Constants.resultSuccess)
             }
         })
     }
@@ -718,7 +721,7 @@ public class SwiftInfobipMobilemessagingPlugin: NSObject, FlutterPlugin {
         }
         
         MobileMessaging.setSeen(messageIds: messageIds, completion: {
-            return result("success")
+            return result(Constants.resultSuccess)
         })
         
     }

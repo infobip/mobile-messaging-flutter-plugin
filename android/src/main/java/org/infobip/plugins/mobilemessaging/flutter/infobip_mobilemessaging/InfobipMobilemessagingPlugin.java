@@ -15,6 +15,7 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Build;
 import android.os.Bundle;
+import android.src.main.java.org.infobip.plugins.mobilemessaging.flutter.common.StreamHandler;
 import android.util.Log;
 
 import androidx.annotation.NonNull;
@@ -62,6 +63,7 @@ import org.infobip.plugins.mobilemessaging.flutter.common.InstallationJson;
 import org.infobip.plugins.mobilemessaging.flutter.common.PermissionsRequestManager;
 import org.infobip.plugins.mobilemessaging.flutter.common.PersonalizationCtx;
 import org.infobip.plugins.mobilemessaging.flutter.common.UserJson;
+import org.infobip.plugins.mobilemessaging.flutter.chat.ChatViewFactory;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -101,13 +103,14 @@ public class InfobipMobilemessagingPlugin implements FlutterPlugin, MethodCallHa
     private MethodChannel methodChannel;
     private EventChannel broadcastChannel;
 
-    private StreamHandler broadcastHandler = new StreamHandler();
+    private StreamHandler broadcastHandler = new StreamHandler(TAG, true);
     private Activity activity = null;
     private BinaryMessenger binaryMessenger = null;
     private PermissionsRequestManager permissionsRequestManager;
     @Nullable
     private ActivityPluginBinding pluginBinding;
     private WebRTCUI webRTCUI = null;
+    private ChatViewFactory chatViewFactory = null;
 
     public InfobipMobilemessagingPlugin() {
         permissionsRequestManager = new PermissionsRequestManager(this);
@@ -121,6 +124,8 @@ public class InfobipMobilemessagingPlugin implements FlutterPlugin, MethodCallHa
         binaryMessenger = flutterPluginBinding.getBinaryMessenger();
         broadcastChannel = new EventChannel(binaryMessenger, "infobip_mobilemessaging/broadcast");
         webRTCUI = new WebRTCUI(flutterPluginBinding.getApplicationContext());
+        chatViewFactory = new ChatViewFactory(flutterPluginBinding.getBinaryMessenger(), activity);
+        flutterPluginBinding.getPlatformViewRegistry().registerViewFactory("infobip_mobilemessaging/flutter_chat_view", chatViewFactory);
     }
 
     @Override
@@ -294,11 +299,12 @@ public class InfobipMobilemessagingPlugin implements FlutterPlugin, MethodCallHa
         });
     }
 
-    // ActivityAware start
+    //region ActivityAware
     @Override
     public void onAttachedToActivity(@NonNull ActivityPluginBinding binding) {
         Log.d(TAG, "onAttachedToActivity");
         activity = binding.getActivity();
+        notifyActivityObservers(activity);
         methodChannel.setMethodCallHandler(this);
         broadcastChannel.setStreamHandler(broadcastHandler);
         registerReceiver();
@@ -310,6 +316,7 @@ public class InfobipMobilemessagingPlugin implements FlutterPlugin, MethodCallHa
     public void onDetachedFromActivityForConfigChanges() {
         Log.d(TAG, "onDetachedFromActivityForConfigChanges");
         activity = null;
+        notifyActivityObservers(null);
         if (pluginBinding != null) {
             pluginBinding.removeRequestPermissionsResultListener(this);
         }
@@ -319,6 +326,7 @@ public class InfobipMobilemessagingPlugin implements FlutterPlugin, MethodCallHa
     public void onReattachedToActivityForConfigChanges(@NonNull ActivityPluginBinding binding) {
         Log.d(TAG, "onReattachedToActivityForConfigChanges");
         activity = binding.getActivity();
+        notifyActivityObservers(activity);
         binding.addRequestPermissionsResultListener(this);
         pluginBinding = binding;
     }
@@ -327,14 +335,22 @@ public class InfobipMobilemessagingPlugin implements FlutterPlugin, MethodCallHa
     public void onDetachedFromActivity() {
         Log.d(TAG, "onDetachedFromActivity");
         activity = null;
+        notifyActivityObservers(null);
         if (pluginBinding != null) {
             pluginBinding.removeRequestPermissionsResultListener(this);
         }
     }
 
-    // ActivityAware end
+    private void notifyActivityObservers(Activity activity) {
+        String name = (activity != null) ? String.valueOf(activity.hashCode()) : "null";
+        Log.d(TAG, "notifyActivityObservers(Activity=" + name + ")");
+        if (chatViewFactory != null) {
+            chatViewFactory.setActivity(activity);
+        }
+    }
+    //endregion
 
-    // ServiceAware start
+    //region ServiceAware
 
     @Override
     public void onAttachedToService(@NonNull ServicePluginBinding binding) {
@@ -346,9 +362,9 @@ public class InfobipMobilemessagingPlugin implements FlutterPlugin, MethodCallHa
         Log.d(TAG, "onDetachedFromService");
     }
 
-    // ServiceAware end
+    //endregion
 
-
+    //region Broadcast events
     private final BroadcastReceiver commonLibraryBroadcastReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
@@ -463,6 +479,7 @@ public class InfobipMobilemessagingPlugin implements FlutterPlugin, MethodCallHa
             LocalBroadcastManager.getInstance(activity).registerReceiver(messageBroadcastReceiver, messageIntentFilter);
         }
     }
+    //endregion
 
     /**
      * Creates json from a message object
@@ -514,86 +531,6 @@ public class InfobipMobilemessagingPlugin implements FlutterPlugin, MethodCallHa
             array.put(json);
         }
         return array;
-    }
-
-    public static class StreamHandler implements EventChannel.StreamHandler {
-
-        private EventChannel.EventSink eventSink;
-        private final List<JSONObject> cached = new ArrayList<>();
-
-        @Override
-        public void onListen(Object arguments, EventChannel.EventSink events) {
-            Log.d(TAG, "StreamHandler.onListen: " + events);
-            eventSink = events;
-            for (JSONObject item : cached) {
-                sendEvent(item);
-            }
-        }
-
-        @Override
-        public void onCancel(Object arguments) {
-            eventSink = null;
-        }
-
-        private boolean sendEvent(JSONObject eventObj) {
-            Log.d(TAG, "sendEvent from cached: " + eventObj);
-            eventSink.success(eventObj.toString());
-            return true;
-        }
-
-        private boolean sendEvent(String event, Object payload) {
-            Log.d(TAG, "sendEvent: " + event);
-            if (event == null || payload == null) {
-                return false;
-            }
-
-            JSONObject eventData = new JSONObject();
-            try {
-                eventData.put("eventName", event);
-                eventData.put("payload", payload);
-            } catch (JSONException e) {
-                Log.e(TAG, e.getMessage(), e);
-                return false;
-            }
-
-            if (eventSink != null) {
-                Log.d(TAG, "Sending event to Flutter: " + event);
-                eventSink.success(eventData.toString());
-            } else {
-                Log.d(TAG, "Adding event to cached: " + event);
-                cached.add(eventData);
-                return false;
-            }
-
-            return true;
-        }
-
-        private boolean sendEvent(String event) {
-            Log.d(TAG, "sendEvent: (without payload) " + event);
-            if (event == null) {
-                return false;
-            }
-
-            JSONObject eventData = new JSONObject();
-            try {
-                eventData.put("eventName", event);
-            } catch (JSONException e) {
-                Log.e(TAG, e.getMessage(), e);
-                return false;
-            }
-
-            if (eventSink != null) {
-                Log.d(TAG, "Sending event to Flutter: " + event);
-                eventSink.success(eventData.toString());
-            } else {
-                Log.d(TAG, "Adding event to cached: " + event);
-                cached.add(eventData);
-                return false;
-            }
-
-            return true;
-        }
-
     }
 
     private MobileMessaging mobileMessaging() {
@@ -716,7 +653,7 @@ public class InfobipMobilemessagingPlugin implements FlutterPlugin, MethodCallHa
         mobileMessaging().depersonalizeInstallation(pushRegistrationId, installationsResultListener(result));
     }
 
-    public void cleanup(){
+    public void cleanup() {
         mobileMessaging().cleanup();
     }
 

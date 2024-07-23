@@ -10,16 +10,16 @@ class ScreenTwoDemo extends StatefulWidget {
 class _ScreenTwoDemoState extends State<ScreenTwoDemo> {
   @override
   Widget build(context) => Scaffold(
-        appBar: AppBar(
-          title: const Text("Screen Two"),
-        ),
-        body: Center(
-          child: ElevatedButton(
-            onPressed: () {
-              Navigator.pop(context);
-            },
-            child: const Text('Go back!'),
-          ),
-        ),
-      );
+    appBar: AppBar(
+      title: const Text("Screen Two"),
+    ),
+    body: Center(
+      child: ElevatedButton(
+        onPressed: () {
+          Navigator.pop(context);
+        },
+        child: const Text('Go back!'),
+      ),
+    ),
+  );
 }

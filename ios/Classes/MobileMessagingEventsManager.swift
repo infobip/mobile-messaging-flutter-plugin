@@ -3,7 +3,7 @@ import MobileMessaging
 
 class MobileMessagingEventsManager: NSObject, FlutterStreamHandler {
     
-    private var cachedMobileMessagingNotifications = [Notification]()
+    fileprivate var cachedMobileMessagingNotifications = [Notification]()
     
     func onListen(withArguments arguments: Any?, eventSink events: @escaping FlutterEventSink) -> FlutterError? {
         _eventSink = events;
@@ -19,22 +19,23 @@ class MobileMessagingEventsManager: NSObject, FlutterStreamHandler {
         return nil;
     }
     
-    private var _eventSink: FlutterEventSink?
-    private var hasEventListeners = false
-
-    private let supportedNotifications: [String: String] = [
-        EventName.messageReceived: MMNotificationMessageReceived,
-        EventName.tokenReceived:  MMNotificationDeviceTokenReceived,
-        EventName.registrationUpdated:  MMNotificationRegistrationUpdated,
-        EventName.geofenceEntered: MMNotificationGeographicalRegionDidEnter,
-        EventName.notificationTapped: MMNotificationMessageTapped,
-        EventName.actionTapped: MMNotificationActionTapped,
-        EventName.depersonalized: MMNotificationDepersonalized,
-        EventName.personalized: MMNotificationPersonalized,
-        EventName.installationUpdated: MMNotificationInstallationSynced,
-        EventName.userUpdated: MMNotificationUserSynced,
-        EventName.inAppChat_availabilityUpdated: MMNotificationInAppChatAvailabilityUpdated
-    ]
+    fileprivate var _eventSink: FlutterEventSink?
+    fileprivate var hasEventListeners = false
+    
+    var supportedNotifications: [String: String] = [
+            EventName.messageReceived: MMNotificationMessageReceived,
+            EventName.tokenReceived:  MMNotificationDeviceTokenReceived,
+            EventName.registrationUpdated:  MMNotificationRegistrationUpdated,
+            EventName.geofenceEntered: MMNotificationGeographicalRegionDidEnter,
+            EventName.notificationTapped: MMNotificationMessageTapped,
+            EventName.actionTapped: MMNotificationActionTapped,
+            EventName.depersonalized: MMNotificationDepersonalized,
+            EventName.personalized: MMNotificationPersonalized,
+            EventName.installationUpdated: MMNotificationInstallationSynced,
+            EventName.userUpdated: MMNotificationUserSynced,
+            EventName.inAppChat_availabilityUpdated: MMNotificationInAppChatAvailabilityUpdated
+        ]
+    
 
     func startObserving() {
         hasEventListeners = true
@@ -135,4 +136,58 @@ class MobileMessagingEventsManager: NSObject, FlutterStreamHandler {
         }
     }
     
+}
+
+class ChatMobileMessagingEventsManager: MobileMessagingEventsManager {
+    
+    override var supportedNotifications: [String: String] {
+        get {
+            return [
+                EventName.inAppChat_availabilityUpdated: MMNotificationInAppChatAvailabilityUpdated,
+                EventName.inAppChat_chatViewChanged: MMNotificationInAppChatViewChanged
+            ]
+        }
+        set {
+            super.supportedNotifications = newValue
+        }
+    }
+    
+    
+    override func handleMMNotification(notification: Notification) {
+        guard hasEventListeners else {
+            return
+        }
+
+        guard _eventSink != nil else {
+            cachedMobileMessagingNotifications.append(notification)
+            return
+        }
+        
+        var eventName: String?
+        var notificationResult: Any?
+
+        switch notification.name.rawValue {
+        case MMNotificationInAppChatViewChanged:
+            eventName = EventName.inAppChat_chatViewChanged
+            notificationResult = notification.userInfo?[MMNotificationKeyInAppChatViewChanged] as? String
+        case MMNotificationInAppChatAvailabilityUpdated:
+            guard let status = notification.userInfo?[MMNotificationKeyInAppChatEnabled] as? Bool else {
+                return
+            }
+            
+            if status {
+                eventName = "chatView.chatReconnected"
+            } else {
+                eventName = "chatView.chatDisconnected"
+            }
+        default:
+            break
+        }
+        
+        do {
+            _eventSink?(String(data: try JSONSerialization.data(withJSONObject: ["eventName": eventName, "payload": notificationResult]), encoding: String.Encoding.utf8))
+        } catch {
+            //
+        }
+    }
 }

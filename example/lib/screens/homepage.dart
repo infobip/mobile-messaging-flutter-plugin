@@ -352,14 +352,14 @@ class _HomePageState extends State<HomePage> {
               },
             ),
             ListTile(
-              title: const Text('Show Chat'),
+              title: const Text('Show chat screen'),
               onTap: () {
                 // InfobipMobilemessaging.setJwt('your JWT'); // Comment out to automatically log-in using authentication
                 InfobipMobilemessaging.showChat();
               },
             ),
             ListTile(
-              title: const Text('Show Chat and Send Contextual Data'),
+              title: const Text('Show chat screen and Send Contextual Data'),
               onTap: () {
                 Future.delayed(const Duration(milliseconds: 3000), () {
                   // Metadata must be sent after chat is presented, so we delay it

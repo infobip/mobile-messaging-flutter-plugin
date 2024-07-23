@@ -143,7 +143,7 @@ class InfobipMobilemessaging {
     await _channel.invokeMethod('setInstallationAsPrimary', installationPrimary.toJson());
   }
 
-  static Future<void> showChat({bool shouldBePresentedModallyIOS = false}) async {
+  static Future<void> showChat({bool shouldBePresentedModallyIOS = true}) async {
     await _channel.invokeMethod('showChat', shouldBePresentedModallyIOS);
   }
 

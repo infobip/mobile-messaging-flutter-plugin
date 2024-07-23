@@ -4,7 +4,8 @@ import '../screens/cloud_inbox.dart';
 import '../screens/screen_one.dart';
 import '../screens/screen_two.dart';
 import '../screens/sign_in_http.dart';
-
+import '../screens/screen_chat_view.dart';
+import '../main.dart';
 class Page {
   String name;
   String route;
@@ -33,5 +34,10 @@ final pages = [
     name: 'screen_two',
     route: '/screen_two',
     builder: (context) => const ScreenTwoDemo(),
+  ),
+  Page(
+    name: 'Show chat view only',
+    route: '/chat_view',
+    builder: (context) => const ChatViewDemo(),
   ),
 ];

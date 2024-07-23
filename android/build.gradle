@@ -30,7 +30,7 @@ android {
 def withWebRTCUI = getRootProjectProperty('withWebRTCUI', false)
 
 dependencies {
-    def mmVersion = '12.7.1'
+    def mmVersion = '12.8.0'
     //flutter and mm dependencies clash
     implementation ("org.jetbrains.kotlin:kotlin-stdlib-jdk8") {
         version {
@@ -53,6 +53,7 @@ dependencies {
     implementation 'androidx.databinding:viewbinding:8.0.2'
     implementation 'com.google.code.gson:gson:2.9.0'
     implementation 'com.google.android.material:material:1.9.0'
+
 }
 
 def getRootProjectProperty(property, fallback) {
