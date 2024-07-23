@@ -1,3 +1,6 @@
+# 6.2.0
+## Added
+- `ChatView` widget provides new flexible an way to show In-app chat. Read more in documentation.
 # 6.1.1
 ## Fixed
 - Bug with cleanup method on iOS.
