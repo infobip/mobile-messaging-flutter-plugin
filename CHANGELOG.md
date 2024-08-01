@@ -1,3 +1,6 @@
+# 6.3.0
+## Added
+- Option to send contextual data before chat presentation.
 # 6.2.0
 ## Added
 - `ChatView` widget provides new flexible an way to show In-app chat. Read more in documentation.
