@@ -517,6 +517,7 @@ public class SwiftInfobipMobilemessagingPlugin: NSObject, FlutterPlugin {
                               message: "Cannot resolve data or allMultiThreadStrategy from arguments",
                               details: nil ))
         }
+                
         if let chatVc = SwiftInfobipMobilemessagingPlugin.chatVC {
             chatVc.sendContextualData(data, multiThreadStrategy: multiThreadStrategy ? .ALL : .ACTIVE) { error in
                 if let error = error {
@@ -527,8 +528,11 @@ public class SwiftInfobipMobilemessagingPlugin: NSObject, FlutterPlugin {
                     return result(Constants.resultSuccess)
                 }
             }
+        } else if let inAppChat = MobileMessaging.inAppChat {
+            inAppChat.sendContextualData(data, multiThreadStrategy: multiThreadStrategy ? .ALL : .ACTIVE)
+            return result(Constants.resultSuccess)
         } else {
-            MMLogDebug("[InAppChat] could find chat view controller to send contextual data to")
+            MMLogDebug("[InAppChat] Cannot send context data, inAppChat service does not exist and ChatViewController is not present.")
         }
     }
     

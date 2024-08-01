@@ -107,6 +107,9 @@ class ChatViewController {
   }
 
   /// Set contextual data of the chat.
+  /// If the function is called when the chat is loaded data will be sent immediately, otherwise they will be sent to the chat once it is loaded.
+  /// Every function invocation will overwrite the previous contextual data.
+  /// See [ChatViewEvent.chatLoaded] to detect if chat is loaded.
   /// Parameter [data] in JSON string format
   /// Parameter [allMultiThreadStrategy] multithread strategy flag, true -> ALL, false -> ACTIVE
   void sendContextualData(String data, bool allMultiThreadStrategy) async {

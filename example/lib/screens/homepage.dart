@@ -359,13 +359,9 @@ class _HomePageState extends State<HomePage> {
               },
             ),
             ListTile(
-              title: const Text('Show chat screen and Send Contextual Data'),
+              title: const Text('Send Contextual Data and Show chat screen'),
               onTap: () {
-                Future.delayed(const Duration(milliseconds: 3000), () {
-                  // Metadata must be sent after chat is presented, so we delay it
-                  InfobipMobilemessaging.sendContextualData(
-                      "{ demoKey: 'InAppChat Metadata Value' }", false);
-                });
+                InfobipMobilemessaging.sendContextualData("{ demoKey: 'InAppChat Metadata Value' }", false);
                 InfobipMobilemessaging.showChat();
               },
             ),

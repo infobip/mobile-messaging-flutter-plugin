@@ -1,3 +1,8 @@
+///ChatView events you can observer and react to.
+///To listen to event you need to register:
+///```dart
+///ChatViewController.on(ChatViewEvent.chatLoaded, (bool controlsEnabled) => {});
+///```
 class ChatViewEvent {
   final String eventName;
 
