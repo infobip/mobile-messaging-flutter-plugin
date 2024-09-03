@@ -1012,7 +1012,7 @@ public class InfobipMobilemessagingPlugin implements FlutterPlugin, MethodCallHa
 
     private void setChatPushTitle(MethodCall call, MethodChannel.Result result) {
         try {
-            String title = call.arguments.toString();
+            @Nullable String title = call.arguments();
             InAppChat.getInstance(activity.getApplication()).setChatPushTitle(title);
         } catch (Exception e) {
             Log.d(TAG, "Failed setting chat push title");
@@ -1022,7 +1022,7 @@ public class InfobipMobilemessagingPlugin implements FlutterPlugin, MethodCallHa
 
     private void setChatPushBody(MethodCall call, MethodChannel.Result result) {
         try {
-            String body = call.arguments.toString();
+            @Nullable String body = call.arguments();
             InAppChat.getInstance(activity.getApplication()).setChatPushBody(body);
         } catch (Exception e) {
             Log.d(TAG, "Failed setting chat push body");

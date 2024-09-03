@@ -63,8 +63,6 @@ class _MyAppState extends State<MyApp> {
       navigationBarColor: '#c41c00',
       navigationBarTitleColor: '#000000',
     ));
-    InfobipMobilemessaging.setChatPushTitle("Custom notification title");
-    InfobipMobilemessaging.setChatPushBody("Custom notification body");
   }
 
   @override

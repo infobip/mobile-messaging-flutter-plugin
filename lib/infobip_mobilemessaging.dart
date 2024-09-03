@@ -293,11 +293,19 @@ class InfobipMobilemessaging {
     await _channel.invokeMethod('markMessagesSeen', messageIds);
   }
 
-  static void setChatPushTitle(String title) async {
+  static void setChatPushTitle(String? title) async {
+    if (Platform.isIOS) {
+      log("It's supported only on the Android platform");
+      return;
+    }
     await _channel.invokeMethod('setChatPushTitle', title);
   }
 
-  static void setChatPushBody(String body) async {
+  static void setChatPushBody(String? body) async {
+    if (Platform.isIOS) {
+      log("It's supported only on the Android platform");
+      return;
+    }
     await _channel.invokeMethod('setChatPushBody', body);
   }
 }
