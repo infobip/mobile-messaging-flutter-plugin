@@ -3,7 +3,7 @@ plugins {
     id "kotlin-android"
     id "dev.flutter.flutter-gradle-plugin"
     // Remove comment to enable GMS plugin
-    //id "com.google.gms.google-services"
+    id "com.google.gms.google-services"
 }
 
 def localProperties = new Properties()

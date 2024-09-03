@@ -35,7 +35,7 @@ class _MyAppState extends State<MyApp> {
     if (!mounted) return;
 
     await InfobipMobilemessaging.init(mmconfiguration.Configuration(
-      applicationCode: '12f6b57eb734984d42791daa8494f719-3ecdefbb-cead-42f1-853e-24d959b3572e',
+      applicationCode: 'Your Application Code',
       inAppChatEnabled: true,
       fullFeaturedInAppsEnabled: false,
       defaultMessageStorage: true,
