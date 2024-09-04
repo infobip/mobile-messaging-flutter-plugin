@@ -292,6 +292,22 @@ class InfobipMobilemessaging {
   static Future<void> markMessagesSeen(List<String> messageIds) async {
     await _channel.invokeMethod('markMessagesSeen', messageIds);
   }
+
+  static void setChatPushTitle(String? title) async {
+    if (!Platform.isAndroid) {
+      log("It's supported only on the Android platform");
+      return;
+    }
+    await _channel.invokeMethod('setChatPushTitle', title);
+  }
+
+  static void setChatPushBody(String? body) async {
+    if (!Platform.isAndroid) {
+      log("It's supported only on the Android platform");
+      return;
+    }
+    await _channel.invokeMethod('setChatPushBody', body);
+  }
 }
 
 class _DefaultMessageStorage extends MessageStorage {

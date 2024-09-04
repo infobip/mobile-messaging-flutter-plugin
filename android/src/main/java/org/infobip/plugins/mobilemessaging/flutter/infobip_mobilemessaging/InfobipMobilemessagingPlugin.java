@@ -236,6 +236,12 @@ public class InfobipMobilemessagingPlugin implements FlutterPlugin, MethodCallHa
             case "setInboxMessagesSeen":
                 setInboxMessagesSeen(call, result);
                 break;
+            case "setChatPushTitle":
+                setChatPushTitle(call, result);
+                break;
+            case "setChatPushBody":
+                setChatPushBody(call, result);
+                break;
             default:
                 result.notImplemented();
                 break;
@@ -1001,6 +1007,26 @@ public class InfobipMobilemessagingPlugin implements FlutterPlugin, MethodCallHa
         } catch (Exception e) {
             Log.d(TAG, "Failed setting inbox as seen: ");
             result.error(ErrorCodes.INBOX_ERROR.getErrorCode(), e.getMessage(), e.getLocalizedMessage());
+        }
+    }
+
+    private void setChatPushTitle(MethodCall call, MethodChannel.Result result) {
+        try {
+            @Nullable String title = call.arguments();
+            InAppChat.getInstance(activity.getApplication()).setChatPushTitle(title);
+        } catch (Exception e) {
+            Log.d(TAG, "Failed setting chat push title");
+            result.error(e.getMessage(), e.getMessage(), e.getLocalizedMessage());
+        }
+    }
+
+    private void setChatPushBody(MethodCall call, MethodChannel.Result result) {
+        try {
+            @Nullable String body = call.arguments();
+            InAppChat.getInstance(activity.getApplication()).setChatPushBody(body);
+        } catch (Exception e) {
+            Log.d(TAG, "Failed setting chat push body");
+            result.error(e.getMessage(), e.getMessage(), e.getLocalizedMessage());
         }
     }
 
