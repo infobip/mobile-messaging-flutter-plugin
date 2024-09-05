@@ -1,3 +1,6 @@
+# 6.4.0
+## Added
+- InAppChat provides option to override default chat notification's title and body
 # 6.3.0
 ## Added
 - Option to send contextual data before chat presentation.
