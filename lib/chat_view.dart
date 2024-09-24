@@ -6,6 +6,7 @@ import 'dart:developer';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter/gestures.dart';
 import 'package:infobip_mobilemessaging/models/chat_view_attachment.dart';
 import 'package:infobip_mobilemessaging/models/chat_view_event.dart';
 import 'package:infobip_mobilemessaging/models/widget_info.dart';
@@ -39,6 +40,11 @@ class ChatView extends StatelessWidget {
           onPlatformViewCreated: _onPlatformViewCreated,
           creationParams: args,
           creationParamsCodec: _decoder,
+          gestureRecognizers: [            
+              new Factory<OneSequenceGestureRecognizer>( 
+                () => new EagerGestureRecognizer(), 
+                ),          
+              ].toSet(),         
         );
       case TargetPlatform.iOS:
         return UiKitView(
@@ -46,6 +52,11 @@ class ChatView extends StatelessWidget {
           onPlatformViewCreated: _onPlatformViewCreated,
           creationParams: args,
           creationParamsCodec: _decoder,
+          gestureRecognizers: [            
+              new Factory<OneSequenceGestureRecognizer>( 
+                () => new EagerGestureRecognizer(), 
+                ),          
+              ].toSet(),  
         );
       default:
         return Text(
