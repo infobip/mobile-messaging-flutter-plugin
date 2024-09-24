@@ -1,3 +1,6 @@
+# 6.4.1
+## Added
+- InAppChat now has gestureRecognizers field in the ChatView class.
 # 6.4.0
 ## Added
 - InAppChat provides option to override default chat notification's title and body
