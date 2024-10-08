@@ -1,3 +1,6 @@
+# 6.5.0
+## Added
+- new approach to apply in-app chat customization. Old one is deprecated.
 # 6.4.1
 ## Added
 - InAppChat now has gestureRecognizers field in the ChatView class.
