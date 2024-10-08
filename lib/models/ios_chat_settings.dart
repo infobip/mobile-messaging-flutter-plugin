@@ -1,3 +1,4 @@
+@deprecated
 class IOSChatSettings {
   final String? title;
   final String? sendButtonColor;

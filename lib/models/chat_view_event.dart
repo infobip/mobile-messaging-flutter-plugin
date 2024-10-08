@@ -38,6 +38,11 @@ class ChatViewEvent {
   /// It is available only for Android platform.
   static const String attachmentPreviewOpened = "chatView.attachmentPreviewOpened";
 
+  /// Called for every new message in the chat. It provides raw message data.
+  /// It is available only for Android platform.
+  static const String chatRawMessageReceived =
+      "chatView.chatRawMessageReceived";
+
   ChatViewEvent({
     required this.eventName,
     this.payload,

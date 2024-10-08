@@ -103,8 +103,12 @@ public class SwiftInfobipMobilemessagingPlugin: NSObject, FlutterPlugin {
             cleanup(result: result)
         } else if call.method == "setupiOSChatSettings" {
             setupiOSChatSettings(call: call, result: result)
+        } else if call.method == "setChatCustomization" {
+            setChatCustomization(call: call, result: result)
         } else if call.method == "setLanguage" {
             setLanguage(call: call, result: result)
+        } else if call.method == "setWidgetTheme" {
+            setWidgetTheme(call: call, result: result)
         } else if call.method == "sendContextualData" {
             sendContextualData(call: call, result: result)
         } else if call.method == "setJwt" {
@@ -236,15 +240,22 @@ public class SwiftInfobipMobilemessagingPlugin: NSObject, FlutterPlugin {
             return result(Constants.resultSuccess)
         })
         
-        if let customisation = configuration.customisation {
-            setupCustomisation(customisation: customisation)
+        if let customization = configuration.customization {
+            setupCustomization(customization: customization)
         }
     }
-    
-    func setupCustomisation(customisation: Customisation) {
+
+    func setupChatCustomization(customization: ChatCustomization) {
         let settings = MMChatSettings.sharedInstance
         if let controller = self.controller {
-            CustomisationUtils().setup(customisation: customisation, with: controller, in: settings)
+            CustomizationUtils().setup(customization: customization, with: controller, in: settings)
+        }
+    }
+
+    func setupCustomization(customization: Customization) {
+        let settings = MMChatSettings.sharedInstance
+        if let controller = self.controller {
+            CustomizationUtils().setup(customization: customization, with: controller, in: settings)
         }
     }
     
@@ -456,6 +467,7 @@ public class SwiftInfobipMobilemessagingPlugin: NSObject, FlutterPlugin {
     }
     
     func setupiOSChatSettings(call: FlutterMethodCall, result: @escaping FlutterResult) {
+        MMLogWarn("[InAppChat] is deprecated. Please use setChatCustomization instead")
         guard let jsonString = call.arguments as? String,
               let chatSettings = convertStringToDictionary(text: jsonString) else {
             return result(
@@ -466,7 +478,23 @@ public class SwiftInfobipMobilemessagingPlugin: NSObject, FlutterPlugin {
         
         MMChatSettings.settings.configureWith(rawConfig: chatSettings)
     }
-    
+
+    func setChatCustomization(call: FlutterMethodCall, result: @escaping FlutterResult) {
+        guard let jsonString = call.arguments as? String,
+                      let json = jsonString.toJSON() as? [String: AnyObject],
+                      let jsonObject = try? JSONSerialization.data(
+                        withJSONObject: json
+                        ),
+                      let customization = try? JSONDecoder().decode(ChatCustomization.self, from: jsonObject)  else {
+                    return result(
+                        FlutterError( code: "invalidConfig",
+                                      message: "Error parsing Configuration",
+                                      details: "Error parsing Configuration" ))
+                }
+
+        setupChatCustomization(customization: customization)
+    }
+
     func setLanguage(call: FlutterMethodCall, result: @escaping FlutterResult) {
         guard let localeString = call.arguments as? String else {
             return result(
@@ -495,6 +523,17 @@ public class SwiftInfobipMobilemessagingPlugin: NSObject, FlutterPlugin {
                 return result(Constants.resultSuccess)
             }
         }
+    }
+
+    func setWidgetTheme(call: FlutterMethodCall, result: @escaping FlutterResult) {
+        guard let theme = call.arguments as? String else {
+            return result(
+                FlutterError( code: "invalidTheme",
+                              message: "Error parsing Theme string",
+                              details: "Error parsing Theme string" ))
+        }
+        MMChatSettings.sharedInstance.widgetTheme = theme
+        return result(Constants.resultSuccess)
     }
     
     func setJwt(call: FlutterMethodCall, result: @escaping FlutterResult) {

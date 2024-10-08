@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:infobip_mobilemessaging/infobip_mobilemessaging.dart';
 import 'package:infobip_mobilemessaging/models/configuration.dart'
     as mmconfiguration;
-import 'package:infobip_mobilemessaging/models/ios_chat_settings.dart';
 
 import 'screens/homepage.dart';
 import 'widgets/page.dart';
@@ -46,8 +45,6 @@ class _MyAppState extends State<MyApp> {
           withoutRegisteringForRemoteNotifications: false),
       webRTCUI: mmconfiguration.WebRTCUI(
           configurationId: 'Your WEBRTC push configuration id'),
-      // Comment out to apply In-app chat customization
-      //inAppChatCustomization: chatCustomization.customTheme,
     ));
     // Comment out to automatically enable WebRTC
     // try {
@@ -56,13 +53,6 @@ class _MyAppState extends State<MyApp> {
     // } catch (err) {
     //   print('Calls enable error: $err');
     // }
-    InfobipMobilemessaging.setupiOSChatSettings(IOSChatSettings(
-      title: 'Flutter Example Chat',
-      sendButtonColor: '#ff5722',
-      navigationBarItemsColor: '#8DFF33',
-      navigationBarColor: '#c41c00',
-      navigationBarTitleColor: '#000000',
-    ));
   }
 
   @override

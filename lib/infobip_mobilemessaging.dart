@@ -147,6 +147,11 @@ class InfobipMobilemessaging {
     await _channel.invokeMethod('showChat', shouldBePresentedModallyIOS);
   }
 
+  static Future<void> setChatCustomization(Object settings) async {
+    await _channel.invokeMethod('setChatCustomization', jsonEncode(settings));
+  }
+
+  @deprecated
   static Future<void> setupiOSChatSettings(IOSChatSettings settings) async {
     if (Platform.isIOS) {
       await _channel.invokeMethod('setupiOSChatSettings', jsonEncode(settings.toJson()));
@@ -169,6 +174,10 @@ class InfobipMobilemessaging {
 
   static void setLanguage(String language) async {
     await _channel.invokeMethod('setLanguage', language);
+  }
+
+  static setWidgetTheme(String widgetTheme) async {
+    await _channel.invokeMethod('setWidgetTheme', widgetTheme);
   }
 
   static void sendContextualData(String data, bool allMultiThreadStrategy) async {

@@ -31,7 +31,7 @@ class Configuration {
         static let withoutRegisteringForRemoteNotifications = "withoutRegisteringForRemoteNotifications"
         static let webRTCUI = "webRTCUI"
         static let configurationId = "configurationId"
-        static let customisation = "inAppChatCustomization"
+        static let customization = "inAppChatCustomization"
     }
     
     let appCode: String
@@ -49,8 +49,8 @@ class Configuration {
     let categories: [MMNotificationCategory]?
     let webViewSettings: [String: AnyObject]?
     let withoutRegisteringForRemoteNotifications: Bool
-    let customisation: Customisation?
-    
+    let customization: Customization?
+
     init?(rawConfig: [String: AnyObject]) {
         guard let appCode = rawConfig[Configuration.Keys.applicationCode] as? String,
               let ios = rawConfig["iosSettings"] as? [String: AnyObject] else
@@ -58,14 +58,14 @@ class Configuration {
             return nil
         }
         
-        if let rawConfig = rawConfig[Configuration.Keys.customisation] as? [String: Any],
+        if let rawConfig = rawConfig[Configuration.Keys.customization] as? [String: Any],
            let jsonObject = try? JSONSerialization.data(
             withJSONObject: rawConfig
            ),
-           let customisation = try? JSONDecoder().decode(Customisation.self, from: jsonObject) {
-            self.customisation = customisation
+           let customization = try? JSONDecoder().decode(Customization.self, from: jsonObject) {
+            self.customization = customization
         } else {
-            self.customisation = nil
+            self.customization = nil
         }
         
         self.webRTCUI = rawConfig[Configuration.Keys.webRTCUI] as? [String: Any]

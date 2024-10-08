@@ -1,11 +1,5 @@
 package org.infobip.plugins.mobilemessaging.flutter.infobip_mobilemessaging;
 
-import static androidx.core.content.ContextCompat.RECEIVER_NOT_EXPORTED;
-
-import static org.infobip.plugins.mobilemessaging.flutter.common.LibraryEvent.broadcastEventMap;
-import static org.infobip.plugins.mobilemessaging.flutter.common.LibraryEvent.messageBroadcastEventMap;
-import static org.infobip.plugins.mobilemessaging.flutter.infobip_mobilemessaging.WebRTCUI.defaultWebrtcError;
-
 import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.Activity;
@@ -17,11 +11,6 @@ import android.os.Build;
 import android.os.Bundle;
 import android.src.main.java.org.infobip.plugins.mobilemessaging.flutter.common.StreamHandler;
 import android.util.Log;
-
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.core.content.ContextCompat;
-import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
@@ -54,6 +43,8 @@ import org.infobip.mobile.messaging.mobileapi.Result;
 import org.infobip.mobile.messaging.storage.MessageStore;
 import org.infobip.mobile.messaging.util.DateTimeUtil;
 import org.infobip.mobile.messaging.util.PreferenceHelper;
+import org.infobip.plugins.mobilemessaging.flutter.chat.ChatCustomization;
+import org.infobip.plugins.mobilemessaging.flutter.chat.ChatViewFactory;
 import org.infobip.plugins.mobilemessaging.flutter.common.ConfigCache;
 import org.infobip.plugins.mobilemessaging.flutter.common.Configuration;
 import org.infobip.plugins.mobilemessaging.flutter.common.ErrorCodes;
@@ -63,7 +54,6 @@ import org.infobip.plugins.mobilemessaging.flutter.common.InstallationJson;
 import org.infobip.plugins.mobilemessaging.flutter.common.PermissionsRequestManager;
 import org.infobip.plugins.mobilemessaging.flutter.common.PersonalizationCtx;
 import org.infobip.plugins.mobilemessaging.flutter.common.UserJson;
-import org.infobip.plugins.mobilemessaging.flutter.chat.ChatViewFactory;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -77,6 +67,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.core.content.ContextCompat;
+import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 import io.flutter.embedding.engine.plugins.FlutterPlugin;
 import io.flutter.embedding.engine.plugins.activity.ActivityAware;
 import io.flutter.embedding.engine.plugins.activity.ActivityPluginBinding;
@@ -88,6 +82,10 @@ import io.flutter.plugin.common.MethodCall;
 import io.flutter.plugin.common.MethodChannel;
 import io.flutter.plugin.common.MethodChannel.MethodCallHandler;
 import io.flutter.plugin.common.PluginRegistry;
+
+import static org.infobip.plugins.mobilemessaging.flutter.common.LibraryEvent.broadcastEventMap;
+import static org.infobip.plugins.mobilemessaging.flutter.common.LibraryEvent.messageBroadcastEventMap;
+import static org.infobip.plugins.mobilemessaging.flutter.infobip_mobilemessaging.WebRTCUI.defaultWebrtcError;
 
 /**
  * InfobipMobilemessagingPlugin
@@ -242,67 +240,16 @@ public class InfobipMobilemessagingPlugin implements FlutterPlugin, MethodCallHa
             case "setChatPushBody":
                 setChatPushBody(call, result);
                 break;
+            case "setChatCustomization":
+                setChatCustomization(call, result);
+                break;
+            case "setWidgetTheme":
+                setWidgetTheme(call, result);
+                break;
             default:
                 result.notImplemented();
                 break;
         }
-    }
-
-    private void disableCalls(MethodChannel.Result result) {
-        webRTCUI.disableCalls(() -> result.success(null), defaultWebrtcError(result));
-    }
-
-    private void enableCalls(MethodCall call, MethodChannel.Result result) {
-        Object args = call.arguments;
-        String identity = null;
-        if (args != null) {
-            identity = args.toString();
-        }
-        webRTCUI.enableCalls(identity, () -> result.success(null), defaultWebrtcError(result));
-    }
-
-    private void enableChatCalls(MethodChannel.Result result) {
-        webRTCUI.enableChatCalls(() -> result.success(null), defaultWebrtcError(result));
-    }
-
-    private void init(MethodCall call, final MethodChannel.Result result) {
-        Log.d(TAG, "init");
-
-        final Configuration configuration = new Gson().fromJson(call.arguments.toString(), Configuration.class);
-        ConfigCache.getInstance().setConfiguration(configuration);
-
-        final InitHelper initHelper = new InitHelper(configuration, activity);
-        MobileMessaging.Builder builder = initHelper.configurationBuilder();
-
-        PreferenceHelper.saveString(activity.getApplicationContext(),
-                MobileMessagingProperty.SYSTEM_DATA_VERSION_POSTFIX,
-                "flutter " + configuration.getPluginVersion());
-
-        builder.build(new MobileMessaging.InitListener() {
-            @SuppressLint("MissingPermission")
-            @Override
-            public void onSuccess() {
-
-                if (configuration.getNotificationCategories() != null) {
-                    NotificationCategory categories[] = initHelper.notificationCategoriesFromConfiguration(configuration.getNotificationCategories());
-                    if (categories.length > 0) {
-                        MobileInteractive.getInstance(activity.getApplication()).setNotificationCategories(categories);
-                    }
-                }
-
-                // init method is called from WebView when activity is running
-                // so we can safely claim that we are in foreground
-                initHelper.setForeground();
-
-                result.success("OK");
-            }
-
-            @Override
-            public void onError(InternalSdkError e, @Nullable Integer googleErrorCode) {
-                Log.e(TAG, "Cannot start SDK: " + e.get() + " errorCode: " + googleErrorCode);
-                result.error(googleErrorCode.toString(), e.get(), e);
-            }
-        });
     }
 
     //region ActivityAware
@@ -357,7 +304,6 @@ public class InfobipMobilemessagingPlugin implements FlutterPlugin, MethodCallHa
     //endregion
 
     //region ServiceAware
-
     @Override
     public void onAttachedToService(@NonNull ServicePluginBinding binding) {
         Log.d(TAG, "onAttachedToService");
@@ -367,7 +313,6 @@ public class InfobipMobilemessagingPlugin implements FlutterPlugin, MethodCallHa
     public void onDetachedFromService() {
         Log.d(TAG, "onDetachedFromService");
     }
-
     //endregion
 
     //region Broadcast events
@@ -417,24 +362,30 @@ public class InfobipMobilemessagingPlugin implements FlutterPlugin, MethodCallHa
             if (Event.TOKEN_RECEIVED.getKey().equals(intent.getAction())) {
                 data = intent.getStringExtra(BroadcastParameter.EXTRA_CLOUD_TOKEN);
                 broadcastHandler.sendEvent(event, data);
-            } else if (Event.REGISTRATION_CREATED.getKey().equals(intent.getAction())) {
+            }
+            else if (Event.REGISTRATION_CREATED.getKey().equals(intent.getAction())) {
                 data = intent.getStringExtra(BroadcastParameter.EXTRA_INFOBIP_ID);
                 broadcastHandler.sendEvent(event, data);
-            } else if (InAppChatEvent.CHAT_VIEW_CHANGED.getKey().equals(intent.getAction())) {
+            }
+            else if (InAppChatEvent.CHAT_VIEW_CHANGED.getKey().equals(intent.getAction())) {
                 data = intent.getStringExtra(BroadcastParameter.EXTRA_CHAT_VIEW);
                 broadcastHandler.sendEvent(event, data);
-            } else if (InAppChatEvent.LIVECHAT_REGISTRATION_ID_UPDATED.getKey().equals(intent.getAction())) {
+            }
+            else if (InAppChatEvent.LIVECHAT_REGISTRATION_ID_UPDATED.getKey().equals(intent.getAction())) {
                 data = intent.getStringExtra(BroadcastParameter.EXTRA_LIVECHAT_REGISTRATION_ID);
                 broadcastHandler.sendEvent(event, data);
-            } else if (InAppChatEvent.UNREAD_MESSAGES_COUNTER_UPDATED.getKey().equals(intent.getAction())) {
+            }
+            else if (InAppChatEvent.UNREAD_MESSAGES_COUNTER_UPDATED.getKey().equals(intent.getAction())) {
                 int unreadMessagesCount = intent.getIntExtra(BroadcastParameter.EXTRA_UNREAD_CHAT_MESSAGES_COUNT, 0);
                 data = String.valueOf(unreadMessagesCount);
                 broadcastHandler.sendEvent(event, data);
-            } else if (InAppChatEvent.IN_APP_CHAT_AVAILABILITY_UPDATED.getKey().equals(intent.getAction())) {
+            }
+            else if (InAppChatEvent.IN_APP_CHAT_AVAILABILITY_UPDATED.getKey().equals(intent.getAction())) {
                 boolean isChatAvailable = intent.getBooleanExtra(BroadcastParameter.EXTRA_IS_CHAT_AVAILABLE, false);
                 data = String.valueOf(isChatAvailable);
                 broadcastHandler.sendEvent(event, data);
-            } else {
+            }
+            else {
                 broadcastHandler.sendEvent(event);
             }
         }
@@ -470,7 +421,8 @@ public class InfobipMobilemessagingPlugin implements FlutterPlugin, MethodCallHa
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
             ContextCompat.registerReceiver(activity.getApplicationContext(), commonLibraryBroadcastReceiver, intentFilter, ContextCompat.RECEIVER_NOT_EXPORTED);
-        } else {
+        }
+        else {
             LocalBroadcastManager.getInstance(activity).registerReceiver(commonLibraryBroadcastReceiver, intentFilter);
         }
 
@@ -481,70 +433,59 @@ public class InfobipMobilemessagingPlugin implements FlutterPlugin, MethodCallHa
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
             ContextCompat.registerReceiver(activity.getApplicationContext(), messageBroadcastReceiver, messageIntentFilter, ContextCompat.RECEIVER_NOT_EXPORTED);
-        } else {
+        }
+        else {
             LocalBroadcastManager.getInstance(activity).registerReceiver(messageBroadcastReceiver, messageIntentFilter);
         }
     }
     //endregion
 
-    /**
-     * Creates json from a message object
-     *
-     * @param message message object
-     * @return message json
-     */
-    private static JSONObject messageToJSON(Message message) {
-        try {
-            return new JSONObject()
-                    .putOpt("messageId", message.getMessageId())
-                    .putOpt("title", message.getTitle())
-                    .putOpt("body", message.getBody())
-                    .putOpt("sound", message.getSound())
-                    .putOpt("vibrate", message.isVibrate())
-                    .putOpt("icon", message.getIcon())
-                    .putOpt("silent", message.isSilent())
-                    .putOpt("category", message.getCategory())
-                    .putOpt("from", message.getFrom())
-                    .putOpt("receivedTimestamp", message.getReceivedTimestamp())
-                    .putOpt("customPayload", message.getCustomPayload())
-                    .putOpt("contentUrl", message.getContentUrl())
-                    .putOpt("seen", message.getSeenTimestamp() != 0)
-                    .putOpt("seenDate", message.getSeenTimestamp())
-                    .putOpt("chat", message.isChatMessage())
-                    .putOpt("browserUrl", message.getBrowserUrl())
-                    .putOpt("deeplink", message.getDeeplink())
-                    .putOpt("inAppOpenTitle", message.getInAppOpenTitle())
-                    .putOpt("inAppDismissTitle", message.getInAppDismissTitle());
-        } catch (JSONException e) {
-            Log.w(TAG, "Cannot convert message to JSON: " + e.getMessage());
-            return null;
-        }
-    }
-
-    /**
-     * Creates array of json objects from list of messages
-     *
-     * @param messages list of messages
-     * @return array of jsons representing messages
-     */
-    private static JSONArray messagesToJSONArray(@NonNull Message messages[]) {
-        JSONArray array = new JSONArray();
-        for (Message message : messages) {
-            JSONObject json = messageToJSON(message);
-            if (json == null) {
-                continue;
-            }
-            array.put(json);
-        }
-        return array;
-    }
-
+    //region Mobile Messaging
     private MobileMessaging mobileMessaging() {
         return MobileMessaging.getInstance(this.activity.getApplicationContext());
     }
 
-    /*User Profile Management*/
+    private void init(MethodCall call, final MethodChannel.Result result) {
+        Log.d(TAG, "init");
 
+        final Configuration configuration = new Gson().fromJson(call.arguments.toString(), Configuration.class);
+        ConfigCache.getInstance().setConfiguration(configuration);
+
+        final InitHelper initHelper = new InitHelper(configuration, activity);
+        MobileMessaging.Builder builder = initHelper.configurationBuilder();
+
+        PreferenceHelper.saveString(activity.getApplicationContext(),
+                MobileMessagingProperty.SYSTEM_DATA_VERSION_POSTFIX,
+                "flutter " + configuration.getPluginVersion());
+
+        builder.build(new MobileMessaging.InitListener() {
+            @SuppressLint("MissingPermission")
+            @Override
+            public void onSuccess() {
+
+                if (configuration.getNotificationCategories() != null) {
+                    NotificationCategory categories[] = initHelper.notificationCategoriesFromConfiguration(configuration.getNotificationCategories());
+                    if (categories.length > 0) {
+                        MobileInteractive.getInstance(activity.getApplication()).setNotificationCategories(categories);
+                    }
+                }
+
+                // init method is called from WebView when activity is running
+                // so we can safely claim that we are in foreground
+                initHelper.setForeground();
+
+                result.success("OK");
+            }
+
+            @Override
+            public void onError(InternalSdkError e, @Nullable Integer googleErrorCode) {
+                Log.e(TAG, "Cannot start SDK: " + e.get() + " errorCode: " + googleErrorCode);
+                result.error(googleErrorCode.toString(), e.get(), e);
+            }
+        });
+    }
+
+    //region User Profile Management
     public void saveUser(MethodCall call, final MethodChannel.Result result) {
         try {
             JSONObject jsonObject = new JSONObject(call.arguments.toString());
@@ -566,7 +507,8 @@ public class InfobipMobilemessagingPlugin implements FlutterPlugin, MethodCallHa
             public void onResult(org.infobip.mobile.messaging.mobileapi.Result<User, MobileMessagingError> result) {
                 if (result.isSuccess()) {
                     resultCallbacks.success(UserJson.toJSON(result.getData()).toString());
-                } else {
+                }
+                else {
                     resultCallbacks.error(result.getError().getCode(), result.getError().getMessage(), result.getError().toString());
                 }
             }
@@ -600,7 +542,8 @@ public class InfobipMobilemessagingPlugin implements FlutterPlugin, MethodCallHa
             public void onResult(org.infobip.mobile.messaging.mobileapi.Result<Installation, MobileMessagingError> result) {
                 if (result.isSuccess()) {
                     resultCallbacks.success(InstallationJson.toJSON(result.getData()).toString());
-                } else {
+                }
+                else {
                     resultCallbacks.error(result.getError().getCode(), result.getError().getMessage(), result.getError().toString());
                 }
             }
@@ -620,7 +563,8 @@ public class InfobipMobilemessagingPlugin implements FlutterPlugin, MethodCallHa
                 public void onResult(org.infobip.mobile.messaging.mobileapi.Result<User, MobileMessagingError> result) {
                     if (result.isSuccess()) {
                         resultCallbacks.success(UserJson.toJSON(result.getData()).toString());
-                    } else {
+                    }
+                    else {
                         resultCallbacks.error(result.getError().getCode(), result.getError().getMessage(), result.getError().toString());
                     }
                 }
@@ -643,7 +587,8 @@ public class InfobipMobilemessagingPlugin implements FlutterPlugin, MethodCallHa
             public void onResult(Result<SuccessPending, MobileMessagingError> result) {
                 if (result.isSuccess()) {
                     resultCallbacks.success(depersonalizeStates.get(result.getData()));
-                } else {
+                }
+                else {
                     resultCallbacks.error(result.getError().getCode(), result.getError().getMessage(), result.getError().toString());
                 }
             }
@@ -677,10 +622,6 @@ public class InfobipMobilemessagingPlugin implements FlutterPlugin, MethodCallHa
         mobileMessaging().setInstallationAsPrimary(pushRegistrationId, primary, installationsResultListener(result));
     }
 
-    public void showChat(MethodCall call, final MethodChannel.Result result) {
-        InAppChat.getInstance(activity.getApplication()).inAppChatScreen().show();
-    }
-
     public void submitEvent(MethodCall call, final MethodChannel.Result result) {
         try {
             JSONObject jsonObject = new JSONObject(call.arguments.toString());
@@ -702,38 +643,6 @@ public class InfobipMobilemessagingPlugin implements FlutterPlugin, MethodCallHa
             Log.w(TAG, e.getMessage(), e);
             result.error(ErrorCodes.CUSTOM_EVENT.getErrorCode(), "Cannot send custom event", null);
         }
-    }
-
-    private void getMessageCounter(final MethodChannel.Result result) {
-        result.success(InAppChat.getInstance(activity.getApplication()).getMessageCounter());
-    }
-
-    private void resetMessageCounter() {
-        InAppChat.getInstance(activity.getApplication()).resetMessageCounter();
-    }
-
-    private void setLanguage(MethodCall call, final MethodChannel.Result result) {
-        String language = call.arguments.toString();
-        if (language == null || language.isEmpty()) {
-            result.error(ErrorCodes.SET_LANGUAGE_ERROR.getErrorCode(), "Cannot set in app chat language.", null);
-            return;
-        }
-        InAppChat.getInstance(activity.getApplication()).setLanguage(language);
-    }
-
-    private void sendContextualData(MethodCall call, final MethodChannel.Result result) {
-        String data = call.argument("data");
-        Boolean allMultiThreadStrategy = call.argument("allMultiThreadStrategy");
-        if (data == null || data.isEmpty() || allMultiThreadStrategy == null) {
-            result.error(ErrorCodes.CONTEXTUAL_METADATA_ERROR.getErrorCode(), "Cannot resolve data or allMultiThreadStrategy from arguments", null);
-            return;
-        }
-        InAppChat.getInstance(activity.getApplication()).sendContextualData(data, allMultiThreadStrategy);
-    }
-
-    private void setJwt(MethodCall call) {
-        String jwt = call.arguments.toString();
-        InAppChat.getInstance(activity.getApplication()).setJwtProvider(() -> jwt);
     }
 
     private synchronized void defaultMessageStorage_find(MethodCall call, final MethodChannel.Result result) {
@@ -800,7 +709,8 @@ public class InfobipMobilemessagingPlugin implements FlutterPlugin, MethodCallHa
             public void onResult(org.infobip.mobile.messaging.mobileapi.Result<CustomEvent, MobileMessagingError> result) {
                 if (result.isSuccess()) {
                     resultCallbacks.success("Success");
-                } else {
+                }
+                else {
                     resultCallbacks.error(result.getError().getCode(), result.getError().getMessage(), result.getError().toString());
                 }
             }
@@ -814,14 +724,13 @@ public class InfobipMobilemessagingPlugin implements FlutterPlugin, MethodCallHa
             public void onResult(org.infobip.mobile.messaging.mobileapi.Result<List<Installation>, MobileMessagingError> result) {
                 if (result.isSuccess()) {
                     resultCallbacks.success("Success");
-                } else {
+                }
+                else {
                     resultCallbacks.error(result.getError().getCode(), result.getError().getMessage(), result.getError().toString());
                 }
             }
         };
     }
-    /*User Profile Management End */
-
 
     static void cleanupJsonMapForClient(Map<String, CustomAttributeValue> customAttributes, JSONObject jsonObject) throws JSONException {
         jsonObject.remove("map");
@@ -830,6 +739,58 @@ public class InfobipMobilemessagingPlugin implements FlutterPlugin, MethodCallHa
                 jsonObject.put("customAttributes", new JSONObject(CustomAttributesMapper.customAttsToBackend(customAttributes)));
             }
         }
+    }
+
+    /**
+     * Creates json from a message object
+     *
+     * @param message message object
+     * @return message json
+     */
+    private static JSONObject messageToJSON(Message message) {
+        try {
+            return new JSONObject()
+                    .putOpt("messageId", message.getMessageId())
+                    .putOpt("title", message.getTitle())
+                    .putOpt("body", message.getBody())
+                    .putOpt("sound", message.getSound())
+                    .putOpt("vibrate", message.isVibrate())
+                    .putOpt("icon", message.getIcon())
+                    .putOpt("silent", message.isSilent())
+                    .putOpt("category", message.getCategory())
+                    .putOpt("from", message.getFrom())
+                    .putOpt("receivedTimestamp", message.getReceivedTimestamp())
+                    .putOpt("customPayload", message.getCustomPayload())
+                    .putOpt("contentUrl", message.getContentUrl())
+                    .putOpt("seen", message.getSeenTimestamp() != 0)
+                    .putOpt("seenDate", message.getSeenTimestamp())
+                    .putOpt("chat", message.isChatMessage())
+                    .putOpt("browserUrl", message.getBrowserUrl())
+                    .putOpt("deeplink", message.getDeeplink())
+                    .putOpt("inAppOpenTitle", message.getInAppOpenTitle())
+                    .putOpt("inAppDismissTitle", message.getInAppDismissTitle());
+        } catch (JSONException e) {
+            Log.w(TAG, "Cannot convert message to JSON: " + e.getMessage());
+            return null;
+        }
+    }
+
+    /**
+     * Creates array of json objects from list of messages
+     *
+     * @param messages list of messages
+     * @return array of jsons representing messages
+     */
+    private static JSONArray messagesToJSONArray(@NonNull Message messages[]) {
+        JSONArray array = new JSONArray();
+        for (Message message : messages) {
+            JSONObject json = messageToJSON(message);
+            if (json == null) {
+                continue;
+            }
+            array.put(json);
+        }
+        return array;
     }
 
     /**
@@ -874,17 +835,19 @@ public class InfobipMobilemessagingPlugin implements FlutterPlugin, MethodCallHa
             return customEvent;
         }
     }
+    //endregion
 
+    //region PermissionsRequester for Post Notifications Permission
     public void registerForAndroidRemoteNotifications() {
         Log.w(TAG, "calling register");
         if (activity != null) {
             permissionsRequestManager.isRequiredPermissionsGranted(activity, this);
-        } else {
+        }
+        else {
             Log.e(TAG, "Cannot register for remote notifications, activity does not exist");
         }
     }
 
-    // PermissionsRequester for Post Notifications Permission
     @Override
     public boolean onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
         if (requestCode == PermissionsRequestManager.REQ_CODE_POST_NOTIFICATIONS_PERMISSIONS) {
@@ -921,7 +884,9 @@ public class InfobipMobilemessagingPlugin implements FlutterPlugin, MethodCallHa
     public int permissionsNotGrantedDialogMessage() {
         return org.infobip.mobile.messaging.resources.R.string.mm_post_notifications_settings_message;
     }
+    //endregion
 
+    //region Inbox
     private void fetchInboxMessages(MethodCall call, MethodChannel.Result result) {
         try {
             String token = call.argument("token");
@@ -991,7 +956,8 @@ public class InfobipMobilemessagingPlugin implements FlutterPlugin, MethodCallHa
             public void onResult(org.infobip.mobile.messaging.mobileapi.Result<Inbox, MobileMessagingError> result) {
                 if (result.isSuccess()) {
                     resultCallbacks.success(InboxJson.toJSON(result.getData()).toString());
-                } else {
+                }
+                else {
                     resultCallbacks.error(result.getError().getCode(), result.getError().getMessage(), result.getError().toString());
                 }
             }
@@ -1010,26 +976,6 @@ public class InfobipMobilemessagingPlugin implements FlutterPlugin, MethodCallHa
         }
     }
 
-    private void setChatPushTitle(MethodCall call, MethodChannel.Result result) {
-        try {
-            @Nullable String title = call.arguments();
-            InAppChat.getInstance(activity.getApplication()).setChatPushTitle(title);
-        } catch (Exception e) {
-            Log.d(TAG, "Failed setting chat push title");
-            result.error(e.getMessage(), e.getMessage(), e.getLocalizedMessage());
-        }
-    }
-
-    private void setChatPushBody(MethodCall call, MethodChannel.Result result) {
-        try {
-            @Nullable String body = call.arguments();
-            InAppChat.getInstance(activity.getApplication()).setChatPushBody(body);
-        } catch (Exception e) {
-            Log.d(TAG, "Failed setting chat push body");
-            result.error(e.getMessage(), e.getMessage(), e.getLocalizedMessage());
-        }
-    }
-
     @NonNull
     private MobileMessaging.ResultListener<String[]> setSeenResultListener(final MethodChannel.Result resultCallbacks) {
         return new MobileMessaging.ResultListener<String[]>() {
@@ -1037,7 +983,8 @@ public class InfobipMobilemessagingPlugin implements FlutterPlugin, MethodCallHa
             public void onResult(org.infobip.mobile.messaging.mobileapi.Result<String[], MobileMessagingError> result) {
                 if (result.isSuccess()) {
                     resultCallbacks.success(Arrays.toString(result.getData()));
-                } else {
+                }
+                else {
                     resultCallbacks.error(result.getError().getCode(), result.getError().getMessage(), result.getError().toString());
                 }
             }
@@ -1070,4 +1017,103 @@ public class InfobipMobilemessagingPlugin implements FlutterPlugin, MethodCallHa
 
         return array;
     }
+    //endregion
+    //endregion
+
+    //region InAppChat
+    public void showChat(MethodCall call, final MethodChannel.Result result) {
+        InAppChat.getInstance(activity.getApplication()).inAppChatScreen().show();
+    }
+
+    private void getMessageCounter(final MethodChannel.Result result) {
+        result.success(InAppChat.getInstance(activity.getApplication()).getMessageCounter());
+    }
+
+    private void resetMessageCounter() {
+        InAppChat.getInstance(activity.getApplication()).resetMessageCounter();
+    }
+
+    private void setLanguage(MethodCall call, final MethodChannel.Result result) {
+        String language = call.arguments.toString();
+        if (language == null || language.isEmpty()) {
+            result.error(ErrorCodes.SET_LANGUAGE_ERROR.getErrorCode(), "Cannot set in app chat language.", null);
+            return;
+        }
+        InAppChat.getInstance(activity.getApplication()).setLanguage(language);
+    }
+
+    private void sendContextualData(MethodCall call, final MethodChannel.Result result) {
+        String data = call.argument("data");
+        Boolean allMultiThreadStrategy = call.argument("allMultiThreadStrategy");
+        if (data == null || data.isEmpty() || allMultiThreadStrategy == null) {
+            result.error(ErrorCodes.CONTEXTUAL_METADATA_ERROR.getErrorCode(), "Cannot resolve data or allMultiThreadStrategy from arguments", null);
+            return;
+        }
+        InAppChat.getInstance(activity.getApplication()).sendContextualData(data, allMultiThreadStrategy);
+    }
+
+    private void setJwt(MethodCall call) {
+        String jwt = call.arguments.toString();
+        InAppChat.getInstance(activity.getApplication()).setJwtProvider(() -> jwt);
+    }
+
+    private void setChatPushTitle(MethodCall call, MethodChannel.Result result) {
+        try {
+            @Nullable String title = call.arguments();
+            InAppChat.getInstance(activity.getApplication()).setChatPushTitle(title);
+        } catch (Exception e) {
+            Log.d(TAG, "Failed setting chat push title");
+            result.error(e.getMessage(), e.getMessage(), e.getLocalizedMessage());
+        }
+    }
+
+    private void setChatPushBody(MethodCall call, MethodChannel.Result result) {
+        try {
+            @Nullable String body = call.arguments();
+            InAppChat.getInstance(activity.getApplication()).setChatPushBody(body);
+        } catch (Exception e) {
+            Log.d(TAG, "Failed setting chat push body");
+            result.error(e.getMessage(), e.getMessage(), e.getLocalizedMessage());
+        }
+    }
+
+    private void setChatCustomization(MethodCall call, MethodChannel.Result result) {
+        try {
+            ChatCustomization customization = new Gson().fromJson(call.arguments.toString(), ChatCustomization.class);
+            InAppChat.getInstance(activity.getApplication()).setTheme(customization.createTheme(activity));
+        } catch (Exception e) {
+            Log.d(TAG, "Failed to set customization", e);
+            result.error(e.getMessage(), e.getMessage(), e.getLocalizedMessage());
+        }
+    }
+
+    private void setWidgetTheme(MethodCall call, final MethodChannel.Result result) {
+        String widgetTheme = call.arguments.toString();
+        if (widgetTheme == null || widgetTheme.isEmpty()) {
+            result.error(ErrorCodes.SET_WIDGET_THEME_ERROR.getErrorCode(), "Cannot set in app chat widget theme. Widget theme is null or empty.", null);
+            return;
+        }
+        InAppChat.getInstance(activity.getApplication()).setWidgetTheme(widgetTheme);
+    }
+    //endregion
+
+    //region WebRtcUi
+    private void disableCalls(MethodChannel.Result result) {
+        webRTCUI.disableCalls(() -> result.success(null), defaultWebrtcError(result));
+    }
+
+    private void enableCalls(MethodCall call, MethodChannel.Result result) {
+        Object args = call.arguments;
+        String identity = null;
+        if (args != null) {
+            identity = args.toString();
+        }
+        webRTCUI.enableCalls(identity, () -> result.success(null), defaultWebrtcError(result));
+    }
+
+    private void enableChatCalls(MethodChannel.Result result) {
+        webRTCUI.enableChatCalls(() -> result.success(null), defaultWebrtcError(result));
+    }
+    //endregion
+
 }

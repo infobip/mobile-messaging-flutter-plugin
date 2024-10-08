@@ -1,6 +1,5 @@
 import 'package:infobip_mobilemessaging/models/configuration.dart';
 import 'package:infobip_mobilemessaging/models/installation.dart';
-import 'package:infobip_mobilemessaging/models/ios_chat_settings.dart';
 import 'package:infobip_mobilemessaging/models/message.dart';
 import 'package:infobip_mobilemessaging/models/personalize_context.dart';
 import 'package:infobip_mobilemessaging/models/user_data.dart';
@@ -85,14 +84,6 @@ Installation get installationModelExample => Installation(
 InstallationPrimary get installationPrimaryModelExample => InstallationPrimary(
       '123456',
       true,
-    );
-
-IOSChatSettings get iosChatSettingsModelExample => IOSChatSettings(
-      title: 'title',
-      sendButtonColor: 'green',
-      navigationBarItemsColor: 'red',
-      navigationBarColor: 'blue',
-      navigationBarTitleColor: 'yellow',
     );
 
 UserIdentity get userIdentityModelExample => UserIdentity(

@@ -239,6 +239,11 @@ public class ChatPlatformView implements PlatformView, MethodCallHandler {
         return new InAppChatFragment.EventsListener() {
 
             @Override
+            public void onChatRawMessageReceived(@NonNull String rawMessage) {
+                eventHandler.sendEvent(ChatViewEvent.EVENT_CHAT_RAW_MESSAGE_RECEIVED, rawMessage);
+            }
+
+            @Override
             public void onChatWidgetThemeChanged(@NonNull String widgetThemeName) {
                 eventHandler.sendEvent(ChatViewEvent.EVENT_WIDGET_THEME_CHANGED, widgetThemeName);
             }

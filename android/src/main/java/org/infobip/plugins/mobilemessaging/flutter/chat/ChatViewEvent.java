@@ -14,5 +14,6 @@ public class ChatViewEvent {
    public static final String EVENT_CHAT_DISCONNECTED = "chatView.chatDisconnected";
    public static final String EVENT_CHAT_RECONNECTED = "chatView.chatReconnected";
    public static final String EVENT_EXIT_CHAT_PRESSED = "chatView.exitChatPressed";
+   public static final String EVENT_CHAT_RAW_MESSAGE_RECEIVED = "chatView.chatRawMessageReceived";
 
 }

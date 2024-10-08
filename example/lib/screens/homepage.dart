@@ -9,6 +9,8 @@ import 'package:infobip_mobilemessaging/models/library_event.dart';
 import 'package:infobip_mobilemessaging/models/message.dart';
 import 'package:infobip_mobilemessaging/models/user_data.dart';
 
+import '../chat_customization.dart' as chatCustomization;
+
 import '../main.dart';
 import '../utils/language.dart';
 import '../widgets/demo_tile.dart';
@@ -355,6 +357,14 @@ class _HomePageState extends State<HomePage> {
               title: const Text('Show chat screen'),
               onTap: () {
                 // InfobipMobilemessaging.setJwt('your JWT'); // Comment out to automatically log-in using authentication
+                InfobipMobilemessaging.showChat();
+              },
+            ),
+            ListTile(
+              title: const Text('Show chat screen customized'),
+              onTap: () {
+                InfobipMobilemessaging.setChatCustomization(chatCustomization.customBranding);
+                InfobipMobilemessaging.setWidgetTheme('dark');
                 InfobipMobilemessaging.showChat();
               },
             ),

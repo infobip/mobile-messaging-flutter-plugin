@@ -21,10 +21,6 @@ void main() {
           installationPrimaryExampleJson);
     });
 
-    test('IOSChatSettings', () {
-      expect(iosChatSettingsModelExample.toJson(), iosChatSettingsExampleJson);
-    });
-
     test('UserIdentity', () {
       expect(userIdentityModelExample.toJson(), userIdentityExampleJson);
     });
