@@ -1,3 +1,6 @@
+# 6.6.0
+## Changed
+- Since this version running on Infobip Mobile Messaging SDK based on Android 15. [Read More](https://github.com/infobip/mobile-messaging-sdk-android/releases/tag/13.0.3)
 # 6.5.0
 ## Added
 - new approach to apply in-app chat customization. Old one is deprecated.
