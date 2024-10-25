@@ -129,6 +129,7 @@ Map<String, dynamic> get personalizeContextExampleJson => {
         ],
       },
       'forceDepersonalize': true,
+      'keepAsLead': false,
     };
 
 Map<String, dynamic> get userDataExampleJson => {

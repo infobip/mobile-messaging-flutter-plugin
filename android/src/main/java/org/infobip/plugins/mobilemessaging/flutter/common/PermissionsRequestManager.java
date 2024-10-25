@@ -11,7 +11,7 @@ import androidx.annotation.StringRes;
 import androidx.collection.ArraySet;
 import androidx.core.app.ActivityCompat;
 
-import org.infobip.mobile.messaging.R;
+import org.infobip.mobile.messaging.resources.R;
 import org.infobip.mobile.messaging.logging.MobileMessagingLogger;
 import org.infobip.mobile.messaging.permissions.PermissionsHelper;
 

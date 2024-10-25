@@ -112,6 +112,7 @@ PersonalizeContext get personalizeContextModelExample => PersonalizeContext(
           }
         ]
       },
+      keepAsLead: false,
     );
 
 UserData get userDataModelExample => UserData(

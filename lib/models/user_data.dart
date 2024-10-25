@@ -2,6 +2,7 @@ import 'package:collection/collection.dart';
 import 'package:flutter/foundation.dart';
 
 enum Gender { Male, Female }
+enum Type { LEAD, CUSTOMER }
 
 class UserData {
   String? externalUserId;
@@ -10,6 +11,7 @@ class UserData {
   String? middleName;
   Gender? gender;
   String? birthday;
+  Type? type;
   List<String>? phones;
   List<String>? emails;
   List<String>? tags;
@@ -39,6 +41,17 @@ class UserData {
     }
   }
 
+  static Type? resolveType(String? str) {
+    if (str == null) {
+      return null;
+    }
+    try {
+      return Type.values.firstWhere((e) => e.toString().split('.').last == str);
+    } on Exception {
+      return null;
+    }
+  }
+
   static List<String>? resolveLists(List<dynamic>? str) {
     if (str != null) {
       return str.cast<String>();
@@ -53,6 +66,7 @@ class UserData {
         middleName = json['middleName'],
         gender = UserData.resolveGender(json['gender']),
         birthday = json['birthday'],
+        type = resolveType(json['type']),
         phones = UserData.resolveLists(json['phones']),
         emails = UserData.resolveLists(json['emails']),
         tags = UserData.resolveLists(json['tags']),
@@ -65,6 +79,7 @@ class UserData {
         'middleName': middleName,
         'gender': gender != null ? describeEnum(gender!) : null,
         'birthday': birthday,
+        'type': type,
         'phones': phones,
         'emails': emails,
         'tags': tags,

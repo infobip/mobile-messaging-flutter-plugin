@@ -390,7 +390,9 @@ public class SwiftInfobipMobilemessagingPlugin: NSObject, FlutterPlugin {
         }
         let uaDict = context["userAttributes"] as? [String: Any]
         let ua = uaDict == nil ? nil : MMUserAttributes(dictRepresentation: uaDict!)
-        MobileMessaging.personalize(withUserIdentity: ui, userAttributes: ua) { (error) in
+        let keepAsLead = (context["keepAsLead"] as? Bool) ?? false
+        
+        MobileMessaging.personalize(withUserIdentity: ui, userAttributes: ua, keepAsLead: keepAsLead) { (error) in
             if let error = error {
                 return result(
                     FlutterError( code: error.mm_code ?? "0",

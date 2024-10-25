@@ -558,7 +558,7 @@ public class InfobipMobilemessagingPlugin implements FlutterPlugin, MethodCallHa
     public void personalize(MethodCall call, final MethodChannel.Result resultCallbacks) {
         try {
             final PersonalizationCtx ctx = PersonalizationCtx.resolvePersonalizationCtx(new JSONObject(call.arguments.toString()));
-            mobileMessaging().personalize(ctx.userIdentity, ctx.userAttributes, ctx.forceDepersonalize, new MobileMessaging.ResultListener<User>() {
+            mobileMessaging().personalize(ctx.userIdentity, ctx.userAttributes, ctx.forceDepersonalize, ctx.keepAsLead, new MobileMessaging.ResultListener<User>() {
                 @Override
                 public void onResult(org.infobip.mobile.messaging.mobileapi.Result<User, MobileMessagingError> result) {
                     if (result.isSuccess()) {

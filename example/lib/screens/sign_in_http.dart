@@ -63,7 +63,9 @@ class _SignInHttpDemoState extends State<SignInHttpDemo> {
                               PersonalizeContext(
                                   userIdentity: userIdentity,
                                   userAttributes: null,
-                                  forceDepersonalize: true));
+                                  forceDepersonalize: true,
+                                  keepAsLead: true
+                                  ));
                           _showDialog('Personalized successfully', '');
                         } catch (e) {
                           _showDialog('Unable to personalize', '$e');

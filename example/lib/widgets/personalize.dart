@@ -56,6 +56,7 @@ class _PersonalizeState extends State<Personalize> {
           userIdentity: userIdentity,
           userAttributes: null,
           forceDepersonalize: true,
+          keepAsLead: false
         ),
       );
     } catch (e) {

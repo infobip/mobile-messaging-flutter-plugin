@@ -10,7 +10,6 @@ import 'package:infobip_mobilemessaging/models/message.dart';
 import 'package:infobip_mobilemessaging/models/user_data.dart';
 
 import '../chat_customization.dart' as chatCustomization;
-
 import '../main.dart';
 import '../utils/language.dart';
 import '../widgets/demo_tile.dart';
@@ -215,6 +214,15 @@ class _HomePageState extends State<HomePage> {
     }
   }
 
+  void _onFetchUser() async {
+    try {
+      var user = await InfobipMobilemessaging.fetchUser();
+      _showDialog('fetched User Data', user.toJson().toString());
+    } on PlatformException catch (e) {
+      log('Error happened: ${e.message}');
+    }
+  }
+
   void _onGetUser() async {
     try {
       var user = await InfobipMobilemessaging.getUser();
@@ -304,6 +312,10 @@ class _HomePageState extends State<HomePage> {
             ListTile(
               title: const Text('Save User Data'),
               onTap: () => _onSaveUser,
+            ),
+            ListTile(
+              title: const Text('Fetch User Data'),
+              onTap: () => _onFetchUser(),
             ),
             ListTile(
               title: const Text('Get User Data'),

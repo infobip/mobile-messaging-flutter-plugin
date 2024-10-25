@@ -21,12 +21,12 @@ A new flutter plugin project.
   s.source           = { :path => '.' }
   s.source_files = 'Classes/**/*'
   s.dependency 'Flutter'
-  s.dependency "MobileMessaging/Core", "12.13.2"
-  s.dependency "MobileMessaging/Geofencing", "12.13.2"
-  s.dependency "MobileMessaging/InAppChat", "12.13.2"
-  s.dependency "MobileMessaging/Inbox", "12.13.2"
+  s.dependency "MobileMessaging/Core", "12.14.0"
+  s.dependency "MobileMessaging/Geofencing", "12.14.0"
+  s.dependency "MobileMessaging/InAppChat", "12.14.0"
+  s.dependency "MobileMessaging/Inbox", "12.14.0"
   if defined?($WebRTCUIEnabled)
-    s.dependency "MobileMessaging/WebRTCUI", "12.13.2"
+    s.dependency "MobileMessaging/WebRTCUI", "12.14.0"
   end
   s.platform = :ios, '12.0'
 

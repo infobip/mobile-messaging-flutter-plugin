@@ -20,16 +20,19 @@ class PersonalizeContext {
   final UserIdentity? userIdentity;
   final Map<String, dynamic>? userAttributes;
   final bool? forceDepersonalize;
+  final bool? keepAsLead;
 
   PersonalizeContext({
     this.userIdentity,
     this.userAttributes,
     this.forceDepersonalize,
+    this.keepAsLead
   });
 
   Map<String, dynamic> toJson() => {
         'userIdentity': userIdentity!.toJson(),
         'userAttributes': userAttributes,
         'forceDepersonalize': forceDepersonalize,
+        'keepAsLead': keepAsLead
       };
 }
