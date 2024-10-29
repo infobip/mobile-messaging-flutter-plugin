@@ -1,3 +1,9 @@
+# 7.0.0
+## Changed
+- Refactoring, models moved to submodules.
+
+## Added
+- user_data now has installations information available.
 # 6.7.0
 ## Added
 - User class has `Type` field indicating user profile type.
