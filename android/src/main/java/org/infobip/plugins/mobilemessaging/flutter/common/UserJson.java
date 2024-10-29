@@ -2,6 +2,8 @@ package org.infobip.plugins.mobilemessaging.flutter.common;
 
 import androidx.annotation.NonNull;
 
+import com.google.gson.reflect.TypeToken;
+
 import org.infobip.mobile.messaging.CustomAttributeValue;
 import org.infobip.mobile.messaging.CustomAttributesMapper;
 import org.infobip.mobile.messaging.User;
@@ -9,16 +11,12 @@ import org.infobip.mobile.messaging.UserAttributes;
 import org.infobip.mobile.messaging.UserIdentity;
 import org.infobip.mobile.messaging.UserMapper;
 import org.infobip.mobile.messaging.api.appinstance.UserAtts;
-
-import com.google.gson.reflect.TypeToken;
-
 import org.infobip.mobile.messaging.api.support.http.serialization.JsonSerializer;
 import org.infobip.mobile.messaging.util.DateTimeUtil;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.lang.reflect.Type;
 import java.text.ParseException;
 import java.util.Date;
 import java.util.HashSet;

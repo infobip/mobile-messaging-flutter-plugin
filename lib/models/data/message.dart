@@ -15,7 +15,6 @@ class Message {
   final num? seenDate;
   final String? contentUrl;
   final bool? seen;
-  final bool? geo;
   final Map<String, dynamic>? originalPayload; // iOS only
   final String? browserUrl;
   final String? deeplink;
@@ -36,7 +35,6 @@ class Message {
     this.seenDate,
     this.contentUrl,
     this.seen,
-    this.geo,
     this.originalPayload,
     this.vibrate,
     this.icon,
@@ -61,7 +59,6 @@ class Message {
         seenDate = json['seenDate'],
         contentUrl = json['contentUrl'],
         seen = json['seen'],
-        geo = json['geo'],
         originalPayload = json['originalPayload'],
         vibrate = json['vibrate'],
         icon = json['icon'],
@@ -92,7 +89,6 @@ class Message {
           seenDate == other.seenDate &&
           contentUrl == other.contentUrl &&
           seen == other.seen &&
-          geo == other.geo &&
           mapEquals(originalPayload, other.originalPayload) &&
           browserUrl == other.browserUrl &&
           deeplink == other.deeplink &&
@@ -117,7 +113,6 @@ class Message {
       seenDate.hashCode ^
       contentUrl.hashCode ^
       seen.hashCode ^
-      geo.hashCode ^
       originalPayload.hashCode ^
       browserUrl.hashCode ^
       deeplink.hashCode ^

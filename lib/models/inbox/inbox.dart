@@ -1,9 +1,9 @@
 import 'inbox_message.dart';
 
-/// An Inbox class.
+/// An [Inbox] class.
 ///
-/// Has countTotal - total number of messages in Inbox for the externalUserId,
-/// countUnread - total number of unread messages, and messages - List of Inbox
+/// Has [countTotal] - total number of messages in [Inbox] for the user with `externalUserId`,
+/// [countUnread] - total number of unread messages, and [messages] - List of [InboxMessage]
 /// messages.
 class Inbox {
   final List<InboxMessage>? messages;

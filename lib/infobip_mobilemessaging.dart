@@ -8,18 +8,21 @@ import 'package:flutter/services.dart';
 import 'package:infobip_mobilemessaging/models/inbox/filter_options.dart';
 import 'package:infobip_mobilemessaging/models/inbox/inbox.dart';
 
-import 'models/configuration.dart';
-import 'models/installation.dart';
-import 'models/ios_chat_settings.dart';
+import 'models/chat/ios_chat_settings.dart';
+import 'models/configurations/configuration.dart';
+import 'models/data/installation.dart';
+import 'models/data/message.dart';
+import 'models/data/personalize_context.dart';
+import 'models/data/user_data.dart';
 import 'models/library_event.dart';
-import 'models/message.dart';
-import 'models/message_storage.dart';
-import 'models/personalize_context.dart';
-import 'models/user_data.dart';
+import 'models/message_storage/default_message_storage.dart';
+import 'models/message_storage/message_storage.dart';
 
 class InfobipMobilemessaging {
-  static const MethodChannel _channel = MethodChannel('infobip_mobilemessaging');
-  static const EventChannel _libraryEvent = EventChannel('infobip_mobilemessaging/broadcast');
+  static const MethodChannel _channel =
+      MethodChannel('infobip_mobilemessaging');
+  static const EventChannel _libraryEvent =
+      EventChannel('infobip_mobilemessaging/broadcast');
   static final StreamSubscription _libraryEventSubscription =
       _libraryEvent.receiveBroadcastStream().listen((dynamic event) {
     log('Received event: $event');
@@ -51,6 +54,7 @@ class InfobipMobilemessaging {
 
   static MessageStorage? _defaultMessageStorage;
 
+  /// Subscribes to [LibraryEvent] to perform provided callback function.
   static Future<void> on(String eventName, Function callback) async {
     if (callbacks.containsKey(eventName)) {
       var existed = callbacks[eventName];
@@ -62,6 +66,7 @@ class InfobipMobilemessaging {
     _libraryEventSubscription.resume();
   }
 
+  /// Unregisters handler from [LibraryEvent].
   static Future<void> unregister(String eventName, Function? callback) async {
     if (callbacks.containsKey(eventName)) {
       var existed = callbacks[eventName];
@@ -72,6 +77,7 @@ class InfobipMobilemessaging {
     _libraryEventSubscription.resume();
   }
 
+  /// Unsubscribes all handlers from given [LibraryEvent].
   static Future<void> unregisterAllHandlers(String eventName) async {
     if (callbacks.containsKey(eventName)) {
       callbacks.removeWhere((key, value) => key == eventName);
@@ -79,74 +85,95 @@ class InfobipMobilemessaging {
     _libraryEventSubscription.resume();
   }
 
+  /// Initializes MobileMessaging plugin with [Configuration].
   static Future<void> init(Configuration configuration) async {
     InfobipMobilemessaging._configuration = configuration;
-    String str = await getVersion();
+    String str = await _getVersion();
     configuration.pluginVersion = str;
 
     await _channel.invokeMethod('init', jsonEncode(configuration.toJson()));
   }
 
-  static Future<String> getVersion() async {
-    final fileContent = await rootBundle.loadString(
-      'packages/infobip_mobilemessaging/pubspec.yaml',
-    );
-
-    if (fileContent.isNotEmpty) {
-      String versionStr = fileContent.substring(fileContent.indexOf('version:'), fileContent.indexOf('\nhomepage:'));
-      versionStr = versionStr.substring(9, versionStr.length);
-      return versionStr;
-    }
-    return '';
-  }
-
+  /// Saves [UserData] to server.
   static Future<void> saveUser(UserData userData) async {
     await _channel.invokeMethod('saveUser', jsonEncode(userData.toJson()));
   }
 
-  static Future<UserData> fetchUser() async => UserData.fromJson(jsonDecode(await _channel.invokeMethod('fetchUser')));
+  /// Asynchronously fetches [UserData] from server.
+  static Future<UserData> fetchUser() async =>
+      UserData.fromJson(jsonDecode(await _channel.invokeMethod('fetchUser')));
 
-  static Future<UserData> getUser() async => UserData.fromJson(jsonDecode(await _channel.invokeMethod('getUser')));
+  /// Asynchronously gets [UserData] from local data.
+  static Future<UserData> getUser() async =>
+      UserData.fromJson(jsonDecode(await _channel.invokeMethod('getUser')));
 
+  /// Asynchronously saves [Installation] data to server.
   static Future<void> saveInstallation(Installation installation) async {
-    await _channel.invokeMethod('saveInstallation', jsonEncode(installation.toJson()));
+    await _channel.invokeMethod(
+      'saveInstallation',
+      jsonEncode(installation.toJson()),
+    );
   }
 
+  /// Asynchronously fetches [Installation] from server.
   static Future<Installation> fetchInstallation() async =>
-      Installation.fromJson(jsonDecode(await _channel.invokeMethod('fetchInstallation')));
+      Installation.fromJson(
+          jsonDecode(await _channel.invokeMethod('fetchInstallation')));
 
-  static Future<Installation> getInstallation() async =>
-      Installation.fromJson(jsonDecode(await _channel.invokeMethod('getInstallation')));
+  /// Asynchronously gets [Installation] data from local data.
+  static Future<Installation> getInstallation() async => Installation.fromJson(
+      jsonDecode(await _channel.invokeMethod('getInstallation')));
 
+  /// Asynchronously personalizes current [Installation] with a Person profile on the server.
+  /// For more information and examples see: <a href=https://github.com/infobip/mobile-messaging-flutter-plugin/wiki/Users-and-installations>Users and installations</a>
   static Future<void> personalize(PersonalizeContext context) async {
     await _channel.invokeMethod('personalize', jsonEncode(context.toJson()));
   }
 
+  /// Asynchronously erases currently stored `User` on SDK and server associated
+  /// with push registration, along with messages in SDK storage (also, deletes
+  /// data for chat module).
   static void depersonalize() async {
     await _channel.invokeMethod('depersonalize');
   }
 
   /// Asynchronously cleans up all persisted data.
-  /// This method deletes SDK data related to current application code (also, deletes data for other modules: interactive, chat).
-  /// There might be a situation where you'll want to switch between different Application Codes during development/testing,
-  /// in this case you should manually invoke cleanup().
-  /// After cleanup, you should call init() with a new Application Code in order to use library again.
+  /// This method deletes SDK data related to current application code (also,
+  /// deletes data for other modules: interactive, chat).
+  /// There might be a situation where you'll want to switch between different
+  /// Application Codes during development/testing, in this case you should
+  /// manually invoke [cleanup]. After cleanup, you should call [init] with a
+  /// new Application Code in order to use library again.
   static Future<void> cleanup() async {
     await _channel.invokeMethod('cleanup');
   }
 
+  /// Asynchronously depersonalizes given `pushRegistrationId` from user.
   static void depersonalizeInstallation(String pushRegistrationId) async {
-    await _channel.invokeMethod('depersonalizeInstallation', pushRegistrationId);
+    await _channel.invokeMethod(
+        'depersonalizeInstallation', pushRegistrationId);
   }
 
-  static void setInstallationAsPrimary(InstallationPrimary installationPrimary) async {
-    await _channel.invokeMethod('setInstallationAsPrimary', installationPrimary.toJson());
+  /// Asynchronously configures provided device as primary among others devices
+  /// of a single user.
+  static Future<List<Installation>> setInstallationAsPrimary(
+      InstallationPrimary installationPrimary) async {
+    String str = await _channel.invokeMethod(
+      'setInstallationAsPrimary',
+      installationPrimary.toJson(),
+    );
+    Iterable l = json.decode(str);
+    return List<Installation>.from(
+        l.map((model) => Installation.fromJson(model)));
   }
 
-  static Future<void> showChat({bool shouldBePresentedModallyIOS = true}) async {
+  /// Shows chat screen.
+  static Future<void> showChat(
+      {bool shouldBePresentedModallyIOS = true}) async {
     await _channel.invokeMethod('showChat', shouldBePresentedModallyIOS);
   }
 
+  /// Sets chat customization.
   static Future<void> setChatCustomization(Object settings) async {
     await _channel.invokeMethod('setChatCustomization', jsonEncode(settings));
   }
@@ -154,36 +181,55 @@ class InfobipMobilemessaging {
   @deprecated
   static Future<void> setupiOSChatSettings(IOSChatSettings settings) async {
     if (Platform.isIOS) {
-      await _channel.invokeMethod('setupiOSChatSettings', jsonEncode(settings.toJson()));
+      await _channel.invokeMethod(
+          'setupiOSChatSettings', jsonEncode(settings.toJson()));
     }
   }
 
+  /// Synchronously submits custom event and validates it on backend. Custom
+  /// event should be registered by definition ID and optional properties in <a href=https://portal.infobip.com/people/events/definitions>Portal</a>.
+  /// In case of validation or network issues error will be returned and you'd
+  /// need to manually retry sending of the event.
   static void submitEvent(Object customEvent) {
     _channel.invokeMethod('submitEvent', jsonEncode(customEvent));
   }
 
+  /// Asynchronously submits custom events without validation. Custom event
+  /// should be registered by definition ID and optional properties in in <a href=https://portal.infobip.com/people/events/definitions>Portal</a>.
+  /// Validation will not be performed. If wrong definition is provided event
+  /// will be considered as invalid and won't be visible on user.
   static void submitEventImmediately(Object customEvent) {
     _channel.invokeMethod('submitEventImmediately', jsonEncode(customEvent));
   }
 
-  static Future<int> getMessageCounter() async => await _channel.invokeMethod('getMessageCounter');
+  /// Returns current unread chat push message counter.
+  static Future<int> getMessageCounter() async =>
+      await _channel.invokeMethod('getMessageCounter');
 
+  /// Resets current unread chat push message counter to zero.
+  /// MobileMessaging automatically resets the counter when chat is opened.
   static void resetMessageCounter() async {
     await _channel.invokeMethod('resetMessageCounter');
   }
 
+  /// Sets the language of the widget, in locale format e.g.: `en-US`
   static void setLanguage(String language) async {
     await _channel.invokeMethod('setLanguage', language);
   }
 
+  /// Sets the theme of the Livechat widget.
   static setWidgetTheme(String widgetTheme) async {
     await _channel.invokeMethod('setWidgetTheme', widgetTheme);
   }
 
-  static void sendContextualData(String data, bool allMultiThreadStrategy) async {
-    await _channel.invokeMethod('sendContextualData', {'data': data, 'allMultiThreadStrategy': allMultiThreadStrategy});
+  /// Sends contextual data of the Livechat Widget.
+  static void sendContextualData(
+      String data, bool allMultiThreadStrategy) async {
+    await _channel.invokeMethod('sendContextualData',
+        {'data': data, 'allMultiThreadStrategy': allMultiThreadStrategy});
   }
 
+  /// Sets JWT for Livechat.
   static void setJwt(String jwt) async {
     await _channel.invokeMethod('setJwt', jwt);
   }
@@ -199,11 +245,12 @@ class InfobipMobilemessaging {
       return null;
     }
 
-    _defaultMessageStorage ??= _DefaultMessageStorage(_channel);
+    _defaultMessageStorage ??= DefaultMessageStorage(_channel);
 
     return _defaultMessageStorage;
   }
 
+  /// Shows dialog to user to receive push notifications on Android devices.
   static Future<void> registerForAndroidRemoteNotifications() async {
     if (Platform.isIOS) {
       log("It's not supported on the iOS platform");
@@ -213,6 +260,7 @@ class InfobipMobilemessaging {
     await _channel.invokeMethod('registerForAndroidRemoteNotifications');
   }
 
+  /// Shows dialog to user to receive push notifications on iOS devices.
   static Future<void> registerForRemoteNotifications() async {
     if (!Platform.isIOS) {
       log("It's supported only on the iOS platform");
@@ -251,7 +299,8 @@ class InfobipMobilemessaging {
   }
 
   /// Fetches messages from Inbox.
-  /// Requires token, externalUserId, and filterOptions.
+  /// Requires `token`, `externalUserId`, and [FilterOptions].
+  ///
   /// Example:
   /// ```dart
   /// var inbox = await fetchInboxMessages('jwtToken', 'yourId', FilterOptions());
@@ -267,9 +316,9 @@ class InfobipMobilemessaging {
     )));
   }
 
-  /// Fetches messages from Inbox without token - recommended only for sandbox
-  /// applications. For production apps use fetchInboxMessages with token.
-  /// Requires externalUserId, and filterOptions.
+  /// Fetches messages from [Inbox] without token - recommended only for sandbox
+  /// applications. For production apps use [fetchInboxMessages] with token.
+  /// Requires `externalUserId`, and [FilterOptions].
   ///
   /// Example:
   /// ```dart
@@ -285,7 +334,7 @@ class InfobipMobilemessaging {
     )));
   }
 
-  /// Sets Inbox messages as seen.
+  /// Sets [Inbox] messages as seen.
   /// Requires externalUserId and List of IDs of messages to be marked as seen.
   static Future<void> setInboxMessagesSeen(
       String externalUserId, List<String> messageIds) async {
@@ -302,6 +351,8 @@ class InfobipMobilemessaging {
     await _channel.invokeMethod('markMessagesSeen', messageIds);
   }
 
+  /// Sets title for in-app chat notifications and overrides default values.
+  /// Supported only on Android.
   static void setChatPushTitle(String? title) async {
     if (!Platform.isAndroid) {
       log("It's supported only on the Android platform");
@@ -310,6 +361,8 @@ class InfobipMobilemessaging {
     await _channel.invokeMethod('setChatPushTitle', title);
   }
 
+  /// Sets body for in-app chat notifications and overrides default values.
+  /// Supported only on Android.
   static void setChatPushBody(String? body) async {
     if (!Platform.isAndroid) {
       log("It's supported only on the Android platform");
@@ -317,31 +370,19 @@ class InfobipMobilemessaging {
     }
     await _channel.invokeMethod('setChatPushBody', body);
   }
-}
 
-class _DefaultMessageStorage extends MessageStorage {
-  final MethodChannel _channel;
+  /// Used by MobileMessaging plugin to get plugin's version.
+  static Future<String> _getVersion() async {
+    final fileContent = await rootBundle.loadString(
+      'packages/infobip_mobilemessaging/pubspec.yaml',
+    );
 
-  _DefaultMessageStorage(this._channel);
-
-  @override
-  delete(String messageId) async {
-    await _channel.invokeMethod('defaultMessageStorage_delete', messageId);
-  }
-
-  @override
-  deleteAll() async {
-    await _channel.invokeMethod('defaultMessageStorage_deleteAll');
-  }
-
-  @override
-  Future<Message?> find(String messageId) async =>
-      Message.fromJson(jsonDecode(await _channel.invokeMethod('defaultMessageStorage_find', messageId)));
-
-  @override
-  Future<List<Message>?> findAll() async {
-    String result = await _channel.invokeMethod('defaultMessageStorage_findAll');
-    Iterable l = json.decode(result);
-    return List<Message>.from(l.map((model) => Message.fromJson(model)));
+    if (fileContent.isNotEmpty) {
+      String versionStr = fileContent.substring(
+          fileContent.indexOf('version:'), fileContent.indexOf('\nhomepage:'));
+      versionStr = versionStr.substring(9, versionStr.length);
+      return versionStr;
+    }
+    return '';
   }
 }

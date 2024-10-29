@@ -45,7 +45,6 @@ public class SwiftInfobipMobilemessagingPlugin: NSObject, FlutterPlugin {
             EventName.userUpdated,
             EventName.personalized,
             EventName.depersonalized,
-            EventName.geofenceEntered,
             EventName.actionTapped,
             EventName.notificationTapped,
             EventName.messageReceived,

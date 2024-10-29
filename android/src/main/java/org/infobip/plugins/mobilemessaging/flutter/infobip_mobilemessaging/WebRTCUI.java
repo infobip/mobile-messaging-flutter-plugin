@@ -4,6 +4,7 @@ import android.content.Context;
 
 import androidx.annotation.NonNull;
 
+import org.infobip.mobile.messaging.util.StringUtils;
 import org.infobip.plugins.mobilemessaging.flutter.common.ConfigCache;
 import org.infobip.plugins.mobilemessaging.flutter.common.Configuration;
 import org.infobip.plugins.mobilemessaging.flutter.common.ErrorCodes;
@@ -11,8 +12,6 @@ import org.infobip.plugins.mobilemessaging.flutter.common.ErrorCodes;
 import java.lang.reflect.Proxy;
 
 import io.flutter.plugin.common.MethodChannel;
-
-import org.infobip.mobile.messaging.util.StringUtils;
 
 public class WebRTCUI {
     @FunctionalInterface

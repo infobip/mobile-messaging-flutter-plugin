@@ -1,7 +1,7 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:infobip_mobilemessaging/models/installation.dart';
-import 'package:infobip_mobilemessaging/models/message.dart';
-import 'package:infobip_mobilemessaging/models/user_data.dart';
+import 'package:infobip_mobilemessaging/models/data/installation.dart';
+import 'package:infobip_mobilemessaging/models/data/message.dart';
+import 'package:infobip_mobilemessaging/models/data/user_data.dart';
 
 import 'utils/json_test_stubs.dart';
 import 'utils/models_examples.dart';

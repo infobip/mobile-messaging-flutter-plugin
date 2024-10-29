@@ -17,10 +17,10 @@ class ChatViewAttachment {
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
-          other is ChatViewAttachment &&
-              url == other.url &&
-              type == other.type &&
-              caption == other.caption;
+      other is ChatViewAttachment &&
+          url == other.url &&
+          type == other.type &&
+          caption == other.caption;
 
   @override
   int get hashCode =>

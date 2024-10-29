@@ -1,6 +1,5 @@
 package org.infobip.plugins.mobilemessaging.flutter.chat;
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.res.AssetFileDescriptor;
 import android.content.res.AssetManager;
@@ -10,22 +9,15 @@ import android.graphics.Color;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.util.Log;
+
 import androidx.annotation.Nullable;
-import org.infobip.mobile.messaging.MobileMessaging;
-import org.infobip.mobile.messaging.MobileMessagingCore;
-import org.infobip.mobile.messaging.NotificationSettings;
-import org.infobip.mobile.messaging.app.ActivityLifecycleMonitor;
-import org.infobip.mobile.messaging.chat.InAppChat;
+
 import org.infobip.mobile.messaging.chat.view.styles.InAppChatInputViewStyle;
 import org.infobip.mobile.messaging.chat.view.styles.InAppChatStyle;
 import org.infobip.mobile.messaging.chat.view.styles.InAppChatTheme;
 import org.infobip.mobile.messaging.chat.view.styles.InAppChatToolbarStyle;
-import org.infobip.mobile.messaging.interactive.NotificationAction;
-import org.infobip.mobile.messaging.interactive.NotificationCategory;
-import org.infobip.mobile.messaging.storage.SQLiteMessageStore;
 
 import java.io.IOException;
-import java.util.List;
 
 import io.flutter.FlutterInjector;
 import io.flutter.embedding.engine.loader.FlutterLoader;
@@ -228,7 +220,7 @@ public class ChatCustomization {
                 .setSendIcon(loadDrawable(chatInputSendIcon, loader, context))
                 .setSendBackgroundDrawable(loadDrawable(chatInputSendBackgroundDrawable, loader, context))
                 .setSendBackgroundColor(parseColor(chatInputSendBackgroundColor))
-                .setSeparatorLineColor( parseColor(chatInputSeparatorLineColor))
+                .setSeparatorLineColor(parseColor(chatInputSeparatorLineColor))
                 .setIsSeparatorLineVisible(chatInputSeparatorLineVisible)
                 .setCursorColor(parseColor(chatInputCursorColor));
 

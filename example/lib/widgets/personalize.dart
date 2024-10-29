@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:infobip_mobilemessaging/infobip_mobilemessaging.dart';
-import 'package:infobip_mobilemessaging/models/personalize_context.dart';
+import 'package:infobip_mobilemessaging/models/data/personalize_context.dart';
 
 class Personalize extends StatefulWidget {
   const Personalize({super.key, required this.onPersonalize});

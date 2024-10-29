@@ -1,4 +1,4 @@
-package android.src.main.java.org.infobip.plugins.mobilemessaging.flutter.common;
+package org.infobip.plugins.mobilemessaging.flutter.common;
 
 import android.util.Log;
 

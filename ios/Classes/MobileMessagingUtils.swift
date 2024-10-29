@@ -2,11 +2,6 @@ import Foundation
 import MobileMessaging
 
 extension MM_MTMessage {
-    var isGeoMessage: Bool {
-        let geoAreasDicts = (originalPayload["internalData"] as? [String: Any])?["geo"] as? [[String: Any]]
-        return geoAreasDicts != nil
-    }
-    
     override func dictionary() -> [String: Any] {
         return self.dictionaryRepresentation
     }
@@ -45,24 +40,6 @@ extension MMBaseMessage {
     }
 }
 
-extension MMRegion {
-    func dictionary() -> [String: Any] {
-        var areaCenter = [String: Any]()
-        areaCenter["lat"] = center.latitude
-        areaCenter["lon"] = center.longitude
-        
-        var area = [String: Any]()
-        area["id"] = identifier
-        area["center"] = areaCenter
-        area["radius"] = radius
-        area["title"] = title
-        
-        var result = [String: Any]()
-        result["area"] = area
-        return result
-    }
-}
-
 extension Optional {
     func unwrap<T>(orDefault fallbackValue: T) -> T {
         switch self {
@@ -91,7 +68,6 @@ struct EventName {
     static let userUpdated = "userUpdated"
     static let personalized = "personalized"
     static let depersonalized = "depersonalized"
-    static let geofenceEntered = "geofenceEntered"
     static let actionTapped = "actionTapped"
     static let notificationTapped = "notificationTapped"
     static let messageReceived = "messageReceived"

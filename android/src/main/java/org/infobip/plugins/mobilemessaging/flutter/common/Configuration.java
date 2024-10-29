@@ -1,8 +1,8 @@
 package org.infobip.plugins.mobilemessaging.flutter.common;
 
-import java.util.List;
-
 import com.google.firebase.FirebaseOptions;
+
+import java.util.List;
 
 public class Configuration {
     /// The application code of your Application from Push Portal website

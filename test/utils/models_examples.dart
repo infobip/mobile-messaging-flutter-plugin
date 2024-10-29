@@ -1,8 +1,8 @@
-import 'package:infobip_mobilemessaging/models/configuration.dart';
-import 'package:infobip_mobilemessaging/models/installation.dart';
-import 'package:infobip_mobilemessaging/models/message.dart';
-import 'package:infobip_mobilemessaging/models/personalize_context.dart';
-import 'package:infobip_mobilemessaging/models/user_data.dart';
+import 'package:infobip_mobilemessaging/models/configurations/configuration.dart';
+import 'package:infobip_mobilemessaging/models/data/installation.dart';
+import 'package:infobip_mobilemessaging/models/data/message.dart';
+import 'package:infobip_mobilemessaging/models/data/personalize_context.dart';
+import 'package:infobip_mobilemessaging/models/data/user_data.dart';
 
 Configuration get configurationModelExample => Configuration(
       applicationCode: 'abc',
@@ -56,7 +56,6 @@ Installation get installationModelExample => Installation(
       isPrimaryDevice: true,
       isPushRegistrationEnabled: true,
       notificationsEnabled: true,
-      geoEnabled: true,
       sdkVersion: 'someSdkVersion',
       appVersion: 'appVersion',
       os: OS.Android,
@@ -123,7 +122,7 @@ UserData get userDataModelExample => UserData(
       gender: Gender.Male,
       birthday: '01-01-1999',
       phones: [
-        '79123456789',
+        '38516419710',
       ],
       emails: [
         'some.email@email.com',
@@ -142,6 +141,9 @@ UserData get userDataModelExample => UserData(
           }
         ]
       },
+      installations: [
+        installationModelExample,
+      ],
     );
 
 Message get messageModelExample => Message(
@@ -159,7 +161,6 @@ Message get messageModelExample => Message(
       seenDate: 1234567890,
       contentUrl: 'https://some.url',
       seen: true,
-      geo: true,
       originalPayload: {'param1': 'value1'},
       browserUrl: 'https://some-browser.url',
       deeplink: 'https://some-deeplink.url',

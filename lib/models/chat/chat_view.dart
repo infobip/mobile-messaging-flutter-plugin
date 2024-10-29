@@ -4,12 +4,12 @@ import 'dart:convert';
 import 'dart:developer';
 
 import 'package:flutter/foundation.dart';
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter/gestures.dart';
-import 'package:infobip_mobilemessaging/models/chat_view_attachment.dart';
-import 'package:infobip_mobilemessaging/models/chat_view_event.dart';
-import 'package:infobip_mobilemessaging/models/widget_info.dart';
+import 'package:infobip_mobilemessaging/models/chat/chat_view_attachment.dart';
+import 'package:infobip_mobilemessaging/models/chat/chat_view_event.dart';
+import 'package:infobip_mobilemessaging/models/chat/widget_info.dart';
 
 typedef FlutterChatViewCreatedCallback = void Function(
     ChatViewController controller);
@@ -30,8 +30,8 @@ class ChatView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     Map<String, Object?> args = {};
-    if (this.withToolbar != null) args["withToolbar"] = this.withToolbar;
-    if (this.withInput != null) args["withInput"] = this.withInput;
+    if (this.withToolbar != null) args['withToolbar'] = this.withToolbar;
+    if (this.withInput != null) args['withInput'] = this.withInput;
 
     switch (defaultTargetPlatform) {
       case TargetPlatform.android:
@@ -40,11 +40,11 @@ class ChatView extends StatelessWidget {
           onPlatformViewCreated: _onPlatformViewCreated,
           creationParams: args,
           creationParamsCodec: _decoder,
-          gestureRecognizers: [            
-              new Factory<OneSequenceGestureRecognizer>( 
-                () => new EagerGestureRecognizer(), 
-                ),          
-              ].toSet(),         
+          gestureRecognizers: [
+            new Factory<OneSequenceGestureRecognizer>(
+              () => new EagerGestureRecognizer(),
+            ),
+          ].toSet(),
         );
       case TargetPlatform.iOS:
         return UiKitView(
@@ -52,11 +52,11 @@ class ChatView extends StatelessWidget {
           onPlatformViewCreated: _onPlatformViewCreated,
           creationParams: args,
           creationParamsCodec: _decoder,
-          gestureRecognizers: [            
-              new Factory<OneSequenceGestureRecognizer>( 
-                () => new EagerGestureRecognizer(), 
-                ),          
-              ].toSet(),  
+          gestureRecognizers: [
+            new Factory<OneSequenceGestureRecognizer>(
+              () => new EagerGestureRecognizer(),
+            ),
+          ].toSet(),
         );
       default:
         return Text(
@@ -202,7 +202,6 @@ class ChatViewController {
     }
     _eventsSubscription?.resume();
   }
-
 }
 
 class ChatViewAttachmentData {

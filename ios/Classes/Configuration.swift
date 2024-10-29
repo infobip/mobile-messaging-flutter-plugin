@@ -35,7 +35,6 @@ class Configuration {
     }
     
     let appCode: String
-    // let geofencingEnabled: Bool
     let inAppChatEnabled: Bool
     let fullFeaturedInAppsEnabled: Bool
     // let messageStorageEnabled: Bool

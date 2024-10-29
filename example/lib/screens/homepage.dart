@@ -4,10 +4,10 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:infobip_mobilemessaging/infobip_mobilemessaging.dart';
-import 'package:infobip_mobilemessaging/models/installation.dart';
+import 'package:infobip_mobilemessaging/models/data/installation.dart';
 import 'package:infobip_mobilemessaging/models/library_event.dart';
-import 'package:infobip_mobilemessaging/models/message.dart';
-import 'package:infobip_mobilemessaging/models/user_data.dart';
+import 'package:infobip_mobilemessaging/models/data/message.dart';
+import 'package:infobip_mobilemessaging/models/data/user_data.dart';
 
 import '../chat_customization.dart' as chatCustomization;
 import '../main.dart';
@@ -180,8 +180,8 @@ class _HomePageState extends State<HomePage> {
     var currentUser = await InfobipMobilemessaging.getUser();
 
     currentUser.middleName ??= 'Justin';
-    currentUser.phones ??= ['79123456789'];
-    currentUser.emails ??= ['some@email.com'];
+    // currentUser.phones ??= ['38516419710'];
+    // currentUser.emails ??= ['some@email.com'];
 
     try {
       await InfobipMobilemessaging.saveUser(currentUser);

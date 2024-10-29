@@ -11,7 +11,6 @@ class Installation {
   bool? isPrimaryDevice;
   bool? isPushRegistrationEnabled;
   bool? notificationsEnabled;
-  bool? geoEnabled;
   final String? sdkVersion;
   final String? appVersion;
   final OS? os;
@@ -32,7 +31,6 @@ class Installation {
     this.isPrimaryDevice,
     this.isPushRegistrationEnabled,
     this.notificationsEnabled,
-    this.geoEnabled,
     this.sdkVersion,
     this.appVersion,
     this.os,
@@ -78,7 +76,6 @@ class Installation {
         'isPrimaryDevice': isPrimaryDevice,
         'isPushRegistrationEnabled': isPushRegistrationEnabled,
         'notificationsEnabled': notificationsEnabled,
-        'geoEnabled': geoEnabled,
         'sdkVersion': sdkVersion,
         'appVersion': appVersion,
         'os': os != null ? os!.name : null,
@@ -101,7 +98,6 @@ class Installation {
             Installation.resolvePushServiceType(json['pushServiceType']),
         isPushRegistrationEnabled = json['isPushRegistrationEnabled'],
         notificationsEnabled = json['notificationsEnabled'],
-        geoEnabled = json['geoEnabled'],
         sdkVersion = json['sdkVersion'],
         appVersion = json['appVersion'],
         os = Installation.fromString(json['os']),
@@ -128,7 +124,6 @@ class Installation {
           isPrimaryDevice == other.isPrimaryDevice &&
           isPushRegistrationEnabled == other.isPushRegistrationEnabled &&
           notificationsEnabled == other.notificationsEnabled &&
-          geoEnabled == other.geoEnabled &&
           sdkVersion == other.sdkVersion &&
           appVersion == other.appVersion &&
           os == other.os &&
@@ -151,7 +146,6 @@ class Installation {
       isPrimaryDevice.hashCode ^
       isPushRegistrationEnabled.hashCode ^
       notificationsEnabled.hashCode ^
-      geoEnabled.hashCode ^
       sdkVersion.hashCode ^
       appVersion.hashCode ^
       os.hashCode ^

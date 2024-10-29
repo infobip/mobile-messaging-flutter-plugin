@@ -1,5 +1,5 @@
 class Configuration {
-  /// The application code of your Application from Push Portal website
+  /// The application code of your Application from <a href=https://portal.infobip.com/apps/mam/profiles>Infobip Portal</a>
   final String applicationCode;
 
   String? pluginVersion;
@@ -56,7 +56,7 @@ class Configuration {
 class AndroidSettings {
   final FirebaseOptions? firebaseOptions;
 
-  // A resource name for a status bar icon (without extension), located in '/platforms/android/app/src/main/res/mipmap'
+  /// A resource name for a status bar icon (without extension), located in '/platforms/android/app/src/main/res/mipmap'
   final String? notificationIcon;
   final bool? multipleNotifications;
   final String? notificationAccentColor;
@@ -237,143 +237,147 @@ class WebRTCUI {
 }
 
 class ToolbarCustomization {
-  final String? titleTextAppearance; 
-  final String? titleTextColor; 
-  final String? titleText; 
-  final bool?   titleCentered; 
-  final String? backgroundColor; 
-  final String? navigationIcon; 
+  final String? titleTextAppearance;
+  final String? titleTextColor;
+  final String? titleText;
+  final bool? titleCentered;
+  final String? backgroundColor;
+  final String? navigationIcon;
   final String? navigationIconTint;
   final String? subtitleTextAppearance; // android only
   final String? subtitleTextColor; // android only
   final String? subtitleText; // android only
-  final bool?   subtitleCentered;  // android only
+  final bool? subtitleCentered; // android only
 
   ToolbarCustomization({
-    this.titleTextAppearance, 
-    this.titleTextColor, 
-    this.titleText, 
-    this.titleCentered, 
-    this.backgroundColor, 
-    this.navigationIcon, 
+    this.titleTextAppearance,
+    this.titleTextColor,
+    this.titleText,
+    this.titleCentered,
+    this.backgroundColor,
+    this.navigationIcon,
     this.navigationIconTint,
-    this.subtitleTextAppearance, 
-    this.subtitleTextColor, 
+    this.subtitleTextAppearance,
+    this.subtitleTextColor,
     this.subtitleText,
     this.subtitleCentered,
   });
 
   Map<String, dynamic> toJson() => {
-    'titleTextAppearance': titleTextAppearance,
-    'titleTextColor': titleTextColor,
-    'titleText': titleText,
-    'titleCentered': titleCentered,
-    'backgroundColor': backgroundColor,
-    'navigationIcon': navigationIcon,
-    'navigationIconTint': navigationIconTint,
-    'subtitleTextAppearance': subtitleTextAppearance,
-    'subtitleTextColor':subtitleTextColor,
-    'subtitleText': subtitleText,
-    'subtitleCentered': subtitleCentered,
-  };
+        'titleTextAppearance': titleTextAppearance,
+        'titleTextColor': titleTextColor,
+        'titleText': titleText,
+        'titleCentered': titleCentered,
+        'backgroundColor': backgroundColor,
+        'navigationIcon': navigationIcon,
+        'navigationIconTint': navigationIconTint,
+        'subtitleTextAppearance': subtitleTextAppearance,
+        'subtitleTextColor': subtitleTextColor,
+        'subtitleText': subtitleText,
+        'subtitleCentered': subtitleCentered,
+      };
 }
 
 class ChatCustomization {
-   //	StatusBar
-  final String? chatStatusBarBackgroundColor; 
+  //	StatusBar
+  final String? chatStatusBarBackgroundColor;
   final String? chatStatusBarIconsColorMode;
+
   // Toolbar
   final ToolbarCustomization? chatToolbar;
   final ToolbarCustomization? attachmentPreviewToolbar;
-  final String? attachmentPreviewToolbarSaveMenuItemIcon; 
-  final String? attachmentPreviewToolbarMenuItemsIconTint; 
-   // NetworkError
-  final String? networkErrorText; 
-  final String? networkErrorTextColor; 
-  final String? networkErrorTextAppearance; 
-  final String? networkErrorLabelBackgroundColor; 
+  final String? attachmentPreviewToolbarSaveMenuItemIcon;
+  final String? attachmentPreviewToolbarMenuItemsIconTint;
+
+  // NetworkError
+  final String? networkErrorText;
+  final String? networkErrorTextColor;
+  final String? networkErrorTextAppearance;
+  final String? networkErrorLabelBackgroundColor;
+
   // Chat
-  final String? chatBackgroundColor; 
-  final String? chatProgressBarColor; 
+  final String? chatBackgroundColor;
+  final String? chatProgressBarColor;
+
   // Input
-  final String? chatInputTextAppearance; 
-  final String? chatInputTextColor; 
+  final String? chatInputTextAppearance;
+  final String? chatInputTextColor;
   final String? chatInputBackgroundColor;
-  final String? chatInputHintText; 
-  final String? chatInputHintTextColor; 
-  final String? chatInputAttachmentIcon; 
-  final String? chatInputAttachmentIconTint; 
-  final String? chatInputAttachmentBackgroundDrawable; 
-  final String? chatInputAttachmentBackgroundColor; 
-  final String? chatInputSendIcon; 
-  final String? chatInputSendIconTint; 
-  final String? chatInputSendBackgroundDrawable; 
-  final String? chatInputSendBackgroundColor; 
-  final String? chatInputSeparatorLineColor; 
-  final bool? chatInputSeparatorLineVisible; 
+  final String? chatInputHintText;
+  final String? chatInputHintTextColor;
+  final String? chatInputAttachmentIcon;
+  final String? chatInputAttachmentIconTint;
+  final String? chatInputAttachmentBackgroundDrawable;
+  final String? chatInputAttachmentBackgroundColor;
+  final String? chatInputSendIcon;
+  final String? chatInputSendIconTint;
+  final String? chatInputSendBackgroundDrawable;
+  final String? chatInputSendBackgroundColor;
+  final String? chatInputSeparatorLineColor;
+  final bool? chatInputSeparatorLineVisible;
   final String? chatInputCursorColor;
 
   ChatCustomization({
-    this.chatStatusBarBackgroundColor, 
+    this.chatStatusBarBackgroundColor,
     this.chatStatusBarIconsColorMode,
     this.chatToolbar,
     this.attachmentPreviewToolbar,
-    this.attachmentPreviewToolbarSaveMenuItemIcon, 
-    this.attachmentPreviewToolbarMenuItemsIconTint, 
-    this.networkErrorText, 
-    this.networkErrorTextColor, 
-    this.networkErrorTextAppearance, 
-    this.networkErrorLabelBackgroundColor, 
-    this.chatBackgroundColor, 
-    this.chatProgressBarColor, 
-    this.chatInputTextAppearance, 
-    this.chatInputTextColor, 
+    this.attachmentPreviewToolbarSaveMenuItemIcon,
+    this.attachmentPreviewToolbarMenuItemsIconTint,
+    this.networkErrorText,
+    this.networkErrorTextColor,
+    this.networkErrorTextAppearance,
+    this.networkErrorLabelBackgroundColor,
+    this.chatBackgroundColor,
+    this.chatProgressBarColor,
+    this.chatInputTextAppearance,
+    this.chatInputTextColor,
     this.chatInputBackgroundColor,
-    this.chatInputHintText, 
-    this.chatInputHintTextColor, 
-    this.chatInputAttachmentIcon, 
-    this.chatInputAttachmentIconTint, 
-    this.chatInputAttachmentBackgroundDrawable, 
-    this.chatInputAttachmentBackgroundColor, 
-    this.chatInputSendIcon, 
-    this.chatInputSendIconTint, 
-    this.chatInputSendBackgroundDrawable, 
-    this.chatInputSendBackgroundColor, 
-    this.chatInputSeparatorLineColor, 
-    this.chatInputSeparatorLineVisible, 
+    this.chatInputHintText,
+    this.chatInputHintTextColor,
+    this.chatInputAttachmentIcon,
+    this.chatInputAttachmentIconTint,
+    this.chatInputAttachmentBackgroundDrawable,
+    this.chatInputAttachmentBackgroundColor,
+    this.chatInputSendIcon,
+    this.chatInputSendIconTint,
+    this.chatInputSendBackgroundDrawable,
+    this.chatInputSendBackgroundColor,
+    this.chatInputSeparatorLineColor,
+    this.chatInputSeparatorLineVisible,
     this.chatInputCursorColor,
   });
 
   Map<String, dynamic> toJson() => {
-    'chatStatusBarBackgroundColor': chatStatusBarBackgroundColor, 
-    'chatStatusBarIconsColorMode': chatStatusBarIconsColorMode,
-    'chatToolbar': chatToolbar,
-    'attachmentPreviewToolbar': attachmentPreviewToolbar,
-    'attachmentPreviewToolbarSaveMenuItemIcon': attachmentPreviewToolbarSaveMenuItemIcon,
-    'attachmentPreviewToolbarMenuItemsIconTint': attachmentPreviewToolbarMenuItemsIconTint, 
-    'networkErrorText': networkErrorText, 
-    'networkErrorTextColor': networkErrorTextColor, 
-    'networkErrorTextAppearance': networkErrorTextAppearance, 
-    'networkErrorLabelBackgroundColor': networkErrorLabelBackgroundColor, 
-    'chatBackgroundColor': chatBackgroundColor, 
-    'chatProgressBarColor': chatProgressBarColor,
-    'chatInputTextAppearance': chatInputTextAppearance, 
-    'chatInputTextColor': chatInputTextColor, 
-    'chatInputBackgroundColor': chatInputBackgroundColor,
-    'chatInputHintText': chatInputHintText, 
-    'chatInputHintTextColor': chatInputHintTextColor, 
-    'chatInputAttachmentIcon': chatInputAttachmentIcon, 
-    'chatInputAttachmentIconTint': chatInputAttachmentIconTint, 
-    'chatInputAttachmentBackgroundDrawable': chatInputAttachmentBackgroundDrawable, 
-    'chatInputAttachmentBackgroundColor': chatInputAttachmentBackgroundColor, 
-    'chatInputSendIcon': chatInputSendIcon, 
-    'chatInputSendIconTint': chatInputSendIconTint, 
-    'chatInputSendBackgroundDrawable': chatInputSendBackgroundDrawable, 
-    'chatInputSendBackgroundColor': chatInputSendBackgroundColor, 
-    'chatInputSeparatorLineColor': chatInputSeparatorLineColor, 
-    'chatInputSeparatorLineVisible':  chatInputSeparatorLineVisible,
-    'chatInputCursorColor': chatInputCursorColor,
-  };
+        'chatStatusBarBackgroundColor': chatStatusBarBackgroundColor,
+        'chatStatusBarIconsColorMode': chatStatusBarIconsColorMode,
+        'chatToolbar': chatToolbar,
+        'attachmentPreviewToolbar': attachmentPreviewToolbar,
+        'attachmentPreviewToolbarSaveMenuItemIcon': attachmentPreviewToolbarSaveMenuItemIcon,
+        'attachmentPreviewToolbarMenuItemsIconTint': attachmentPreviewToolbarMenuItemsIconTint,
+        'networkErrorText': networkErrorText,
+        'networkErrorTextColor': networkErrorTextColor,
+        'networkErrorTextAppearance': networkErrorTextAppearance,
+        'networkErrorLabelBackgroundColor': networkErrorLabelBackgroundColor,
+        'chatBackgroundColor': chatBackgroundColor,
+        'chatProgressBarColor': chatProgressBarColor,
+        'chatInputTextAppearance': chatInputTextAppearance,
+        'chatInputTextColor': chatInputTextColor,
+        'chatInputBackgroundColor': chatInputBackgroundColor,
+        'chatInputHintText': chatInputHintText,
+        'chatInputHintTextColor': chatInputHintTextColor,
+        'chatInputAttachmentIcon': chatInputAttachmentIcon,
+        'chatInputAttachmentIconTint': chatInputAttachmentIconTint,
+        'chatInputAttachmentBackgroundDrawable': chatInputAttachmentBackgroundDrawable,
+        'chatInputAttachmentBackgroundColor': chatInputAttachmentBackgroundColor,
+        'chatInputSendIcon': chatInputSendIcon,
+        'chatInputSendIconTint': chatInputSendIconTint,
+        'chatInputSendBackgroundDrawable': chatInputSendBackgroundDrawable,
+        'chatInputSendBackgroundColor': chatInputSendBackgroundColor,
+        'chatInputSeparatorLineColor': chatInputSeparatorLineColor,
+        'chatInputSeparatorLineVisible': chatInputSeparatorLineVisible,
+        'chatInputCursorColor': chatInputCursorColor,
+      };
 }
 
 @deprecated

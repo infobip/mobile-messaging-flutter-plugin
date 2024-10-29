@@ -2,19 +2,24 @@ package org.infobip.plugins.mobilemessaging.flutter.chat;
 
 import android.app.Activity;
 import android.content.Context;
-import android.src.main.java.org.infobip.plugins.mobilemessaging.flutter.chat.ChatViewEvent;
-import android.src.main.java.org.infobip.plugins.mobilemessaging.flutter.common.StreamHandler;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.fragment.app.FragmentActivity;
+import androidx.fragment.app.FragmentContainerView;
+import androidx.fragment.app.FragmentManager;
+
+import org.infobip.mobile.messaging.api.chat.WidgetInfo;
 import org.infobip.mobile.messaging.chat.attachments.InAppChatMobileAttachment;
+import org.infobip.mobile.messaging.chat.core.InAppChatWidgetView;
 import org.infobip.mobile.messaging.chat.utils.LocalizationUtils;
 import org.infobip.mobile.messaging.chat.view.InAppChatFragment;
-import org.infobip.mobile.messaging.api.chat.WidgetInfo;
-import org.infobip.mobile.messaging.chat.core.InAppChatWidgetView;
 import org.infobip.plugins.mobilemessaging.flutter.common.ErrorCodes;
+import org.infobip.plugins.mobilemessaging.flutter.common.StreamHandler;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -22,11 +27,6 @@ import org.json.JSONObject;
 import java.util.Locale;
 import java.util.Map;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.fragment.app.FragmentActivity;
-import androidx.fragment.app.FragmentContainerView;
-import androidx.fragment.app.FragmentManager;
 import io.flutter.plugin.common.BinaryMessenger;
 import io.flutter.plugin.common.EventChannel;
 import io.flutter.plugin.common.MethodCall;
@@ -89,8 +89,7 @@ public class ChatPlatformView implements PlatformView, MethodCallHandler {
                     }
                 }
             });
-        }
-        else {
+        } else {
             throw new UnsupportedOperationException("Android API version is too low. Minimum supported version is 21 (Lollipop).");
         }
     }
@@ -294,7 +293,7 @@ public class ChatPlatformView implements PlatformView, MethodCallHandler {
 
     /**
      * Creates json from a WidgetInfo object.
-     *
+     * <p>
      * It is equivalent to the Dart's model in widget_info.dart file.
      *
      * @param widgetInfo WidgetInfo object
@@ -327,11 +326,11 @@ public class ChatPlatformView implements PlatformView, MethodCallHandler {
 
     /**
      * Creates json from a chat attachment.
+     * <p>
+     * It is equivalent to the Dart's model in chat_view_attachment.dart file.
      *
-     * It is equivalent to the Dart's model in chat_view_attchment.dart file.
-     *
-     * @param url chat chat attachment url
-     * @param type chat chat attachment type
+     * @param url     chat chat attachment url
+     * @param type    chat chat attachment type
      * @param caption chat chat attachment caption
      * @return chat attachment json
      */

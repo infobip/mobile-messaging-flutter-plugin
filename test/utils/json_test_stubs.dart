@@ -65,7 +65,6 @@ Map<String, dynamic> get installationExampleJson => {
       'isPrimaryDevice': true,
       'isPushRegistrationEnabled': true,
       'notificationsEnabled': true,
-      'geoEnabled': true,
       'sdkVersion': 'someSdkVersion',
       'appVersion': 'appVersion',
       'os': 'Android',
@@ -140,7 +139,7 @@ Map<String, dynamic> get userDataExampleJson => {
       'gender': 'Male',
       'birthday': '01-01-1999',
       'phones': [
-        '79123456789',
+        '38516419710',
       ],
       'emails': [
         'some.email@email.com',
@@ -158,7 +157,10 @@ Map<String, dynamic> get userDataExampleJson => {
             'alDecimal': 0.66
           }
         ]
-      }
+      },
+      'installations': [
+        installationExampleJson,
+      ]
     };
 
 Map<String, dynamic> get messageExampleJson => {
@@ -176,7 +178,6 @@ Map<String, dynamic> get messageExampleJson => {
       'seenDate': 1234567890,
       'contentUrl': 'https://some.url',
       'seen': true,
-      'geo': true,
       'originalPayload': {'param1': 'value1'},
       'browserUrl': 'https://some-browser.url',
       'deeplink': 'https://some-deeplink.url',

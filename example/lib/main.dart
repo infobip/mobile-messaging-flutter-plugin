@@ -2,7 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:infobip_mobilemessaging/infobip_mobilemessaging.dart';
-import 'package:infobip_mobilemessaging/models/configuration.dart'
+import 'package:infobip_mobilemessaging/models/configurations/configuration.dart'
     as mmconfiguration;
 
 import 'screens/homepage.dart';

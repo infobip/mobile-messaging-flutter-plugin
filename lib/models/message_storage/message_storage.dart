@@ -1,4 +1,4 @@
-import 'message.dart';
+import '../data/message.dart';
 
 abstract class MessageStorage {
   Future<Message?> find(String messageId);

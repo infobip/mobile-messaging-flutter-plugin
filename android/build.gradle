@@ -4,6 +4,8 @@ plugins {
 
 version '1.0'
 
+def withWebRTCUI = getRootProjectProperty('withWebRTCUI', false)
+
 rootProject.allprojects {
     repositories {
         google()
@@ -27,7 +29,6 @@ android {
         }
     }
 }
-def withWebRTCUI = getRootProjectProperty('withWebRTCUI', false)
 
 dependencies {
     def mmVersion = '13.1.1'

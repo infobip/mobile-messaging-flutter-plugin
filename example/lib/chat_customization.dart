@@ -1,5 +1,5 @@
 library chat_customization;
-import 'package:infobip_mobilemessaging/models/configuration.dart' as mmconfiguration;
+import 'package:infobip_mobilemessaging/models/configurations/configuration.dart' as mmconfiguration;
 
 Object customBranding = mmconfiguration.ChatCustomization(
     chatStatusBarBackgroundColor: "#673AB7",

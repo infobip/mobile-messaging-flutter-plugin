@@ -2,8 +2,8 @@ import 'package:flutter/foundation.dart';
 
 /// A message stored in the inbox.
 ///
-/// InboxMessage always has a special topic, has sentTimestamp - milliseconds
-/// from epoch in UTC, and seen status. To mark message as seen, use special
+/// [InboxMessage] always has a special [topic], has [sentTimestamp] - milliseconds
+/// from epoch in UTC, and [seen] status. To mark message as seen, use special
 /// markMessagesSeen.
 class InboxMessage {
   final String messageId;

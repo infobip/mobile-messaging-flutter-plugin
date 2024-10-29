@@ -1,10 +1,10 @@
 import 'dart:developer';
 
 import 'package:flutter/material.dart';
-import 'package:infobip_mobilemessaging/chat_view.dart';
-import 'package:infobip_mobilemessaging/models/chat_view_event.dart';
-import 'package:infobip_mobilemessaging/models/widget_info.dart';
-import 'package:infobip_mobilemessaging/models/chat_view_attachment.dart';
+import 'package:infobip_mobilemessaging/models/chat/chat_view.dart';
+import 'package:infobip_mobilemessaging/models/chat/chat_view_event.dart';
+import 'package:infobip_mobilemessaging/models/chat/widget_info.dart';
+import 'package:infobip_mobilemessaging/models/chat/chat_view_attachment.dart';
 
 class ChatViewDemo extends StatefulWidget {
   const ChatViewDemo({super.key});

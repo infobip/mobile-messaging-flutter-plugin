@@ -3,14 +3,15 @@ package org.infobip.plugins.mobilemessaging.flutter.chat;
 import android.app.Activity;
 import android.content.Context;
 
-import androidx.annotation.Nullable;
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+
+import java.util.Map;
+
+import io.flutter.plugin.common.BinaryMessenger;
 import io.flutter.plugin.common.StandardMessageCodec;
 import io.flutter.plugin.platform.PlatformView;
 import io.flutter.plugin.platform.PlatformViewFactory;
-import io.flutter.plugin.common.BinaryMessenger;
-
-import java.util.Map;
 
 public class ChatViewFactory extends PlatformViewFactory {
 

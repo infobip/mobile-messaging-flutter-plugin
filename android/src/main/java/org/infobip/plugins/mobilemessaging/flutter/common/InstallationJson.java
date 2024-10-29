@@ -55,6 +55,25 @@ public class InstallationJson extends Installation {
         }
     }
 
+    /**
+     * Creates array of json objects from list of installations
+     *
+     * @param installations list of installations
+     * @return array of jsons representing installations
+     */
+
+    public static JSONArray installationsToJSONArray(@NonNull Installation[] installations) {
+        JSONArray array = new JSONArray();
+        for (Installation installation : installations) {
+            JSONObject json = InstallationJson.toJSON(installation);
+            if (json == null) {
+                continue;
+            }
+            array.put(json);
+        }
+        return array;
+    }
+
     private static Installation fromJSON(JSONObject json) {
         Installation installation = new Installation();
 

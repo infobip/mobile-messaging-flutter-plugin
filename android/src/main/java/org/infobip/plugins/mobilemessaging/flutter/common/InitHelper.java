@@ -92,7 +92,7 @@ public class InitHelper {
             chat.activate();
             chat.setTheme(createTheme(configuration));
             String widgetTheme = getWidgetTheme(configuration);
-            if (widgetTheme != null){
+            if (widgetTheme != null) {
                 chat.setWidgetTheme(widgetTheme);
             }
         }
@@ -184,7 +184,7 @@ public class InitHelper {
         }
     }
 
-    private String getWidgetTheme(Configuration configuration){
+    private String getWidgetTheme(Configuration configuration) {
         Configuration.InAppChatCustomization inAppChatCustomization = configuration.getCustomization();
         if (inAppChatCustomization != null) {
             return inAppChatCustomization.getWidgetTheme();

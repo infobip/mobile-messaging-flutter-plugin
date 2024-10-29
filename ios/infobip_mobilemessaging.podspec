@@ -22,7 +22,6 @@ A new flutter plugin project.
   s.source_files = 'Classes/**/*'
   s.dependency 'Flutter'
   s.dependency "MobileMessaging/Core", "12.14.0"
-  s.dependency "MobileMessaging/Geofencing", "12.14.0"
   s.dependency "MobileMessaging/InAppChat", "12.14.0"
   s.dependency "MobileMessaging/Inbox", "12.14.0"
   if defined?($WebRTCUIEnabled)

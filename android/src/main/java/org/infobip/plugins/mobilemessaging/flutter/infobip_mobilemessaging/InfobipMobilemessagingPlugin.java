@@ -1,5 +1,12 @@
 package org.infobip.plugins.mobilemessaging.flutter.infobip_mobilemessaging;
 
+import static org.infobip.plugins.mobilemessaging.flutter.common.LibraryEvent.broadcastEventMap;
+import static org.infobip.plugins.mobilemessaging.flutter.common.LibraryEvent.messageBroadcastEventMap;
+import static org.infobip.plugins.mobilemessaging.flutter.common.MessageJson.messageBundleToJSON;
+import static org.infobip.plugins.mobilemessaging.flutter.common.MessageJson.messageToJSON;
+import static org.infobip.plugins.mobilemessaging.flutter.common.MessageJson.messagesToJSONArray;
+import static org.infobip.plugins.mobilemessaging.flutter.infobip_mobilemessaging.WebRTCUI.defaultWebrtcError;
+
 import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.Activity;
@@ -8,15 +15,17 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Build;
-import android.os.Bundle;
-import android.src.main.java.org.infobip.plugins.mobilemessaging.flutter.common.StreamHandler;
 import android.util.Log;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.core.content.ContextCompat;
+import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
 import org.infobip.mobile.messaging.BroadcastParameter;
-import org.infobip.mobile.messaging.CustomAttributeValue;
 import org.infobip.mobile.messaging.CustomAttributesMapper;
 import org.infobip.mobile.messaging.CustomEvent;
 import org.infobip.mobile.messaging.Event;
@@ -53,6 +62,7 @@ import org.infobip.plugins.mobilemessaging.flutter.common.InitHelper;
 import org.infobip.plugins.mobilemessaging.flutter.common.InstallationJson;
 import org.infobip.plugins.mobilemessaging.flutter.common.PermissionsRequestManager;
 import org.infobip.plugins.mobilemessaging.flutter.common.PersonalizationCtx;
+import org.infobip.plugins.mobilemessaging.flutter.common.StreamHandler;
 import org.infobip.plugins.mobilemessaging.flutter.common.UserJson;
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -67,10 +77,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.core.content.ContextCompat;
-import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 import io.flutter.embedding.engine.plugins.FlutterPlugin;
 import io.flutter.embedding.engine.plugins.activity.ActivityAware;
 import io.flutter.embedding.engine.plugins.activity.ActivityPluginBinding;
@@ -83,16 +89,12 @@ import io.flutter.plugin.common.MethodChannel;
 import io.flutter.plugin.common.MethodChannel.MethodCallHandler;
 import io.flutter.plugin.common.PluginRegistry;
 
-import static org.infobip.plugins.mobilemessaging.flutter.common.LibraryEvent.broadcastEventMap;
-import static org.infobip.plugins.mobilemessaging.flutter.common.LibraryEvent.messageBroadcastEventMap;
-import static org.infobip.plugins.mobilemessaging.flutter.infobip_mobilemessaging.WebRTCUI.defaultWebrtcError;
-
 /**
  * InfobipMobilemessagingPlugin
  */
 public class InfobipMobilemessagingPlugin implements FlutterPlugin, MethodCallHandler, ActivityAware, ServiceAware, PermissionsRequestManager.PermissionsRequester, PluginRegistry.RequestPermissionsResultListener {
 
-    private static final String TAG = "MobileMessagingFlutter";
+    public static final String TAG = "MobileMessagingFlutter";
 
     /// The MethodChannel that will the communication between Flutter and native Android
     ///
@@ -362,30 +364,24 @@ public class InfobipMobilemessagingPlugin implements FlutterPlugin, MethodCallHa
             if (Event.TOKEN_RECEIVED.getKey().equals(intent.getAction())) {
                 data = intent.getStringExtra(BroadcastParameter.EXTRA_CLOUD_TOKEN);
                 broadcastHandler.sendEvent(event, data);
-            }
-            else if (Event.REGISTRATION_CREATED.getKey().equals(intent.getAction())) {
+            } else if (Event.REGISTRATION_CREATED.getKey().equals(intent.getAction())) {
                 data = intent.getStringExtra(BroadcastParameter.EXTRA_INFOBIP_ID);
                 broadcastHandler.sendEvent(event, data);
-            }
-            else if (InAppChatEvent.CHAT_VIEW_CHANGED.getKey().equals(intent.getAction())) {
+            } else if (InAppChatEvent.CHAT_VIEW_CHANGED.getKey().equals(intent.getAction())) {
                 data = intent.getStringExtra(BroadcastParameter.EXTRA_CHAT_VIEW);
                 broadcastHandler.sendEvent(event, data);
-            }
-            else if (InAppChatEvent.LIVECHAT_REGISTRATION_ID_UPDATED.getKey().equals(intent.getAction())) {
+            } else if (InAppChatEvent.LIVECHAT_REGISTRATION_ID_UPDATED.getKey().equals(intent.getAction())) {
                 data = intent.getStringExtra(BroadcastParameter.EXTRA_LIVECHAT_REGISTRATION_ID);
                 broadcastHandler.sendEvent(event, data);
-            }
-            else if (InAppChatEvent.UNREAD_MESSAGES_COUNTER_UPDATED.getKey().equals(intent.getAction())) {
+            } else if (InAppChatEvent.UNREAD_MESSAGES_COUNTER_UPDATED.getKey().equals(intent.getAction())) {
                 int unreadMessagesCount = intent.getIntExtra(BroadcastParameter.EXTRA_UNREAD_CHAT_MESSAGES_COUNT, 0);
                 data = String.valueOf(unreadMessagesCount);
                 broadcastHandler.sendEvent(event, data);
-            }
-            else if (InAppChatEvent.IN_APP_CHAT_AVAILABILITY_UPDATED.getKey().equals(intent.getAction())) {
+            } else if (InAppChatEvent.IN_APP_CHAT_AVAILABILITY_UPDATED.getKey().equals(intent.getAction())) {
                 boolean isChatAvailable = intent.getBooleanExtra(BroadcastParameter.EXTRA_IS_CHAT_AVAILABLE, false);
                 data = String.valueOf(isChatAvailable);
                 broadcastHandler.sendEvent(event, data);
-            }
-            else {
+            } else {
                 broadcastHandler.sendEvent(event);
             }
         }
@@ -421,8 +417,7 @@ public class InfobipMobilemessagingPlugin implements FlutterPlugin, MethodCallHa
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
             ContextCompat.registerReceiver(activity.getApplicationContext(), commonLibraryBroadcastReceiver, intentFilter, ContextCompat.RECEIVER_NOT_EXPORTED);
-        }
-        else {
+        } else {
             LocalBroadcastManager.getInstance(activity).registerReceiver(commonLibraryBroadcastReceiver, intentFilter);
         }
 
@@ -433,8 +428,7 @@ public class InfobipMobilemessagingPlugin implements FlutterPlugin, MethodCallHa
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
             ContextCompat.registerReceiver(activity.getApplicationContext(), messageBroadcastReceiver, messageIntentFilter, ContextCompat.RECEIVER_NOT_EXPORTED);
-        }
-        else {
+        } else {
             LocalBroadcastManager.getInstance(activity).registerReceiver(messageBroadcastReceiver, messageIntentFilter);
         }
     }
@@ -507,8 +501,7 @@ public class InfobipMobilemessagingPlugin implements FlutterPlugin, MethodCallHa
             public void onResult(org.infobip.mobile.messaging.mobileapi.Result<User, MobileMessagingError> result) {
                 if (result.isSuccess()) {
                     resultCallbacks.success(UserJson.toJSON(result.getData()).toString());
-                }
-                else {
+                } else {
                     resultCallbacks.error(result.getError().getCode(), result.getError().getMessage(), result.getError().toString());
                 }
             }
@@ -542,8 +535,7 @@ public class InfobipMobilemessagingPlugin implements FlutterPlugin, MethodCallHa
             public void onResult(org.infobip.mobile.messaging.mobileapi.Result<Installation, MobileMessagingError> result) {
                 if (result.isSuccess()) {
                     resultCallbacks.success(InstallationJson.toJSON(result.getData()).toString());
-                }
-                else {
+                } else {
                     resultCallbacks.error(result.getError().getCode(), result.getError().getMessage(), result.getError().toString());
                 }
             }
@@ -563,8 +555,7 @@ public class InfobipMobilemessagingPlugin implements FlutterPlugin, MethodCallHa
                 public void onResult(org.infobip.mobile.messaging.mobileapi.Result<User, MobileMessagingError> result) {
                     if (result.isSuccess()) {
                         resultCallbacks.success(UserJson.toJSON(result.getData()).toString());
-                    }
-                    else {
+                    } else {
                         resultCallbacks.error(result.getError().getCode(), result.getError().getMessage(), result.getError().toString());
                     }
                 }
@@ -587,8 +578,7 @@ public class InfobipMobilemessagingPlugin implements FlutterPlugin, MethodCallHa
             public void onResult(Result<SuccessPending, MobileMessagingError> result) {
                 if (result.isSuccess()) {
                     resultCallbacks.success(depersonalizeStates.get(result.getData()));
-                }
-                else {
+                } else {
                     resultCallbacks.error(result.getError().getCode(), result.getError().getMessage(), result.getError().toString());
                 }
             }
@@ -709,8 +699,7 @@ public class InfobipMobilemessagingPlugin implements FlutterPlugin, MethodCallHa
             public void onResult(org.infobip.mobile.messaging.mobileapi.Result<CustomEvent, MobileMessagingError> result) {
                 if (result.isSuccess()) {
                     resultCallbacks.success("Success");
-                }
-                else {
+                } else {
                     resultCallbacks.error(result.getError().getCode(), result.getError().getMessage(), result.getError().toString());
                 }
             }
@@ -723,90 +712,19 @@ public class InfobipMobilemessagingPlugin implements FlutterPlugin, MethodCallHa
             @Override
             public void onResult(org.infobip.mobile.messaging.mobileapi.Result<List<Installation>, MobileMessagingError> result) {
                 if (result.isSuccess()) {
-                    resultCallbacks.success("Success");
-                }
-                else {
+                    if (result.getData() == null) {
+                        resultCallbacks.success("Success");
+                        return;
+                    }
+                    List<Installation> installations = result.getData();
+                    resultCallbacks.success(InstallationJson.installationsToJSONArray(installations.toArray(new Installation[0])).toString());
+                } else {
                     resultCallbacks.error(result.getError().getCode(), result.getError().getMessage(), result.getError().toString());
                 }
             }
         };
     }
 
-    static void cleanupJsonMapForClient(Map<String, CustomAttributeValue> customAttributes, JSONObject jsonObject) throws JSONException {
-        jsonObject.remove("map");
-        if (jsonObject.has("customAttributes")) {
-            if (customAttributes != null) {
-                jsonObject.put("customAttributes", new JSONObject(CustomAttributesMapper.customAttsToBackend(customAttributes)));
-            }
-        }
-    }
-
-    /**
-     * Creates json from a message object
-     *
-     * @param message message object
-     * @return message json
-     */
-    private static JSONObject messageToJSON(Message message) {
-        try {
-            return new JSONObject()
-                    .putOpt("messageId", message.getMessageId())
-                    .putOpt("title", message.getTitle())
-                    .putOpt("body", message.getBody())
-                    .putOpt("sound", message.getSound())
-                    .putOpt("vibrate", message.isVibrate())
-                    .putOpt("icon", message.getIcon())
-                    .putOpt("silent", message.isSilent())
-                    .putOpt("category", message.getCategory())
-                    .putOpt("from", message.getFrom())
-                    .putOpt("receivedTimestamp", message.getReceivedTimestamp())
-                    .putOpt("customPayload", message.getCustomPayload())
-                    .putOpt("contentUrl", message.getContentUrl())
-                    .putOpt("seen", message.getSeenTimestamp() != 0)
-                    .putOpt("seenDate", message.getSeenTimestamp())
-                    .putOpt("chat", message.isChatMessage())
-                    .putOpt("browserUrl", message.getBrowserUrl())
-                    .putOpt("deeplink", message.getDeeplink())
-                    .putOpt("inAppOpenTitle", message.getInAppOpenTitle())
-                    .putOpt("inAppDismissTitle", message.getInAppDismissTitle());
-        } catch (JSONException e) {
-            Log.w(TAG, "Cannot convert message to JSON: " + e.getMessage());
-            return null;
-        }
-    }
-
-    /**
-     * Creates array of json objects from list of messages
-     *
-     * @param messages list of messages
-     * @return array of jsons representing messages
-     */
-    private static JSONArray messagesToJSONArray(@NonNull Message messages[]) {
-        JSONArray array = new JSONArray();
-        for (Message message : messages) {
-            JSONObject json = messageToJSON(message);
-            if (json == null) {
-                continue;
-            }
-            array.put(json);
-        }
-        return array;
-    }
-
-    /**
-     * Creates new json object based on message bundle
-     *
-     * @param bundle message bundle
-     * @return message object in json format
-     */
-    private static JSONObject messageBundleToJSON(Bundle bundle) {
-        Message message = Message.createFrom(bundle);
-        if (message == null) {
-            return null;
-        }
-
-        return messageToJSON(message);
-    }
 
     private static class CustomEventJson extends CustomEvent {
 
@@ -842,8 +760,7 @@ public class InfobipMobilemessagingPlugin implements FlutterPlugin, MethodCallHa
         Log.w(TAG, "calling register");
         if (activity != null) {
             permissionsRequestManager.isRequiredPermissionsGranted(activity, this);
-        }
-        else {
+        } else {
             Log.e(TAG, "Cannot register for remote notifications, activity does not exist");
         }
     }
@@ -956,8 +873,7 @@ public class InfobipMobilemessagingPlugin implements FlutterPlugin, MethodCallHa
             public void onResult(org.infobip.mobile.messaging.mobileapi.Result<Inbox, MobileMessagingError> result) {
                 if (result.isSuccess()) {
                     resultCallbacks.success(InboxJson.toJSON(result.getData()).toString());
-                }
-                else {
+                } else {
                     resultCallbacks.error(result.getError().getCode(), result.getError().getMessage(), result.getError().toString());
                 }
             }
@@ -983,8 +899,7 @@ public class InfobipMobilemessagingPlugin implements FlutterPlugin, MethodCallHa
             public void onResult(org.infobip.mobile.messaging.mobileapi.Result<String[], MobileMessagingError> result) {
                 if (result.isSuccess()) {
                     resultCallbacks.success(Arrays.toString(result.getData()));
-                }
-                else {
+                } else {
                     resultCallbacks.error(result.getError().getCode(), result.getError().getMessage(), result.getError().toString());
                 }
             }

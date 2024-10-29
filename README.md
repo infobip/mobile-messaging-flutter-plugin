@@ -122,3 +122,8 @@ This guide is designed to get you up and running with Mobile Messaging SDK plugi
     ...
 
     ```
+#### More details on SDK features and FAQ you can find on [Wiki](https://github.com/infobip/mobile-messaging-flutter-plugin/wiki)
+
+<br>
+<p align="center"><b>NEXT STEPS: <a href="https://github.com/infobip/mobile-messaging-flutter-plugin/wiki/Users-and-installations">Users and installations</a></b></p>
+<br>

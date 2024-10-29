@@ -1,3 +1,6 @@
+/// [FilterOptions] for [Inbox].
+/// Has [topic] - name of [Inbox] topic, will show all messages from all topics
+/// if not provided. [limit] - number of messages to show, [fromDateTime] and [toDateTime].
 class FilterOptions {
   final DateTime? fromDateTime;
   final DateTime? toDateTime;
@@ -12,8 +15,12 @@ class FilterOptions {
   });
 
   Map<String, dynamic> toJson() => {
-        'fromDateTime': fromDateTime != null ? '${fromDateTime?.toIso8601String().substring(0, 19)}Z' : null,
-        'toDateTime': toDateTime != null ? '${toDateTime?.toIso8601String().substring(0, 19)}Z' : null,
+        'fromDateTime': fromDateTime != null
+            ? '${fromDateTime?.toIso8601String().substring(0, 19)}Z'
+            : null,
+        'toDateTime': toDateTime != null
+            ? '${toDateTime?.toIso8601String().substring(0, 19)}Z'
+            : null,
         'topic': topic,
         'limit': limit,
       };

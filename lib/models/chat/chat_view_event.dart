@@ -49,7 +49,7 @@ class ChatViewEvent {
   });
 
   factory ChatViewEvent.fromJson(Map<String, dynamic> json) => ChatViewEvent(
-    eventName: json['eventName'] as String,
-    payload: (json['payload'] != null) ? json['payload'] as dynamic : null,
-  );
+        eventName: json['eventName'] as String,
+        payload: (json['payload'] != null) ? json['payload'] as dynamic : null,
+      );
 }
