@@ -115,7 +115,7 @@ This guide is designed to get you up and running with Mobile Messaging SDK plugi
           )
         ));
 
-        InfobipMobilemessaging.on(LibraryEvent.MESSAGE_RECEIVED, (Message event) => {
+        InfobipMobilemessaging.on(LibraryEvent.messageReceived, (Message event) => {
            print("Callback. MESSAGE_RECEIVED event,  message text: ${event.body}")
         });
 
