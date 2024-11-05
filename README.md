@@ -107,7 +107,7 @@ This guide is designed to get you up and running with Mobile Messaging SDK plugi
 
     ...
 
-        await InfobipMobilemessagingFlutterPlugin.init(Configuration(
+        await InfobipMobilemessaging.init(Configuration(
           applicationCode: "<Your app code>",
           iosSettings: IOSSettings(
             notificationTypes: ["alert", "badge", "sound"],
