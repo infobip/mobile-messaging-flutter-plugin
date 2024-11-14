@@ -102,21 +102,21 @@ This guide is designed to get you up and running with Mobile Messaging SDK plugi
 4. Use plugin in your Dart code:
     ```dart
     import 'package:infobip_mobilemessaging/infobip_mobilemessaging.dart';
-    import 'package:infobip_mobilemessaging/models/configuration.dart';
+    import 'package:infobip_mobilemessaging/models/configurations/configuration.dart';
     import 'package:infobip_mobilemessaging/models/library_event.dart';
 
     ...
 
-        await InfobipMobilemessagingFlutterPlugin.init(Configuration(
-          applicationCode: "<Your app code>",
+        await InfobipMobilemessaging.init(Configuration(
+          applicationCode: '<Your app code>',
           iosSettings: IOSSettings(
-            notificationTypes: ["alert", "badge", "sound"],
+            notificationTypes: ['alert', 'badge', 'sound'],
             logging: true
           )
         ));
 
-        InfobipMobilemessaging.on(LibraryEvent.MESSAGE_RECEIVED, (Message event) => {
-           print("Callback. MESSAGE_RECEIVED event,  message text: ${event.body}")
+        InfobipMobilemessaging.on(LibraryEvent.messageReceived, (Message event) => {
+           print('Callback. messageReceived event,  message text: ${event.body}')
         });
 
     ...

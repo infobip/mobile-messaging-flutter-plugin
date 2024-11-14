@@ -31,7 +31,7 @@ android {
 }
 
 dependencies {
-    def mmVersion = '13.1.1'
+    def mmVersion = '13.2.3'
     //flutter and mm dependencies clash
     implementation ("org.jetbrains.kotlin:kotlin-stdlib-jdk8") {
         version {

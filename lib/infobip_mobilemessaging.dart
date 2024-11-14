@@ -155,16 +155,20 @@ class InfobipMobilemessaging {
   }
 
   /// Asynchronously configures provided device as primary among others devices
-  /// of a single user.
-  static Future<List<Installation>> setInstallationAsPrimary(
+  /// of a single user. Will return list of installations only when list changes:
+  /// if current installation is set as primary or already a primary one, will return null.
+  static Future<List<Installation>?> setInstallationAsPrimary(
       InstallationPrimary installationPrimary) async {
     String str = await _channel.invokeMethod(
       'setInstallationAsPrimary',
       installationPrimary.toJson(),
     );
-    Iterable l = json.decode(str);
-    return List<Installation>.from(
-        l.map((model) => Installation.fromJson(model)));
+    if (str != 'Success') {
+      Iterable l = json.decode(str);
+      return List<Installation>.from(
+          l.map((model) => Installation.fromJson(model)));
+    }
+    return null;
   }
 
   /// Shows chat screen.
@@ -381,7 +385,7 @@ class InfobipMobilemessaging {
       String versionStr = fileContent.substring(
           fileContent.indexOf('version:'), fileContent.indexOf('\nhomepage:'));
       versionStr = versionStr.substring(9, versionStr.length);
-      return versionStr;
+      return versionStr.trim();
     }
     return '';
   }

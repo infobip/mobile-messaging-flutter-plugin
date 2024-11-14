@@ -1,10 +1,11 @@
 package org.infobip.plugins.mobilemessaging.flutter.infobip_mobilemessaging;
 
+import static org.infobip.mobile.messaging.inbox.MobileInboxFilterOptionsJson.mobileInboxFilterOptionsFromJSON;
+import static org.infobip.mobile.messaging.plugins.MessageJson.bundleToJSON;
+import static org.infobip.mobile.messaging.plugins.MessageJson.toJSON;
+import static org.infobip.mobile.messaging.plugins.MessageJson.toJSONArray;
 import static org.infobip.plugins.mobilemessaging.flutter.common.LibraryEvent.broadcastEventMap;
 import static org.infobip.plugins.mobilemessaging.flutter.common.LibraryEvent.messageBroadcastEventMap;
-import static org.infobip.plugins.mobilemessaging.flutter.common.MessageJson.messageBundleToJSON;
-import static org.infobip.plugins.mobilemessaging.flutter.common.MessageJson.messageToJSON;
-import static org.infobip.plugins.mobilemessaging.flutter.common.MessageJson.messagesToJSONArray;
 import static org.infobip.plugins.mobilemessaging.flutter.infobip_mobilemessaging.WebRTCUI.defaultWebrtcError;
 
 import android.Manifest;
@@ -23,10 +24,8 @@ import androidx.core.content.ContextCompat;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
 import com.google.gson.Gson;
-import com.google.gson.reflect.TypeToken;
 
 import org.infobip.mobile.messaging.BroadcastParameter;
-import org.infobip.mobile.messaging.CustomAttributesMapper;
 import org.infobip.mobile.messaging.CustomEvent;
 import org.infobip.mobile.messaging.Event;
 import org.infobip.mobile.messaging.Installation;
@@ -35,11 +34,10 @@ import org.infobip.mobile.messaging.MobileMessaging;
 import org.infobip.mobile.messaging.MobileMessagingProperty;
 import org.infobip.mobile.messaging.SuccessPending;
 import org.infobip.mobile.messaging.User;
-import org.infobip.mobile.messaging.api.appinstance.UserCustomEventAtts;
-import org.infobip.mobile.messaging.api.support.http.serialization.JsonSerializer;
 import org.infobip.mobile.messaging.chat.InAppChat;
 import org.infobip.mobile.messaging.chat.core.InAppChatEvent;
 import org.infobip.mobile.messaging.inbox.Inbox;
+import org.infobip.mobile.messaging.inbox.InboxMapper;
 import org.infobip.mobile.messaging.inbox.MobileInbox;
 import org.infobip.mobile.messaging.inbox.MobileInboxFilterOptions;
 import org.infobip.mobile.messaging.interactive.InteractiveEvent;
@@ -49,29 +47,26 @@ import org.infobip.mobile.messaging.interactive.NotificationCategory;
 import org.infobip.mobile.messaging.mobileapi.InternalSdkError;
 import org.infobip.mobile.messaging.mobileapi.MobileMessagingError;
 import org.infobip.mobile.messaging.mobileapi.Result;
+import org.infobip.mobile.messaging.plugins.CustomEventJson;
+import org.infobip.mobile.messaging.plugins.InstallationJson;
+import org.infobip.mobile.messaging.plugins.PersonalizationCtx;
+import org.infobip.mobile.messaging.plugins.UserJson;
 import org.infobip.mobile.messaging.storage.MessageStore;
-import org.infobip.mobile.messaging.util.DateTimeUtil;
 import org.infobip.mobile.messaging.util.PreferenceHelper;
 import org.infobip.plugins.mobilemessaging.flutter.chat.ChatCustomization;
 import org.infobip.plugins.mobilemessaging.flutter.chat.ChatViewFactory;
 import org.infobip.plugins.mobilemessaging.flutter.common.ConfigCache;
 import org.infobip.plugins.mobilemessaging.flutter.common.Configuration;
 import org.infobip.plugins.mobilemessaging.flutter.common.ErrorCodes;
-import org.infobip.plugins.mobilemessaging.flutter.common.InboxJson;
 import org.infobip.plugins.mobilemessaging.flutter.common.InitHelper;
-import org.infobip.plugins.mobilemessaging.flutter.common.InstallationJson;
 import org.infobip.plugins.mobilemessaging.flutter.common.PermissionsRequestManager;
-import org.infobip.plugins.mobilemessaging.flutter.common.PersonalizationCtx;
 import org.infobip.plugins.mobilemessaging.flutter.common.StreamHandler;
-import org.infobip.plugins.mobilemessaging.flutter.common.UserJson;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -332,7 +327,7 @@ public class InfobipMobilemessagingPlugin implements FlutterPlugin, MethodCallHa
             ) {
                 final Message message = Message.createFrom(intent.getExtras());
                 final NotificationAction notificationAction = NotificationAction.createFrom(intent.getExtras());
-                final JSONObject payload = messageToJSON(message);
+                final JSONObject payload = toJSON(message);
                 try {
                     payload.put("id", notificationAction.getId());
                     payload.put("inputText", notificationAction.getInputText());
@@ -401,7 +396,7 @@ public class InfobipMobilemessagingPlugin implements FlutterPlugin, MethodCallHa
                 return;
             }
 
-            final JSONObject message = messageBundleToJSON(intent.getExtras());
+            final JSONObject message = bundleToJSON(intent.getExtras());
 
             broadcastHandler.sendEvent(event, message);
         }
@@ -645,7 +640,7 @@ public class InfobipMobilemessagingPlugin implements FlutterPlugin, MethodCallHa
 
         for (Message m : messageStore.findAll(activity.getApplicationContext())) {
             if (messageId.equals(m.getMessageId())) {
-                result.success(messageToJSON(m).toString());
+                result.success(toJSON(m).toString());
                 return;
             }
         }
@@ -659,7 +654,7 @@ public class InfobipMobilemessagingPlugin implements FlutterPlugin, MethodCallHa
             return;
         }
         List<Message> messages = messageStore.findAll(activity.getApplicationContext());
-        result.success(messagesToJSONArray(messages.toArray(new Message[messages.size()])).toString());
+        result.success(toJSONArray(messages.toArray(new Message[messages.size()])).toString());
     }
 
     private synchronized void defaultMessageStorage_delete(MethodCall call, final MethodChannel.Result result) {
@@ -717,7 +712,7 @@ public class InfobipMobilemessagingPlugin implements FlutterPlugin, MethodCallHa
                         return;
                     }
                     List<Installation> installations = result.getData();
-                    resultCallbacks.success(InstallationJson.installationsToJSONArray(installations.toArray(new Installation[0])).toString());
+                    resultCallbacks.success(InstallationJson.toJSON(installations).toString());
                 } else {
                     resultCallbacks.error(result.getError().getCode(), result.getError().getMessage(), result.getError().toString());
                 }
@@ -725,34 +720,6 @@ public class InfobipMobilemessagingPlugin implements FlutterPlugin, MethodCallHa
         };
     }
 
-
-    private static class CustomEventJson extends CustomEvent {
-
-        static CustomEvent fromJSON(JSONObject json) {
-            CustomEvent customEvent = new CustomEvent();
-
-            try {
-                if (json.has(UserCustomEventAtts.definitionId)) {
-                    customEvent.setDefinitionId(json.optString(UserCustomEventAtts.definitionId));
-                }
-            } catch (Exception e) {
-                Log.w(TAG, "Error when serializing CustomEvent object: " + e.getMessage());
-            }
-
-            try {
-                if (json.has(UserCustomEventAtts.properties)) {
-                    Type type = new TypeToken<Map<String, Object>>() {
-                    }.getType();
-                    Map<String, Object> properties = new JsonSerializer().deserialize(json.optString(UserCustomEventAtts.properties), type);
-                    customEvent.setProperties(CustomAttributesMapper.customAttsFromBackend(properties));
-                }
-            } catch (Exception e) {
-                Log.w(TAG, "Error when serializing CustomEvent object: " + e.getMessage());
-            }
-
-            return customEvent;
-        }
-    }
     //endregion
 
     //region PermissionsRequester for Post Notifications Permission
@@ -809,7 +776,8 @@ public class InfobipMobilemessagingPlugin implements FlutterPlugin, MethodCallHa
             String token = call.argument("token");
             String externalUserId = call.argument("externalUserId");
             String json = call.argument("filterOptions");
-            MobileInboxFilterOptions filterOptions = mobileInboxFilterOptionsFromJSON(json);
+            JSONObject jsonObj = new JSONObject(json);
+            MobileInboxFilterOptions filterOptions = mobileInboxFilterOptionsFromJSON(jsonObj);
             MobileInbox.getInstance(activity.getApplication()).fetchInbox(token, externalUserId, filterOptions, inboxResultListener(result));
         } catch (Exception e) {
             Log.d(TAG, "Failed fetching inbox messages, invalid number of arguments");
@@ -821,48 +789,12 @@ public class InfobipMobilemessagingPlugin implements FlutterPlugin, MethodCallHa
         try {
             String externalUserId = call.argument("externalUserId");
             String json = call.argument("filterOptions");
-            MobileInboxFilterOptions filterOptions = mobileInboxFilterOptionsFromJSON(json);
+            JSONObject jsonObj = new JSONObject(json);
+            MobileInboxFilterOptions filterOptions = mobileInboxFilterOptionsFromJSON(jsonObj);
             MobileInbox.getInstance(activity.getApplication()).fetchInbox(externalUserId, filterOptions, inboxResultListener(result));
         } catch (Exception e) {
             Log.d(TAG, "Failed fetching inbox messages, invalid arguments");
             result.error(ErrorCodes.INBOX_ERROR.getErrorCode(), e.getMessage(), e.getLocalizedMessage());
-        }
-    }
-
-    /**
-     * Creates MobileInboxFilterOptions from json string
-     *
-     * @param jsonStr json string
-     * @return new {@link MobileInboxFilterOptions} object.
-     */
-    private static MobileInboxFilterOptions mobileInboxFilterOptionsFromJSON(String jsonStr) {
-        if (jsonStr == null) {
-            return null;
-        }
-
-        try {
-            JSONObject json = new JSONObject(jsonStr);
-            Date fromDateTime = null, toDateTime = null;
-            String topic = null;
-            Integer limit = null;
-
-            if (json.has("fromDateTime") && !json.isNull("fromDateTime"))
-                fromDateTime = DateTimeUtil.ISO8601DateFromString(json.getString("fromDateTime"));
-            if (json.has("toDateTime") && !json.isNull("toDateTime"))
-                toDateTime = DateTimeUtil.ISO8601DateFromString(json.getString("toDateTime"));
-            if (json.has("topic") && !json.isNull("topic"))
-                topic = json.getString("topic");
-            if (json.has("limit") && !json.isNull("limit"))
-                limit = json.getInt("limit");
-
-            return new MobileInboxFilterOptions(
-                    fromDateTime,
-                    toDateTime,
-                    topic,
-                    limit
-            );
-        } catch (JSONException e) {
-            throw new RuntimeException(e);
         }
     }
 
@@ -872,7 +804,7 @@ public class InfobipMobilemessagingPlugin implements FlutterPlugin, MethodCallHa
             @Override
             public void onResult(org.infobip.mobile.messaging.mobileapi.Result<Inbox, MobileMessagingError> result) {
                 if (result.isSuccess()) {
-                    resultCallbacks.success(InboxJson.toJSON(result.getData()).toString());
+                    resultCallbacks.success(InboxMapper.toJSON(result.getData()).toString());
                 } else {
                     resultCallbacks.error(result.getError().getCode(), result.getError().getMessage(), result.getError().toString());
                 }
