@@ -1,3 +1,6 @@
+# 7.0.1
+## Changed
+- Improved Android mapping.
 # 7.0.0
 ## Changed
 - Refactoring, models moved to submodules.
