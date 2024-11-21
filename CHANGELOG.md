@@ -1,3 +1,6 @@
+# 7.0.2
+## Fixed
+- forceDepersonalize parameter for iOS.
 # 7.0.1
 ## Changed
 - Improved Android mapping.
