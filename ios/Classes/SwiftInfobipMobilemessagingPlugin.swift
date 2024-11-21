@@ -243,14 +243,14 @@ public class SwiftInfobipMobilemessagingPlugin: NSObject, FlutterPlugin {
             setupCustomization(customization: customization)
         }
     }
-
+    
     func setupChatCustomization(customization: ChatCustomization) {
         let settings = MMChatSettings.sharedInstance
         if let controller = self.controller {
             CustomizationUtils().setup(customization: customization, with: controller, in: settings)
         }
     }
-
+    
     func setupCustomization(customization: Customization) {
         let settings = MMChatSettings.sharedInstance
         if let controller = self.controller {
@@ -390,8 +390,9 @@ public class SwiftInfobipMobilemessagingPlugin: NSObject, FlutterPlugin {
         let uaDict = context["userAttributes"] as? [String: Any]
         let ua = uaDict == nil ? nil : MMUserAttributes(dictRepresentation: uaDict!)
         let keepAsLead = (context["keepAsLead"] as? Bool) ?? false
+        let forceDepersonalize = context["forceDepersonalize"] as? Bool ?? false
         
-        MobileMessaging.personalize(withUserIdentity: ui, userAttributes: ua, keepAsLead: keepAsLead) { (error) in
+        MobileMessaging.personalize(forceDepersonalize: forceDepersonalize, keepAsLead: keepAsLead, userIdentity: ui, userAttributes: ua) { (error) in
             if let error = error {
                 return result(
                     FlutterError( code: error.mm_code ?? "0",
@@ -437,12 +438,12 @@ public class SwiftInfobipMobilemessagingPlugin: NSObject, FlutterPlugin {
             }
         })
     }
-
+    
     func cleanup(result: @escaping FlutterResult) {
         Configuration.saveConfigToDefaults(rawConfig: [:])
         MobileMessaging.cleanUpAndStop(false, completion: {
-                return result(Constants.resultSuccess)
-            })
+            return result(Constants.resultSuccess)
+        })
     }
     
     func showChat(call: FlutterMethodCall, result: @escaping FlutterResult) {
@@ -479,23 +480,23 @@ public class SwiftInfobipMobilemessagingPlugin: NSObject, FlutterPlugin {
         
         MMChatSettings.settings.configureWith(rawConfig: chatSettings)
     }
-
+    
     func setChatCustomization(call: FlutterMethodCall, result: @escaping FlutterResult) {
         guard let jsonString = call.arguments as? String,
-                      let json = jsonString.toJSON() as? [String: AnyObject],
-                      let jsonObject = try? JSONSerialization.data(
-                        withJSONObject: json
-                        ),
-                      let customization = try? JSONDecoder().decode(ChatCustomization.self, from: jsonObject)  else {
-                    return result(
-                        FlutterError( code: "invalidConfig",
-                                      message: "Error parsing Configuration",
-                                      details: "Error parsing Configuration" ))
-                }
-
+              let json = jsonString.toJSON() as? [String: AnyObject],
+              let jsonObject = try? JSONSerialization.data(
+                withJSONObject: json
+              ),
+              let customization = try? JSONDecoder().decode(ChatCustomization.self, from: jsonObject)  else {
+            return result(
+                FlutterError( code: "invalidConfig",
+                              message: "Error parsing Configuration",
+                              details: "Error parsing Configuration" ))
+        }
+        
         setupChatCustomization(customization: customization)
     }
-
+    
     func setLanguage(call: FlutterMethodCall, result: @escaping FlutterResult) {
         guard let localeString = call.arguments as? String else {
             return result(
@@ -525,7 +526,7 @@ public class SwiftInfobipMobilemessagingPlugin: NSObject, FlutterPlugin {
             }
         }
     }
-
+    
     func setWidgetTheme(call: FlutterMethodCall, result: @escaping FlutterResult) {
         guard let theme = call.arguments as? String else {
             return result(
@@ -557,7 +558,7 @@ public class SwiftInfobipMobilemessagingPlugin: NSObject, FlutterPlugin {
                               message: "Cannot resolve data or allMultiThreadStrategy from arguments",
                               details: nil ))
         }
-                
+        
         if let chatVc = SwiftInfobipMobilemessagingPlugin.chatVC {
             chatVc.sendContextualData(data, multiThreadStrategy: multiThreadStrategy ? .ALL : .ACTIVE) { error in
                 if let error = error {
