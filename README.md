@@ -10,7 +10,7 @@ The document describes plugin integration steps for your Flutter project.
 - Flutter 3.3.0+
 
 For iOS project:
-- Xcode 13.4.1
+- Xcode 16.x
 - Minimum deployment target 12.0
 
 For Android project:
