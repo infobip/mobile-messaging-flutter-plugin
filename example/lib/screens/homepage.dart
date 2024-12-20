@@ -383,7 +383,7 @@ class _HomePageState extends State<HomePage> {
             ListTile(
               title: const Text('Send Contextual Data and Show chat screen'),
               onTap: () {
-                InfobipMobilemessaging.sendContextualData("{ demoKey: 'InAppChat Metadata Value' }", false);
+                InfobipMobilemessaging.sendContextualDataWithStrategy("{ demoKey: 'InAppChat Metadata Value' }", ChatMultithreadStrategies.active);
                 InfobipMobilemessaging.showChat();
               },
             ),

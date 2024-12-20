@@ -64,6 +64,7 @@ import org.infobip.plugins.mobilemessaging.flutter.common.StreamHandler;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.infobip.mobile.messaging.chat.core.MultithreadStrategy;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -891,12 +892,12 @@ public class InfobipMobilemessagingPlugin implements FlutterPlugin, MethodCallHa
 
     private void sendContextualData(MethodCall call, final MethodChannel.Result result) {
         String data = call.argument("data");
-        Boolean allMultiThreadStrategy = call.argument("allMultiThreadStrategy");
-        if (data == null || data.isEmpty() || allMultiThreadStrategy == null) {
+        String chatMultiThreadStrategy = call.argument("chatMultiThreadStrategy");
+        if (data == null || data.isEmpty() || chatMultiThreadStrategy == null) {
             result.error(ErrorCodes.CONTEXTUAL_METADATA_ERROR.getErrorCode(), "Cannot resolve data or allMultiThreadStrategy from arguments", null);
             return;
         }
-        InAppChat.getInstance(activity.getApplication()).sendContextualData(data, allMultiThreadStrategy);
+        InAppChat.getInstance(activity.getApplication()).sendContextualData(data, MultithreadStrategy.valueOf(chatMultiThreadStrategy));
     }
 
     private void setJwt(MethodCall call) {

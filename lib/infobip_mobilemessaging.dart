@@ -18,6 +18,21 @@ import 'models/library_event.dart';
 import 'models/message_storage/default_message_storage.dart';
 import 'models/message_storage/message_storage.dart';
 
+enum ChatMultithreadStrategies { 
+  all, allPlusNew, active;
+
+    String get stringValue {
+    switch (this) {
+      case ChatMultithreadStrategies.all:
+        return 'ALL';
+      case ChatMultithreadStrategies.allPlusNew:
+        return 'ALL_PLUS_NEW';
+      case ChatMultithreadStrategies.active:
+        return 'ACTIVE';
+    }
+  }
+}
+
 class InfobipMobilemessaging {
   static const MethodChannel _channel =
       MethodChannel('infobip_mobilemessaging');
@@ -227,10 +242,23 @@ class InfobipMobilemessaging {
   }
 
   /// Sends contextual data of the Livechat Widget.
+  @deprecated
   static void sendContextualData(
-      String data, bool allMultiThreadStrategy) async {
-    await _channel.invokeMethod('sendContextualData',
-        {'data': data, 'allMultiThreadStrategy': allMultiThreadStrategy});
+      String data, bool allMultiThreadStrategy
+  ) async {
+    InfobipMobilemessaging.sendContextualDataWithStrategy(
+      data, 
+      allMultiThreadStrategy ? ChatMultithreadStrategies.all : ChatMultithreadStrategies.active
+    );
+  }
+
+  /// Sends contextual data of the Livechat Widget.
+  static void sendContextualDataWithStrategy(
+    String data, [ChatMultithreadStrategies chatMultithreadStrategy = ChatMultithreadStrategies.active]
+  ) async {
+    await _channel.invokeMethod('sendContextualData', 
+      {'data': data, 'chatMultiThreadStrategy': chatMultithreadStrategy.stringValue }
+    );
   }
 
   /// Sets JWT for Livechat.

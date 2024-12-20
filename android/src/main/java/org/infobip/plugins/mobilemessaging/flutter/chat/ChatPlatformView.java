@@ -20,6 +20,7 @@ import org.infobip.mobile.messaging.chat.utils.LocalizationUtils;
 import org.infobip.mobile.messaging.chat.view.InAppChatFragment;
 import org.infobip.plugins.mobilemessaging.flutter.common.ErrorCodes;
 import org.infobip.plugins.mobilemessaging.flutter.common.StreamHandler;
+import org.infobip.mobile.messaging.chat.core.MultithreadStrategy;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -156,11 +157,11 @@ public class ChatPlatformView implements PlatformView, MethodCallHandler {
     private void sendContextualData(MethodCall call, final MethodChannel.Result result) {
         if (fragment != null && fragment.isAdded()) {
             String data = call.argument("data");
-            Boolean allMultiThreadStrategy = call.argument("allMultiThreadStrategy");
-            if (data == null || data.isEmpty() || allMultiThreadStrategy == null) {
+            String chatMultiThreadStrategy = call.argument("chatMultiThreadStrategy");
+            if (data == null || data.isEmpty() || chatMultiThreadStrategy == null) {
                 result.error(ErrorCodes.CHAT_VIEW_ERROR.getErrorCode(), "Cannot send contextual data. Data or allMultiThreadStrategy is missing.", null);
             } else {
-                fragment.sendContextualData(data, allMultiThreadStrategy);
+                fragment.sendContextualData(data, MultithreadStrategy.valueOf(chatMultiThreadStrategy));
                 result.success(RESULT_SUCCESS);
             }
         } else {

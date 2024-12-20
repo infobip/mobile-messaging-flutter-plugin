@@ -552,15 +552,26 @@ public class SwiftInfobipMobilemessagingPlugin: NSObject, FlutterPlugin {
     func sendContextualData(call: FlutterMethodCall, result: @escaping FlutterResult) {
         guard let args = call.arguments as? [String: Any],
               let data = args["data"] as? String,
-              let multiThreadStrategy = args["allMultiThreadStrategy"] as? Bool else {
+              let multiThreadStrategy = args["chatMultiThreadStrategy"] as? String else {
             return result(
                 FlutterError( code: "CONTEXTUAL_METADATA_ERROR",
-                              message: "Cannot resolve data or allMultiThreadStrategy from arguments",
+                              message: "Cannot resolve data or chatMultiThreadStrategy from arguments",
+                              details: nil ))
+        }
+        
+        var strategy: MMChatMultiThreadStrategy
+        switch multiThreadStrategy {
+            case "ALL": strategy = .ALL
+            case "ACTIVE": strategy = .ACTIVE
+            case "ALL_PLUS_NEW": strategy = .ALL_PLUS_NEW
+            default:                
+                return result(FlutterError( code: "CONTEXTUAL_METADATA_ERROR",
+                              message: "Cannot resolve data or chatMultiThreadStrategy from arguments",
                               details: nil ))
         }
         
         if let chatVc = SwiftInfobipMobilemessagingPlugin.chatVC {
-            chatVc.sendContextualData(data, multiThreadStrategy: multiThreadStrategy ? .ALL : .ACTIVE) { error in
+            chatVc.sendContextualData(data, multiThreadStrategy: strategy) { error in
                 if let error = error {
                     result(FlutterError( code: error.mm_code ?? "0",
                                          message: error.mm_message,
@@ -570,7 +581,7 @@ public class SwiftInfobipMobilemessagingPlugin: NSObject, FlutterPlugin {
                 }
             }
         } else if let inAppChat = MobileMessaging.inAppChat {
-            inAppChat.sendContextualData(data, multiThreadStrategy: multiThreadStrategy ? .ALL : .ACTIVE)
+            inAppChat.sendContextualData(data, multiThreadStrategy: strategy)
             return result(Constants.resultSuccess)
         } else {
             MMLogDebug("[InAppChat] Cannot send context data, inAppChat service does not exist and ChatViewController is not present.")
