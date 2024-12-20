@@ -1,3 +1,6 @@
+# 7.1.0
+## Changed
+- Support for iOS 18.
 # 7.0.2
 ## Fixed
 - forceDepersonalize parameter for iOS.
