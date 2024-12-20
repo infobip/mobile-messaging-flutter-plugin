@@ -1,3 +1,10 @@
+# 7.2.0
+## Added
+- new enum ChatMultithreadStrategies
+- new sendContextualDataWithStrategy function with ChatMultithreadStrategies enum flag
+
+## Changed
+- sendContextualData function with boolean flag deprecated
 # 7.1.0
 ## Changed
 - Support for iOS 18.
