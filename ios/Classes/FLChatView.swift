@@ -106,6 +106,8 @@ public class FLChatView: NSObject, FlutterPlatformView {
         let args = args as? [String: Any]
         let withInput = (args?["withInput"] as? Bool) ?? true
         let withToolbar = (args?["withToolbar"] as? Bool) ?? true
+
+        MMChatSettings.sharedInstance.shouldHandleKeyboardAppearance = false
         
         if withToolbar == false {
             let vc: MMChatViewController = {
@@ -138,11 +140,17 @@ public class FLChatView: NSObject, FlutterPlatformView {
         
         super.init()
 
-        _methodChannel.setMethodCallHandler(onMethodCall)
+        _methodChannel.setMethodCallHandler { [weak self] (call, result) in
+            self?.onMethodCall(call: call, result: result)
+        }
         streamHandler.startObserving()
         
     }
-
+    
+    deinit {
+        MMChatSettings.sharedInstance.shouldHandleKeyboardAppearance = true
+    }
+    
     public func view() -> UIView {
         return _view
     }
