@@ -26,7 +26,7 @@ class PersonalizeContext {
     this.userIdentity,
     this.userAttributes,
     this.forceDepersonalize,
-    this.keepAsLead
+    this.keepAsLead,
   });
 
   Map<String, dynamic> toJson() => {

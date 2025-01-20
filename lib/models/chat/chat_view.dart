@@ -7,12 +7,13 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:infobip_mobilemessaging/models/chat/chat_view_attachment.dart';
-import 'package:infobip_mobilemessaging/models/chat/chat_view_event.dart';
-import 'package:infobip_mobilemessaging/models/chat/widget_info.dart';
+import 'chat_view_attachment.dart';
+import 'chat_view_event.dart';
+import 'widget_info.dart';
 
 typedef FlutterChatViewCreatedCallback = void Function(
-    ChatViewController controller);
+  ChatViewController controller,
+);
 
 class ChatView extends StatelessWidget {
   static const StandardMessageCodec _decoder = StandardMessageCodec();
@@ -30,8 +31,8 @@ class ChatView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     Map<String, Object?> args = {};
-    if (this.withToolbar != null) args['withToolbar'] = this.withToolbar;
-    if (this.withInput != null) args['withInput'] = this.withInput;
+    if (withToolbar != null) args['withToolbar'] = withToolbar;
+    if (withInput != null) args['withInput'] = withInput;
 
     switch (defaultTargetPlatform) {
       case TargetPlatform.android:
@@ -40,11 +41,11 @@ class ChatView extends StatelessWidget {
           onPlatformViewCreated: _onPlatformViewCreated,
           creationParams: args,
           creationParamsCodec: _decoder,
-          gestureRecognizers: [
-            new Factory<OneSequenceGestureRecognizer>(
-              () => new EagerGestureRecognizer(),
+          gestureRecognizers: {
+            Factory<OneSequenceGestureRecognizer>(
+              () => EagerGestureRecognizer(),
             ),
-          ].toSet(),
+          },
         );
       case TargetPlatform.iOS:
         return UiKitView(
@@ -52,15 +53,16 @@ class ChatView extends StatelessWidget {
           onPlatformViewCreated: _onPlatformViewCreated,
           creationParams: args,
           creationParamsCodec: _decoder,
-          gestureRecognizers: [
-            new Factory<OneSequenceGestureRecognizer>(
-              () => new EagerGestureRecognizer(),
+          gestureRecognizers: {
+            Factory<OneSequenceGestureRecognizer>(
+              () => EagerGestureRecognizer(),
             ),
-          ].toSet(),
+          },
         );
       default:
         return Text(
-            '$defaultTargetPlatform is not yet supported by the infobip_mobilemessaging plugin');
+          '$defaultTargetPlatform is not yet supported by the infobip_mobilemessaging plugin',
+        );
     }
   }
 
@@ -70,8 +72,11 @@ class ChatView extends StatelessWidget {
 
 class ChatViewController {
   ChatViewController._(int id)
-      : _channel = MethodChannel('infobip_mobilemessaging/flutter_chat_view_$id'),
-        _chatEvent = EventChannel('infobip_mobilemessaging/flutter_chat_view_$id/events') {
+      : _channel =
+            MethodChannel('infobip_mobilemessaging/flutter_chat_view_$id'),
+        _chatEvent = EventChannel(
+          'infobip_mobilemessaging/flutter_chat_view_$id/events',
+        ) {
     _eventsSubscription = _chatEvent.receiveBroadcastStream().listen(
       (dynamic event) {
         log('[ChatViewController] Received event: $event');
@@ -79,9 +84,11 @@ class ChatViewController {
         if (_callbacks.containsKey(chatViewEvent.eventName)) {
           _callbacks[chatViewEvent.eventName]?.forEach((callback) {
             log('[ChatViewController] Calling ${chatViewEvent.eventName} with payload ${chatViewEvent.payload == null ? 'NULL' : chatViewEvent.payload.toString()}');
-            if (chatViewEvent.eventName == ChatViewEvent.chatWidgetInfoUpdated) {
+            if (chatViewEvent.eventName ==
+                ChatViewEvent.chatWidgetInfoUpdated) {
               callback(WidgetInfo.fromJson(chatViewEvent.payload));
-            } else if (chatViewEvent.eventName == ChatViewEvent.attachmentPreviewOpened) {
+            } else if (chatViewEvent.eventName ==
+                ChatViewEvent.attachmentPreviewOpened) {
               callback(ChatViewAttachment.fromJson(chatViewEvent.payload));
             } else if (chatViewEvent.payload != null) {
               callback(chatViewEvent.payload);
@@ -101,7 +108,7 @@ class ChatViewController {
   final MethodChannel _channel;
   final EventChannel _chatEvent;
   StreamSubscription<dynamic>? _eventsSubscription;
-  Map<String, List<Function>?> _callbacks = HashMap();
+  final Map<String, List<Function>?> _callbacks = HashMap();
 
   /// Navigates chat from [THREAD] back to [THREAD_LIST] destination in multithread chat.
   /// It does nothing if widget is not multithread.
@@ -167,9 +174,8 @@ class ChatViewController {
   }
 
   /// Returns true if chat is synchronized and multithread feature is enabled, otherwise returns false.
-  Future<bool> isMultithread() async {
-    return await _channel.invokeMethod('isMultithread');
-  }
+  Future<bool> isMultithread() async =>
+      await _channel.invokeMethod('isMultithread');
 
   /// Registers a callback for the given event name.
   /// [ChatViewEvent] class provides constants of all available events names

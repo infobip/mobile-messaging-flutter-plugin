@@ -34,4 +34,11 @@ class FilterOptions {
           toDateTime == other.toDateTime &&
           topic == other.topic &&
           limit == other.limit;
+
+  @override
+  int get hashCode =>
+      fromDateTime.hashCode ^
+      toDateTime.hashCode ^
+      topic.hashCode ^
+      limit.hashCode;
 }

@@ -5,7 +5,8 @@ import 'package:infobip_mobilemessaging/models/configurations/configuration.dart
 
 void main() {
   const MethodChannel infobipChannel = MethodChannel('infobip_mobilemessaging');
-  const MethodChannel packageInfoChannel = MethodChannel('dev.fluttercommunity.plus/package_info');
+  const MethodChannel packageInfoChannel =
+      MethodChannel('dev.fluttercommunity.plus/package_info');
 
   TestWidgetsFlutterBinding.ensureInitialized();
 
@@ -40,20 +41,22 @@ void main() {
   });
 
   test('init', () async {
-    await InfobipMobilemessaging.init(Configuration(
+    await InfobipMobilemessaging.init(
+      Configuration(
         applicationCode: "<Your app code>",
         androidSettings: AndroidSettings(
-            firebaseOptions: FirebaseOptions(
-                apiKey: "Some-API-Key",
-                applicationId: "1:1234567890:android:abc123",
-                projectId: "project-123ab"
-            ),
+          firebaseOptions: FirebaseOptions(
+            apiKey: "Some-API-Key",
+            applicationId: "1:1234567890:android:abc123",
+            projectId: "project-123ab",
+          ),
         ),
         iosSettings: IOSSettings(
-            notificationTypes: ["alert", "badge", "sound"],
-            forceCleanup: false,
-            logging: true
-        )
-    ));
+          notificationTypes: ["alert", "badge", "sound"],
+          forceCleanup: false,
+          logging: true,
+        ),
+      ),
+    );
   });
 }
