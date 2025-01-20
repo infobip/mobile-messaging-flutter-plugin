@@ -1,3 +1,6 @@
+# 7.2.2
+## Fixed 
+- Resolved an issue when camera view from chatInput break flutter layout. 
 # 7.2.1
 ## Fixed 
 - Resolved an issue where text input was misaligned with the keyboard in a custom chat view. 
