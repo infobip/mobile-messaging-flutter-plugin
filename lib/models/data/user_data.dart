@@ -1,9 +1,11 @@
+// ignore_for_file: constant_identifier_names
 import 'package:collection/collection.dart';
 import 'package:flutter/foundation.dart';
 
 import 'installation.dart';
 
 enum Gender { Male, Female }
+
 enum Type { LEAD, CUSTOMER }
 
 class UserData {
@@ -89,9 +91,12 @@ class UserData {
         installations = UserData.resolveInstallations(json['installations']);
 
   Map<String, dynamic> toJson() {
-    List<Map>? installations = this.installations != null
-        ? this.installations?.map((i) => i.toJson()).toList()
-        : null;
+    final List<Map>? installations;
+    if (this.installations != null) {
+      installations = this.installations?.map((i) => i.toJson()).toList();
+    } else {
+      installations = null;
+    }
 
     return {
       'externalUserId': externalUserId,
