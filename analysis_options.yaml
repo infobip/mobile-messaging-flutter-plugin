@@ -22,12 +22,12 @@ linter:
   # `// ignore_for_file: name_of_lint` syntax on the line or in the file
   # producing the lint.
   rules:
-    constant_identifier_names:
-      ignore_for_file: installation.dart
+    constant_identifier_names: true
     directives_ordering: true
     prefer_relative_imports: true
     prefer_expression_function_bodies: true
     avoid_print: true  # Uncomment to disable the `avoid_print` rule
+    require_trailing_commas: true
     # - prefer_single_quotes: true  # Uncomment to enable the `prefer_single_quotes` rule
 
 # Additional information about this file can be found at

@@ -21,8 +21,11 @@ class DefaultMessageStorage extends MessageStorage {
   }
 
   @override
-  Future<Message?> find(String messageId) async => Message.fromJson(jsonDecode(
-      await _channel.invokeMethod('defaultMessageStorage_find', messageId)));
+  Future<Message?> find(String messageId) async => Message.fromJson(
+        jsonDecode(
+          await _channel.invokeMethod('defaultMessageStorage_find', messageId),
+        ),
+      );
 
   @override
   Future<List<Message>?> findAll() async {

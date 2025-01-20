@@ -17,8 +17,10 @@ void main() {
     });
 
     test('InstallationPrimary', () {
-      expect(installationPrimaryModelExample.toJson(),
-          installationPrimaryExampleJson);
+      expect(
+        installationPrimaryModelExample.toJson(),
+        installationPrimaryExampleJson,
+      );
     });
 
     test('UserIdentity', () {
@@ -26,8 +28,10 @@ void main() {
     });
 
     test('PersonalizeContext', () {
-      expect(personalizeContextModelExample.toJson(),
-          personalizeContextExampleJson);
+      expect(
+        personalizeContextModelExample.toJson(),
+        personalizeContextExampleJson,
+      );
     });
 
     test('UserData', () {
@@ -41,8 +45,10 @@ void main() {
     });
 
     test('Installation', () {
-      expect(Installation.fromJson(installationExampleJson),
-          installationModelExample);
+      expect(
+        Installation.fromJson(installationExampleJson),
+        installationModelExample,
+      );
     });
 
     test('UserData', () {
