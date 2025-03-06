@@ -1,27 +1,42 @@
+import '../message_storage/default_message_storage.dart';
+
+/// Mobile Messaging [Configuration] class.
 class Configuration {
   /// The application code of your Application from <a href=https://portal.infobip.com/apps/mam/profiles>Infobip Portal</a>
   final String applicationCode;
 
+  /// Version of the Mobile Messaging plugin.
   String? pluginVersion;
 
+  /// Enables [In-App chat](https://www.infobip.com/docs/live-chat).
   final bool? inAppChatEnabled;
 
+  /// Enables [In-App messages](https://www.infobip.com/docs/mobile-app-messaging/send-in-app-message).
   final bool? fullFeaturedInAppsEnabled;
 
+  /// Android-only settings.
   final AndroidSettings? androidSettings;
 
+  /// iOS-only settings.
   final IOSSettings? iosSettings;
 
+  /// Privacy settings.
   final PrivacySettings? privacySettings;
 
+  /// Notification categories for [Interactive notifications](https://github.com/infobip/mobile-messaging-flutter-plugin/wiki/Interactive-notifications).
   final List<NotificationCategory>? notificationCategories;
 
+  /// Enables [DefaultMessageStorage].
   final bool? defaultMessageStorage;
 
+  /// Settings for [WebRTC](https://www.infobip.com/docs/voice-and-video/webrtc).
   final WebRTCUI? webRTCUI;
 
+  /// Customization for LiveChat.
+  @Deprecated('Should use [ChatCustomization] instead')
   final InAppChatCustomization? inAppChatCustomization;
 
+  /// Default constructor with all params.
   Configuration({
     required this.applicationCode,
     this.pluginVersion,
@@ -36,6 +51,7 @@ class Configuration {
     this.inAppChatCustomization,
   });
 
+  /// Mapping [Configuration] to json.
   Map<String, dynamic> toJson() => {
         'applicationCode': applicationCode,
         'pluginVersion': pluginVersion,
@@ -44,23 +60,30 @@ class Configuration {
         'androidSettings': androidSettings?.toJson(),
         'iosSettings': iosSettings?.toJson(),
         'privacySettings': privacySettings?.toJson(),
-        'notificationCategories': (notificationCategories != null)
-            ? notificationCategories!.map((e) => e.toJson())
-            : null,
+        'notificationCategories':
+            (notificationCategories != null) ? notificationCategories!.map((e) => e.toJson()).toList() : null,
         'defaultMessageStorage': defaultMessageStorage,
         'webRTCUI': webRTCUI?.toJson(),
-        'inAppChatCustomization': inAppChatCustomization?.toJson()
+        // ignore: deprecated_member_use_from_same_package
+        'inAppChatCustomization': inAppChatCustomization?.toJson(),
       };
 }
 
+/// Android specific settings.
 class AndroidSettings {
+  /// Helper class to initialize Firebase configuration using key/values.
   final FirebaseOptions? firebaseOptions;
 
   /// A resource name for a status bar icon (without extension), located in '/platforms/android/app/src/main/res/mipmap'
   final String? notificationIcon;
+
+  /// Should multiple notifications in status bar be shown. By default only the latest notification is shown.
   final bool? multipleNotifications;
+
+  /// Accent color for notification.
   final String? notificationAccentColor;
 
+  /// Default constructor with all params.
   AndroidSettings({
     this.firebaseOptions,
     this.notificationIcon,
@@ -68,14 +91,16 @@ class AndroidSettings {
     this.notificationAccentColor,
   });
 
+  /// Mapping [AndroidSettings] to json.
   Map<String, dynamic> toJson() => {
         'firebaseOptions': firebaseOptions?.toJson(),
         'notificationIcon': notificationIcon,
         'multipleNotifications': multipleNotifications,
-        'notificationAccentColor': notificationAccentColor
+        'notificationAccentColor': notificationAccentColor,
       };
 }
 
+/// Helper class to initialize Firebase configuration using key/values. Recommended to use Firebase configuration file instead, [docs](https://github.com/infobip/mobile-messaging-flutter-plugin/wiki/Applying-Firebase-configuration-in-MobileMessaging-Flutter-plugin).
 class FirebaseOptions {
   final String apiKey;
   final String applicationId;
@@ -102,17 +127,28 @@ class FirebaseOptions {
         'gaTrackingId': gaTrackingId,
         'gcmSenderId': gcmSenderId,
         'storageBucket': storageBucket,
-        'projectId': projectId
+        'projectId': projectId,
       };
 }
 
+/// iOS specific settings.
 class IOSSettings {
+  /// List of notification types, recommended settings `['alert', 'badge', 'sound']`.
   final List<String>? notificationTypes;
+
+  /// Perform deletion of local data on start.
   final bool? forceCleanup;
+
+  /// Enables logging in Debug runs in XCode, recommended value `true`.
   final bool? logging;
+
+  /// WebView settings.
   final WebViewSettings? webViewSettings;
+
+  /// Postpone registering for push notifications from app start.
   final bool? withoutRegisteringForRemoteNotifications;
 
+  /// Default constructor with all params.
   IOSSettings({
     this.notificationTypes,
     this.forceCleanup,
@@ -121,16 +157,17 @@ class IOSSettings {
     this.withoutRegisteringForRemoteNotifications,
   });
 
+  /// Mapping [IOSSettings] to json.
   Map<String, dynamic> toJson() => {
         'notificationTypes': notificationTypes,
         'forceCleanup': forceCleanup,
         'logging': logging,
         'webViewSettings': webViewSettings?.toJson(),
-        'withoutRegisteringForRemoteNotifications':
-            withoutRegisteringForRemoteNotifications
+        'withoutRegisteringForRemoteNotifications': withoutRegisteringForRemoteNotifications,
       };
 }
 
+/// Helper class for iOS WebView settings.
 class WebViewSettings {
   final String? title;
   final String? barTintColor;
@@ -144,6 +181,7 @@ class WebViewSettings {
     this.titleColor,
   });
 
+  /// Mapping [WebViewSettings] to json.
   Map<String, dynamic> toJson() => {
         'title': title,
         'barTintColor': barTintColor,
@@ -152,6 +190,7 @@ class WebViewSettings {
       };
 }
 
+/// Helper class with privacy settings.
 class PrivacySettings {
   final bool? applicationCodePersistingDisabled;
   final bool? userDataPersistingDisabled;
@@ -169,10 +208,11 @@ class PrivacySettings {
         'applicationCodePersistingDisabled': applicationCodePersistingDisabled,
         'userDataPersistingDisabled': userDataPersistingDisabled,
         'carrierInfoSendingDisabled': carrierInfoSendingDisabled,
-        'systemInfoSendingDisabled': systemInfoSendingDisabled
+        'systemInfoSendingDisabled': systemInfoSendingDisabled,
       };
 }
 
+/// Helper class for setting interactive notifications' action.
 class NotificationAction {
   final String? identifier;
   final String? title;
@@ -214,13 +254,12 @@ class NotificationCategory {
   final List<NotificationAction>? actions;
 
   NotificationCategory({
-    this.identifier,
-    this.actions,
+    required this.identifier,
+    required this.actions,
   });
 
   Map<String, dynamic> toJson() {
-    List<Map<String, dynamic>>? actions =
-        this.actions!.map((i) => i.toJson()).toList();
+    List<Map<String, dynamic>>? actions = this.actions!.map((i) => i.toJson()).toList();
     return {
       'identifier': identifier,
       'actions': actions,
@@ -380,7 +419,7 @@ class ChatCustomization {
       };
 }
 
-@deprecated
+@Deprecated('Should use [ChatCustomization] instead')
 class InAppChatCustomization {
   final String? toolbarTitle;
   final String? toolbarTitleColor;
@@ -437,7 +476,7 @@ class InAppChatCustomization {
         'attachmentButtonIcon': attachmentButtonIcon,
         'chatInputSeparatorVisible': chatInputSeparatorVisible,
         'android': android?.toJson(),
-        'ios': ios?.toJson()
+        'ios': ios?.toJson(),
       };
 }
 
@@ -524,26 +563,23 @@ class AndroidInAppChatCustomization {
         'chatMenuItemSaveAttachmentIcon': chatMenuItemSaveAttachmentIcon,
         //chat
         'chatProgressBarColor': chatProgressBarColor,
-        'chatNetworkConnectionErrorTextAppearanceRes':
-            chatNetworkConnectionErrorTextAppearanceRes,
+        'chatNetworkConnectionErrorTextAppearanceRes': chatNetworkConnectionErrorTextAppearanceRes,
         'chatNetworkConnectionErrorText': chatNetworkConnectionErrorText,
         //input
         'chatInputTextColor': chatInputTextColor,
         'chatInputAttachmentIconTint': chatInputAttachmentIconTint,
-        'chatInputAttachmentBackgroundColor':
-            chatInputAttachmentBackgroundColor,
-        'chatInputAttachmentBackgroundDrawable':
-            chatInputAttachmentBackgroundDrawable,
+        'chatInputAttachmentBackgroundColor': chatInputAttachmentBackgroundColor,
+        'chatInputAttachmentBackgroundDrawable': chatInputAttachmentBackgroundDrawable,
         'chatInputSendIconTint': chatInputSendIconTint,
         'chatInputSendBackgroundColor': chatInputSendBackgroundColor,
         'chatInputSendBackgroundDrawable': chatInputSendBackgroundDrawable,
         'chatInputSeparatorLineColor': chatInputSeparatorLineColor,
         'chatInputHintText': chatInputHintText,
-        'chatInputTextAppearance': chatInputTextAppearance
+        'chatInputTextAppearance': chatInputTextAppearance,
       };
 }
 
-@deprecated
+@Deprecated('Should use [ChatCustomization] instead')
 class IOSInAppChatCustomization {
   final String? attachmentPreviewBarsColor;
   final String? attachmentPreviewItemsColor;
@@ -597,6 +633,6 @@ class IOSInAppChatCustomization {
         'utilityButtonBottomMargin': utilityButtonBottomMargin,
         'initialHeight': initialHeight,
         'mainFont': mainFont,
-        'charCountFont': charCountFont
+        'charCountFont': charCountFont,
       };
 }

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+
 import '../widgets/page.dart' as navigation;
 
 class DemoTile extends StatelessWidget {
@@ -8,9 +9,9 @@ class DemoTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => ListTile(
-    title: Text(demo.name),
-    onTap: () {
-      Navigator.pushNamed(context, demo.route);
-    },
-  );
+        title: Text(demo.name),
+        onTap: () {
+          Navigator.pushNamed(context, demo.route);
+        },
+      );
 }

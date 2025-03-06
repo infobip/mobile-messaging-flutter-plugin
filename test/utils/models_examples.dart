@@ -6,35 +6,42 @@ import 'package:infobip_mobilemessaging/models/data/user_data.dart';
 
 Configuration get configurationModelExample => Configuration(
       applicationCode: 'abc',
-      pluginVersion: "1.2.3",
+      pluginVersion: '1.2.3',
       inAppChatEnabled: true,
       fullFeaturedInAppsEnabled: true,
       androidSettings: AndroidSettings(
-          firebaseOptions: FirebaseOptions(
-              apiKey: "Some-API-Key",
-              applicationId: "1:1234567890:android:abc123",
-              projectId: "project-123ab"),
-          notificationIcon: 'icon.png',
-          multipleNotifications: true,
-          notificationAccentColor: "#ABCDEF"),
+        firebaseOptions: FirebaseOptions(
+          apiKey: 'Some-API-Key',
+          applicationId: '1:1234567890:android:abc123',
+          projectId: 'project-123ab',
+        ),
+        notificationIcon: 'icon.png',
+        multipleNotifications: true,
+        notificationAccentColor: '#ABCDEF',
+      ),
       iosSettings: IOSSettings(
-          notificationTypes: ['sound'],
-          forceCleanup: true,
-          logging: true,
-          withoutRegisteringForRemoteNotifications: true,
-          webViewSettings: WebViewSettings(
-              title: 'webViewTitle',
-              barTintColor: '#012345',
-              titleColor: '#135',
-              tintColor: '#246')),
+        notificationTypes: ['sound'],
+        forceCleanup: true,
+        logging: true,
+        withoutRegisteringForRemoteNotifications: true,
+        webViewSettings: WebViewSettings(
+          title: 'webViewTitle',
+          barTintColor: '#012345',
+          titleColor: '#135',
+          tintColor: '#246',
+        ),
+      ),
       privacySettings: PrivacySettings(
-          applicationCodePersistingDisabled: true,
-          userDataPersistingDisabled: true,
-          carrierInfoSendingDisabled: true,
-          systemInfoSendingDisabled: true),
+        applicationCodePersistingDisabled: true,
+        userDataPersistingDisabled: true,
+        carrierInfoSendingDisabled: true,
+        systemInfoSendingDisabled: true,
+      ),
       notificationCategories: [
-        NotificationCategory(identifier: '123', actions: [
-          NotificationAction(
+        NotificationCategory(
+          identifier: '123',
+          actions: [
+            NotificationAction(
               identifier: '123456',
               title: 'Action Title',
               foreground: true,
@@ -43,8 +50,10 @@ Configuration get configurationModelExample => Configuration(
               destructive: true,
               icon: 'icon-action.png',
               textInputActionButtonTitle: 'Button Title',
-              textInputPlaceholder: 'Placeholder Title')
-        ])
+              textInputPlaceholder: 'Placeholder Title',
+            ),
+          ],
+        ),
       ],
       defaultMessageStorage: true,
     );
@@ -74,9 +83,9 @@ Installation get installationModelExample => Installation(
             'alWhole': 2,
             'alString': 'someAnotherString',
             'alBoolean': true,
-            'alDecimal': 0.66
+            'alDecimal': 0.66,
           }
-        ]
+        ],
       },
     );
 
@@ -107,9 +116,9 @@ PersonalizeContext get personalizeContextModelExample => PersonalizeContext(
             'alWhole': 2,
             'alString': 'someAnotherString',
             'alBoolean': true,
-            'alDecimal': 0.66
+            'alDecimal': 0.66,
           }
-        ]
+        ],
       },
       keepAsLead: false,
     );
@@ -137,9 +146,9 @@ UserData get userDataModelExample => UserData(
             'alWhole': 2,
             'alString': 'someAnotherString',
             'alBoolean': true,
-            'alDecimal': 0.66
+            'alDecimal': 0.66,
           }
-        ]
+        ],
       },
       installations: [
         installationModelExample,

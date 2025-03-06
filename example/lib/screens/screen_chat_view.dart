@@ -3,8 +3,6 @@ import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:infobip_mobilemessaging/models/chat/chat_view.dart';
 import 'package:infobip_mobilemessaging/models/chat/chat_view_event.dart';
-import 'package:infobip_mobilemessaging/models/chat/widget_info.dart';
-import 'package:infobip_mobilemessaging/models/chat/chat_view_attachment.dart';
 
 class ChatViewDemo extends StatefulWidget {
   const ChatViewDemo({super.key});
@@ -26,52 +24,52 @@ class _ChatViewDemoState extends State<ChatViewDemo> {
     super.dispose();
   }
 
-  String currentChatView = "";
+  String currentChatView = '';
 
   @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('Flutter ChatView example'),
-        leading: new IconButton(
-          icon: new Icon(Icons.arrow_back),
-          onPressed: () async {
-            bool? isMultithread = await _chatViewController?.isMultithread();
-            if (isMultithread == true) {
-              if (currentChatView == 'LOADING_THREAD' || currentChatView == 'THREAD' || currentChatView == 'CLOSED_THREAD') {
-                _chatViewController?.showThreadsList();
+  Widget build(BuildContext context) => Scaffold(
+        appBar: AppBar(
+          title: const Text('Flutter ChatView example'),
+          leading: IconButton(
+            icon: const Icon(Icons.arrow_back),
+            onPressed: () async {
+              bool? isMultithread = await _chatViewController?.isMultithread();
+              if (isMultithread == true) {
+                if (currentChatView == 'LOADING_THREAD' ||
+                    currentChatView == 'THREAD' ||
+                    currentChatView == 'CLOSED_THREAD') {
+                  _chatViewController?.showThreadsList();
+                } else {
+                  Navigator.pop(context);
+                }
               } else {
                 Navigator.pop(context);
               }
-            } else {
-              Navigator.pop(context);
-            }
-          },
-        ),
-        actions: [
-          IconButton(
-            onPressed: () {},
-            icon: Icon(Icons.call),
+            },
           ),
-          IconButton(
-            onPressed: () {},
-            icon: Icon(Icons.more_vert),
-          ),
-        ],
-      ),
-      body: Column(
-        children: [
-          Expanded(
-            child: ChatView(
-              withInput: true,
-              withToolbar: false,
-              onNativeViewCreated: _onNativeViewCreated,
+          actions: [
+            IconButton(
+              onPressed: () {},
+              icon: const Icon(Icons.call),
             ),
-          ),
-        ],
-      ),
-    );
-  }
+            IconButton(
+              onPressed: () {},
+              icon: const Icon(Icons.more_vert),
+            ),
+          ],
+        ),
+        body: Column(
+          children: [
+            Expanded(
+              child: ChatView(
+                withInput: true,
+                withToolbar: false,
+                onNativeViewCreated: _onNativeViewCreated,
+              ),
+            ),
+          ],
+        ),
+      );
 
   // load default
   void _onNativeViewCreated(ChatViewController controller) {
@@ -82,10 +80,11 @@ class _ChatViewDemoState extends State<ChatViewDemo> {
   void _subscribeToEvents() {
     if (!mounted) return;
     _chatViewController?.on(
-        ChatViewEvent.chatViewChanged, (String chatView) => {
-          log('[screen_chat_view] chat view changed: $chatView'),
-          currentChatView = chatView
-        }
+      ChatViewEvent.chatViewChanged,
+      (String chatView) => {
+        log('[screen_chat_view] chat view changed: $chatView'),
+        currentChatView = chatView,
+      },
     );
   }
 }

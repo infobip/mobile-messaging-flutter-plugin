@@ -9,8 +9,7 @@ class FormData {
 
   FormData({this.email, this.phone, this.externalUserId});
 
-  factory FormData.fromJson(Map<String, dynamic> json) =>
-      _$FormDataFromJson(json);
+  factory FormData.fromJson(Map<String, dynamic> json) => _$FormDataFromJson(json);
 
   Map<String, dynamic> toJson() => _$FormDataToJson(this);
 }
@@ -55,17 +54,17 @@ class _SignInHttpDemoState extends State<SignInHttpDemo> {
                     TextButton(
                       child: const Text('Personalize'),
                       onPressed: () async {
-                        UserIdentity userIdentity =
-                            UserIdentity(phones: [formData.phone!]);
+                        UserIdentity userIdentity = UserIdentity(phones: [formData.phone!]);
 
                         try {
                           await InfobipMobilemessaging.personalize(
-                              PersonalizeContext(
-                                  userIdentity: userIdentity,
-                                  userAttributes: null,
-                                  forceDepersonalize: true,
-                                  keepAsLead: true
-                                  ));
+                            PersonalizeContext(
+                              userIdentity: userIdentity,
+                              userAttributes: null,
+                              forceDepersonalize: true,
+                              keepAsLead: true,
+                            ),
+                          );
                           _showDialog('Personalized successfully', '');
                         } catch (e) {
                           _showDialog('Unable to personalize', '$e');
@@ -77,9 +76,9 @@ class _SignInHttpDemoState extends State<SignInHttpDemo> {
                       widget,
                       const SizedBox(
                         height: 24,
-                      )
+                      ),
                     ],
-                  )
+                  ),
                 ],
               ),
             ),
@@ -105,12 +104,13 @@ class _SignInHttpDemoState extends State<SignInHttpDemo> {
 }
 
 FormData _$FormDataFromJson(Map<String, dynamic> json) => FormData(
-    email: json['email'] as String,
-    phone: json['phone'] as String,
-    externalUserId: json['externalUserId'] as String);
+      email: json['email'] as String,
+      phone: json['phone'] as String,
+      externalUserId: json['externalUserId'] as String,
+    );
 
 Map<String, dynamic> _$FormDataToJson(FormData instance) => <String, dynamic>{
       'email': instance.email,
       'phone': instance.phone,
-      'externalUserId': instance.externalUserId
+      'externalUserId': instance.externalUserId,
     };

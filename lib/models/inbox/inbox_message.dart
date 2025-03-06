@@ -6,27 +6,67 @@ import 'package:flutter/foundation.dart';
 /// from epoch in UTC, and [seen] status. To mark message as seen, use special
 /// markMessagesSeen.
 class InboxMessage {
+  /// Id of the [InboxMessage].
   final String messageId;
+
+  /// Topic of the message.
   final String topic;
+
+  /// Boolean value if message is marked as seen.
   final bool seen;
+
+  /// Optional message title.
   final String? title;
+
+  /// Optional message body.
   final String? body;
+
+  /// Optional message sound.
   final String? sound;
-  final bool? vibrate; // Android only
-  final String? icon; // Android only
+
+  /// Android only: vibrate for the message.
+  final bool? vibrate;
+
+  /// Android only: icon for the message.
+  final String? icon;
+
+  /// Optional: silent message flag.
   final bool? silent;
-  final String? category; // Android only
+
+  /// Android only: category of the message.
+  final String? category;
+
+  /// Optional custom payload of the message.
   final Map<String, dynamic>? customPayload;
+
+  /// Internal data.
   final String? internalData;
+
+  /// Link to the message content.
   final String? contentUrl;
-  final Map<String, dynamic>? originalPayload; // iOS only
+
+  /// iOS only: original APNS payload.
+  final Map<String, dynamic>? originalPayload;
+
+  /// Optional url to open in browser.
   final String? browserUrl;
+
+  /// Optional deeplink.
   final String? deeplink;
+
+  /// Optional url to open in webView.
   final String? webViewUrl;
+
+  /// Optional in-app message: title for open action.
   final String? inAppOpenTitle;
+
+  /// Optional in-app message: title for cancel/dismiss action.
   final String? inAppDismissTitle;
+
+  /// Optional message sent timestamp.
   final num? sentTimestamp;
 
+  /// Default constructor with all params.
   InboxMessage({
     required this.messageId,
     required this.seen,
@@ -50,14 +90,11 @@ class InboxMessage {
     this.sentTimestamp,
   });
 
+  /// Parsing InboxMessage from json.
   InboxMessage.fromJson(Map<String, dynamic> json)
       : messageId = json['messageId'],
-        topic = json['inboxData'] != null
-            ? json['inboxData']['inbox']['topic']
-            : json['topic'],
-        seen = json['inboxData'] != null
-            ? json['inboxData']['inbox']['seen']
-            : json['seen'],
+        topic = json['inboxData'] != null ? json['inboxData']['inbox']['topic'] : json['topic'],
+        seen = json['inboxData'] != null ? json['inboxData']['inbox']['seen'] : json['seen'],
         title = json['title'],
         body = json['body'],
         sound = json['sound'],

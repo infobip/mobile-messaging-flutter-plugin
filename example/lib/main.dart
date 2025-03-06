@@ -2,12 +2,10 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:infobip_mobilemessaging/infobip_mobilemessaging.dart';
-import 'package:infobip_mobilemessaging/models/configurations/configuration.dart'
-    as mmconfiguration;
+import 'package:infobip_mobilemessaging/models/configurations/configuration.dart' as mmconf;
 
 import 'screens/homepage.dart';
 import 'widgets/page.dart';
-// import 'chat_customization.dart' as chatCustomization;
 
 void main() async {
   runApp(const MyApp());
@@ -22,6 +20,23 @@ class MyApp extends StatefulWidget {
 
 final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
 
+final mmconf.Configuration ibConfig = mmconf.Configuration(
+  applicationCode: 'your_app_code',
+  inAppChatEnabled: false,
+  fullFeaturedInAppsEnabled: true,
+  defaultMessageStorage: true,
+  androidSettings: mmconf.AndroidSettings(
+    multipleNotifications: true,
+  ),
+  iosSettings: mmconf.IOSSettings(
+    notificationTypes: ['alert', 'badge', 'sound'],
+    forceCleanup: false,
+    logging: true,
+    withoutRegisteringForRemoteNotifications: false,
+  ),
+  webRTCUI: mmconf.WebRTCUI(configurationId: 'Your WEBRTC push configuration id'),
+);
+
 class _MyAppState extends State<MyApp> {
   @override
   void initState() {
@@ -33,19 +48,7 @@ class _MyAppState extends State<MyApp> {
   Future<void> initPlatformState() async {
     if (!mounted) return;
 
-    await InfobipMobilemessaging.init(mmconfiguration.Configuration(
-      applicationCode: 'Your Application Code',
-      inAppChatEnabled: true,
-      fullFeaturedInAppsEnabled: false,
-      defaultMessageStorage: true,
-      iosSettings: mmconfiguration.IOSSettings(
-          notificationTypes: ['alert', 'badge', 'sound'],
-          forceCleanup: false,
-          logging: true,
-          withoutRegisteringForRemoteNotifications: false),
-      webRTCUI: mmconfiguration.WebRTCUI(
-          configurationId: 'Your WEBRTC push configuration id'),
-    ));
+    await InfobipMobilemessaging.init(ibConfig);
     // Comment out to automatically enable WebRTC
     // try {
     //   await InfobipMobilemessaging.enableChatCalls();

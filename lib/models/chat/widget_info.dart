@@ -28,8 +28,7 @@ class WidgetInfo {
         backgroundColor = json['backgroundColor'],
         maxUploadContentSize = json['maxUploadContentSize'],
         multiThread = json['multiThread'],
-        multiChannelConversationEnabled =
-            json['multiChannelConversationEnabled'],
+        multiChannelConversationEnabled = json['multiChannelConversationEnabled'],
         callsEnabled = json['callsEnabled'],
         themeNames = json['themeNames'].cast<String>();
 
@@ -43,8 +42,7 @@ class WidgetInfo {
           backgroundColor == other.backgroundColor &&
           maxUploadContentSize == other.maxUploadContentSize &&
           multiThread == other.multiThread &&
-          multiChannelConversationEnabled ==
-              other.multiChannelConversationEnabled &&
+          multiChannelConversationEnabled == other.multiChannelConversationEnabled &&
           callsEnabled == other.callsEnabled &&
           themeNames == other.themeNames;
 

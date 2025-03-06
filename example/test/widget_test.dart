@@ -17,10 +17,24 @@ void main() {
     // Build our app and trigger a frame.
     await tester.pumpWidget(MyApp());
 
-    List<String> listItems = ["Personalize", "screen_one", "screen_two", "Depersonalize","Get Installation Data","Save User Data",
-      "Get User Data", "Depersonalize Installation", "Set Installation as Primary", "Show Library Events",
-      "Push Demo Application", "Send Event", "Register Deeplink on Tap", "Unregister Deeplink on Tap", "Unregister All Handlers",
-      "Show Chat"];
+    List<String> listItems = [
+      "Personalize",
+      "screen_one",
+      "screen_two",
+      "Depersonalize",
+      "Get Installation Data",
+      "Save User Data",
+      "Get User Data",
+      "Depersonalize Installation",
+      "Set Installation as Primary",
+      "Show Library Events",
+      "Push Demo Application",
+      "Send Event",
+      "Register Deeplink on Tap",
+      "Unregister Deeplink on Tap",
+      "Unregister All Handlers",
+      "Show Chat"
+    ];
 
     //find all text widgets
     List<Widget> asd = tester.widgetList(find.byType(Text)).toList();

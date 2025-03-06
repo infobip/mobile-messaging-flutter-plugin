@@ -27,7 +27,7 @@ Map<String, dynamic> get configurationExampleJson => {
           'barTintColor': '#012345',
           'titleColor': '#135',
           'tintColor': '#246',
-        }
+        },
       },
       'privacySettings': {
         'applicationCodePersistingDisabled': true,
@@ -55,7 +55,7 @@ Map<String, dynamic> get configurationExampleJson => {
       ],
       'defaultMessageStorage': true,
       'webRTCUI': null,
-      'inAppChatCustomization': null
+      'inAppChatCustomization': null,
     };
 
 Map<String, dynamic> get installationExampleJson => {
@@ -83,10 +83,10 @@ Map<String, dynamic> get installationExampleJson => {
             'alWhole': 2,
             'alString': 'someAnotherString',
             'alBoolean': true,
-            'alDecimal': 0.66
+            'alDecimal': 0.66,
           },
         ],
-      }
+      },
     };
 
 Map<String, dynamic> get installationPrimaryExampleJson => {
@@ -123,7 +123,7 @@ Map<String, dynamic> get personalizeContextExampleJson => {
             'alWhole': 2,
             'alString': 'someAnotherString',
             'alBoolean': true,
-            'alDecimal': 0.66
+            'alDecimal': 0.66,
           },
         ],
       },
@@ -154,13 +154,13 @@ Map<String, dynamic> get userDataExampleJson => {
             'alWhole': 2,
             'alString': 'someAnotherString',
             'alBoolean': true,
-            'alDecimal': 0.66
+            'alDecimal': 0.66,
           }
-        ]
+        ],
       },
       'installations': [
         installationExampleJson,
-      ]
+      ],
     };
 
 Map<String, dynamic> get messageExampleJson => {
@@ -184,5 +184,5 @@ Map<String, dynamic> get messageExampleJson => {
       'webViewUrl': 'https://some-browser.url',
       'inAppOpenTitle': 'InApp Title',
       'inAppDismissTitle': 'Dismiss title',
-      'chat': true
+      'chat': true,
     };

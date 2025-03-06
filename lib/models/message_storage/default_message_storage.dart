@@ -5,9 +5,11 @@ import 'package:flutter/services.dart';
 import '../data/message.dart';
 import 'message_storage.dart';
 
+/// Default message storage implementation.
 class DefaultMessageStorage extends MessageStorage {
   final MethodChannel _channel;
 
+  /// Default constructor.
   DefaultMessageStorage(this._channel);
 
   @override
@@ -21,13 +23,15 @@ class DefaultMessageStorage extends MessageStorage {
   }
 
   @override
-  Future<Message?> find(String messageId) async => Message.fromJson(jsonDecode(
-      await _channel.invokeMethod('defaultMessageStorage_find', messageId)));
+  Future<Message?> find(String messageId) async => Message.fromJson(
+        jsonDecode(
+          await _channel.invokeMethod('defaultMessageStorage_find', messageId),
+        ),
+      );
 
   @override
   Future<List<Message>?> findAll() async {
-    String result =
-        await _channel.invokeMethod('defaultMessageStorage_findAll');
+    String result = await _channel.invokeMethod('defaultMessageStorage_findAll');
     Iterable l = json.decode(result);
     return List<Message>.from(l.map((model) => Message.fromJson(model)));
   }

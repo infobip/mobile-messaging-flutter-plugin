@@ -54,9 +54,7 @@ class _CloudInboxScreenState extends State<CloudInboxScreen> {
   }
 
   void _editFilterOptions(String externalUserId, FilterOptions filterOptions) {
-    if (externalUserId.isEmpty ||
-        (_externalUserId == externalUserId &&
-            filterOptions == _filterOptions)) {
+    if (externalUserId.isEmpty || (_externalUserId == externalUserId && filterOptions == _filterOptions)) {
       return;
     }
     setState(() {
@@ -98,8 +96,9 @@ class _CloudInboxScreenState extends State<CloudInboxScreen> {
 
   Future<void> _handleRefresh() async {
     if (_externalUserId.isEmpty) {
-      const snackBar =
-          SnackBar(content: Text('ExternalUserId should be provided'));
+      const snackBar = SnackBar(
+        content: Text('ExternalUserId should be provided'),
+      );
       ScaffoldMessenger.of(context).showSnackBar(snackBar);
       return;
     }
@@ -124,8 +123,9 @@ class _CloudInboxScreenState extends State<CloudInboxScreen> {
       ScaffoldMessenger.of(context).showSnackBar(snackBar);
       return;
     } catch (e) {
-      const snackBar =
-          SnackBar(content: Text('Error fetching inbox, check logs'));
+      const snackBar = SnackBar(
+        content: Text('Error fetching inbox, check logs'),
+      );
       ScaffoldMessenger.of(context).showSnackBar(snackBar);
       setState(() {
         _isInboxLoaded = false;
@@ -180,23 +180,22 @@ class _CloudInboxScreenState extends State<CloudInboxScreen> {
                       child: !_isInboxLoaded || _inbox.messages!.isEmpty
                           ? ListView.builder(
                               itemCount: 1,
-                              itemBuilder: (BuildContext context, int index) =>
-                                  const ListTile(
-                                title:
-                                    Text('Inbox messages will be shown here'),
+                              itemBuilder: (BuildContext context, int index) => const ListTile(
+                                title: Text('Inbox messages will be shown here'),
                               ),
                             )
                           : ListView.builder(
                               itemCount: _inbox.messages?.length,
-                              itemBuilder: (BuildContext context, int index) =>
-                                  ListTile(
+                              itemBuilder: (BuildContext context, int index) => ListTile(
                                 title: Text(
                                   _inbox.messages![index].body!,
                                   style: values[index]
                                       ? const TextStyle(
-                                          fontWeight: FontWeight.normal)
+                                          fontWeight: FontWeight.normal,
+                                        )
                                       : const TextStyle(
-                                          fontWeight: FontWeight.bold),
+                                          fontWeight: FontWeight.bold,
+                                        ),
                                 ),
                                 subtitle: Text(
                                   'topic: ${_inbox.messages![index].topic}, ID: ${_inbox.messages![index].messageId}',
@@ -208,7 +207,8 @@ class _CloudInboxScreenState extends State<CloudInboxScreen> {
                                       builder: (ctx) => AlertDialog(
                                         title: const Text('Marking as seen'),
                                         content: Text(
-                                            'Do you want to mark message with id ${_inbox.messages![index].messageId} as seen?'),
+                                          'Do you want to mark message with id ${_inbox.messages![index].messageId} as seen?',
+                                        ),
                                         actions: [
                                           TextButton(
                                             onPressed: () {
@@ -219,11 +219,8 @@ class _CloudInboxScreenState extends State<CloudInboxScreen> {
                                           TextButton(
                                             onPressed: () {
                                               try {
-                                                InfobipMobilemessaging
-                                                    .setInboxMessagesSeen(
-                                                        _externalUserId, [
-                                                  _inbox.messages![index]
-                                                      .messageId
+                                                InfobipMobilemessaging.setInboxMessagesSeen(_externalUserId, [
+                                                  _inbox.messages![index].messageId,
                                                 ]);
                                                 setState(() {
                                                   values[index] = true;
@@ -231,10 +228,10 @@ class _CloudInboxScreenState extends State<CloudInboxScreen> {
                                               } catch (e) {
                                                 const snackBar = SnackBar(
                                                   content: Text(
-                                                      'Error setting seen'),
+                                                    'Error setting seen',
+                                                  ),
                                                 );
-                                                ScaffoldMessenger.of(context)
-                                                    .showSnackBar(snackBar);
+                                                ScaffoldMessenger.of(context).showSnackBar(snackBar);
                                               }
                                               Navigator.pop(ctx);
                                             },

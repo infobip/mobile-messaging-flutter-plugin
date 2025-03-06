@@ -23,11 +23,17 @@ This guide is designed to get you up and running with Mobile Messaging SDK plugi
 
 1. Make sure to [setup application at the Infobip portal](https://www.infobip.com/docs/mobile-app-messaging/getting-started#create-and-enable-a-mobile-application-profile), if you haven't already.
 
-2. Add MobileMessaging plugin to dependencies at `pubspec.yaml`:
+2. Add MobileMessaging plugin by running:
+
+```css
+$ pub get infobip_mobilemessaging
+```
+
+3. It will add it to dependencies at `pubspec.yaml`:
 
   ```yaml
   dependencies:
-    infobip_mobilemessaging: '^6.1.0'
+    infobip_mobilemessaging: '^7.2.2'
 
   ```
 
@@ -99,20 +105,23 @@ This guide is designed to get you up and running with Mobile Messaging SDK plugi
         > ### Notice
         > Starting from Android 13, Google requires to ask user for notification permission. Follow <a href="https://github.com/infobip/mobile-messaging-flutter-plugin/wiki/Android-13-Notification-Permission-Handling" target="_blank">this guide</a> to make a permission request.
 
-4. Use plugin in your Dart code:
+4. Use plugin in your `main.dart` file:
     ```dart
     import 'package:infobip_mobilemessaging/infobip_mobilemessaging.dart';
-    import 'package:infobip_mobilemessaging/models/configurations/configuration.dart';
+    import 'package:infobip_mobilemessaging/models/configurations/configuration.dart' as mmconf;
     import 'package:infobip_mobilemessaging/models/library_event.dart';
 
     ...
 
-        await InfobipMobilemessaging.init(Configuration(
+        await InfobipMobilemessaging.init(mmconf.Configuration(
           applicationCode: '<Your app code>',
-          iosSettings: IOSSettings(
+          iosSettings: mmconf.IOSSettings(
             notificationTypes: ['alert', 'badge', 'sound'],
-            logging: true
-          )
+            logging: true,
+          ),
+          androidSettings: mmconf.AndroidSettings(
+            multipleNotifications: true,
+          ),  
         ));
 
         InfobipMobilemessaging.on(LibraryEvent.messageReceived, (Message event) => {

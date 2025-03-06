@@ -43,20 +43,18 @@ class _PersonalizeState extends State<Personalize> {
 
   Future<void> _onPersonalizeBtn() async {
     if (_externalUserIdController.text.trim().isEmpty) {
-      const snackBar =
-          SnackBar(content: Text('externalUserId cannot be empty'));
+      const snackBar = SnackBar(content: Text('externalUserId cannot be empty'));
       ScaffoldMessenger.of(context).showSnackBar(snackBar);
       return;
     }
-    UserIdentity userIdentity =
-        UserIdentity(externalUserId: _externalUserIdController.text.trim());
+    UserIdentity userIdentity = UserIdentity(externalUserId: _externalUserIdController.text.trim());
     try {
       await InfobipMobilemessaging.personalize(
         PersonalizeContext(
           userIdentity: userIdentity,
           userAttributes: null,
           forceDepersonalize: true,
-          keepAsLead: false
+          keepAsLead: false,
         ),
       );
     } catch (e) {
@@ -87,8 +85,7 @@ class _PersonalizeState extends State<Personalize> {
                     TextField(
                       enabled: !_isPersonalized,
                       controller: _externalUserIdController,
-                      decoration:
-                          const InputDecoration(label: Text('ExternalUserId')),
+                      decoration: const InputDecoration(label: Text('ExternalUserId')),
                     ),
                     _isPersonalized
                         ? ElevatedButton(

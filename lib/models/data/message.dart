@@ -1,28 +1,71 @@
 import 'package:flutter/foundation.dart';
 
+/// MobileMessaging [Message] class.
 class Message {
+  /// Id of the [Message].
   final String messageId;
+
+  /// Optional message title.
   final String? title;
+
+  /// Optional message body.
   final String? body;
+
+  /// Optional message sound.
   final String? sound;
-  final bool? vibrate; // Android only
-  final String? icon; // Android only
+
+  /// Android only: vibrate for the message.
+  final bool? vibrate;
+
+  /// Android only: icon for the message.
+  final String? icon;
+
+  /// Optional: silent message flag.
   final bool? silent;
-  final String? category; // Android only
+
+  /// Android only: category of the message.
+  final String? category;
+
+  /// Optional custom payload of the message.
   final Map<String, dynamic>? customPayload;
+
+  /// Internal data.
   final String? internalData;
+
+  /// Optional message received timestamp in millis from Epoch.
   final num? receivedTimestamp;
+
+  /// Optional message seen timestamp in millis from Epoch.
   final num? seenDate;
+
+  /// Link to the message content.
   final String? contentUrl;
+
+  /// Optional flag if message was marked as seen.
   final bool? seen;
-  final Map<String, dynamic>? originalPayload; // iOS only
+
+  /// iOS only: original APNS payload.
+  final Map<String, dynamic>? originalPayload;
+
+  /// Optional url to open in browser.
   final String? browserUrl;
+
+  /// Optional deeplink.
   final String? deeplink;
+
+  /// Optional url to open in webView.
   final String? webViewUrl;
+
+  /// Optional in-app message: title for open action.
   final String? inAppOpenTitle;
+
+  /// Optional in-app message: title for cancel/dismiss action.
   final String? inAppDismissTitle;
+
+  /// Optional flag is message for LiveChat.
   final bool? chat;
 
+  /// Default constructor with all params.
   Message({
     required this.messageId,
     this.title,
@@ -47,6 +90,7 @@ class Message {
     this.chat,
   });
 
+  /// Parsing Message from json.
   Message.fromJson(Map<String, dynamic> json)
       : messageId = json['messageId'],
         title = json['title'],

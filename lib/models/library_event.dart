@@ -1,9 +1,13 @@
+/// Mobile Messaging plugin events.
 class LibraryEvent {
+  /// Event's name.
   final String eventName;
 
+  /// Event's payload.
   final dynamic payload;
 
-  /// Occurs when an APNs device token is received. Contains device token - a hex-encoded string received from APNS. Returns device token as hex-encoded string.
+  /// Occurs when an APNs device token is received. Contains device token - a
+  /// hex-encoded string received from APNS. Returns device token as hex-encoded string.
   static const String tokenReceived = 'tokenReceived';
 
   /// Occurs when the registration is updated on backend server. Returns internalId - string for the registered user.
@@ -41,15 +45,17 @@ class LibraryEvent {
 
   /// Occurs when livechat registration id is updated.
   static const String chatLivechatRegistrationIdUpdated = 'inAppChat.livechatRegistrationIdUpdated';
-  
+
   /// Occurs when the connection has been established successfully and chat can be presented
   static const String chatAvailabilityUpdated = 'inAppChat.availabilityUpdated';
 
+  /// Default class constructor.
   LibraryEvent({
     required this.eventName,
     this.payload,
   });
 
+  /// Getting library event name and payload from received json.
   factory LibraryEvent.fromJson(Map<String, dynamic> json) => LibraryEvent(
         eventName: json['eventName'] as String,
         payload: (json['payload'] != null) ? json['payload'] as dynamic : null,

@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 
 import '../screens/cloud_inbox.dart';
+import '../screens/screen_chat_view.dart';
 import '../screens/screen_one.dart';
 import '../screens/screen_two.dart';
 import '../screens/sign_in_http.dart';
-import '../screens/screen_chat_view.dart';
-import '../main.dart';
+
 class Page {
   String name;
   String route;
@@ -26,17 +26,17 @@ final pages = [
     builder: (context) => const SignInHttpDemo(),
   ),
   Page(
-    name: 'screen_one',
+    name: 'First Screen',
     route: '/screen_one',
     builder: (context) => const ScreenOneDemo(),
   ),
   Page(
-    name: 'screen_two',
+    name: 'Second Screen',
     route: '/screen_two',
     builder: (context) => const ScreenTwoDemo(),
   ),
   Page(
-    name: 'Show chat view only',
+    name: 'Show Chat View Only',
     route: '/chat_view',
     builder: (context) => const ChatViewDemo(),
   ),

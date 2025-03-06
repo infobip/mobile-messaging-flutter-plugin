@@ -3,17 +3,17 @@ import 'package:infobip_mobilemessaging/models/inbox/filter_options.dart';
 import 'package:intl/intl.dart';
 
 class EditFilterOptions extends StatefulWidget {
-  const EditFilterOptions(
-      {super.key,
-      required this.externalUserId,
-      this.filterOptions,
-      required this.onEditFilterOptions});
+  const EditFilterOptions({
+    super.key,
+    required this.externalUserId,
+    this.filterOptions,
+    required this.onEditFilterOptions,
+  });
 
   final String externalUserId;
   final FilterOptions? filterOptions;
 
-  final void Function(String externalUserId, FilterOptions filterOptions)
-      onEditFilterOptions;
+  final void Function(String externalUserId, FilterOptions filterOptions) onEditFilterOptions;
 
   @override
   State<StatefulWidget> createState() => _EditFilterOptionsState();
@@ -98,10 +98,11 @@ class _EditFilterOptionsState extends State<EditFilterOptions> {
     widget.onEditFilterOptions(
       _externalUserIdController.text.trim(),
       FilterOptions(
-          limit: enteredLimit,
-          topic: enteredTopic.isNotEmpty ? enteredTopic : null,
-          fromDateTime: _fromDateTime,
-          toDateTime: _toDateTime),
+        limit: enteredLimit,
+        topic: enteredTopic.isNotEmpty ? enteredTopic : null,
+        fromDateTime: _fromDateTime,
+        toDateTime: _toDateTime,
+      ),
     );
 
     Navigator.pop(context);
@@ -160,9 +161,9 @@ class _EditFilterOptionsState extends State<EditFilterOptions> {
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
                 const Text('From'),
-                Text(_fromDateTime == null
-                    ? 'no datetime'
-                    : formatter.format(_fromDateTime!)),
+                Text(
+                  _fromDateTime == null ? 'no datetime' : formatter.format(_fromDateTime!),
+                ),
                 IconButton(
                   onPressed: _fromDatePicker,
                   icon: const Icon(
@@ -170,9 +171,9 @@ class _EditFilterOptionsState extends State<EditFilterOptions> {
                   ),
                 ),
                 const Text('To'),
-                Text(_toDateTime == null
-                    ? 'no datetime'
-                    : formatter.format(_toDateTime!)),
+                Text(
+                  _toDateTime == null ? 'no datetime' : formatter.format(_toDateTime!),
+                ),
                 IconButton(
                   onPressed: _toDatePicker,
                   icon: const Icon(
@@ -196,7 +197,7 @@ class _EditFilterOptionsState extends State<EditFilterOptions> {
                   child: const Text('Set Filter Options'),
                 ),
               ],
-            )
+            ),
           ],
         ),
       );
