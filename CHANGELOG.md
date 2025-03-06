@@ -1,3 +1,6 @@
+# 7.2.3
+## Changed
+- Lint rules, minor improvements.
 # 7.2.2
 ## Fixed 
 - Resolved an issue when camera view from chatInput break flutter layout. 
