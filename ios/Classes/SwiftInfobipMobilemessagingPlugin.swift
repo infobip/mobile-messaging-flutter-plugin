@@ -242,6 +242,9 @@ public class SwiftInfobipMobilemessagingPlugin: NSObject, FlutterPlugin {
         if let customization = configuration.customization {
             setupCustomization(customization: customization)
         }
+        if let shouldHandleKeyboardAppereance = configuration.inAppChatExtras?.shouldHandleKeyboardAppearance {
+            MMChatSettings.sharedInstance.shouldHandleKeyboardAppearance = shouldHandleKeyboardAppereance
+        }
     }
     
     func setupChatCustomization(customization: ChatCustomization) {

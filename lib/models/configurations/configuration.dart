@@ -36,6 +36,9 @@ class Configuration {
   @Deprecated('Should use [ChatCustomization] instead')
   final InAppChatCustomization? inAppChatCustomization;
 
+  /// Additional configurations for inAppChat
+  final InAppChatExtras? inAppChatExtras;
+
   /// Default constructor with all params.
   Configuration({
     required this.applicationCode,
@@ -49,6 +52,7 @@ class Configuration {
     this.defaultMessageStorage,
     this.webRTCUI,
     this.inAppChatCustomization,
+    this.inAppChatExtras,
   });
 
   /// Mapping [Configuration] to json.
@@ -66,6 +70,7 @@ class Configuration {
         'webRTCUI': webRTCUI?.toJson(),
         // ignore: deprecated_member_use_from_same_package
         'inAppChatCustomization': inAppChatCustomization?.toJson(),
+        'inAppChatExtras': inAppChatExtras?.toJson(),
       };
 }
 
@@ -273,6 +278,16 @@ class WebRTCUI {
   WebRTCUI({this.configurationId});
 
   Map<String, dynamic> toJson() => {'configurationId': configurationId};
+}
+
+class InAppChatExtras { 
+  final bool? shouldHandleKeyboardAppearance; // iOS only
+
+    InAppChatExtras({this.shouldHandleKeyboardAppearance});
+
+  Map<String, dynamic> toJson() => { 
+    'shouldHandleKeyboardAppearance': shouldHandleKeyboardAppearance,
+  };
 }
 
 class ToolbarCustomization {
