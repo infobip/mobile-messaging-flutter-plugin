@@ -1,3 +1,6 @@
+# 7.2.4
+## Added
+- iOS: configurable parameter shouldHandleKeyboardAppearance for In-app chat.
 # 7.2.3
 ## Changed
 - Lint rules, minor improvements.
