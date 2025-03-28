@@ -14,6 +14,7 @@ import '../main.dart';
 import '../utils/language.dart';
 import '../widgets/demo_tile.dart';
 import '../widgets/page.dart';
+import '../chat_examples.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -275,35 +276,6 @@ class _HomePageState extends State<HomePage> {
     _showDialog('Deleted First', str);
   }
 
-  showChatLanguageDialog(BuildContext context) {
-    final children = <Widget>[];
-
-    // Languages imported from utils/languages
-    for (var language in languages) {
-      children.add(
-        SimpleDialogOption(
-          child: Text(language.name),
-          onPressed: () {
-            InfobipMobilemessaging.setLanguage(language.code);
-            Navigator.pop(context, true);
-          },
-        ),
-      );
-    }
-
-    // set up the SimpleDialog
-    SimpleDialog dialog = SimpleDialog(
-      title: const Text('Choose Chat Language'),
-      children: children,
-    );
-
-    // show chat languages dialog
-    showDialog(
-      context: context,
-      builder: (BuildContext context) => dialog,
-    );
-  }
-
   @override
   Widget build(BuildContext context) => Scaffold(
         appBar: AppBar(
@@ -312,6 +284,12 @@ class _HomePageState extends State<HomePage> {
         body: ListView(
           children: [
             ...pages.map((d) => DemoTile(demo: d)),
+            ListTile(
+              title: const Text('Chat Examples'),
+              onTap: () {
+                ChatExamples.showChatExamplesDialog(context);
+              },
+            ),
             ListTile(
               title: const Text('Depersonalize'),
               onTap: () {
@@ -379,39 +357,6 @@ class _HomePageState extends State<HomePage> {
               },
             ),
             ListTile(
-              title: const Text('Set Chat Language'),
-              onTap: () {
-                showChatLanguageDialog(context);
-              },
-            ),
-            ListTile(
-              title: const Text('Show chat screen'),
-              onTap: () {
-                // InfobipMobilemessaging.setJwt('your JWT'); // Comment out to automatically log-in using authentication
-                InfobipMobilemessaging.showChat();
-              },
-            ),
-            ListTile(
-              title: const Text('Show chat screen customized'),
-              onTap: () {
-                InfobipMobilemessaging.setChatCustomization(
-                  chat_customization.customBranding,
-                );
-                InfobipMobilemessaging.setWidgetTheme('dark');
-                InfobipMobilemessaging.showChat();
-              },
-            ),
-            ListTile(
-              title: const Text('Send Contextual Data and Show chat screen'),
-              onTap: () {
-                InfobipMobilemessaging.sendContextualDataWithStrategy(
-                  "{ demoKey: 'InAppChat Metadata Value' }",
-                  ChatMultithreadStrategies.ACTIVE,
-                );
-                InfobipMobilemessaging.showChat();
-              },
-            ),
-            ListTile(
               title: const Text('Send Event'),
               onTap: () {
                 log('Trying to send event');
@@ -475,28 +420,6 @@ class _HomePageState extends State<HomePage> {
               onTap: () async {
                 await InfobipMobilemessaging.defaultMessageStorage()?.deleteAll();
                 _showDialog('DeleteAll', 'All messages deleted');
-              },
-            ),
-            ListTile(
-              title: const Text('Enable calls'),
-              onTap: () {
-                log('Enabling calls');
-                try {
-                  InfobipMobilemessaging.enableChatCalls();
-                } catch (e) {
-                  log('Failed to enable calls. $e');
-                }
-              },
-            ),
-            ListTile(
-              title: const Text('Disable calls'),
-              onTap: () {
-                log('Disabling calls');
-                try {
-                  InfobipMobilemessaging.disableCalls();
-                } catch (e) {
-                  log('Failed to disable calls. $e');
-                }
               },
             ),
           ],

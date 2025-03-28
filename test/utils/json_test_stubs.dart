@@ -56,7 +56,6 @@ Map<String, dynamic> get configurationExampleJson => {
       'defaultMessageStorage': true,
       'webRTCUI': null,
       'inAppChatCustomization': null,
-      'inAppChatExtras': {'shouldHandleKeyboardAppearance': false}
     };
 
 Map<String, dynamic> get installationExampleJson => {

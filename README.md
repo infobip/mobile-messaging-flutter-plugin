@@ -11,7 +11,7 @@ The document describes plugin integration steps for your Flutter project.
 
 For iOS project:
 - Xcode 16.x
-- Minimum deployment target 12.0
+- Minimum deployment target 13.0
 
 For Android project:
 - Android Studio
@@ -42,7 +42,7 @@ $ pub get infobip_mobilemessaging
 4. Configure platforms
 
    - **iOS**
-       1. Update the `ios/Podfile` with iOS deployment target platform 12.0 - `platform :ios, '12.0'` if needed, and perform in Terminal `cd ios && pod update `
+       1. Update the `ios/Podfile` with iOS deployment target platform 13.0 - `platform :ios, '13.0'` if needed, and perform in Terminal `cd ios && pod update `
        2. Import MobileMessaging `@import MobileMessaging;` and add `[MobileMessagingPluginApplicationDelegate install];` into `<ProjectName>/ios/Runner/AppDelegate.m` (this is required for OS callbacks such as `didRegisterForRemoteNotifications` to be intercepted by native MobileMessaging SDK) :
         ```objc
                ...

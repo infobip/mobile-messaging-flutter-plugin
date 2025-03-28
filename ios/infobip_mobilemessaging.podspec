@@ -7,7 +7,7 @@ require 'yaml'
 
 pubspec = YAML.load_file(File.join('..', 'pubspec.yaml'))
 library_version = pubspec['version'].gsub('+', '-')
-mmVersion = "12.18.1"
+mmVersion = "13.0.1"
 
 Pod::Spec.new do |s|
   s.name             = 'infobip_mobilemessaging'
@@ -28,7 +28,7 @@ A new flutter plugin project.
   if defined?($WebRTCUIEnabled)
     s.dependency "MobileMessaging/WebRTCUI", mmVersion
   end
-  s.platform = :ios, '12.0'
+  s.platform = :ios, '13.0'
 
   # Flutter.framework does not contain a i386 slice.
   s.pod_target_xcconfig = { 'DEFINES_MODULE' => 'YES', 'EXCLUDED_ARCHS[sdk=iphonesimulator*]' => 'i386' }

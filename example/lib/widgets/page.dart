@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 
 import '../screens/cloud_inbox.dart';
-import '../screens/screen_chat_view.dart';
 import '../screens/screen_one.dart';
 import '../screens/screen_two.dart';
 import '../screens/sign_in_http.dart';
@@ -34,10 +33,5 @@ final pages = [
     name: 'Second Screen',
     route: '/screen_two',
     builder: (context) => const ScreenTwoDemo(),
-  ),
-  Page(
-    name: 'Show Chat View Only',
-    route: '/chat_view',
-    builder: (context) => const ChatViewDemo(),
   ),
 ];

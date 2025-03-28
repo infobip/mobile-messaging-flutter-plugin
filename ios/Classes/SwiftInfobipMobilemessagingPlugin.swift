@@ -10,7 +10,7 @@ extension String {
 }
 
 extension UIApplication {
-    class func topViewController(controller: UIViewController? = UIApplication.shared.keyWindow?.rootViewController) -> UIViewController? {
+    class func topViewController(controller: UIViewController? = UIApplication.shared.firstKeyWindow!.rootViewController) -> UIViewController? {
         if let navigationController = controller as? UINavigationController {
             return topViewController(controller: navigationController.visibleViewController)
         }
@@ -241,9 +241,6 @@ public class SwiftInfobipMobilemessagingPlugin: NSObject, FlutterPlugin {
         
         if let customization = configuration.customization {
             setupCustomization(customization: customization)
-        }
-        if let shouldHandleKeyboardAppereance = configuration.inAppChatExtras?.shouldHandleKeyboardAppearance {
-            MMChatSettings.sharedInstance.shouldHandleKeyboardAppearance = shouldHandleKeyboardAppereance
         }
     }
     
@@ -918,10 +915,11 @@ extension UIColor {
         let hexString: String = hexString.trimmingCharacters(in: CharacterSet.whitespacesAndNewlines)
         let scanner = Scanner(string: hexString)
         if (hexString.hasPrefix("#")) {
-            scanner.scanLocation = 1
+            scanner.currentIndex =  scanner.string.index(after: scanner.currentIndex)
         }
-        var color: UInt32 = 0
-        scanner.scanHexInt32(&color)
+        var color: UInt64 = 0
+        scanner.scanHexInt64(&color)
+
         let mask = 0x000000FF
         let r = Int(color >> 16) & mask
         let g = Int(color >> 8) & mask

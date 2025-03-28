@@ -46,6 +46,7 @@ struct ChatCustomization: Decodable {
     var chatInputCursorColor: String?
     var networkErrorTextColor: String?
     var networkErrorLabelBackgroundColor: String?
+    var shouldHandleKeyboardAppearance: Bool?
 }
 
 // Deprecated, to be replaced entirely by ChatCustomization
@@ -109,6 +110,7 @@ class CustomizationUtils {
         setNotNil(&settings.errorLabelTextColor, customization.networkErrorTextColor?.toColor())
         setNotNil(&settings.errorLabelBackgroundColor, customization.networkErrorLabelBackgroundColor?.toColor()) 
         setNotNil(&settings.advancedSettings.mainPlaceholderTextColor, customization.chatInputHintTextColor?.toColor())
+        setNotNil(&settings.shouldHandleKeyboardAppearance, customization.shouldHandleKeyboardAppearance)
     }
 
     func setup(customization: Customization, with registrar: FlutterPluginRegistrar, in settings: MMChatSettings) {

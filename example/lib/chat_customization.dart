@@ -54,4 +54,6 @@ Object customBranding = mmconfiguration.ChatCustomization(
   chatInputSeparatorLineColor: '#BDBDBD',
   chatInputSeparatorLineVisible: true,
   chatInputCursorColor: '#9E9E9E',
+  shouldHandleKeyboardAppearance: true,
 );
+

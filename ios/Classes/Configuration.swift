@@ -8,17 +8,6 @@
 import Foundation
 import MobileMessaging
 
-class InAppChatExtras { 
-    var shouldHandleKeyboardAppearance: Bool
-
-    init?(from object: AnyObject?) {
-        guard let value = object?.value(forKey: Configuration.Keys.shouldHandleKeyboardAppearance) as? Bool else {
-            return nil
-        }
-        self.shouldHandleKeyboardAppearance = value
-    }
-}
-
 class Configuration {
     static let userDefaultsConfigKey = "com.mobile-messaging.flutterPluginConfiguration"
     
@@ -43,7 +32,6 @@ class Configuration {
         static let webRTCUI = "webRTCUI"
         static let configurationId = "configurationId"
         static let customization = "inAppChatCustomization"
-        static let inAppChatExtras = "inAppChatExtras"
         static let shouldHandleKeyboardAppearance = "shouldHandleKeyboardAppearance"
     }
     
@@ -62,7 +50,6 @@ class Configuration {
     let webViewSettings: [String: AnyObject]?
     let withoutRegisteringForRemoteNotifications: Bool
     let customization: Customization?
-    let inAppChatExtras: InAppChatExtras?
     
     init?(rawConfig: [String: AnyObject]) {
         guard let appCode = rawConfig[Configuration.Keys.applicationCode] as? String,
@@ -88,7 +75,6 @@ class Configuration {
         self.forceCleanup = ios[Configuration.Keys.forceCleanup].unwrap(orDefault: false)
         self.logging = ios[Configuration.Keys.logging].unwrap(orDefault: false)
         self.withoutRegisteringForRemoteNotifications = ios[Configuration.Keys.withoutRegisteringForRemoteNotifications].unwrap(orDefault: false)
-        self.inAppChatExtras = InAppChatExtras(from: rawConfig[Configuration.Keys.inAppChatExtras])
 
         if let rawPrivacySettings = rawConfig[Configuration.Keys.privacySettings] as? [String: Any] {
             var ps = [String: Any]()

@@ -56,7 +56,6 @@ Configuration get configurationModelExample => Configuration(
         ),
       ],
       defaultMessageStorage: true,
-      inAppChatExtras: InAppChatExtras(shouldHandleKeyboardAppearance: false),
     );
 
 Installation get installationModelExample => Installation(
