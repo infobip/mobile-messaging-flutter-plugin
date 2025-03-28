@@ -1,3 +1,11 @@
+# 8.0.0
+## Changed
+- (iOS) Minimum deployment target changed to iOS 13.
+- (iOS) The initialisation param 'shouldHandleKeyboardAppearance' has been moved to ChatCustomization.
+
+## Fixed
+- (iOS )Changed a macro for webRTC that was failing builds in the new Xcode 16.3 RC.
+- (iOS) System sharing capabilities in InAppChat attachments now always available, independently from the app permissions.
 # 7.2.4
 ## Added
 - iOS: configurable parameter shouldHandleKeyboardAppearance for In-app chat.
