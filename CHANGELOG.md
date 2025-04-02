@@ -1,3 +1,11 @@
+# 8.1.0
+## Changed
+- (Android) Since this version, we provide support for Android 15
+- (Android) In-app chat uses [Android Contracts](https://developer.android.com/reference/androidx/activity/result/contract/ActivityResultContracts) and [Android Photo picker](https://developer.android.com/training/data-storage/shared/photopicker) to pick message attachment.
+-  (Android) Since this version In-app chat does not requires following dangerous permissions:
+    - `READ_MEDIA_IMAGES`
+    - `READ_MEDIA_VIDEO`
+    - `READ_MEDIA_AUDIO`
 # 8.0.0
 ## Changed
 - (iOS) Minimum deployment target changed to iOS 13.
