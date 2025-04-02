@@ -14,9 +14,13 @@ import androidx.fragment.app.FragmentContainerView;
 import androidx.fragment.app.FragmentManager;
 
 import org.infobip.mobile.messaging.api.chat.WidgetInfo;
-import org.infobip.mobile.messaging.chat.attachments.InAppChatMobileAttachment;
 import org.infobip.mobile.messaging.chat.core.InAppChatWidgetView;
-import org.infobip.mobile.messaging.chat.utils.LocalizationUtils;
+import org.infobip.mobile.messaging.chat.attachments.InAppChatMobileAttachment;
+import org.infobip.mobile.messaging.chat.core.widget.LivechatWidgetResult;
+import org.infobip.mobile.messaging.chat.core.widget.LivechatWidgetThread;
+import org.infobip.mobile.messaging.chat.core.widget.LivechatWidgetThreads;
+import org.infobip.mobile.messaging.chat.core.widget.LivechatWidgetView;
+import org.infobip.mobile.messaging.chat.core.widget.LivechatWidgetLanguage;
 import org.infobip.mobile.messaging.chat.view.InAppChatFragment;
 import org.infobip.plugins.mobilemessaging.flutter.common.ErrorCodes;
 import org.infobip.plugins.mobilemessaging.flutter.common.StreamHandler;
@@ -24,8 +28,8 @@ import org.infobip.mobile.messaging.chat.core.MultithreadStrategy;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import kotlin.Unit;
 
-import java.util.Locale;
 import java.util.Map;
 
 import io.flutter.plugin.common.BinaryMessenger;
@@ -144,9 +148,8 @@ public class ChatPlatformView implements PlatformView, MethodCallHandler {
             if (language == null || language.isEmpty()) {
                 result.error(ErrorCodes.CHAT_VIEW_ERROR.getErrorCode(), "Cannot set ChatView language. Language is null or empty.", null);
             } else {
-                LocalizationUtils localizationUtils = LocalizationUtils.getInstance(context);
-                Locale locale = localizationUtils.localeFromString(language);
-                fragment.setLanguage(locale);
+                LivechatWidgetLanguage widgetLanguage = LivechatWidgetLanguage.findLanguageOrDefault(language);
+                fragment.setLanguage(widgetLanguage);
                 result.success(RESULT_SUCCESS);
             }
         } else {
@@ -239,13 +242,83 @@ public class ChatPlatformView implements PlatformView, MethodCallHandler {
         return new InAppChatFragment.EventsListener() {
 
             @Override
+            public void onChatWidgetThemeChanged(@NonNull LivechatWidgetResult<String> result) {
+                String widgetThemeName = result.getOrNull();
+                if (widgetThemeName != null) {
+                    eventHandler.sendEvent(ChatViewEvent.EVENT_WIDGET_THEME_CHANGED, widgetThemeName);
+                }
+            }
+
+            @Override
+            public void onChatLanguageChanged(@NonNull LivechatWidgetResult<String> result) {
+                //Widget language was changed
+            }
+
+            @Override
+            public void onChatThreadListShown(@NonNull LivechatWidgetResult<Unit> result) {
+                //Chat thread list was shown
+            }
+
+            @Override
+            public void onChatThreadShown(@NonNull LivechatWidgetResult<LivechatWidgetThread> result) {
+                //Chat thread was shown
+            }
+
+            @Override
+            public void onChatActiveThreadReceived(@NonNull LivechatWidgetResult<LivechatWidgetThread> result) {
+                //Active chat thread was received
+            }
+
+            @Override
+            public void onChatThreadsReceived(@NonNull LivechatWidgetResult<LivechatWidgetThreads> result) {
+                //Chat threads were received
+            }
+
+            @Override
+            public void onChatContextualDataSent(@NonNull LivechatWidgetResult<String> result) {
+                //Contextual data was sent
+            }
+
+            @Override
+            public void onChatDraftSent(@NonNull LivechatWidgetResult<String> result) {
+                //Draft was sent
+            }
+
+            @Override
+            public void onChatMessageSent(@NonNull LivechatWidgetResult<String> result) {
+                //Message was sent
+            }
+
+            @Override
+            public void onChatConnectionResumed(@NonNull LivechatWidgetResult<Unit> result) {
+                eventHandler.sendEvent(ChatViewEvent.EVENT_CHAT_RECONNECTED);
+            }
+
+            @Override
+            public void onChatConnectionPaused(@NonNull LivechatWidgetResult<Unit> result) {
+                eventHandler.sendEvent(ChatViewEvent.EVENT_CHAT_DISCONNECTED);
+            }
+
+            @Override
+            public void onChatLoadingFinished(@NonNull LivechatWidgetResult<Unit> result) {
+                eventHandler.sendEvent(ChatViewEvent.EVENT_CHAT_LOADED, result.isSuccess());
+            }
+
+            @Override
+            public boolean onChatAttachmentPreviewOpened(@Nullable String url, @Nullable String type, @Nullable String caption) {
+                JSONObject payload = attachmentToJSON(url, type, caption);
+                eventHandler.sendEvent(ChatViewEvent.EVENT_ATTACHMENT_PREVIEW_OPENED, payload);
+                return false;
+            }
+
+            @Override
             public void onChatRawMessageReceived(@NonNull String rawMessage) {
                 eventHandler.sendEvent(ChatViewEvent.EVENT_CHAT_RAW_MESSAGE_RECEIVED, rawMessage);
             }
 
             @Override
             public void onChatWidgetThemeChanged(@NonNull String widgetThemeName) {
-                eventHandler.sendEvent(ChatViewEvent.EVENT_WIDGET_THEME_CHANGED, widgetThemeName);
+                //Deprecated
             }
 
             @Override
@@ -255,14 +328,18 @@ public class ChatPlatformView implements PlatformView, MethodCallHandler {
             }
 
             @Override
-            public void onChatViewChanged(@NonNull InAppChatWidgetView widgetView) {
+            public void onChatViewChanged(@NonNull LivechatWidgetView widgetView) {
                 eventHandler.sendEvent(ChatViewEvent.EVENT_CHAT_VIEW_CHANGED, widgetView.name());
             }
 
             @Override
+            public void onChatViewChanged(@NonNull InAppChatWidgetView widgetView) {
+                //Deprecated
+            }
+
+            @Override
             public boolean onAttachmentPreviewOpened(@Nullable String url, @Nullable String type, @Nullable String caption) {
-                JSONObject payload = attachmentToJSON(url, type, caption);
-                eventHandler.sendEvent(ChatViewEvent.EVENT_ATTACHMENT_PREVIEW_OPENED, payload);
+                //Deprecated
                 return false;
             }
 
@@ -272,17 +349,17 @@ public class ChatPlatformView implements PlatformView, MethodCallHandler {
 
             @Override
             public void onChatLoaded(boolean controlsEnabled) {
-                eventHandler.sendEvent(ChatViewEvent.EVENT_CHAT_LOADED, controlsEnabled);
+                //Deprecated
             }
 
             @Override
             public void onChatDisconnected() {
-                eventHandler.sendEvent(ChatViewEvent.EVENT_CHAT_DISCONNECTED);
+                //Deprecated
             }
 
             @Override
             public void onChatReconnected() {
-                eventHandler.sendEvent(ChatViewEvent.EVENT_CHAT_RECONNECTED);
+                //Deprecated
             }
 
             @Override

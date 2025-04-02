@@ -15,7 +15,7 @@ rootProject.allprojects {
 }
 
 android {
-    compileSdkVersion 34
+    compileSdkVersion 35
     namespace 'org.infobip.plugins.mobilemessaging.flutter.infobip_mobilemessaging'
 
     defaultConfig {
@@ -31,7 +31,7 @@ android {
 }
 
 dependencies {
-    def mmVersion = '13.4.0'
+    def mmVersion = '13.9.1'
     //flutter and mm dependencies clash
     implementation ("org.jetbrains.kotlin:kotlin-stdlib-jdk8") {
         version {

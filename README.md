@@ -15,7 +15,7 @@ For iOS project:
 
 For Android project:
 - Android Studio
-- Supported API Levels: 21 (Android 5.0 - Lollipop) - 34 (Android 14)
+- Supported API Levels: 21 (Android 5.0 - Lollipop) - 35 (Android 15)
 
 ## Quick start guide
 

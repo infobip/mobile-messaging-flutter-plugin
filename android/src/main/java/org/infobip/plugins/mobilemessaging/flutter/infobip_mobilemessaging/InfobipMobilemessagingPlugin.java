@@ -35,6 +35,7 @@ import org.infobip.mobile.messaging.MobileMessagingProperty;
 import org.infobip.mobile.messaging.SuccessPending;
 import org.infobip.mobile.messaging.User;
 import org.infobip.mobile.messaging.chat.InAppChat;
+import org.infobip.mobile.messaging.chat.core.widget.LivechatWidgetLanguage;
 import org.infobip.mobile.messaging.chat.core.InAppChatEvent;
 import org.infobip.mobile.messaging.inbox.Inbox;
 import org.infobip.mobile.messaging.inbox.InboxMapper;
@@ -887,7 +888,8 @@ public class InfobipMobilemessagingPlugin implements FlutterPlugin, MethodCallHa
             result.error(ErrorCodes.SET_LANGUAGE_ERROR.getErrorCode(), "Cannot set in app chat language.", null);
             return;
         }
-        InAppChat.getInstance(activity.getApplication()).setLanguage(language);
+        LivechatWidgetLanguage widgetLanguage = LivechatWidgetLanguage.findLanguageOrDefault(language);
+        InAppChat.getInstance(activity.getApplication()).setLanguage(widgetLanguage);
     }
 
     private void sendContextualData(MethodCall call, final MethodChannel.Result result) {
@@ -902,7 +904,7 @@ public class InfobipMobilemessagingPlugin implements FlutterPlugin, MethodCallHa
 
     private void setJwt(MethodCall call) {
         String jwt = call.arguments.toString();
-        InAppChat.getInstance(activity.getApplication()).setJwtProvider(() -> jwt);
+        InAppChat.getInstance(activity.getApplication()).setWidgetJwtProvider(() -> jwt);
     }
 
     private void setChatPushTitle(MethodCall call, MethodChannel.Result result) {
