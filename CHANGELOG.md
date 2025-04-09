@@ -1,3 +1,9 @@
+# 8.1.1
+## Fixed
+- Android: Notification channels are fixed to support sound and vibration message options.
+- Traditional Chinese translations.
+
+Android SDK: 13.9.3
 # 8.1.0
 ## Changed
 - (Android) Since this version, we provide support for Android 15
