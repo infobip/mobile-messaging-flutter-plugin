@@ -31,6 +31,9 @@ public class Configuration {
 
     public static class AndroidSettings {
         String notificationIcon;
+        String notificationChannelId;
+        String notificationChannelName;
+        String notificationSound;
         boolean multipleNotifications;
         String notificationAccentColor;
         FirebaseOptions firebaseOptions;
@@ -41,6 +44,18 @@ public class Configuration {
 
         public void setNotificationIcon(String notificationIcon) {
             this.notificationIcon = notificationIcon;
+        }
+
+        public String getNotificationChannelId() {
+            return notificationChannelId;
+        }
+
+        public String getNotificationChannelName() {
+            return notificationChannelName;
+        }
+
+        public String getNotificationSound() {
+            return notificationSound;
         }
 
         public boolean isMultipleNotifications() {

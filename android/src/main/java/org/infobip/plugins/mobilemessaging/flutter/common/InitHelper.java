@@ -82,9 +82,18 @@ public class InitHelper {
         if (androidSettings != null && androidSettings.isMultipleNotifications()) {
             notificationBuilder.withMultipleNotifications();
         }
+
         if (androidSettings != null && androidSettings.getNotificationAccentColor() != null) {
             int color = Color.parseColor(androidSettings.getNotificationAccentColor());
             notificationBuilder.withColor(color);
+        }
+
+        if (androidSettings != null && androidSettings.getNotificationChannelId() != null && !androidSettings.getNotificationChannelId().isEmpty()
+                && androidSettings.getNotificationChannelName() != null && !androidSettings.getNotificationChannelName().isEmpty()
+                && androidSettings.getNotificationSound() != null && !androidSettings.getNotificationSound().isEmpty()) {
+            builder.withCustomNotificationChannel(androidSettings.getNotificationChannelId(),
+                    androidSettings.getNotificationChannelName(),
+                    androidSettings.getNotificationSound());
         }
 
         if (configuration.isInAppChatEnabled()) {

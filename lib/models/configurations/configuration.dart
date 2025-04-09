@@ -77,6 +77,15 @@ class AndroidSettings {
   /// A resource name for a status bar icon (without extension), located in '/platforms/android/app/src/main/res/mipmap'
   final String? notificationIcon;
 
+  /// Custom notification channel ID.
+  final String? notificationChannelId;
+
+  /// Custom notification channel name.
+  final String? notificationChannelName;
+
+  /// A resource name for the custom sound name (without extension), located in '/android/app/src/main/res/raw'
+  final String? notificationSound;
+
   /// Should multiple notifications in status bar be shown. By default only the latest notification is shown.
   final bool? multipleNotifications;
 
@@ -87,6 +96,9 @@ class AndroidSettings {
   AndroidSettings({
     this.firebaseOptions,
     this.notificationIcon,
+    this.notificationChannelId,
+    this.notificationChannelName,
+    this.notificationSound,
     this.multipleNotifications,
     this.notificationAccentColor,
   });
@@ -95,6 +107,9 @@ class AndroidSettings {
   Map<String, dynamic> toJson() => {
         'firebaseOptions': firebaseOptions?.toJson(),
         'notificationIcon': notificationIcon,
+        'notificationChannelId': notificationChannelId,
+        'notificationChannelName': notificationChannelName,
+        'notificationSound': notificationSound,
         'multipleNotifications': multipleNotifications,
         'notificationAccentColor': notificationAccentColor,
       };

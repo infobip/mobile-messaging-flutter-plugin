@@ -35,8 +35,9 @@ import org.infobip.mobile.messaging.MobileMessagingProperty;
 import org.infobip.mobile.messaging.SuccessPending;
 import org.infobip.mobile.messaging.User;
 import org.infobip.mobile.messaging.chat.InAppChat;
-import org.infobip.mobile.messaging.chat.core.widget.LivechatWidgetLanguage;
 import org.infobip.mobile.messaging.chat.core.InAppChatEvent;
+import org.infobip.mobile.messaging.chat.core.MultithreadStrategy;
+import org.infobip.mobile.messaging.chat.core.widget.LivechatWidgetLanguage;
 import org.infobip.mobile.messaging.inbox.Inbox;
 import org.infobip.mobile.messaging.inbox.InboxMapper;
 import org.infobip.mobile.messaging.inbox.MobileInbox;
@@ -65,7 +66,6 @@ import org.infobip.plugins.mobilemessaging.flutter.common.StreamHandler;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.infobip.mobile.messaging.chat.core.MultithreadStrategy;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -557,9 +557,7 @@ public class InfobipMobilemessagingPlugin implements FlutterPlugin, MethodCallHa
                     }
                 }
             });
-        } catch (IllegalArgumentException e) {
-            resultCallbacks.error(ErrorCodes.PERSONALIZE.getErrorCode(), e.getMessage(), e.getLocalizedMessage());
-        } catch (JSONException e) {
+        } catch (IllegalArgumentException | JSONException e) {
             resultCallbacks.error(ErrorCodes.PERSONALIZE.getErrorCode(), e.getMessage(), e.getLocalizedMessage());
         }
     }
