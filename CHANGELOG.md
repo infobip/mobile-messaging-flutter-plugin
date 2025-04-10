@@ -1,3 +1,8 @@
+# 8.1.2
+## Fixed
+- Android notification channels.
+
+Android SDK: 13.9.6
 # 8.1.1
 ## Fixed
 - Android: Notification channels are fixed to support sound and vibration message options.
