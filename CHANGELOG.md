@@ -1,3 +1,10 @@
+# 8.2.0
+## Added
+- In-app chat applies [Livechat Widget attachments configuration](https://www.infobip.com/docs/live-chat/message-types#user-input) now
+- Extended the  In-app chat's `WidgetInfo` model with additional fields `attachmentConfig` and `primaryTextColor `
+ 
+Android SDK: 13.17.0
+iOS SDK: 13.4.0
 # 8.1.2
 ## Fixed
 - Android notification channels.
