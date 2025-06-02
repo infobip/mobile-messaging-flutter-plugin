@@ -1,24 +1,29 @@
+import 'widget_attachment_config.dart';
+
 class WidgetInfo {
   final String? id;
   final String? title;
   final String? primaryColor;
   final String? backgroundColor;
-  final num? maxUploadContentSize;
+  final String? primaryTextColor;
   final bool? multiThread;
   final bool? multiChannelConversationEnabled;
   final bool? callsEnabled;
   final List<String>? themeNames;
+  final WidgetAttachmentConfig? attachmentConfig;
+
 
   WidgetInfo({
     this.id,
     this.title,
     this.primaryColor,
     this.backgroundColor,
-    this.maxUploadContentSize,
+    this.primaryTextColor,
     this.multiThread,
     this.multiChannelConversationEnabled,
     this.callsEnabled,
     this.themeNames,
+    this.attachmentConfig,
   });
 
   WidgetInfo.fromJson(Map<String, dynamic> json)
@@ -26,11 +31,14 @@ class WidgetInfo {
         title = json['title'],
         primaryColor = json['primaryColor'],
         backgroundColor = json['backgroundColor'],
-        maxUploadContentSize = json['maxUploadContentSize'],
+        primaryTextColor = json['primaryTextColor'],
         multiThread = json['multiThread'],
         multiChannelConversationEnabled = json['multiChannelConversationEnabled'],
         callsEnabled = json['callsEnabled'],
-        themeNames = json['themeNames'].cast<String>();
+        themeNames = json['themeNames'].cast<String>(),
+        attachmentConfig = json['attachmentConfig'] != null
+            ? WidgetAttachmentConfig.fromJson(json['attachmentConfig'])
+            : null;
 
   @override
   bool operator ==(Object other) =>
@@ -40,11 +48,12 @@ class WidgetInfo {
           title == other.title &&
           primaryColor == other.primaryColor &&
           backgroundColor == other.backgroundColor &&
-          maxUploadContentSize == other.maxUploadContentSize &&
+          primaryTextColor == other.primaryTextColor &&
           multiThread == other.multiThread &&
           multiChannelConversationEnabled == other.multiChannelConversationEnabled &&
           callsEnabled == other.callsEnabled &&
-          themeNames == other.themeNames;
+          themeNames == other.themeNames &&
+          attachmentConfig == other.attachmentConfig;
 
   @override
   int get hashCode =>
@@ -52,9 +61,25 @@ class WidgetInfo {
       title.hashCode ^
       primaryColor.hashCode ^
       backgroundColor.hashCode ^
-      maxUploadContentSize.hashCode ^
+      primaryTextColor.hashCode ^
       multiThread.hashCode ^
       multiChannelConversationEnabled.hashCode ^
       callsEnabled.hashCode ^
-      themeNames.hashCode;
+      themeNames.hashCode ^
+      attachmentConfig.hashCode;
+
+  @override
+  String toString() => 'WidgetInfo('
+        'id: $id, '
+        'title: $title, '
+        'primaryColor: $primaryColor, '
+        'backgroundColor: $backgroundColor, '
+        'primaryTextColor: $primaryTextColor, '
+        'multiThread: $multiThread, '
+        'multiChannelConversationEnabled: $multiChannelConversationEnabled, '
+        'callsEnabled: $callsEnabled, '
+        'themeNames: $themeNames, '
+        'attachmentConfig: $attachmentConfig'
+        ')';
+
 }

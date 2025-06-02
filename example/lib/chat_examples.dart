@@ -2,15 +2,13 @@ import 'dart:developer';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:infobip_mobilemessaging/infobip_mobilemessaging.dart';
 import 'package:infobip_mobilemessaging/models/configurations/configuration.dart' as mmconf;
 
 import '../chat_customization.dart' as chat_customization;
-import '../main.dart';
-import '../utils/language.dart';
-import '../screens/screen_chat_view.dart';
 import '../screens/screen_chat_safearea.dart';
+import '../screens/screen_chat_view.dart';
+import '../utils/language.dart';
 
 class ChatExamples {
 

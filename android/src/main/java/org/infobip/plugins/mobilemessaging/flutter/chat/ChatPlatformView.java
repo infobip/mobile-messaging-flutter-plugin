@@ -14,6 +14,7 @@ import androidx.fragment.app.FragmentContainerView;
 import androidx.fragment.app.FragmentManager;
 
 import org.infobip.mobile.messaging.api.chat.WidgetInfo;
+import org.infobip.mobile.messaging.api.chat.WidgetAttachmentConfig;
 import org.infobip.mobile.messaging.chat.core.InAppChatWidgetView;
 import org.infobip.mobile.messaging.chat.attachments.InAppChatMobileAttachment;
 import org.infobip.mobile.messaging.chat.core.widget.LivechatWidgetResult;
@@ -21,6 +22,7 @@ import org.infobip.mobile.messaging.chat.core.widget.LivechatWidgetThread;
 import org.infobip.mobile.messaging.chat.core.widget.LivechatWidgetThreads;
 import org.infobip.mobile.messaging.chat.core.widget.LivechatWidgetView;
 import org.infobip.mobile.messaging.chat.core.widget.LivechatWidgetLanguage;
+import org.infobip.mobile.messaging.chat.core.widget.LivechatWidgetMessage;
 import org.infobip.mobile.messaging.chat.view.InAppChatFragment;
 import org.infobip.plugins.mobilemessaging.flutter.common.ErrorCodes;
 import org.infobip.plugins.mobilemessaging.flutter.common.StreamHandler;
@@ -242,6 +244,37 @@ public class ChatPlatformView implements PlatformView, MethodCallHandler {
         return new InAppChatFragment.EventsListener() {
 
             @Override
+            public void onChatRawMessageReceived(@NonNull String rawMessage) {
+                eventHandler.sendEvent(ChatViewEvent.EVENT_CHAT_RAW_MESSAGE_RECEIVED, rawMessage);
+            }
+
+            @Override
+            public void onChatWidgetInfoUpdated(@NonNull WidgetInfo widgetInfo) {
+                JSONObject payload = widgetInfoToJSON(widgetInfo);
+                eventHandler.sendEvent(ChatViewEvent.EVENT_WIDGET_INFO_UPDATED, payload, true);
+            }
+
+            @Override
+            public void onChatViewChanged(@NonNull LivechatWidgetView widgetView) {
+                eventHandler.sendEvent(ChatViewEvent.EVENT_CHAT_VIEW_CHANGED, widgetView.name());
+            }
+
+            @Override
+            public void onChatViewChanged(@NonNull InAppChatWidgetView widgetView) {
+                //Deprecated
+            }
+
+            @Override
+            public void onChatControlsVisibilityChanged(boolean isVisible) {
+                //Chat controls visibility changed
+            }
+
+            @Override
+            public void onChatWidgetThemeChanged(@NonNull String widgetThemeName) {
+                //Deprecated
+            }
+
+            @Override
             public void onChatWidgetThemeChanged(@NonNull LivechatWidgetResult<String> result) {
                 String widgetThemeName = result.getOrNull();
                 if (widgetThemeName != null) {
@@ -251,7 +284,7 @@ public class ChatPlatformView implements PlatformView, MethodCallHandler {
 
             @Override
             public void onChatLanguageChanged(@NonNull LivechatWidgetResult<String> result) {
-                //Widget language was changed
+                //Chat language changed
             }
 
             @Override
@@ -266,7 +299,7 @@ public class ChatPlatformView implements PlatformView, MethodCallHandler {
 
             @Override
             public void onChatActiveThreadReceived(@NonNull LivechatWidgetResult<LivechatWidgetThread> result) {
-                //Active chat thread was received
+                //Chat active thread was received
             }
 
             @Override
@@ -275,33 +308,67 @@ public class ChatPlatformView implements PlatformView, MethodCallHandler {
             }
 
             @Override
+            public void onChatThreadCreated(@NonNull LivechatWidgetResult<? extends LivechatWidgetMessage> result) {
+                //Chat thread created
+            }
+
+            @Override
             public void onChatContextualDataSent(@NonNull LivechatWidgetResult<String> result) {
                 //Contextual data was sent
             }
 
             @Override
+            public void onChatSent(@NonNull LivechatWidgetResult<? extends LivechatWidgetMessage> result) {
+                //Chat message was sent
+            }
+
+            @Override
             public void onChatDraftSent(@NonNull LivechatWidgetResult<String> result) {
-                //Draft was sent
+                //Deprecated
             }
 
             @Override
             public void onChatMessageSent(@NonNull LivechatWidgetResult<String> result) {
-                //Message was sent
+                //Deprecated
             }
 
             @Override
             public void onChatConnectionResumed(@NonNull LivechatWidgetResult<Unit> result) {
-                eventHandler.sendEvent(ChatViewEvent.EVENT_CHAT_RECONNECTED);
+                if (result.isSuccess()) {
+                    eventHandler.sendEvent(ChatViewEvent.EVENT_CHAT_RECONNECTED);
+                }
+            }
+
+            @Override
+            public void onChatReconnected() {
+                //Deprecated
             }
 
             @Override
             public void onChatConnectionPaused(@NonNull LivechatWidgetResult<Unit> result) {
-                eventHandler.sendEvent(ChatViewEvent.EVENT_CHAT_DISCONNECTED);
+                if (result.isSuccess()) {
+                    eventHandler.sendEvent(ChatViewEvent.EVENT_CHAT_DISCONNECTED);
+                }
+            }
+
+            @Override
+            public void onChatDisconnected() {
+                //Deprecated
             }
 
             @Override
             public void onChatLoadingFinished(@NonNull LivechatWidgetResult<Unit> result) {
                 eventHandler.sendEvent(ChatViewEvent.EVENT_CHAT_LOADED, result.isSuccess());
+            }
+
+            @Override
+            public void onChatLoaded(boolean controlsEnabled) {
+                //Deprecated
+            }
+
+            @Override
+            public void onExitChatPressed() {
+                eventHandler.sendEvent(ChatViewEvent.EVENT_EXIT_CHAT_PRESSED);
             }
 
             @Override
@@ -312,59 +379,9 @@ public class ChatPlatformView implements PlatformView, MethodCallHandler {
             }
 
             @Override
-            public void onChatRawMessageReceived(@NonNull String rawMessage) {
-                eventHandler.sendEvent(ChatViewEvent.EVENT_CHAT_RAW_MESSAGE_RECEIVED, rawMessage);
-            }
-
-            @Override
-            public void onChatWidgetThemeChanged(@NonNull String widgetThemeName) {
-                //Deprecated
-            }
-
-            @Override
-            public void onChatWidgetInfoUpdated(@NonNull WidgetInfo widgetInfo) {
-                JSONObject payload = widgetInfoToJSON(widgetInfo);
-                eventHandler.sendEvent(ChatViewEvent.EVENT_WIDGET_INFO_UPDATED, payload);
-            }
-
-            @Override
-            public void onChatViewChanged(@NonNull LivechatWidgetView widgetView) {
-                eventHandler.sendEvent(ChatViewEvent.EVENT_CHAT_VIEW_CHANGED, widgetView.name());
-            }
-
-            @Override
-            public void onChatViewChanged(@NonNull InAppChatWidgetView widgetView) {
-                //Deprecated
-            }
-
-            @Override
             public boolean onAttachmentPreviewOpened(@Nullable String url, @Nullable String type, @Nullable String caption) {
                 //Deprecated
                 return false;
-            }
-
-            @Override
-            public void onChatControlsVisibilityChanged(boolean isVisible) {
-            }
-
-            @Override
-            public void onChatLoaded(boolean controlsEnabled) {
-                //Deprecated
-            }
-
-            @Override
-            public void onChatDisconnected() {
-                //Deprecated
-            }
-
-            @Override
-            public void onChatReconnected() {
-                //Deprecated
-            }
-
-            @Override
-            public void onExitChatPressed() {
-                eventHandler.sendEvent(ChatViewEvent.EVENT_EXIT_CHAT_PRESSED);
             }
         };
     }
@@ -379,25 +396,41 @@ public class ChatPlatformView implements PlatformView, MethodCallHandler {
      */
     private static JSONObject widgetInfoToJSON(WidgetInfo widgetInfo) {
         try {
-            JSONArray array = null;
+            JSONArray widgetTheme = null;
             if (widgetInfo.getThemeNames() != null) {
-                array = new JSONArray();
+                widgetTheme = new JSONArray();
                 for (String theme : widgetInfo.getThemeNames()) {
-                    array.put(theme);
+                    widgetTheme.put(theme);
                 }
+            }
+            JSONObject attachmentConfig = null;
+            WidgetAttachmentConfig config = widgetInfo.getAttachmentConfig();
+            if (config != null) {
+                JSONArray allowedExtensions = null;
+                if (config.getAllowedExtensions() != null) {
+                    allowedExtensions = new JSONArray();
+                    for (String extension : config.getAllowedExtensions()) {
+                        allowedExtensions.put(extension);
+                    }
+                }
+                attachmentConfig = new JSONObject()
+                        .putOpt("maxSize", config.getMaxSize())
+                        .putOpt("isEnabled", config.isEnabled())
+                        .putOpt("allowedExtensions", allowedExtensions);
             }
             return new JSONObject()
                     .putOpt("id", widgetInfo.getId())
                     .putOpt("title", widgetInfo.getTitle())
                     .putOpt("primaryColor", widgetInfo.getPrimaryColor())
                     .putOpt("backgroundColor", widgetInfo.getBackgroundColor())
-                    .putOpt("maxUploadContentSize", widgetInfo.getMaxUploadContentSize())
+                    .putOpt("primaryTextColor", widgetInfo.getPrimaryTextColor())
                     .putOpt("multiThread", widgetInfo.isMultiThread())
                     .putOpt("multiChannelConversationEnabled", widgetInfo.isMultiChannelConversationEnabled())
                     .putOpt("callsEnabled", widgetInfo.isCallsEnabled())
-                    .putOpt("themeNames", array);
+                    .putOpt("themeNames", widgetTheme)
+                    .putOpt("attachmentConfig", attachmentConfig);
         } catch (JSONException e) {
-            Log.w(TAG, "Cannot convert WidgetInfo to JSON: " + e.getMessage());
+            Log.e(TAG, "Cannot convert WidgetInfo to JSON: " + e.getMessage());
             return null;
         }
     }
@@ -421,7 +454,7 @@ public class ChatPlatformView implements PlatformView, MethodCallHandler {
                     .putOpt("type", type)
                     .putOpt("caption", caption);
         } catch (JSONException e) {
-            Log.w(TAG, "Cannot convert chat attachment to JSON: " + e.getMessage());
+            Log.e(TAG, "Cannot convert chat attachment to JSON: " + e.getMessage());
             return null;
         }
     }
