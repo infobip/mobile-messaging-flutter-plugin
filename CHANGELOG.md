@@ -1,3 +1,12 @@
+# 8.3.0
+## Changed
+- In-App Chat: the push notification action "open LiveChat" improvements
+ 
+## Fixed
+- In-App Chat: system bars on Android 15
+
+Android SDK: 13.21.0
+iOS SDK: 13.6.1
 # 8.2.0
 ## Added
 - In-app chat applies [Livechat Widget attachments configuration](https://www.infobip.com/docs/live-chat/message-types#user-input) now
