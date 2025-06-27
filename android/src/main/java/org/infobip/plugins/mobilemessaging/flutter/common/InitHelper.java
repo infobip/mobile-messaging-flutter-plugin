@@ -116,6 +116,8 @@ public class InitHelper {
             builder.withFirebaseOptions(androidSettings.firebaseOptions);
         }
 
+        builder.withJwtSupplier(() -> configuration.userDataJwt);
+
         return builder;
     }
 

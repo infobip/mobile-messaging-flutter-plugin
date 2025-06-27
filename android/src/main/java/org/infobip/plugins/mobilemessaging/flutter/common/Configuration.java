@@ -16,6 +16,7 @@ public class Configuration {
     boolean defaultMessageStorage;
     WebRTCUI webRTCUI;
     InAppChatCustomization inAppChatCustomization;
+    String userDataJwt;
 
     public static class WebRTCUI {
         private String configurationId;

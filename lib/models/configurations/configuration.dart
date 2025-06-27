@@ -36,6 +36,8 @@ class Configuration {
   @Deprecated('Should use [ChatCustomization] instead')
   final InAppChatCustomization? inAppChatCustomization;
 
+  final String? userDataJwt;
+
   /// Default constructor with all params.
   Configuration({
     required this.applicationCode,
@@ -49,6 +51,7 @@ class Configuration {
     this.defaultMessageStorage,
     this.webRTCUI,
     this.inAppChatCustomization,
+    this.userDataJwt,
   });
 
   /// Mapping [Configuration] to json.
@@ -66,6 +69,7 @@ class Configuration {
         'webRTCUI': webRTCUI?.toJson(),
         // ignore: deprecated_member_use_from_same_package
         'inAppChatCustomization': inAppChatCustomization?.toJson(),
+        'userDataJwt': userDataJwt,
       };
 }
 

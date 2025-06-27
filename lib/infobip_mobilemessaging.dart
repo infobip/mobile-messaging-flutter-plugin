@@ -211,6 +211,11 @@ class InfobipMobilemessaging {
   static void submitEventImmediately(Object customEvent) =>
       _channel.invokeMethod('submitEventImmediately', jsonEncode(customEvent));
 
+  /// Updates JWT used for [UserData] fetching and personalization.
+  static Future<void> setUserDataJwt(String? jwt) async {
+      await _channel.invokeMethod('setUserDataJwt', jwt);
+  }
+
   /// Returns current unread chat push message counter.
   static Future<int> getMessageCounter() async => await _channel.invokeMethod('getMessageCounter');
 

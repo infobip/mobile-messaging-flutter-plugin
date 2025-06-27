@@ -25,6 +25,14 @@ class _CloudInboxScreenState extends State<CloudInboxScreen> {
   @override
   void initState() {
     super.initState();
+    InfobipMobilemessaging.on(
+        'depersonalized',
+        () => {
+              setState(() {
+                _inbox = Inbox();
+                _isInboxLoaded = false;
+              }),
+            });
     _getMobileMessagingUser();
   }
 
@@ -108,13 +116,15 @@ class _CloudInboxScreenState extends State<CloudInboxScreen> {
         _externalUserId,
         _filterOptions,
       );
-      if (inbox.messages != null && inbox.messages!.isNotEmpty) {
+      if (inbox.messages != null) {
         setState(() {
           _inbox = inbox;
-          values = List.generate(
-            inbox.messages!.length,
-            (index) => inbox.messages![index].seen,
-          );
+          if (inbox.messages!.isNotEmpty) {
+            values = List.generate(
+              inbox.messages!.length,
+              (index) => inbox.messages![index].seen,
+            );
+          }
           _isInboxLoaded = true;
         });
         return;

@@ -59,6 +59,7 @@ Configuration get configurationModelExample => Configuration(
         ),
       ],
       defaultMessageStorage: true,
+      userDataJwt: 'some-valid-jwt',
     );
 
 Installation get installationModelExample => Installation(

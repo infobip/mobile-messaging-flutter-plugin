@@ -1,4 +1,7 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:infobip_mobilemessaging/infobip_mobilemessaging.dart';
 import 'package:infobip_mobilemessaging/models/data/personalize_context.dart';
 
@@ -67,7 +70,13 @@ class _SignInHttpDemoState extends State<SignInHttpDemo> {
                           );
                           _showDialog('Personalized successfully', '');
                         } catch (e) {
-                          _showDialog('Unable to personalize', '$e');
+                          if (e is PlatformException) {
+                            log('MobileMessaging: code ${e.code}');
+                            log('MobileMessaging: message ${e.message}');
+                            log('MobileMessaging: details ${e.details}');
+                          } else {
+                            _showDialog('Unable to personalize', '$e');
+                          }
                         }
                       },
                     ),

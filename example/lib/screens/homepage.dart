@@ -9,12 +9,10 @@ import 'package:infobip_mobilemessaging/models/data/message.dart';
 import 'package:infobip_mobilemessaging/models/data/user_data.dart';
 import 'package:infobip_mobilemessaging/models/library_event.dart';
 
-import '../chat_customization.dart' as chat_customization;
+import '../chat_examples.dart';
 import '../main.dart';
-import '../utils/language.dart';
 import '../widgets/demo_tile.dart';
 import '../widgets/page.dart';
-import '../chat_examples.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -196,8 +194,9 @@ class _HomePageState extends State<HomePage> {
     try {
       await InfobipMobilemessaging.saveUser(currentUser);
     } on PlatformException catch (e) {
-      log('MobileMessaging: details ${e.details}');
       log('MobileMessaging: code ${e.code}');
+      log('MobileMessaging: message ${e.message}');
+      log('MobileMessaging: details ${e.details}');
 
       switch (e.code) {
         case 'USER_MERGE_INTERRUPTED':
@@ -229,13 +228,14 @@ class _HomePageState extends State<HomePage> {
       var user = await InfobipMobilemessaging.fetchUser();
       _showDialog('fetched User Data', user.toJson().toString());
     } on PlatformException catch (e) {
-      log('Error happened: ${e.message}');
+      log('Error happened: code is ${e.code}, \nmessage: ${e.message}, \ndetails: ${e.details}');
+
     }
   }
 
   void _onGetUser() async {
     try {
-      var user = await InfobipMobilemessaging.fetchUser();
+      var user = await InfobipMobilemessaging.getUser();
       log('trying to show installations');
       if (user.installations != null) {
         for (var installation in user.installations!) {
@@ -306,7 +306,7 @@ class _HomePageState extends State<HomePage> {
             ),
             ListTile(
               title: const Text('Save User Data'),
-              onTap: () => _onSaveUser,
+              onTap: () => _onSaveUser(),
             ),
             ListTile(
               title: const Text('Fetch User Data'),

@@ -1,13 +1,8 @@
-#
-# To learn more about a Podspec see http://guides.cocoapods.org/syntax/podspec.html.
-# Run `pod lib lint infobip_mobilemessaging.podspec` to validate before publishing.
-#
-
 require 'yaml'
 
 pubspec = YAML.load_file(File.join('..', 'pubspec.yaml'))
 library_version = pubspec['version'].gsub('+', '-')
-mmVersion = "13.6.1"
+mmVersion = "13.7.0"
 
 Pod::Spec.new do |s|
   s.name             = 'infobip_mobilemessaging'

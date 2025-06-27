@@ -148,6 +148,8 @@ public class SwiftInfobipMobilemessagingPlugin: NSObject, FlutterPlugin {
             setInboxMessagesSeen(call: call, result: result)
         } else if call.method == "markMessagesSeen" {
             markMessagesSeen(call: call, result: result)
+        } else if call.method == "setUserDataJwt" {
+            setUserDataJwt(call: call, result: result)
         } else {
             result(FlutterError( code: "NotImplemented",
                                  message: "Error NotImplemented",
@@ -228,6 +230,8 @@ public class SwiftInfobipMobilemessagingPlugin: NSObject, FlutterPlugin {
             mobileMessaging = mobileMessaging?.withoutRegisteringForRemoteNotifications()
         }
         
+        mobileMessaging = mobileMessaging?.withJwtSupplier(VariableJwtSupplier(jwt: configuration.userDataJwt))
+        
 #if WEBRTCUI_ENABLED
         if let webrtcDict = configuration.webRTCUI,
            let configId = webrtcDict[Configuration.Keys.configurationId] as? String {
@@ -272,7 +276,7 @@ public class SwiftInfobipMobilemessagingPlugin: NSObject, FlutterPlugin {
         MobileMessaging.saveUser(user, completion: { (error) in
             if let error = error {
                 return result(
-                    FlutterError( code: error.mm_code ?? "0",
+                    FlutterError( code: error.mm_code ?? String(error.code),
                                   message: error.mm_message,
                                   details: error.description ))
             } else {
@@ -782,6 +786,17 @@ public class SwiftInfobipMobilemessagingPlugin: NSObject, FlutterPlugin {
         
     }
     
+    func setUserDataJwt(call: FlutterMethodCall, result: @escaping FlutterResult) {
+        guard let jwtString = call.arguments as? String else {
+            return result(
+                FlutterError( code: "invalidSetUserDataJwt",
+                              message: "Error parsing JWT string",
+                              details: "Error parsing JWT string" ))
+        }
+        MobileMessaging.jwtSupplier = VariableJwtSupplier(jwt: jwtString)
+        return result(Constants.resultSuccess)
+    }
+    
     private func dictionaryResult(result: @escaping FlutterResult, dict: DictionaryRepresentation?) {
         do {
             return result(String(data:
@@ -934,5 +949,15 @@ extension UIColor {
 extension String {
     func toColor() -> UIColor? {
         return UIColor(hexString: self)
+    }
+}
+
+class VariableJwtSupplier: NSObject, MMJwtSupplier {
+    let jwt: String?
+    init(jwt: String?) {
+        self.jwt = jwt
+    } 
+    func getJwt() -> String? {
+        return jwt
     }
 }

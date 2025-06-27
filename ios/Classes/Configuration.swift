@@ -33,6 +33,7 @@ class Configuration {
         static let configurationId = "configurationId"
         static let customization = "inAppChatCustomization"
         static let shouldHandleKeyboardAppearance = "shouldHandleKeyboardAppearance"
+        static let userDataJwt = "userDataJwt"
     }
     
     let appCode: String
@@ -50,6 +51,7 @@ class Configuration {
     let webViewSettings: [String: AnyObject]?
     let withoutRegisteringForRemoteNotifications: Bool
     let customization: Customization?
+    let userDataJwt: String?
     
     init?(rawConfig: [String: AnyObject]) {
         guard let appCode = rawConfig[Configuration.Keys.applicationCode] as? String,
@@ -75,7 +77,8 @@ class Configuration {
         self.forceCleanup = ios[Configuration.Keys.forceCleanup].unwrap(orDefault: false)
         self.logging = ios[Configuration.Keys.logging].unwrap(orDefault: false)
         self.withoutRegisteringForRemoteNotifications = ios[Configuration.Keys.withoutRegisteringForRemoteNotifications].unwrap(orDefault: false)
-
+        self.userDataJwt = rawConfig[Configuration.Keys.userDataJwt].unwrap(orDefault: nil)
+        
         if let rawPrivacySettings = rawConfig[Configuration.Keys.privacySettings] as? [String: Any] {
             var ps = [String: Any]()
             ps[Configuration.Keys.userDataPersistingDisabled] = rawPrivacySettings[Configuration.Keys.userDataPersistingDisabled].unwrap(orDefault: false)

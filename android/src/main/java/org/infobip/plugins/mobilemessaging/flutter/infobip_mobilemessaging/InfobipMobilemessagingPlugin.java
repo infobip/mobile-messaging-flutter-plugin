@@ -245,6 +245,9 @@ public class InfobipMobilemessagingPlugin implements FlutterPlugin, MethodCallHa
             case "setWidgetTheme":
                 setWidgetTheme(call, result);
                 break;
+            case "setUserDataJwt":
+                setUserDataJwt(call, result);
+                break;
             default:
                 result.notImplemented();
                 break;
@@ -319,7 +322,7 @@ public class InfobipMobilemessagingPlugin implements FlutterPlugin, MethodCallHa
         @Override
         public void onReceive(Context context, Intent intent) {
             final String event = broadcastEventMap.get(intent.getAction());
-            if (event == null || "".equals(event)) {
+            if (event == null || event.isEmpty()) {
                 return;
             }
 
@@ -455,7 +458,7 @@ public class InfobipMobilemessagingPlugin implements FlutterPlugin, MethodCallHa
             public void onSuccess() {
 
                 if (configuration.getNotificationCategories() != null) {
-                    NotificationCategory categories[] = initHelper.notificationCategoriesFromConfiguration(configuration.getNotificationCategories());
+                    NotificationCategory[] categories = initHelper.notificationCategoriesFromConfiguration(configuration.getNotificationCategories());
                     if (categories.length > 0) {
                         MobileInteractive.getInstance(activity.getApplication()).setNotificationCategories(categories);
                     }
@@ -630,6 +633,54 @@ public class InfobipMobilemessagingPlugin implements FlutterPlugin, MethodCallHa
         }
     }
 
+    public void setUserDataJwt(MethodCall call, final MethodChannel.Result result) {
+        try {
+            String jwt = call.arguments.toString();
+            mobileMessaging().setJwtSupplier(() -> jwt);
+        } catch (Exception e) {
+            mobileMessaging().setJwtSupplier(() -> null);
+            result.success("Successfully set JWT to null");
+            return;
+        }
+        result.success("Successfully set JWT");
+    }
+
+    @NonNull
+    private MobileMessaging.ResultListener<CustomEvent> customEventResultListener(final MethodChannel.Result resultCallbacks) {
+        return new MobileMessaging.ResultListener<CustomEvent>() {
+            @Override
+            public void onResult(org.infobip.mobile.messaging.mobileapi.Result<CustomEvent, MobileMessagingError> result) {
+                if (result.isSuccess()) {
+                    resultCallbacks.success("Success");
+                } else {
+                    resultCallbacks.error(result.getError().getCode(), result.getError().getMessage(), result.getError().toString());
+                }
+            }
+        };
+    }
+
+    @NonNull
+    private MobileMessaging.ResultListener<List<Installation>> installationsResultListener(final MethodChannel.Result resultCallbacks) {
+        return new MobileMessaging.ResultListener<List<Installation>>() {
+            @Override
+            public void onResult(org.infobip.mobile.messaging.mobileapi.Result<List<Installation>, MobileMessagingError> result) {
+                if (result.isSuccess()) {
+                    if (result.getData() == null) {
+                        resultCallbacks.success("Success");
+                        return;
+                    }
+                    List<Installation> installations = result.getData();
+                    resultCallbacks.success(InstallationJson.toJSON(installations).toString());
+                } else {
+                    resultCallbacks.error(result.getError().getCode(), result.getError().getMessage(), result.getError().toString());
+                }
+            }
+        };
+    }
+
+    //endregion
+
+    //region Message Storage
     private synchronized void defaultMessageStorage_find(MethodCall call, final MethodChannel.Result result) {
         String messageId = call.arguments.toString();
         MessageStore messageStore = MobileMessaging.getInstance(activity.getApplicationContext()).getMessageStore();
@@ -685,39 +736,6 @@ public class InfobipMobilemessagingPlugin implements FlutterPlugin, MethodCallHa
         }
         messageStore.deleteAll(activity.getApplicationContext());
         result.success(null);
-    }
-
-    @NonNull
-    private MobileMessaging.ResultListener<CustomEvent> customEventResultListener(final MethodChannel.Result resultCallbacks) {
-        return new MobileMessaging.ResultListener<CustomEvent>() {
-            @Override
-            public void onResult(org.infobip.mobile.messaging.mobileapi.Result<CustomEvent, MobileMessagingError> result) {
-                if (result.isSuccess()) {
-                    resultCallbacks.success("Success");
-                } else {
-                    resultCallbacks.error(result.getError().getCode(), result.getError().getMessage(), result.getError().toString());
-                }
-            }
-        };
-    }
-
-    @NonNull
-    private MobileMessaging.ResultListener<List<Installation>> installationsResultListener(final MethodChannel.Result resultCallbacks) {
-        return new MobileMessaging.ResultListener<List<Installation>>() {
-            @Override
-            public void onResult(org.infobip.mobile.messaging.mobileapi.Result<List<Installation>, MobileMessagingError> result) {
-                if (result.isSuccess()) {
-                    if (result.getData() == null) {
-                        resultCallbacks.success("Success");
-                        return;
-                    }
-                    List<Installation> installations = result.getData();
-                    resultCallbacks.success(InstallationJson.toJSON(installations).toString());
-                } else {
-                    resultCallbacks.error(result.getError().getCode(), result.getError().getMessage(), result.getError().toString());
-                }
-            }
-        };
     }
 
     //endregion
