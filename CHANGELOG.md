@@ -1,3 +1,10 @@
+# 8.4.0
+## Added
+- Support for JWT user data authorization for personalization, saveUser, fetchUser.
+ 
+## SDK Versions
+- Android - 13.18.0
+- iOS - 13.22.0
 # 8.3.0
 ## Changed
 - In-App Chat: the push notification action "open LiveChat" improvements
