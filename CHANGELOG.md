@@ -1,3 +1,13 @@
+# 8.5.0
+## SDK Versions
+- Android - 13.22.0
+- iOS - 13.7.0 -> 13.9.1
+ 
+## Fixed
+- iOS: Primary setting for current installation is now being reset during depersonalization
+
+## Security
+- iOS: Added encryption for sensitive data stored on disk. Not forward-compatible (old versions of SDK would not be able to decode the data saved by a newer version of SDK).
 # 8.4.0
 ## Added
 - Support for JWT user data authorization for personalization, saveUser, fetchUser.
