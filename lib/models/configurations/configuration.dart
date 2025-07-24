@@ -233,16 +233,34 @@ class PrivacySettings {
 
 /// Helper class for setting interactive notifications' action.
 class NotificationAction {
+  /// Unique identifier of the notification category.
   final String? identifier;
+
+  /// An action title, represents a notification action button label.
   final String? title;
+
+  /// To bring the app to foreground or leave it in background state.
   final bool? foreground;
+
+  /// iOS only: require device to be unlocked before performing.
   final bool? authenticationRequired;
+
+  /// Should MO message sending be triggered.
   final bool? moRequired;
+
+  /// iOS only: should message be marked as destructive.
   final bool? destructive;
+
+  /// Android only: resource name for the special action icon.
   final String? icon;
+
+  /// iOS only: custom label for sending button.
   final String? textInputActionButtonTitle;
+
+  /// Custom input field placeholder.
   final String? textInputPlaceholder;
 
+  /// Default constructor with all parameters.
   NotificationAction({
     this.identifier,
     this.title,
@@ -255,6 +273,7 @@ class NotificationAction {
     this.textInputPlaceholder,
   });
 
+  /// Mapping [NotificationAction] to json.
   Map<String, dynamic> toJson() => {
         'identifier': identifier,
         'title': title,
@@ -268,15 +287,21 @@ class NotificationAction {
       };
 }
 
+/// Helper class for creating notification categories.
 class NotificationCategory {
+  /// Unique identifier of the notification category.
   final String? identifier;
+
+  /// List of actions for the notification category.
   final List<NotificationAction>? actions;
 
+  /// Default constructor with all parameters.
   NotificationCategory({
     required this.identifier,
     required this.actions,
   });
 
+  /// Mapping [NotificationCategory] to json.
   Map<String, dynamic> toJson() {
     List<Map<String, dynamic>>? actions = this.actions!.map((i) => i.toJson()).toList();
     return {
