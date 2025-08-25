@@ -4,6 +4,7 @@ import static org.infobip.mobile.messaging.inbox.MobileInboxFilterOptionsJson.mo
 import static org.infobip.mobile.messaging.plugins.MessageJson.bundleToJSON;
 import static org.infobip.mobile.messaging.plugins.MessageJson.toJSON;
 import static org.infobip.mobile.messaging.plugins.MessageJson.toJSONArray;
+import static org.infobip.plugins.mobilemessaging.flutter.common.LibraryEvent.EVENT_INAPPCHAT_JWT_REQUESTED;
 import static org.infobip.plugins.mobilemessaging.flutter.common.LibraryEvent.broadcastEventMap;
 import static org.infobip.plugins.mobilemessaging.flutter.common.LibraryEvent.messageBroadcastEventMap;
 import static org.infobip.plugins.mobilemessaging.flutter.infobip_mobilemessaging.WebRTCUI.defaultWebrtcError;
@@ -55,6 +56,8 @@ import org.infobip.mobile.messaging.plugins.PersonalizationCtx;
 import org.infobip.mobile.messaging.plugins.UserJson;
 import org.infobip.mobile.messaging.storage.MessageStore;
 import org.infobip.mobile.messaging.util.PreferenceHelper;
+import org.infobip.mobile.messaging.chat.core.JwtProvider;
+import org.infobip.mobile.messaging.chat.core.JwtProvider.JwtCallback;
 import org.infobip.plugins.mobilemessaging.flutter.chat.ChatCustomization;
 import org.infobip.plugins.mobilemessaging.flutter.chat.ChatViewFactory;
 import org.infobip.plugins.mobilemessaging.flutter.common.ConfigCache;
@@ -63,6 +66,7 @@ import org.infobip.plugins.mobilemessaging.flutter.common.ErrorCodes;
 import org.infobip.plugins.mobilemessaging.flutter.common.InitHelper;
 import org.infobip.plugins.mobilemessaging.flutter.common.PermissionsRequestManager;
 import org.infobip.plugins.mobilemessaging.flutter.common.StreamHandler;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -73,6 +77,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Queue;
+import java.util.concurrent.ConcurrentLinkedQueue;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import io.flutter.embedding.engine.plugins.FlutterPlugin;
 import io.flutter.embedding.engine.plugins.activity.ActivityAware;
@@ -108,6 +115,7 @@ public class InfobipMobilemessagingPlugin implements FlutterPlugin, MethodCallHa
     private ActivityPluginBinding pluginBinding;
     private WebRTCUI webRTCUI = null;
     private ChatViewFactory chatViewFactory = null;
+    private final ChatJwtCallbackHolder chatJwtCallbackHolder = new ChatJwtCallbackHolder();
 
     public InfobipMobilemessagingPlugin() {
         permissionsRequestManager = new PermissionsRequestManager(this);
@@ -212,8 +220,11 @@ public class InfobipMobilemessagingPlugin implements FlutterPlugin, MethodCallHa
             case "registerForAndroidRemoteNotifications":
                 registerForAndroidRemoteNotifications();
                 break;
-            case "setJwt":
-                setJwt(call);
+            case "setChatJwtProvider":
+                setChatJwtProvider(result);
+                break;
+            case "setChatJwt":
+                setChatJwt(call, result);
                 break;
             case "enableCalls":
                 enableCalls(call, result);
@@ -918,9 +929,130 @@ public class InfobipMobilemessagingPlugin implements FlutterPlugin, MethodCallHa
         InAppChat.getInstance(activity.getApplication()).sendContextualData(data, MultithreadStrategy.valueOf(chatMultiThreadStrategy));
     }
 
-    private void setJwt(MethodCall call) {
-        String jwt = call.arguments.toString();
-        InAppChat.getInstance(activity.getApplication()).setWidgetJwtProvider(() -> jwt);
+    /**
+     * ChatJwtCallbackHolder is a helper class responsible for managing JWT requests
+     * from the Java native to the Dart side. It supports asynchronous
+     * JWT acquisition and delivers results (token or error) back to queued callbacks.
+     */
+    private static class ChatJwtCallbackHolder {
+
+        private Activity activity;
+        private StreamHandler streamHandler;
+        private final Queue<JwtCallback> queue = new ConcurrentLinkedQueue<>();
+        private final AtomicBoolean awaitingJwtFromJs = new AtomicBoolean(false);
+
+        private void sendRequestEvent() {
+            if (streamHandler != null) {
+                streamHandler.sendEvent(EVENT_INAPPCHAT_JWT_REQUESTED, null, false);
+            } else {
+                Log.e(TAG, "Flutter StreamHandler is null, cannot send request for JWT.");
+            }
+        }
+
+        public void requestJwt(JwtCallback callback) {
+            queue.add(callback);
+            if (awaitingJwtFromJs.compareAndSet(false, true)) {
+                sendRequestEvent();
+            }
+        }
+
+        public void resumeWithJwt(String newJwt) {
+            try {
+                Runnable runnable = () -> {
+                    JwtCallback callback = queue.poll();
+                    if (callback != null) {
+                        callback.onJwtReady(newJwt);
+                    }
+                    updateAwaitingState();
+                };
+                if (activity != null) {
+                    activity.runOnUiThread(runnable);
+                } else {
+                    Log.w(TAG, "Flutter activity is null, cannot resume with JWT value on UI thread.");
+                    runnable.run();
+                }
+            } catch (Exception e) {
+                Log.w(TAG, "Could not resume with JWT value " + newJwt, e);
+            }
+        }
+
+        public void resumeWithError(Throwable throwable) {
+            try {
+                Runnable runnable = () -> {
+                    JwtCallback callback = queue.poll();
+                    if (callback != null) {
+                        callback.onJwtError(throwable);
+                    }
+                    updateAwaitingState();
+                };
+                if (activity != null) {
+                    activity.runOnUiThread(runnable);
+                } else {
+                    Log.w(TAG, "Flutter activity is null, cannot resume with JWT error on UI thread.");
+                    runnable.run();
+                }
+            } catch (Exception e) {
+                Log.w(TAG, "Could not resume with JWT error " + throwable.getMessage(), e);
+            }
+        }
+
+        private void updateAwaitingState() {
+            if (queue.isEmpty()) {
+                awaitingJwtFromJs.set(false);
+            } else {
+                awaitingJwtFromJs.set(true);
+                sendRequestEvent();
+            }
+        }
+
+        public StreamHandler getStreamHandler() {
+            return streamHandler;
+        }
+
+        public void setStreamHandler(StreamHandler streamHandler) {
+            this.streamHandler = streamHandler;
+        }
+
+        public Activity getActivity() {
+            return activity;
+        }
+
+        public void setActivity(Activity activity) {
+            this.activity = activity;
+        }
+
+    }
+
+    private void setChatJwtProvider(MethodChannel.Result result) {
+        if (chatJwtCallbackHolder.getStreamHandler() == null) {
+            chatJwtCallbackHolder.setStreamHandler(broadcastHandler);
+        }
+
+        if (chatJwtCallbackHolder.getActivity() == null) {
+            chatJwtCallbackHolder.setActivity(activity);
+        }
+
+        JwtProvider jwtProvider = callback -> {
+            chatJwtCallbackHolder.requestJwt(callback);
+        };
+        InAppChat.getInstance(activity.getApplication()).setWidgetJwtProvider(jwtProvider);
+        result.success(null);
+    }
+
+    private void setChatJwt(MethodCall call, MethodChannel.Result result) {
+        String jwt = null;
+        try {
+            jwt = call.arguments();
+        } catch (Exception e) {
+            Log.e(TAG, "Could not parse JWT argument: " + e.getMessage(), e);
+        }
+
+        if (jwt != null && !jwt.isEmpty()) {
+            chatJwtCallbackHolder.resumeWithJwt(jwt);
+        } else {
+            chatJwtCallbackHolder.resumeWithError(new IllegalArgumentException("Provided chat JWT is null or empty."));
+        }
+        result.success(null);
     }
 
     private void setChatPushTitle(MethodCall call, MethodChannel.Result result) {

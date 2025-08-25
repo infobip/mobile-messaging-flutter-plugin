@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 
+import '../screens/chat/screen_chat_authentication.dart';
+import '../screens/chat/screen_chat_view.dart';
+import '../screens/chat/screen_chat_view_safe_area.dart';
 import '../screens/cloud_inbox.dart';
 import '../screens/screen_one.dart';
 import '../screens/screen_two.dart';
@@ -35,3 +38,22 @@ final pages = [
     builder: (context) => const ScreenTwoDemo(),
   ),
 ];
+
+final appNavigationRoutes = pages + [
+  Page(
+    name: ChatViewScreen.title,
+    route: ChatViewScreen.route,
+    builder: (context) => const ChatViewScreen(),
+  ),
+  Page(
+    name: ChatViewSafeAreaScreen.title,
+    route: ChatViewSafeAreaScreen.route,
+    builder: (context) => const ChatViewSafeAreaScreen(),
+  ),
+  Page(
+    name: ChatAuthenticationScreen.title,
+    route: ChatAuthenticationScreen.route,
+    builder: (context) => const ChatAuthenticationScreen(),
+  ),
+];
+

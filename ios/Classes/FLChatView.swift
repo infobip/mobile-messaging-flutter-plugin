@@ -224,7 +224,7 @@ public class FLChatView: NSObject, FlutterPlatformView {
     private func sendChatMessage(call: FlutterMethodCall, result: @escaping FlutterResult) {
         if let args = call.arguments as? [String: Any] {
             if let message = args["message"] as? String {
-                _vc.sendText(message) { error in
+                _vc.send(message.livechatBasicPayload) { error in
                     if let error = error {
                         result(FlutterError(code: String(error.code), message: error.description, details: error))
                         return
@@ -242,7 +242,7 @@ public class FLChatView: NSObject, FlutterPlatformView {
                     return
                 }
                 
-                _vc.sendAttachment("\(fileName).\(mimeType)", data: data) { error in
+                _vc.send(MMLivechatBasicPayload(fileName: "\(fileName).\(mimeType)", data: data)) { error in
                     if let error = error {
                         result(FlutterError(code: String(error.code), message: error.description, details: error))
                         return
@@ -259,7 +259,7 @@ public class FLChatView: NSObject, FlutterPlatformView {
     
     private func sendChatMessageDraft(call: FlutterMethodCall, result: @escaping FlutterResult) {
         if let draft = call.arguments as? String, !draft.isEmpty {
-            _vc.sendDraft(draft) { error in
+            _vc.send(draft.livechatDraftPayload) { error in
                 if let error = error {
                     result(FlutterError(code: String(error.code), message: error.description, details: error))
                     return

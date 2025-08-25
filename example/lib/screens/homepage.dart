@@ -9,10 +9,10 @@ import 'package:infobip_mobilemessaging/models/data/message.dart';
 import 'package:infobip_mobilemessaging/models/data/user_data.dart';
 import 'package:infobip_mobilemessaging/models/library_event.dart';
 
-import '../chat_examples.dart';
 import '../main.dart';
 import '../widgets/demo_tile.dart';
 import '../widgets/page.dart';
+import 'chat/dialog_chat_examples.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});

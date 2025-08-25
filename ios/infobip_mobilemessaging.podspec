@@ -2,7 +2,7 @@ require 'yaml'
 
 pubspec = YAML.load_file(File.join('..', 'pubspec.yaml'))
 library_version = pubspec['version'].gsub('+', '-')
-mmVersion = "13.9.1"
+mmVersion = "13.11.2"
 
 Pod::Spec.new do |s|
   s.name             = 'infobip_mobilemessaging'

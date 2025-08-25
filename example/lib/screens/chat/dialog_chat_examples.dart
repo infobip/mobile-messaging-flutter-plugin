@@ -5,34 +5,33 @@ import 'package:flutter/material.dart';
 import 'package:infobip_mobilemessaging/infobip_mobilemessaging.dart';
 import 'package:infobip_mobilemessaging/models/configurations/configuration.dart' as mmconf;
 
-import '../chat_customization.dart' as chat_customization;
-import '../screens/screen_chat_safearea.dart';
-import '../screens/screen_chat_view.dart';
-import '../utils/language.dart';
+import '../../../utils/chat_language.dart';
+import '../../utils/chat_customization.dart' as chat_customization;
+import 'screen_chat_authentication.dart';
+import 'screen_chat_view.dart';
+import 'screen_chat_view_safe_area.dart';
 
 class ChatExamples {
-
   static Future<void> handleKeyboardAppearance(bool isHandledNatively) async {
     if (Platform.isIOS) {
       Object customization = mmconf.ChatCustomization(
-         shouldHandleKeyboardAppearance: isHandledNatively,
+        shouldHandleKeyboardAppearance: isHandledNatively,
       );
       InfobipMobilemessaging.setChatCustomization(customization);
     }
   }
 
-   static showChatExamplesDialog(BuildContext context) {
+  static showChatExamplesDialog(BuildContext context) {
     final children = <Widget>[
       SimpleDialogOption(
-        child: Text('Show chat screen'),
+        child: const Text('Show chat screen'),
         onPressed: () {
-          // InfobipMobilemessaging.setJwt('your JWT'); // Comment out to automatically log-in using authentication
           handleKeyboardAppearance(true);
           InfobipMobilemessaging.showChat();
         },
       ),
       SimpleDialogOption(
-        child: Text('Show chat screen customized'),
+        child: const Text('Show chat screen customized'),
         onPressed: () {
           InfobipMobilemessaging.setChatCustomization(
             chat_customization.customBranding,
@@ -42,27 +41,33 @@ class ChatExamples {
         },
       ),
       SimpleDialogOption(
-        child: Text('Set Chat Language'),
-        onPressed: () {
-          ChatExamples.showChatLanguageDialog(context);
-        },
-      ),
-      SimpleDialogOption(
-        child: Text('Show Chat View Only'),
+        child: const Text('Show ChatView'),
         onPressed: () {
           handleKeyboardAppearance(false);
           ChatExamples.showChatViewOnlyDialog(context, false);
         },
       ),
       SimpleDialogOption(
-        child: Text('Show Chat View With SafeArea'),
+        child: const Text('Show ChatView with SafeArea'),
         onPressed: () {
-           handleKeyboardAppearance(false);
+          handleKeyboardAppearance(false);
           ChatExamples.showChatViewOnlyDialog(context, true);
         },
       ),
       SimpleDialogOption(
-        child: Text('Enable calls'),
+        child: const Text('Authenticated chat'),
+        onPressed: () {
+          Navigator.pushNamed(context, ChatAuthenticationScreen.route);
+        },
+      ),
+      SimpleDialogOption(
+        child: const Text('Set chat Language'),
+        onPressed: () {
+          ChatExamples.showChatLanguageDialog(context);
+        },
+      ),
+      SimpleDialogOption(
+        child: const Text('Enable calls'),
         onPressed: () {
           log('Enabling calls');
           try {
@@ -73,7 +78,7 @@ class ChatExamples {
         },
       ),
       SimpleDialogOption(
-        child: Text('Disable calls'),
+        child: const Text('Disable calls'),
         onPressed: () {
           log('Disabling calls');
           try {
@@ -84,9 +89,9 @@ class ChatExamples {
         },
       ),
     ];
- 
+
     SimpleDialog dialog = SimpleDialog(
-      title: const Text('Choose Chat Example'),
+      title: const Text('Choose chat example'),
       children: children,
     );
 
@@ -96,7 +101,7 @@ class ChatExamples {
     );
   }
 
-   static showChatLanguageDialog(BuildContext context) {
+  static showChatLanguageDialog(BuildContext context) {
     final children = <Widget>[];
 
     // Languages imported from utils/languages
@@ -126,18 +131,15 @@ class ChatExamples {
   }
 
   static showChatViewOnlyDialog(BuildContext context, bool withSafeArea) {
-    final children = <Widget>[];
-
     if (withSafeArea) {
-      showDialog(
-        context: context,
-        builder: (BuildContext context) => const ChatViewDemoSafeArea(),
-      );
+      //TODO Remove it if ChatViewSafeAreaScreen looks fine in iOS
+      // showDialog(
+      //   context: context,
+      //   builder: (BuildContext context) => const ChatViewSafeAreaScreen(),
+      // );
+      Navigator.pushNamed(context, ChatViewSafeAreaScreen.route);
     } else {
-       showDialog(
-        context: context,
-        builder: (BuildContext context) => const ChatViewDemo(),
-      );
+      Navigator.pushNamed(context, ChatViewScreen.route);
     }
   }
 }

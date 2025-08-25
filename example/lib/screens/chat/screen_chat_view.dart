@@ -4,16 +4,17 @@ import 'package:flutter/material.dart';
 import 'package:infobip_mobilemessaging/models/chat/chat_view.dart';
 import 'package:infobip_mobilemessaging/models/chat/chat_view_event.dart';
 
-import '../main.dart';
+class ChatViewScreen extends StatefulWidget {
+  const ChatViewScreen({super.key});
 
-class ChatViewDemoSafeArea extends StatefulWidget {
-  const ChatViewDemoSafeArea({super.key});
+  static const title = 'Flutter ChatView';
+  static const route = '/screen_chat_view';
 
   @override
-  State createState() => _ChatViewDemoSafeAreaState();
+  State createState() => _ChatViewScreenState();
 }
 
-class _ChatViewDemoSafeAreaState extends State<ChatViewDemoSafeArea> {
+class _ChatViewScreenState extends State<ChatViewScreen> {
   ChatViewController? _chatViewController;
 
   @override
@@ -29,20 +30,9 @@ class _ChatViewDemoSafeAreaState extends State<ChatViewDemoSafeArea> {
   String currentChatView = '';
 
   @override
-  bool? resizeToAvoidBottomInset() {
-    return true;
-  }
-
-  @override
-  Color? scaffoldBackgroundColor() {
-    return Colors.white;
-  }
-
-  @override
   Widget build(BuildContext context) => Scaffold(
         appBar: AppBar(
-          backgroundColor: Theme.of(context).primaryColor,
-          title: const Text('Flutter ChatView example'),
+          title: const Text(ChatViewScreen.title),
           leading: IconButton(
             icon: const Icon(Icons.arrow_back),
             onPressed: () async {
@@ -70,18 +60,14 @@ class _ChatViewDemoSafeAreaState extends State<ChatViewDemoSafeArea> {
               icon: const Icon(Icons.more_vert),
             ),
           ],
-          automaticallyImplyLeading: false,
         ),
         body: Column(
           children: [
             Expanded(
-              child: 
-              SafeArea(
-                child: ChatView(
-                  withInput: true,
-                  withToolbar: false,
-                  onNativeViewCreated: _onNativeViewCreated,
-                ),
+              child: ChatView(
+                withInput: true,
+                withToolbar: false,
+                onNativeViewCreated: _onNativeViewCreated,
               ),
             ),
           ],

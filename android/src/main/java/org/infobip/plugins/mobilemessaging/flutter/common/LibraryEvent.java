@@ -24,6 +24,7 @@ public class LibraryEvent {
     public static final String EVENT_INAPPCHAT_CONFIGURATION_SYNCED = "inAppChat.configurationSynced";
     public static final String EVENT_INAPPCHAT_LIVECHAT_REGISTRATION_ID_UPDATED = "inAppChat.livechatRegistrationIdUpdated";
     public static final String EVENT_INAPPCHAT_AVAILABILITY_UPDATED = "inAppChat.availabilityUpdated";
+    public static final String EVENT_INAPPCHAT_JWT_REQUESTED = "inAppChat.internal.jwtRequested";
 
     public static final Map<String, String> broadcastEventMap = new HashMap<String, String>() {{
         put(Event.TOKEN_RECEIVED.getKey(), EVENT_TOKEN_RECEIVED);

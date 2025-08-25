@@ -78,5 +78,6 @@ struct EventName {
     static let messageStorage_findAll = "messageStorage.findAll"
     static let inAppChat_availabilityUpdated = "inAppChat.availabilityUpdated"
     static let inAppChat_unreadMessageCounterUpdated = "inAppChat.unreadMessageCounterUpdated"
+    static let inAppChat_jwtRequested = "inAppChat.internal.jwtRequested"
     static let inAppChat_chatViewChanged = "chatView.chatViewChanged"
 }

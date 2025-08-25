@@ -35,6 +35,9 @@ public class SwiftInfobipMobilemessagingPlugin: NSObject, FlutterPlugin {
     private var isStarted: Bool = false
     private var webrtcConfigId: String?
     private var controller: FlutterPluginRegistrar?
+    private var willUseChatJWT = false
+    private var chatJwtRequestQueue: [((String?) -> Void)] = []
+    private let chatJwtQueueLock = NSLock()
     
     @objc
     func supportedEvents() -> [String]! {
@@ -110,8 +113,10 @@ public class SwiftInfobipMobilemessagingPlugin: NSObject, FlutterPlugin {
             setWidgetTheme(call: call, result: result)
         } else if call.method == "sendContextualData" {
             sendContextualData(call: call, result: result)
-        } else if call.method == "setJwt" {
-            setJwt(call: call, result: result)
+        } else if call.method == "setChatJwt" {
+            setChatJwt(call: call, result: result)
+        } else if call.method == "setChatJwtProvider" {
+            setChatJwtProvider(call: call, result: result)
         } else if call.method == "submitEvent" {
             submitEvent(call: call, result: result)
         } else if call.method == "submitEventImmediately" {
@@ -193,7 +198,6 @@ public class SwiftInfobipMobilemessagingPlugin: NSObject, FlutterPlugin {
     }
     
     private func start(configuration: Configuration, result: @escaping FlutterResult) {
-        MobileMessaging.privacySettings.applicationCodePersistingDisabled = configuration.privacySettings[Configuration.Keys.applicationCodePersistingDisabled].unwrap(orDefault: false)
         MobileMessaging.privacySettings.systemInfoSendingDisabled = configuration.privacySettings[Configuration.Keys.systemInfoSendingDisabled].unwrap(orDefault: false)
         MobileMessaging.privacySettings.carrierInfoSendingDisabled = configuration.privacySettings[Configuration.Keys.carrierInfoSendingDisabled].unwrap(orDefault: false)
         MobileMessaging.privacySettings.userDataPersistingDisabled = configuration.privacySettings[Configuration.Keys.userDataPersistingDisabled].unwrap(orDefault: false)
@@ -203,6 +207,7 @@ public class SwiftInfobipMobilemessagingPlugin: NSObject, FlutterPlugin {
         
         if configuration.inAppChatEnabled {
             mobileMessaging = mobileMessaging?.withInAppChat()
+            MobileMessaging.inAppChat?.delegate = self
         }
         
         if configuration.fullFeaturedInAppsEnabled {
@@ -542,14 +547,29 @@ public class SwiftInfobipMobilemessagingPlugin: NSObject, FlutterPlugin {
         return result(Constants.resultSuccess)
     }
     
-    func setJwt(call: FlutterMethodCall, result: @escaping FlutterResult) {
-        guard let jwt = call.arguments as? String else {
-            return result(
-                FlutterError( code: "invalidSetJwt",
-                              message: "Error parsing JWT string",
-                              details: "Error parsing JWT string" ))
+    func setChatJwt(call: FlutterMethodCall, result: @escaping FlutterResult) {
+        var jwt: String?
+        defer {
+            chatJwtQueueLock.lock()
+            if !chatJwtRequestQueue.isEmpty {
+                let completion = chatJwtRequestQueue.removeFirst()
+                completion(jwt)
+            }
+            chatJwtQueueLock.unlock()
         }
-        MobileMessaging.inAppChat?.jwt = jwt
+        
+        guard let value = call.arguments as? String else {
+            return result(
+                FlutterError( code: "invalidSetChatJwt",
+                              message: "Error parsing chat JWT string",
+                              details: "Error parsing chat JWT string" ))
+        }
+        jwt = value
+        return result(Constants.resultSuccess)
+    }
+
+    func setChatJwtProvider(call: FlutterMethodCall, result: @escaping FlutterResult) {
+        willUseChatJWT = true
         return result(Constants.resultSuccess)
     }
     
@@ -959,5 +979,23 @@ class VariableJwtSupplier: NSObject, MMJwtSupplier {
     } 
     func getJwt() -> String? {
         return jwt
+    }
+}
+
+extension SwiftInfobipMobilemessagingPlugin: MMInAppChatDelegate {
+    @objc public func getJWT() -> String? {
+        guard willUseChatJWT else { return nil }
+        var jwtResult: String?
+        let semaphore = DispatchSemaphore(value: 0)
+
+        chatJwtQueueLock.lock()
+        chatJwtRequestQueue.append { jwt in
+            jwtResult = jwt
+            semaphore.signal()
+        }
+        chatJwtQueueLock.unlock()
+        eventsManager?.propagate(EventName.inAppChat_jwtRequested)
+        _ = semaphore.wait(timeout: .now() + 45)
+        return jwtResult
     }
 }

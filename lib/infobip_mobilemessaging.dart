@@ -62,6 +62,8 @@ class InfobipMobilemessaging {
 
   static MessageStorage? _defaultMessageStorage;
 
+  static StreamSubscription? _chatJwtRequestsSubscription;
+
   /// Subscribes to [LibraryEvent] to perform provided callback function.
   static void on(String eventName, Function callback) async {
     if (callbacks.containsKey(eventName)) {
@@ -253,8 +255,57 @@ class InfobipMobilemessaging {
         },
       );
 
-  /// Sets JWT for Livechat.
-  static Future<void> setJwt(String jwt) async => await _channel.invokeMethod('setJwt', jwt);
+  /// Sets the JWT provider used to authenticate chat sessions.
+  ///
+  /// The `jwtProvider` is a callback function that returns a JSON Web Token (JWT)
+  /// used for chat authentication. It supports **asynchronous** approach:
+  ///
+  /// ```dart
+  /// await InfobipMobilemessaging.setChatJwtProvider(
+  ///  () async => await getChatToken(),
+  ///  (Object error) { handleError(error); }
+  /// );
+  /// ```
+  ///
+  /// > ⚠️ This callback may be invoked multiple times during the widget's lifecycle
+  /// (e.g., due to screen orientation changes or network reconnection).
+  /// It is important to return a **fresh and valid JWT** each time.
+  ///
+  /// @param jwtProvider A callback function that returns a JWT string or a Promise that resolves to one.
+  /// @param onError Optional error handler for catching exceptions thrown during JWT generation.
+  static Future<void> setChatJwtProvider(
+    Future<String> Function() jwtProvider, [
+    void Function(Object error)? onError,
+  ]) async {
+    handleError(dynamic error) {
+      _channel.invokeMethod('setChatJwt', null);
+      onError?.call(error);
+    }
+
+    _chatJwtRequestsSubscription?.cancel();
+    _chatJwtRequestsSubscription = _libraryEvent.receiveBroadcastStream().listen(
+      (dynamic event) {
+        try {
+          LibraryEvent libraryEvent = LibraryEvent.fromJson(jsonDecode(event));
+          if (libraryEvent.eventName == 'inAppChat.internal.jwtRequested') {
+            jwtProvider().then((String jwt) {
+              _channel.invokeMethod('setChatJwt', jwt);
+            }).catchError((dynamic error) {
+              handleError(error);
+            });
+          }
+        } catch (error) {
+          handleError(error);
+        }
+      },
+      onError: (dynamic error) {
+        handleError(error);
+      },
+      cancelOnError: false,
+    );
+
+    await _channel.invokeMethod('setChatJwtProvider');
+  }
 
   /// Default local message storage.
   static MessageStorage? defaultMessageStorage() {
@@ -302,7 +353,7 @@ class InfobipMobilemessaging {
   /// Disabling WebRTC calls.
   static Future<void> disableCalls() async => await _channel.invokeMethod('disableCalls');
 
-  /// iOS only: restart WebRTC connection.
+  /// iOS only: restarts the chat socket connection, stopping any chat push notifications from being received. To be used only after stopConnection bellow, if needed.
   static Future<void> restartConnection() async {
     if (!Platform.isIOS) {
       log("It's supported only on the iOS platform");
@@ -311,7 +362,7 @@ class InfobipMobilemessaging {
     await _channel.invokeMethod('restartConnection');
   }
 
-  /// iOS only: stop WebRTC connection.
+  /// iOS only: stops the chat socket connection, allowing to receive chat push notifications with the chat loaded, but preferably not presented in UI.
   static Future<void> stopConnection() async {
     if (!Platform.isIOS) {
       log("It's supported only on the iOS platform");

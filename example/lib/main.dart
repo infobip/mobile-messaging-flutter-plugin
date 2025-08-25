@@ -61,7 +61,7 @@ class _MyAppState extends State<MyApp> {
   @override
   Widget build(BuildContext context) => MaterialApp(
         title: 'Infobip Flutter Example',
-        routes: Map.fromEntries(pages.map((d) => MapEntry(d.route, d.builder))),
+        routes: Map.fromEntries(appNavigationRoutes.map((d) => MapEntry(d.route, d.builder))),
         home: const HomePage(),
         navigatorKey: navigatorKey,
         theme: ThemeData(
