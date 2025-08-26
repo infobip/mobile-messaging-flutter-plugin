@@ -1,3 +1,10 @@
+# 8.6.0
+## SDK Versions
+- Android - 13.22.0 -> 14.3.0
+- iOS - 13.9.1 -> 13.11.2
+
+## Changed
+- setJwt (originally used for the chat authentication) has been removed. New callback function setChatJwtProvider must be used instead.
 # 8.5.0
 ## SDK Versions
 - Android - 13.22.0
