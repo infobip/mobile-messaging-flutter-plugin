@@ -6,7 +6,6 @@ import 'dart:io';
 
 import 'package:flutter/services.dart';
 
-import 'models/chat/ios_chat_settings.dart';
 import 'models/configurations/configuration.dart';
 import 'models/data/installation.dart';
 import 'models/data/message.dart';
@@ -185,19 +184,8 @@ class InfobipMobilemessaging {
   }
 
   /// Sets chat customization.
-  static Future<void> setChatCustomization(Object settings) async {
-    await _channel.invokeMethod('setChatCustomization', jsonEncode(settings));
-  }
-
-  /// Sets chat customization for iOS.
-  @Deprecated('Should use [setChatCustomization]')
-  static Future<void> setupiOSChatSettings(IOSChatSettings settings) async {
-    if (Platform.isIOS) {
-      await _channel.invokeMethod(
-        'setupiOSChatSettings',
-        jsonEncode(settings.toJson()),
-      );
-    }
+  static Future<void> setChatCustomization(ChatCustomization customization) async {
+    await _channel.invokeMethod('setChatCustomization', jsonEncode(customization.toJson()));
   }
 
   /// Synchronously submits custom event and validates it on backend. Custom
@@ -215,7 +203,7 @@ class InfobipMobilemessaging {
 
   /// Updates JWT used for [UserData] fetching and personalization.
   static Future<void> setUserDataJwt(String? jwt) async {
-      await _channel.invokeMethod('setUserDataJwt', jwt);
+    await _channel.invokeMethod('setUserDataJwt', jwt);
   }
 
   /// Returns current unread chat push message counter.

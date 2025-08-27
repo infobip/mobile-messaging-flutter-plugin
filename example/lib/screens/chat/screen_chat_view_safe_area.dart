@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:infobip_mobilemessaging/models/chat/chat_view.dart';
 import 'package:infobip_mobilemessaging/models/chat/chat_view_event.dart';
 
-import '../../main.dart';
 
 class ChatViewSafeAreaScreen extends StatefulWidget {
   const ChatViewSafeAreaScreen({super.key});

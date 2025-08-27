@@ -103,8 +103,6 @@ public class SwiftInfobipMobilemessagingPlugin: NSObject, FlutterPlugin {
             showChat(call: call, result: result)
         } else if call.method == "cleanup" {
             cleanup(result: result)
-        } else if call.method == "setupiOSChatSettings" {
-            setupiOSChatSettings(call: call, result: result)
         } else if call.method == "setChatCustomization" {
             setChatCustomization(call: call, result: result)
         } else if call.method == "setLanguage" {
@@ -475,19 +473,6 @@ public class SwiftInfobipMobilemessagingPlugin: NSObject, FlutterPlugin {
             MMLogDebug("[InAppChat] could not define root vc to present in-app-chat")
         }
         return result(Constants.resultSuccess)
-    }
-    
-    func setupiOSChatSettings(call: FlutterMethodCall, result: @escaping FlutterResult) {
-        MMLogWarn("[InAppChat] is deprecated. Please use setChatCustomization instead")
-        guard let jsonString = call.arguments as? String,
-              let chatSettings = convertStringToDictionary(text: jsonString) else {
-            return result(
-                FlutterError( code: "invalidiOSChatSettings",
-                              message: "Error parsing iOSChatSettings",
-                              details: "Error parsing iOSChatSettings" ))
-        }
-        
-        MMChatSettings.settings.configureWith(rawConfig: chatSettings)
     }
     
     func setChatCustomization(call: FlutterMethodCall, result: @escaping FlutterResult) {

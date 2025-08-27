@@ -1,11 +1,11 @@
 library chat_customization;
 
-import 'package:infobip_mobilemessaging/models/configurations/configuration.dart' as mmconfiguration;
+import 'package:infobip_mobilemessaging/models/configurations/configuration.dart';
 
-Object customBranding = mmconfiguration.ChatCustomization(
+ChatCustomization customBranding = ChatCustomization(
   chatStatusBarBackgroundColor: '#673AB7',
   chatStatusBarIconsColorMode: 'dark',
-  chatToolbar: mmconfiguration.ToolbarCustomization(
+  chatToolbar: ToolbarCustomization(
     titleTextAppearance: 'TextAppearance_AppCompat_Title',
     titleTextColor: '#FFFFFF',
     titleText: 'Some new title',
@@ -18,7 +18,7 @@ Object customBranding = mmconfiguration.ChatCustomization(
     subtitleText: '#1',
     subtitleCentered: true,
   ),
-  attachmentPreviewToolbar: mmconfiguration.ToolbarCustomization(
+  attachmentPreviewToolbar: ToolbarCustomization(
     titleTextAppearance: 'TextAppearance_AppCompat_Title',
     titleTextColor: '#212121',
     titleText: 'Attachment preview',

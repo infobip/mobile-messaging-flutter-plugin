@@ -30,8 +30,8 @@ public class ChatCustomization {
     // Toolbar
     private ToolbarCustomization chatToolbar;
     private ToolbarCustomization attachmentPreviewToolbar;
-    private String attachmentPreviewSaveMenuItemIcon;
-    private String attachmentPreviewMenuItemsIconTint;
+    private String attachmentPreviewToolbarSaveMenuItemIcon;
+    private String attachmentPreviewToolbarMenuItemsIconTint;
 
     // NetworkError
     private String networkErrorText;
@@ -187,8 +187,8 @@ public class ChatCustomization {
                 .setToolbarBackgroundColor(parseColor(attachmentPreviewToolbar.backgroundColor))
                 .setNavigationIcon(loadDrawable(attachmentPreviewToolbar.navigationIcon, loader, context))
                 .setNavigationIconTint(parseColor(attachmentPreviewToolbar.navigationIconTint))
-                .setSaveAttachmentMenuItemIcon(loadDrawable(attachmentPreviewSaveMenuItemIcon, loader, context))
-                .setMenuItemsIconTint(parseColor(attachmentPreviewMenuItemsIconTint))
+                .setSaveAttachmentMenuItemIcon(loadDrawable(attachmentPreviewToolbarSaveMenuItemIcon, loader, context))
+                .setMenuItemsIconTint(parseColor(attachmentPreviewToolbarMenuItemsIconTint))
                 .setTitleTextAppearance(getResId(context.getResources(), attachmentPreviewToolbar.titleTextAppearance, context.getPackageName()))
                 .setTitleTextColor(parseColor(attachmentPreviewToolbar.titleTextColor))
                 .setTitleText(attachmentPreviewToolbar.titleText)
@@ -313,9 +313,24 @@ public class ChatCustomization {
         return attachmentPreviewToolbar;
     }
 
-
     public void setAttachmentPreviewToolbar(ToolbarCustomization attachmentPreviewToolbar) {
         this.attachmentPreviewToolbar = attachmentPreviewToolbar;
+    }
+
+    public String getAttachmentPreviewToolbarMenuItemsIconTint() {
+        return attachmentPreviewToolbarMenuItemsIconTint;
+    }
+
+    public void setAttachmentPreviewToolbarMenuItemsIconTint(String attachmentPreviewToolbarMenuItemsIconTint) {
+        this.attachmentPreviewToolbarMenuItemsIconTint = attachmentPreviewToolbarMenuItemsIconTint;
+    }
+
+    public String getAttachmentPreviewToolbarSaveMenuItemIcon() {
+        return attachmentPreviewToolbarSaveMenuItemIcon;
+    }
+
+    public void setAttachmentPreviewToolbarSaveMenuItemIcon(String attachmentPreviewToolbarSaveMenuItemIcon) {
+        this.attachmentPreviewToolbarSaveMenuItemIcon = attachmentPreviewToolbarSaveMenuItemIcon;
     }
 
     public ToolbarCustomization getChatToolbar() {

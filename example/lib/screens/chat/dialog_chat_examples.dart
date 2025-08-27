@@ -3,7 +3,7 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:infobip_mobilemessaging/infobip_mobilemessaging.dart';
-import 'package:infobip_mobilemessaging/models/configurations/configuration.dart' as mmconf;
+import 'package:infobip_mobilemessaging/models/configurations/configuration.dart';
 
 import '../../../utils/chat_language.dart';
 import '../../utils/chat_customization.dart' as chat_customization;
@@ -14,7 +14,7 @@ import 'screen_chat_view_safe_area.dart';
 class ChatExamples {
   static Future<void> handleKeyboardAppearance(bool isHandledNatively) async {
     if (Platform.isIOS) {
-      Object customization = mmconf.ChatCustomization(
+      ChatCustomization customization = ChatCustomization(
         shouldHandleKeyboardAppearance: isHandledNatively,
       );
       InfobipMobilemessaging.setChatCustomization(customization);
@@ -132,11 +132,6 @@ class ChatExamples {
 
   static showChatViewOnlyDialog(BuildContext context, bool withSafeArea) {
     if (withSafeArea) {
-      //TODO Remove it if ChatViewSafeAreaScreen looks fine in iOS
-      // showDialog(
-      //   context: context,
-      //   builder: (BuildContext context) => const ChatViewSafeAreaScreen(),
-      // );
       Navigator.pushNamed(context, ChatViewSafeAreaScreen.route);
     } else {
       Navigator.pushNamed(context, ChatViewScreen.route);
