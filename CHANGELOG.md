@@ -1,3 +1,11 @@
+# 8.7.0
+## SDK Versions
+- Android 14.3.0
+- Huawei 14.3.0
+- iOS 13.11.2 -> 13.12.0
+
+## Security
+- Keychain now shares application code with Notification Extension so there is no need anymore for providing the application code in NotificationService.swift source file.
 # 8.6.0
 ## SDK Versions
 - Android - 13.22.0 -> 14.3.0
