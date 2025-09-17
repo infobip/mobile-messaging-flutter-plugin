@@ -28,6 +28,12 @@ class ChatExamples {
         onPressed: () {
           handleKeyboardAppearance(true);
           InfobipMobilemessaging.showChat();
+          // Uncomment to use custom exception handler
+          // InfobipMobilemessaging.setChatExceptionHandler((exception) async {
+          //   log('Flutter app: New chat exception: $exception');
+          // }, (error) {
+          //   log('Flutter app: Chat exception handler error: $error');
+          // });
         },
       ),
       SimpleDialogOption(

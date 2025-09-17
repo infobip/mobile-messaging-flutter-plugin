@@ -78,6 +78,8 @@ class _ChatViewScreenState extends State<ChatViewScreen> {
   void _onNativeViewCreated(ChatViewController controller) {
     _chatViewController = controller;
     _subscribeToEvents();
+    // Uncomment to use custom exception handler
+    // _setCustomErrorHandler();
   }
 
   void _subscribeToEvents() {
@@ -85,9 +87,18 @@ class _ChatViewScreenState extends State<ChatViewScreen> {
     _chatViewController?.on(
       ChatViewEvent.chatViewChanged,
       (String chatView) => {
-        log('[screen_chat_view] chat view changed: $chatView'),
+        log('Flutter app: Chat view changed: $chatView'),
         currentChatView = chatView,
       },
     );
+  }
+
+  void _setCustomErrorHandler() {
+    log('Flutter app: Setting custom chat view exception handler');
+    _chatViewController?.setExceptionHandler((exception) async {
+      log('Flutter app: New chat view exception: $exception');
+    }, (error) {
+      log('Flutter app: Chat view exception handler error: $error');
+    });
   }
 }

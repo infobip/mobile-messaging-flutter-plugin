@@ -7,39 +7,39 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
 
+import org.infobip.mobile.messaging.api.chat.WidgetAttachmentConfig;
+import org.infobip.mobile.messaging.api.chat.WidgetInfo;
+import org.infobip.mobile.messaging.chat.attachments.InAppChatAttachment;
+import org.infobip.mobile.messaging.chat.core.InAppChatException;
+import org.infobip.mobile.messaging.chat.core.MultithreadStrategy;
+import org.infobip.mobile.messaging.chat.core.widget.LivechatWidgetLanguage;
+import org.infobip.mobile.messaging.chat.core.widget.LivechatWidgetMessage;
+import org.infobip.mobile.messaging.chat.core.widget.LivechatWidgetResult;
+import org.infobip.mobile.messaging.chat.core.widget.LivechatWidgetThread;
+import org.infobip.mobile.messaging.chat.core.widget.LivechatWidgetThreads;
+import org.infobip.mobile.messaging.chat.core.widget.LivechatWidgetView;
+import org.infobip.mobile.messaging.chat.models.MessagePayload;
+import org.infobip.mobile.messaging.chat.view.InAppChatFragment;
+import org.infobip.plugins.mobilemessaging.flutter.common.ErrorCodes;
+import org.infobip.plugins.mobilemessaging.flutter.common.StreamHandler;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.util.Map;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.FragmentActivity;
 import androidx.fragment.app.FragmentContainerView;
 import androidx.fragment.app.FragmentManager;
-
-import org.infobip.mobile.messaging.api.chat.WidgetInfo;
-import org.infobip.mobile.messaging.api.chat.WidgetAttachmentConfig;
-import org.infobip.mobile.messaging.chat.core.InAppChatWidgetView;
-import org.infobip.mobile.messaging.chat.attachments.InAppChatMobileAttachment;
-import org.infobip.mobile.messaging.chat.core.widget.LivechatWidgetResult;
-import org.infobip.mobile.messaging.chat.core.widget.LivechatWidgetThread;
-import org.infobip.mobile.messaging.chat.core.widget.LivechatWidgetThreads;
-import org.infobip.mobile.messaging.chat.core.widget.LivechatWidgetView;
-import org.infobip.mobile.messaging.chat.core.widget.LivechatWidgetLanguage;
-import org.infobip.mobile.messaging.chat.core.widget.LivechatWidgetMessage;
-import org.infobip.mobile.messaging.chat.view.InAppChatFragment;
-import org.infobip.plugins.mobilemessaging.flutter.common.ErrorCodes;
-import org.infobip.plugins.mobilemessaging.flutter.common.StreamHandler;
-import org.infobip.mobile.messaging.chat.core.MultithreadStrategy;
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-import kotlin.Unit;
-
-import java.util.Map;
-
 import io.flutter.plugin.common.BinaryMessenger;
 import io.flutter.plugin.common.EventChannel;
 import io.flutter.plugin.common.MethodCall;
 import io.flutter.plugin.common.MethodChannel;
 import io.flutter.plugin.common.MethodChannel.MethodCallHandler;
 import io.flutter.plugin.platform.PlatformView;
+import kotlin.Unit;
 
 public class ChatPlatformView implements PlatformView, MethodCallHandler {
 
@@ -52,6 +52,7 @@ public class ChatPlatformView implements PlatformView, MethodCallHandler {
     private InAppChatFragment fragment;
     private FragmentManager fm;
     private Context context;
+    private static boolean useCustomErrorHandler = false;
 
     public ChatPlatformView(
             @NonNull Context context,
@@ -82,6 +83,8 @@ public class ChatPlatformView implements PlatformView, MethodCallHandler {
                 }
             }
             fragment.setEventsListener(createEventsListener());
+            if (useCustomErrorHandler)
+                fragment.setErrorsHandler(createErrorsHandler());
             container = new FragmentContainerView(context);
             container.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
             container.setId(ViewGroup.generateViewId());
@@ -124,7 +127,7 @@ public class ChatPlatformView implements PlatformView, MethodCallHandler {
                 sendContextualData(call, result);
                 break;
             case "showThreadsList":
-                showMultiThread(result);
+                showThreadsList(result);
                 break;
             case "setWidgetTheme":
                 setWidgetTheme(call, result);
@@ -137,6 +140,9 @@ public class ChatPlatformView implements PlatformView, MethodCallHandler {
                 break;
             case "isMultithread":
                 isMultithread(result);
+                break;
+            case "setExceptionHandler":
+                setErrorsHandler(call, result);
                 break;
             default:
                 result.notImplemented();
@@ -174,7 +180,7 @@ public class ChatPlatformView implements PlatformView, MethodCallHandler {
         }
     }
 
-    private void showMultiThread(final MethodChannel.Result result) {
+    private void showThreadsList(final MethodChannel.Result result) {
         if (fragment != null && fragment.isAdded()) {
             fragment.showThreadList();
             result.success(RESULT_SUCCESS);
@@ -203,7 +209,8 @@ public class ChatPlatformView implements PlatformView, MethodCallHandler {
             if (draft == null || draft.isEmpty()) {
                 result.error(ErrorCodes.CHAT_VIEW_ERROR.getErrorCode(), "Cannot send ChatView draft. Draft is null or empty.", null);
             } else {
-                fragment.sendChatMessageDraft(draft);
+                MessagePayload payload = new MessagePayload.Draft(draft);
+                fragment.send(payload);
                 result.success(RESULT_SUCCESS);
             }
         } else {
@@ -217,13 +224,14 @@ public class ChatPlatformView implements PlatformView, MethodCallHandler {
             String dataBase64 = call.argument("dataBase64");
             String mimeType = call.argument("mimeType");
             String fileName = call.argument("fileName");
-            InAppChatMobileAttachment attachment = null;
+            InAppChatAttachment attachment = null;
             if (dataBase64 != null && !dataBase64.isEmpty()
                     && mimeType != null && !mimeType.isEmpty()
                     && fileName != null && !fileName.isEmpty()) {
-                attachment = new InAppChatMobileAttachment(dataBase64, mimeType, fileName);
+                attachment = new InAppChatAttachment(dataBase64, mimeType, fileName);
             }
-            fragment.sendChatMessage(message, attachment);
+            MessagePayload payload = new MessagePayload.Basic(message, attachment);
+            fragment.send(payload);
             result.success(RESULT_SUCCESS);
         } else {
             result.error(ErrorCodes.CHAT_VIEW_ERROR.getErrorCode(), "ChatView is not attached.", null);
@@ -236,6 +244,44 @@ public class ChatPlatformView implements PlatformView, MethodCallHandler {
         } else {
             result.error(ErrorCodes.CHAT_VIEW_ERROR.getErrorCode(), "ChatView is not attached.", null);
         }
+    }
+
+    private void setErrorsHandler(MethodCall call, final MethodChannel.Result result) {
+        useCustomErrorHandler = (Boolean) call.arguments;
+        if (fragment != null && fragment.isAdded()) {
+            if (useCustomErrorHandler)
+                fragment.setErrorsHandler(createErrorsHandler());
+            else
+                fragment.setErrorsHandler(fragment.getDefaultErrorsHandler());
+        }
+        result.success(RESULT_SUCCESS);
+    }
+    //endregion
+
+    //region Error handler
+    private InAppChatFragment.ErrorsHandler createErrorsHandler() {
+        return new InAppChatFragment.ErrorsHandler() {
+            @Override
+            public void handlerError(@NonNull String error) {
+                //Deprecated method
+            }
+
+            @Override
+            public void handlerWidgetError(@NonNull String error) {
+                //Deprecated method
+            }
+
+            @Override
+            public void handlerNoInternetConnectionError(boolean hasConnection) {
+                //Deprecated method
+            }
+
+            @Override
+            public boolean handleError(@NonNull InAppChatException exception) {
+                eventHandler.sendEvent(ChatViewEvent.EVENT_CHAT_EXCEPTION_RECEIVED, exception.toJSON());
+                return true;
+            }
+        };
     }
     //endregion
 
@@ -260,18 +306,8 @@ public class ChatPlatformView implements PlatformView, MethodCallHandler {
             }
 
             @Override
-            public void onChatViewChanged(@NonNull InAppChatWidgetView widgetView) {
-                //Deprecated
-            }
-
-            @Override
             public void onChatControlsVisibilityChanged(boolean isVisible) {
                 //Chat controls visibility changed
-            }
-
-            @Override
-            public void onChatWidgetThemeChanged(@NonNull String widgetThemeName) {
-                //Deprecated
             }
 
             @Override
@@ -323,25 +359,10 @@ public class ChatPlatformView implements PlatformView, MethodCallHandler {
             }
 
             @Override
-            public void onChatDraftSent(@NonNull LivechatWidgetResult<String> result) {
-                //Deprecated
-            }
-
-            @Override
-            public void onChatMessageSent(@NonNull LivechatWidgetResult<String> result) {
-                //Deprecated
-            }
-
-            @Override
             public void onChatConnectionResumed(@NonNull LivechatWidgetResult<Unit> result) {
                 if (result.isSuccess()) {
                     eventHandler.sendEvent(ChatViewEvent.EVENT_CHAT_RECONNECTED);
                 }
-            }
-
-            @Override
-            public void onChatReconnected() {
-                //Deprecated
             }
 
             @Override
@@ -352,18 +373,8 @@ public class ChatPlatformView implements PlatformView, MethodCallHandler {
             }
 
             @Override
-            public void onChatDisconnected() {
-                //Deprecated
-            }
-
-            @Override
             public void onChatLoadingFinished(@NonNull LivechatWidgetResult<Unit> result) {
                 eventHandler.sendEvent(ChatViewEvent.EVENT_CHAT_LOADED, result.isSuccess());
-            }
-
-            @Override
-            public void onChatLoaded(boolean controlsEnabled) {
-                //Deprecated
             }
 
             @Override
@@ -378,11 +389,6 @@ public class ChatPlatformView implements PlatformView, MethodCallHandler {
                 return false;
             }
 
-            @Override
-            public boolean onAttachmentPreviewOpened(@Nullable String url, @Nullable String type, @Nullable String caption) {
-                //Deprecated
-                return false;
-            }
         };
     }
 

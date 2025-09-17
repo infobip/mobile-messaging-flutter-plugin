@@ -1,5 +1,7 @@
 package org.infobip.plugins.mobilemessaging.flutter.chat;
 
+import org.infobip.plugins.mobilemessaging.flutter.common.LibraryEvent;
+
 /**
  * ChatViewEvent class contains event names that are used to communicate between Flutter and Android.
  * Event name must match definition on Flutter side in chat_view_event.dart file.
@@ -15,5 +17,8 @@ public class ChatViewEvent {
     public static final String EVENT_CHAT_RECONNECTED = "chatView.chatReconnected";
     public static final String EVENT_EXIT_CHAT_PRESSED = "chatView.exitChatPressed";
     public static final String EVENT_CHAT_RAW_MESSAGE_RECEIVED = "chatView.chatRawMessageReceived";
+
+    //Internal
+    public static final String EVENT_CHAT_EXCEPTION_RECEIVED = LibraryEvent.EVENT_INAPPCHAT_EXCEPTION_RECEIVED;
 
 }

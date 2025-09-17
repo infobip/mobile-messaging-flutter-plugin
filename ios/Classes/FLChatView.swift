@@ -15,13 +15,14 @@ enum Constants {
 }
 
 enum ChatErrors {
-    case languageCodeDataMissing
-    case contextualDataMissing
-    case unableToMoveToThreadList
-    case unableToSetWidgetTheme
-    case attachmentDataInvalid
-    case messageOrAttachmentDataMissing
-    case draftIsMissing
+    case languageCodeDataMissing,
+    contextualDataMissing,
+    unableToMoveToThreadList,
+    unableToSetWidgetTheme,
+    attachmentDataInvalid,
+    messageOrAttachmentDataMissing,
+    draftIsMissing,
+    unableToSetExceptionHandler
     
     
     var code: String {
@@ -44,6 +45,8 @@ enum ChatErrors {
             "Cannot send ChatView message. Message or attachment data is missing."
         case .draftIsMissing:
             "Cannot send ChatView draft. Draft is null or empty."
+        case .unableToSetExceptionHandler:
+            "Cannot set Chat exception handler: chat is not enabled"
         }
     }
 }
@@ -160,8 +163,11 @@ public class FLChatView: NSObject, FlutterPlatformView {
             setWidgetTheme(call: call, result: result)
         case "sendChatMessage":
             sendChatMessage(call: call, result: result)
+        case "setExceptionHandler":
+            setExceptionHandler(call: call, result: result)
         case "isMultithread":
             isMultithread(call: call, result: result)
+            
         default:
             result(FlutterMethodNotImplemented)
         }
@@ -273,5 +279,9 @@ public class FLChatView: NSObject, FlutterPlatformView {
     
     private func isMultithread(call: FlutterMethodCall, result: @escaping FlutterResult) {
         result(_vc.isChattingInMultithread)
+    }
+    
+    func setExceptionHandler(call: FlutterMethodCall, result: @escaping FlutterResult) {
+        return SwiftInfobipMobilemessagingPlugin.digestChatExceptionHandler(call, result)
     }
 }

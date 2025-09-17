@@ -36,6 +36,7 @@ public class SwiftInfobipMobilemessagingPlugin: NSObject, FlutterPlugin {
     private var webrtcConfigId: String?
     private var controller: FlutterPluginRegistrar?
     private var willUseChatJWT = false
+    var willUseChatExceptionHandler = false
     private var chatJwtRequestQueue: [((String?) -> Void)] = []
     private let chatJwtQueueLock = NSLock()
     
@@ -115,6 +116,8 @@ public class SwiftInfobipMobilemessagingPlugin: NSObject, FlutterPlugin {
             setChatJwt(call: call, result: result)
         } else if call.method == "setChatJwtProvider" {
             setChatJwtProvider(call: call, result: result)
+        } else if call.method == "setChatExceptionHandler" {
+            setChatExceptionHandler(call: call, result: result)
         } else if call.method == "submitEvent" {
             submitEvent(call: call, result: result)
         } else if call.method == "submitEventImmediately" {
@@ -558,6 +561,19 @@ public class SwiftInfobipMobilemessagingPlugin: NSObject, FlutterPlugin {
         return result(Constants.resultSuccess)
     }
     
+    static func digestChatExceptionHandler(_ call: FlutterMethodCall, _ result: @escaping FlutterResult) {
+        guard let ibMMPlugin = MobileMessaging.inAppChat?.delegate as? SwiftInfobipMobilemessagingPlugin else {
+            return result(FlutterError(error: .unableToSetExceptionHandler))
+        }
+        let enableHandler = (call.arguments as? Bool) ?? false
+        ibMMPlugin.willUseChatExceptionHandler = enableHandler
+        return result(Constants.resultSuccess)
+    }
+    
+    func setChatExceptionHandler(call: FlutterMethodCall, result: @escaping FlutterResult) {
+        return SwiftInfobipMobilemessagingPlugin.digestChatExceptionHandler(call, result)
+    }
+    
     func sendContextualData(call: FlutterMethodCall, result: @escaping FlutterResult) {
         guard let args = call.arguments as? [String: Any],
               let data = args["data"] as? String,
@@ -982,5 +998,23 @@ extension SwiftInfobipMobilemessagingPlugin: MMInAppChatDelegate {
         eventsManager?.propagate(EventName.inAppChat_jwtRequested)
         _ = semaphore.wait(timeout: .now() + 45)
         return jwtResult
+    }
+    
+    @objc public func didReceiveException(_ exception: MMChatException) -> MMChatExceptionDisplayMode {
+        guard willUseChatExceptionHandler else { return .displayDefaultAlert }
+        
+        var payload: [String: Any] = [:]
+        if let message = exception.message {
+            payload["message"] = message
+        }
+        if let name = exception.name {
+            payload["name"] = name
+        }
+        payload["code"] = exception.code
+        payload["origin"] = "LiveChat"
+        payload["platform"] = "Flutter"
+        
+        eventsManager?.propagate(EventName.inAppChat_exceptionReceived, payload)
+        return .noDisplay
     }
 }

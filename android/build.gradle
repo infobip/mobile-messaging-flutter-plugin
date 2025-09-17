@@ -31,13 +31,7 @@ android {
 }
 
 dependencies {
-    def mmVersion = '14.3.0'
-    //flutter and mm dependencies clash
-    implementation ("org.jetbrains.kotlin:kotlin-stdlib-jdk8") {
-        version {
-            strictly "1.8.10"
-        }
-    }
+    def mmVersion = '14.6.0'
     implementation ("com.infobip:infobip-mobile-messaging-android-sdk:$mmVersion@aar") {
         transitive = true
     }

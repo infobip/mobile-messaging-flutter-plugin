@@ -4,6 +4,7 @@ import static org.infobip.mobile.messaging.inbox.MobileInboxFilterOptionsJson.mo
 import static org.infobip.mobile.messaging.plugins.MessageJson.bundleToJSON;
 import static org.infobip.mobile.messaging.plugins.MessageJson.toJSON;
 import static org.infobip.mobile.messaging.plugins.MessageJson.toJSONArray;
+import static org.infobip.plugins.mobilemessaging.flutter.common.LibraryEvent.EVENT_INAPPCHAT_EXCEPTION_RECEIVED;
 import static org.infobip.plugins.mobilemessaging.flutter.common.LibraryEvent.EVENT_INAPPCHAT_JWT_REQUESTED;
 import static org.infobip.plugins.mobilemessaging.flutter.common.LibraryEvent.broadcastEventMap;
 import static org.infobip.plugins.mobilemessaging.flutter.common.LibraryEvent.messageBroadcastEventMap;
@@ -35,10 +36,14 @@ import org.infobip.mobile.messaging.MobileMessaging;
 import org.infobip.mobile.messaging.MobileMessagingProperty;
 import org.infobip.mobile.messaging.SuccessPending;
 import org.infobip.mobile.messaging.User;
+import org.infobip.mobile.messaging.api.chat.WidgetAttachmentConfig;
+import org.infobip.mobile.messaging.api.chat.WidgetInfo;
 import org.infobip.mobile.messaging.chat.InAppChat;
 import org.infobip.mobile.messaging.chat.core.InAppChatEvent;
+import org.infobip.mobile.messaging.chat.core.InAppChatException;
 import org.infobip.mobile.messaging.chat.core.MultithreadStrategy;
 import org.infobip.mobile.messaging.chat.core.widget.LivechatWidgetLanguage;
+import org.infobip.mobile.messaging.chat.view.InAppChatErrorsHandler;
 import org.infobip.mobile.messaging.inbox.Inbox;
 import org.infobip.mobile.messaging.inbox.InboxMapper;
 import org.infobip.mobile.messaging.inbox.MobileInbox;
@@ -258,6 +263,9 @@ public class InfobipMobilemessagingPlugin implements FlutterPlugin, MethodCallHa
                 break;
             case "setUserDataJwt":
                 setUserDataJwt(call, result);
+                break;
+            case "setChatExceptionHandler":
+                setChatExceptionHandler(call, result);
                 break;
             default:
                 result.notImplemented();
@@ -1092,6 +1100,39 @@ public class InfobipMobilemessagingPlugin implements FlutterPlugin, MethodCallHa
             return;
         }
         InAppChat.getInstance(activity.getApplication()).setWidgetTheme(widgetTheme);
+    }
+
+    private void setChatExceptionHandler(MethodCall call, MethodChannel.Result result) {
+        boolean isHandlerPresent = (Boolean) call.arguments;
+        if (isHandlerPresent) {
+            InAppChatErrorsHandler errorsHandler = new InAppChatErrorsHandler() {
+                @Override
+                public void handlerError(@NonNull String error) {
+                    //Deprecated method
+                }
+
+                @Override
+                public void handlerWidgetError(@NonNull String error) {
+                    //Deprecated method
+                }
+
+                @Override
+                public void handlerNoInternetConnectionError(boolean hasConnection) {
+                    //Deprecated method
+                }
+
+                @Override
+                public boolean handleError(@NonNull InAppChatException exception) {
+                    broadcastHandler.sendEvent(EVENT_INAPPCHAT_EXCEPTION_RECEIVED, exception.toJSON(), false);
+                    return true;
+                }
+            };
+            InAppChat.getInstance(activity.getApplication()).inAppChatScreen().setErrorHandler(errorsHandler);
+        }
+        else {
+            InAppChat.getInstance(activity.getApplication()).inAppChatScreen().setErrorHandler(null);
+        }
+        result.success(null);
     }
     //endregion
 

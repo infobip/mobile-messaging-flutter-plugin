@@ -6,6 +6,7 @@ import 'dart:io';
 
 import 'package:flutter/services.dart';
 
+import 'models/chat/chat_exception.dart';
 import 'models/configurations/configuration.dart';
 import 'models/data/installation.dart';
 import 'models/data/message.dart';
@@ -62,6 +63,7 @@ class InfobipMobilemessaging {
   static MessageStorage? _defaultMessageStorage;
 
   static StreamSubscription? _chatJwtRequestsSubscription;
+  static StreamSubscription? _chatExceptionHandlerSubscription;
 
   /// Subscribes to [LibraryEvent] to perform provided callback function.
   static void on(String eventName, Function callback) async {
@@ -293,6 +295,51 @@ class InfobipMobilemessaging {
     );
 
     await _channel.invokeMethod('setChatJwtProvider');
+  }
+
+  /// Sets the chat exception handler in case you want to intercept and
+  /// display the errors coming from the chat on your own (instead of relying on the prebuild error banners).
+  ///
+  /// The `exceptionHandler` is a function that receives the exception. Passing `null` will remove the previously set handler.
+  /// ```dart
+  /// await InfobipMobilemessaging.setChatExceptionHandler((ChatException exception) async (
+  ///   print('Chat exception: $exception');
+  /// }, (error) {
+  ///   print('setChatExceptionHandler() error $error');
+  /// });
+  /// ```
+  ///
+  /// @param exceptionHandler A function that receives an ChatException when
+  /// it happens. Passing `null` will remove the previously set handler.
+  /// @param onError Optional error handler for catching exceptions thrown when listening for exceptions.
+  static Future<void> setChatExceptionHandler(
+    Future<void> Function(ChatException exception)? exceptionHandler, [
+    void Function(Object error)? onError,
+  ]) async {
+    if (exceptionHandler != null) {
+      handleError(dynamic error) {
+        onError?.call(error);
+      }
+
+      _chatExceptionHandlerSubscription?.cancel();
+      _chatExceptionHandlerSubscription = _libraryEvent.receiveBroadcastStream().listen(
+        (dynamic event) {
+          try {
+            LibraryEvent libraryEvent = LibraryEvent.fromJson(jsonDecode(event));
+            if (libraryEvent.eventName == 'inAppChat.internal.exceptionReceived') {
+              exceptionHandler(ChatException.fromJson(libraryEvent.payload));
+            }
+          } catch (error) {
+            handleError(error);
+          }
+        },
+        onError: (dynamic error) {
+          handleError(error);
+        },
+        cancelOnError: false,
+      );
+    }
+    await _channel.invokeMethod('setChatExceptionHandler', exceptionHandler != null);
   }
 
   /// Default local message storage.

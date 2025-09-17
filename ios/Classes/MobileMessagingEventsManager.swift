@@ -131,9 +131,9 @@ class MobileMessagingEventsManager: NSObject, FlutterStreamHandler {
     }
     
     // Used by chat for native to flutter async communication
-    func propagate(_ eventName: String) {
+    func propagate(_ eventName: String, _ payload: [String: Any]? = nil) {
         do {
-            _eventSink?(String(data: try JSONSerialization.data(withJSONObject: ["eventName": eventName, "payload": ""]), encoding: String.Encoding.utf8))
+            _eventSink?(String(data: try JSONSerialization.data(withJSONObject: ["eventName": eventName, "payload": payload ?? ""]), encoding: String.Encoding.utf8))
         } catch {
             MMLogDebug("Failed to propagate event\(eventName)")
         }

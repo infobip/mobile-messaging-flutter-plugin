@@ -8,6 +8,8 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
+import '../library_event.dart';
+import 'chat_exception.dart';
 import 'chat_view_attachment.dart';
 import 'chat_view_event.dart';
 import 'widget_info.dart';
@@ -98,13 +100,15 @@ class ChatViewController {
       onError: (dynamic error) {
         log('[ChatViewController] Received error: ${error.message}');
       },
-      cancelOnError: true,
+      cancelOnError: false,
     );
   }
 
   final MethodChannel _channel;
   final EventChannel _chatEvent;
   StreamSubscription<dynamic>? _eventsSubscription;
+  static StreamSubscription? _chatExceptionHandlerSubscription;
+
   final Map<String, List<Function>?> _callbacks = HashMap();
 
   /// Navigates chat from [THREAD] back to [THREAD_LIST] destination in multithread chat.
@@ -203,6 +207,54 @@ class ChatViewController {
       _callbacks.removeWhere((key, value) => key == eventName);
     }
     _eventsSubscription?.resume();
+  }
+  
+  /// Sets the chat exception handler in case you want to intercept and
+  /// display the errors coming from the chat on your own (instead of relying on the prebuild error banners).
+  ///
+  /// The `exceptionHandler` is a function that receives the exception. Passing `null` will remove the previously set handler.
+  /// ```dart
+  /// await _chatViewController?.setExceptionHandler((ChatException exception) async (
+  ///   print('Chat exception: $exception');
+  /// }, (error) {
+  ///   print('setExceptionHandler() error $error');
+  /// });
+  /// ```
+  ///
+  /// @param exceptionHandler A function that receives an ChatException when
+  /// it happens. Passing `null` will remove the previously set handler.
+  /// @param onError Optional error handler for catching exceptions thrown when listening for exceptions.
+  Future<void> setExceptionHandler(
+    Future<void> Function(ChatException exception)? exceptionHandler, [
+    void Function(Object error)? onError,
+  ]) async {
+    if (exceptionHandler != null) {
+      handleError(dynamic error) {
+        onError?.call(error);
+      }
+      try {
+        await _chatExceptionHandlerSubscription?.cancel();
+      } catch (e) {
+        //Not needed to handle
+      }
+      _chatExceptionHandlerSubscription = _chatEvent.receiveBroadcastStream().listen(
+        (dynamic event) {
+          try {
+            LibraryEvent libraryEvent = LibraryEvent.fromJson(jsonDecode(event));
+            if (libraryEvent.eventName == 'inAppChat.internal.exceptionReceived') {
+              exceptionHandler(ChatException.fromJson(libraryEvent.payload));
+            }
+          } catch (error) {
+            handleError(error);
+          }
+        },
+        onError: (dynamic error) {
+          handleError(error);
+        },
+        cancelOnError: false,
+      );
+    }
+    await _channel.invokeMethod('setExceptionHandler', exceptionHandler != null);
   }
 }
 
