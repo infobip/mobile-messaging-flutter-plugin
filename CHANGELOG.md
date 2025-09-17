@@ -1,3 +1,10 @@
+# 8.8.0
+## SDK Versions
+- Android 14.3.0 -> 14.6.0
+- iOS 13.12.0
+
+## Added
+- Option to handle in-app chat exceptions on your own.
 # 8.7.0
 ## SDK Versions
 - Android 14.3.0
