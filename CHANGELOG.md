@@ -1,3 +1,10 @@
+# 8.8.1
+## SDK Versions
+- Android 14.6.0
+- iOS 13.12.0
+ 
+## Fixed
+- Minor bug for UserData
 # 8.8.0
 ## SDK Versions
 - Android 14.3.0 -> 14.6.0
