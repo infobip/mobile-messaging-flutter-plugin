@@ -26,13 +26,14 @@ class _CloudInboxScreenState extends State<CloudInboxScreen> {
   void initState() {
     super.initState();
     InfobipMobilemessaging.on(
-        'depersonalized',
-        () => {
-              setState(() {
-                _inbox = Inbox();
-                _isInboxLoaded = false;
-              }),
-            });
+      'depersonalized',
+      () => {
+        setState(() {
+          _inbox = Inbox();
+          _isInboxLoaded = false;
+        }),
+      },
+    );
     _getMobileMessagingUser();
   }
 

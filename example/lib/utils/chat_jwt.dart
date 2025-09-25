@@ -1,6 +1,9 @@
 import 'dart:convert';
+import 'dart:developer';
+
 import 'package:crypto/crypto.dart';
 import 'package:uuid/uuid.dart';
+
 import '../screens/chat/screen_chat_authentication.dart';
 
 String base64UrlEncodeNoPadding(List<int> bytes) => base64Url.encode(bytes).replaceAll('=', '');
@@ -48,7 +51,7 @@ Future<String> generateChatJWT({
 
     return '$signingInput.$encodedSignature';
   } catch (e) {
-    print('Flutter app: Chat JWT generation failed: $e');
+    log('Flutter app: Chat JWT generation failed: $e');
     rethrow;
   }
 }

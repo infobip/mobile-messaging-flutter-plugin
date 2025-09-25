@@ -93,6 +93,7 @@ class _ChatViewScreenState extends State<ChatViewScreen> {
     );
   }
 
+  //ignore: unused_element
   void _setCustomErrorHandler() {
     log('Flutter app: Setting custom chat view exception handler');
     _chatViewController?.setExceptionHandler((exception) async {

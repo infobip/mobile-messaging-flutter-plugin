@@ -8,11 +8,13 @@ import '../../utils/chat_jwt.dart';
 /// Live Chat widget ID.
 /// Widget ID is used for generating JWT to be able use Chat as authenticated customer.
 /// You can get your widget ID in widget configuration page.
+// ignore: constant_identifier_names
 const LIVECHAT_WIDGET_ID = 'YOUR_LIVECHAT_WIDGET_ID';
 
 /// Widget secret key in JSON form.
 /// Secret key is used for generating JWT to be able use Chat as authenticated customer.
 /// You can generate new secret key following a guide https://www.infobip.com/docs/live-chat/user-types#enable-authenticated-customers.
+// ignore: constant_identifier_names
 const LIVECHAT_SECRET_KEY_JSON = 'YOUR_LIVECHAT_SECRET_KEY_JSON';
 
 enum SubjectType {

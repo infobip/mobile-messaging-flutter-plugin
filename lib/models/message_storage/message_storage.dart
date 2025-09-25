@@ -9,8 +9,8 @@ abstract class MessageStorage {
   Future<List<Message>?> findAll();
 
   /// Deletes message with given messageId.
-  delete(String messageId);
+  Future<void> delete(String messageId);
 
   /// Deletes all messages.
-  deleteAll();
+  Future<void> deleteAll();
 }

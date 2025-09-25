@@ -23,7 +23,7 @@ class UserIdentity {
         'phones': phones,
         'emails': emails,
         'externalUserId': externalUserId,
-      };
+      }..removeWhere((dynamic key, dynamic value) => value == null);
 }
 
 /// [PersonalizeContext] class for personalization with parameters.

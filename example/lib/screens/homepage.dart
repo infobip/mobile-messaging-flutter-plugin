@@ -185,7 +185,7 @@ class _HomePageState extends State<HomePage> {
   }
 
   void _onSaveUser() async {
-    var currentUser = await InfobipMobilemessaging.getUser();
+    var currentUser = await InfobipMobilemessaging.fetchUser();
 
     currentUser.middleName ??= 'Justin';
     // currentUser.phones ??= ['38516419710'];

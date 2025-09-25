@@ -132,7 +132,7 @@ class UserData {
       'middleName': middleName,
       'gender': gender?.name,
       'birthday': birthday,
-      'type': type,
+      'type': type?.name,
       'phones': phones,
       'emails': emails,
       'tags': tags,

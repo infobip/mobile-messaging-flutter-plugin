@@ -136,6 +136,7 @@ class InfobipMobilemessaging {
   static Future<void> personalize(PersonalizeContext context) async =>
       await _channel.invokeMethod('personalize', jsonEncode(context.toJson()));
 
+  /// Depersonalize current installation for Person profile on the server.
   /// Asynchronously erases currently stored `User` on SDK and server associated
   /// with push registration, along with messages in SDK storage (also, deletes
   /// data for chat module).
@@ -150,7 +151,7 @@ class InfobipMobilemessaging {
   /// new Application Code in order to use library again.
   static Future<void> cleanup() async => await _channel.invokeMethod('cleanup');
 
-  /// Asynchronously depersonalizes given `pushRegistrationId` from user.
+  /// Asynchronously depersonalizes given `pushRegistrationId` from Person profile on the server.
   static Future<void> depersonalizeInstallation(
     String pushRegistrationId,
   ) async =>
@@ -219,7 +220,8 @@ class InfobipMobilemessaging {
   static Future<void> setLanguage(String language) async => await _channel.invokeMethod('setLanguage', language);
 
   /// Sets the theme of the Livechat widget.
-  static setWidgetTheme(String widgetTheme) async => await _channel.invokeMethod('setWidgetTheme', widgetTheme);
+  static Future<void> setWidgetTheme(String widgetTheme) async =>
+      await _channel.invokeMethod('setWidgetTheme', widgetTheme);
 
   /// Sends contextual data of the Livechat Widget.
   @Deprecated('Should use sendContextualDataWithStrategy')
