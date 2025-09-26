@@ -1,3 +1,10 @@
+# 8.8.2
+## SDK Versions
+- Android 14.6.0
+- iOS 13.12.0 -> 13.12.4
+ 
+## Changed
+- Minor improvements and optimizations
 # 8.8.1
 ## SDK Versions
 - Android 14.6.0
