@@ -1,9 +1,9 @@
 //
 //  FLChatView.swift
-//  infobip_mobilemessaging
+//  MobileMessagingFlutter
 //
-//  Created by Maksym Svitlovskyi on 16/07/2024.
-//  Copyright © 2024 Infobip Ltd. All rights reserved.
+//  Copyright (c) 2016-2025 Infobip Limited
+//  Licensed under the Apache License, Version 2.0
 //
 
 import UIKit

@@ -1,3 +1,11 @@
+//
+//  chat_view_event.dart
+//  MobileMessagingFlutter
+//
+//  Copyright (c) 2016-2025 Infobip Limited
+//  Licensed under the Apache License, Version 2.0
+//
+
 /// ChatView events you can observer and react to.
 /// To listen to event you need to register:
 /// ```dart

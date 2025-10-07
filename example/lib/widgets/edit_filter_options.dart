@@ -1,3 +1,11 @@
+//
+//  edit_filter_options.dart
+//  MobileMessagingFlutter
+//
+//  Copyright (c) 2016-2025 Infobip Limited
+//  Licensed under the Apache License, Version 2.0
+//
+
 import 'package:flutter/material.dart';
 import 'package:infobip_mobilemessaging/models/inbox/filter_options.dart';
 import 'package:intl/intl.dart';

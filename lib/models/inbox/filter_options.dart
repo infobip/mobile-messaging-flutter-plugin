@@ -1,3 +1,11 @@
+//
+//  filter_options.dart
+//  MobileMessagingFlutter
+//
+//  Copyright (c) 2016-2025 Infobip Limited
+//  Licensed under the Apache License, Version 2.0
+//
+
 /// [FilterOptions] for [Inbox].
 /// Has [topic] - name of [Inbox] topic, will show all messages from all topics
 /// if not provided. [limit] - number of messages to show, [fromDateTime] and [toDateTime].

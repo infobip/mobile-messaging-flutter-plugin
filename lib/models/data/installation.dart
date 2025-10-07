@@ -1,3 +1,11 @@
+//
+//  installation.dart
+//  MobileMessagingFlutter
+//
+//  Copyright (c) 2016-2025 Infobip Limited
+//  Licensed under the Apache License, Version 2.0
+//
+
 import 'package:collection/collection.dart';
 
 /// Enum with values for OS. Possible values: Android, iOS.

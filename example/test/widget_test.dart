@@ -1,10 +1,18 @@
-// This is a basic Flutter widget test.
 //
-// To perform an interaction with a widget in your test, use the WidgetTester
-// utility that Flutter provides. For example, you can send tap and scroll
-// gestures. You can also use WidgetTester to find child widgets in the widget
-// tree, read text, and verify that the values of widget properties are correct.
+//  widget_test.dart
+//  MobileMessagingFlutter
+//
+//  Copyright (c) 2016-2025 Infobip Limited
+//  Licensed under the Apache License, Version 2.0
+//
 
+///
+/// This is a basic Flutter widget test.
+///
+/// To perform an interaction with a widget in your test, use the WidgetTester
+/// utility that Flutter provides. For example, you can send tap and scroll
+/// gestures. You can also use WidgetTester to find child widgets in the widget
+/// tree, read text, and verify that the values of widget properties are correct.
 import 'dart:developer';
 
 import 'package:flutter/material.dart';

@@ -1,3 +1,11 @@
+//
+//  infobip_mobilemessaging_test.dart
+//  MobileMessagingFlutter
+//
+//  Copyright (c) 2016-2025 Infobip Limited
+//  Licensed under the Apache License, Version 2.0
+//
+
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:infobip_mobilemessaging/infobip_mobilemessaging.dart';

@@ -7,7 +7,9 @@
 build/
 
 .metadata
-.idea
+.idea/*
+!.idea/copyright/
+!.idea/copyright/**
 *.iml
 
 pubspec.lock

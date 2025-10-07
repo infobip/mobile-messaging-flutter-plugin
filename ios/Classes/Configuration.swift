@@ -1,8 +1,9 @@
 //
-//  Configuration .swift
-//  infobip_mobilemessaging_flutter_plugin
+//  Configuration.swift
+//  MobileMessagingFlutter
 //
-//  Created by Konstantin Latypov on 28.06.2021.
+//  Copyright (c) 2016-2025 Infobip Limited
+//  Licensed under the Apache License, Version 2.0
 //
 
 import Foundation
