@@ -14,12 +14,26 @@ rootProject.allprojects {
     }
 }
 
+ext {
+    mm_version = "14.6.2"
+    mm_minSdkVersion = 23
+    mm_compileSdkVersion = 36
+    mm_kotlinVersion = "2.1.21"
+    mm_gradlePluginVersion = "8.11.1"
+    mm_coreKtxVersion = "1.17.0"
+    mm_exifinterfaceVersion = "1.3.6"
+    mm_viewbindingVersion = "8.0.2"
+    mm_gsonVersion = "2.13.1"
+    mm_materialVersion = "1.12.0"
+    mm_multidexVersion = "2.0.1"
+}
+
 android {
-    compileSdkVersion 35
+    compileSdkVersion mm_compileSdkVersion
     namespace 'org.infobip.plugins.mobilemessaging.flutter.infobip_mobilemessaging'
 
     defaultConfig {
-        minSdkVersion 21
+        minSdkVersion mm_minSdkVersion
     }
 
     buildTypes {
@@ -31,23 +45,22 @@ android {
 }
 
 dependencies {
-    def mmVersion = '14.6.0'
-    implementation ("com.infobip:infobip-mobile-messaging-android-sdk:$mmVersion@aar") {
+    implementation("com.infobip:infobip-mobile-messaging-android-sdk:$mm_version@aar") {
         transitive = true
     }
-    implementation "com.infobip:infobip-mobile-messaging-android-resources:$mmVersion@aar"
-    implementation "com.infobip:infobip-mobile-messaging-android-chat-sdk:$mmVersion@aar"
-    implementation "com.infobip:infobip-mobile-messaging-android-inbox-sdk:$mmVersion@aar"
+    implementation "com.infobip:infobip-mobile-messaging-android-resources:$mm_version@aar"
+    implementation "com.infobip:infobip-mobile-messaging-android-chat-sdk:$mm_version@aar"
+    implementation "com.infobip:infobip-mobile-messaging-android-inbox-sdk:$mm_version@aar"
     if (withWebRTCUI.toBoolean()) {
-        implementation implementation("com.infobip:infobip-rtc-ui:$mmVersion") {
+        implementation implementation("com.infobip:infobip-rtc-ui:$mm_version") {
             transitive = true
         }
     }
-    implementation 'androidx.core:core:1.10.1'
-    implementation 'androidx.exifinterface:exifinterface:1.3.6'
-    implementation 'androidx.databinding:viewbinding:8.0.2'
-    implementation 'com.google.code.gson:gson:2.9.0'
-    implementation 'com.google.android.material:material:1.12.0'
+    implementation "androidx.core:core:$mm_coreKtxVersion"
+    implementation "androidx.exifinterface:exifinterface:$mm_exifinterfaceVersion"
+    implementation "androidx.databinding:viewbinding:$mm_viewbindingVersion"
+    implementation "com.google.code.gson:gson:$mm_gsonVersion"
+    implementation "com.google.android.material:material:$mm_materialVersion"
 
 }
 

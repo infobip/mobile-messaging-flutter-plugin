@@ -7,6 +7,7 @@
 //
 
 import 'package:collection/collection.dart';
+import '../../infobip_mobilemessaging.dart';
 
 /// Enum with values for OS. Possible values: Android, iOS.
 // ignore: constant_identifier_names, public_member_api_docs
@@ -73,7 +74,8 @@ class Installation {
   /// Installation-level custom attributes.
   Map<String, dynamic>? customAttributes;
 
-  /// Default constructor with all params.
+  /// Default constructor with all params. Use [InfobipMobilemessaging.fetchInstallation] or
+  /// [InfobipMobilemessaging.getInstallation] to get [Installation].
   Installation({
     this.pushRegistrationId,
     this.pushServiceType,

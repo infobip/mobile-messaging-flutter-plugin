@@ -24,15 +24,20 @@ if (flutterVersionName == null) {
     flutterVersionName = '1.0'
 }
 
+ext {
+    mm_example_minSdkVersion = 23
+    mm_example_compileSdkVersion = 36
+}
+
 android {
-    compileSdkVersion 35
+    compileSdkVersion mm_example_compileSdkVersion
     namespace = "org.infobip.plugins.mobilemessaging.flutter.infobip_mobilemessaging_example"
 
     defaultConfig {
         // TODO: Specify your own unique Application ID (https://developer.android.com/studio/build/application-id.html).
         applicationId "org.infobip.plugins.mobilemessaging.flutter.infobip_mobilemessaging_example"
-        minSdkVersion 21
-        targetSdkVersion 35
+        minSdkVersion mm_example_minSdkVersion
+        targetSdkVersion mm_example_compileSdkVersion
         versionCode flutterVersionCode.toInteger()
         versionName flutterVersionName
         multiDexEnabled true

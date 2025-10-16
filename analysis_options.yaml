@@ -33,6 +33,7 @@ linter:
     prefer_relative_imports: true
     prefer_single_quotes: true
     require_trailing_commas: true
+    strict_top_level_inference: true
 
 # Additional information about this file can be found at
 # https://dart.dev/guides/language/analysis-options

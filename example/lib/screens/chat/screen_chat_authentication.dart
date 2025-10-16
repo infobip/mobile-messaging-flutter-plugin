@@ -11,6 +11,7 @@ import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:infobip_mobilemessaging/infobip_mobilemessaging.dart';
 import 'package:infobip_mobilemessaging/models/data/personalize_context.dart';
+
 import '../../utils/chat_jwt.dart';
 
 /// Live Chat widget ID.
@@ -95,26 +96,26 @@ class PersonalizationFormData {
         break;
     }
 
-    Map<String, dynamic>? userAttributes = {};
+    UserAttributes userAttributes = UserAttributes();
     if (firstName.trim().isNotEmpty) {
-      userAttributes['firstName'] = firstName.trim();
+      userAttributes.firstName = firstName.trim();
     }
     if (lastName.trim().isNotEmpty) {
-      userAttributes['lastName'] = lastName.trim();
+      userAttributes.lastName = lastName.trim();
     }
 
-    if (userAttributes.isEmpty) {
+    if (userAttributes.firstName == null && userAttributes.lastName == null) {
       log('PersonalizationFormData.toPersonalizeContext: no user attributes provided, returning null');
       return null;
     }
 
     PersonalizeContext context = PersonalizeContext(
       userIdentity: userIdentity,
-      userAttributes: userAttributes.isNotEmpty ? userAttributes : null,
+      userAttributes: userAttributes,
       forceDepersonalize: forceDepersonalization,
       keepAsLead: keepAsLead,
     );
-    log('PersonalizationFormData.toPersonalizeContext: created ''PersonalizeContext from $this');
+    log('PersonalizationFormData.toPersonalizeContext: created PersonalizeContext from $this');
     return context;
   }
 
@@ -129,8 +130,7 @@ class PersonalizationFormData {
       };
 
   // Create from JSON (e.g. if loading saved data)
-  factory PersonalizationFormData.fromJson(Map<String, dynamic> json) =>
-      PersonalizationFormData(
+  factory PersonalizationFormData.fromJson(Map<String, dynamic> json) => PersonalizationFormData(
         firstName: json['firstName'] ?? '',
         lastName: json['lastName'] ?? '',
         subjectType: SubjectType.values.firstWhere(
@@ -163,13 +163,13 @@ class _ChatAuthenticationScreenState extends State<ChatAuthenticationScreen> {
   bool _forceDepersonalization = true;
 
   PersonalizationFormData createFormData() => PersonalizationFormData(
-      firstName: _firstNameController.text,
-      lastName: _lastNameController.text,
-      subjectType: _selectedSubjectType,
-      subject: _subjectController.text,
-      keepAsLead: _keepAsLead,
-      forceDepersonalization: _forceDepersonalization,
-    );
+        firstName: _firstNameController.text,
+        lastName: _lastNameController.text,
+        subjectType: _selectedSubjectType,
+        subject: _subjectController.text,
+        keepAsLead: _keepAsLead,
+        forceDepersonalization: _forceDepersonalization,
+      );
 
   Future<void> personalize({
     required PersonalizationFormData formData,
@@ -190,8 +190,7 @@ class _ChatAuthenticationScreenState extends State<ChatAuthenticationScreen> {
       return;
     }
 
-    PersonalizeContext? personalizationContext =
-        formData.toPersonalizeContext();
+    PersonalizeContext? personalizationContext = formData.toPersonalizeContext();
     if (personalizationContext == null) {
       handleError('PersonalizationContext is null, cannot proceed with personalization');
       return;
@@ -333,12 +332,16 @@ class _ChatAuthenticationScreenState extends State<ChatAuthenticationScreen> {
                         formData: createFormData(),
                         onSuccess: () {
                           ScaffoldMessenger.of(context).showSnackBar(
-                            const SnackBar(content: Text('Personalization successful'),),
+                            const SnackBar(
+                              content: Text('Personalization successful'),
+                            ),
                           );
                         },
                         onError: (String message) {
                           ScaffoldMessenger.of(context).showSnackBar(
-                            SnackBar(content: Text('Personalization error: $message'),),
+                            SnackBar(
+                              content: Text('Personalization error: $message'),
+                            ),
                           );
                         },
                       );
@@ -352,13 +355,19 @@ class _ChatAuthenticationScreenState extends State<ChatAuthenticationScreen> {
                   child: ElevatedButton(
                     onPressed: () {
                       authenticate(
-                          formData: createFormData(),
-                          onSuccess: () {
-                            ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Authentication successful'),),);
-                          },
-                          onError: (String message) {
-                            ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Authentication error: $message')),);
-                          },
+                        formData: createFormData(),
+                        onSuccess: () {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            const SnackBar(
+                              content: Text('Authentication successful'),
+                            ),
+                          );
+                        },
+                        onError: (String message) {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(content: Text('Authentication error: $message')),
+                          );
+                        },
                       );
                     },
                     child: const Text('Authenticate'),

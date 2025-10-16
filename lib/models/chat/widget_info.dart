@@ -20,7 +20,6 @@ class WidgetInfo {
   final List<String>? themeNames;
   final WidgetAttachmentConfig? attachmentConfig;
 
-
   WidgetInfo({
     this.id,
     this.title,
@@ -44,9 +43,8 @@ class WidgetInfo {
         multiChannelConversationEnabled = json['multiChannelConversationEnabled'],
         callsEnabled = json['callsEnabled'],
         themeNames = json['themeNames'].cast<String>(),
-        attachmentConfig = json['attachmentConfig'] != null
-            ? WidgetAttachmentConfig.fromJson(json['attachmentConfig'])
-            : null;
+        attachmentConfig =
+            json['attachmentConfig'] != null ? WidgetAttachmentConfig.fromJson(json['attachmentConfig']) : null;
 
   @override
   bool operator ==(Object other) =>
@@ -78,16 +76,15 @@ class WidgetInfo {
 
   @override
   String toString() => 'WidgetInfo('
-        'id: $id, '
-        'title: $title, '
-        'primaryColor: $primaryColor, '
-        'backgroundColor: $backgroundColor, '
-        'primaryTextColor: $primaryTextColor, '
-        'multiThread: $multiThread, '
-        'multiChannelConversationEnabled: $multiChannelConversationEnabled, '
-        'callsEnabled: $callsEnabled, '
-        'themeNames: $themeNames, '
-        'attachmentConfig: $attachmentConfig'
-        ')';
-
+      'id: $id, '
+      'title: $title, '
+      'primaryColor: $primaryColor, '
+      'backgroundColor: $backgroundColor, '
+      'primaryTextColor: $primaryTextColor, '
+      'multiThread: $multiThread, '
+      'multiChannelConversationEnabled: $multiChannelConversationEnabled, '
+      'callsEnabled: $callsEnabled, '
+      'themeNames: $themeNames, '
+      'attachmentConfig: $attachmentConfig'
+      ')';
 }

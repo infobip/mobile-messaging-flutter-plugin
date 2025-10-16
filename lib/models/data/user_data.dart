@@ -10,6 +10,7 @@
 
 import 'package:collection/collection.dart';
 import 'package:flutter/foundation.dart';
+import '../../infobip_mobilemessaging.dart';
 
 import 'installation.dart';
 
@@ -38,11 +39,11 @@ class UserData {
   /// [Gender] of the user.
   Gender? gender;
 
-  /// Birthday, accepted format is YYYY-MM-DD.
+  /// Birthday, accepted format is `YYYY-MM-DD`.
   String? birthday;
 
   /// [Type] of the person. Lead is a not verified profile, Customer is a verified one (acquired by personalization).
-  Type? type;
+  final Type? type;
 
   /// List of phones of the user, Strings in [E.164 format](https://en.wikipedia.org/wiki/E.164), i.e. `38516419710`.
   List<String>? phones;
@@ -57,9 +58,9 @@ class UserData {
   Map<String, dynamic>? customAttributes;
 
   /// List of [Installation]s, assigned to the current user.
-  List<Installation>? installations;
+  final List<Installation>? installations;
 
-  /// Default constructor with all params.
+  /// Default constructor with all params. Use [InfobipMobilemessaging.fetchUser] to fetch [UserData] from the server.
   UserData({
     this.externalUserId,
     this.firstName,
@@ -67,6 +68,7 @@ class UserData {
     this.middleName,
     this.gender,
     this.birthday,
+    this.type,
     this.phones,
     this.emails,
     this.tags,

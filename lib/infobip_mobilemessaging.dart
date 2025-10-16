@@ -113,14 +113,14 @@ class InfobipMobilemessaging {
     await _channel.invokeMethod('init', jsonEncode(configuration.toJson()));
   }
 
-  /// Saves [UserData] to server.
+  /// Saves [UserData] to server. Recommended to work with data acquired by [fetchUser].
   static Future<void> saveUser(UserData userData) async =>
       await _channel.invokeMethod('saveUser', jsonEncode(userData.toJson()));
 
   /// Asynchronously fetches [UserData] from server.
   static Future<UserData> fetchUser() async => UserData.fromJson(jsonDecode(await _channel.invokeMethod('fetchUser')));
 
-  /// Asynchronously gets [UserData] from local data.
+  /// Asynchronously gets [UserData] from local data. May return non-actual data, recommended to use [fetchUser].
   static Future<UserData> getUser() async => UserData.fromJson(jsonDecode(await _channel.invokeMethod('getUser')));
 
   /// Asynchronously saves [Installation] data to server.
@@ -134,7 +134,7 @@ class InfobipMobilemessaging {
         jsonDecode(await _channel.invokeMethod('fetchInstallation')),
       );
 
-  /// Asynchronously gets [Installation] data from local data.
+  /// Asynchronously gets [Installation] data from local data: pushRegistrationId, cloud token.
   static Future<Installation> getInstallation() async => Installation.fromJson(
         jsonDecode(await _channel.invokeMethod('getInstallation')),
       );

@@ -7,7 +7,7 @@ The document describes plugin integration steps for your Flutter project.
 * [Quick start guide](#quick-start-guide)
 
 ## Requirements
-- Flutter 3.3.0+
+- Flutter 3.16.0+
 
 For iOS project:
 - Xcode 16.x
@@ -15,7 +15,7 @@ For iOS project:
 
 For Android project:
 - Android Studio
-- Supported API Levels: 21 (Android 5.0 - Lollipop) - 35 (Android 15)
+- Supported API Levels: 23 (Android 6.0 - Marshmallow) - 36 (Android 16)
 
 ## Quick start guide
 
@@ -33,7 +33,7 @@ $ pub get infobip_mobilemessaging
 
   ```yaml
   dependencies:
-    infobip_mobilemessaging: '^7.2.2'
+    infobip_mobilemessaging: '^9.0.0'
 
   ```
 
@@ -92,7 +92,7 @@ $ pub get infobip_mobilemessaging
            dependencies {
                ...
               //Google Services gradle plugin
-              classpath 'com.google.gms:google-services:4.3.10'
+              classpath 'com.google.gms:google-services:4.4.1'
            }
         }
         ```

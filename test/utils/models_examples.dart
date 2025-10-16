@@ -118,10 +118,14 @@ UserIdentity get userIdentityModelExample => UserIdentity(
       externalUserId: '123456',
     );
 
-PersonalizeContext get personalizeContextModelExample => PersonalizeContext(
-      userIdentity: userIdentityModelExample,
-      forceDepersonalize: true,
-      userAttributes: {
+UserAttributes get userAttributesModelExample => UserAttributes(
+      firstName: 'Jon',
+      middleName: 'Cletus',
+      lastName: 'Snow',
+      gender: Gender.Male,
+      birthday: '1989-01-13',
+      tags: ['firstTag', 'secondTag'],
+      customAttributes: {
         'alList': [
           {
             'alDate': '2021-10-11',
@@ -129,9 +133,15 @@ PersonalizeContext get personalizeContextModelExample => PersonalizeContext(
             'alString': 'someAnotherString',
             'alBoolean': true,
             'alDecimal': 0.66,
-          }
+          },
         ],
       },
+    );
+
+PersonalizeContext get personalizeContextModelExample => PersonalizeContext(
+      userIdentity: userIdentityModelExample,
+      forceDepersonalize: true,
+      userAttributes: userAttributesModelExample,
       keepAsLead: false,
     );
 
@@ -141,7 +151,7 @@ UserData get userDataModelExample => UserData(
       lastName: 'Last',
       middleName: 'Middle',
       gender: Gender.Male,
-      birthday: '01-01-1999',
+      birthday: '1999-01-13',
       phones: [
         '38516419710',
       ],

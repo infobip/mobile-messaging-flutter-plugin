@@ -196,8 +196,6 @@ class _HomePageState extends State<HomePage> {
     var currentUser = await InfobipMobilemessaging.fetchUser();
 
     currentUser.middleName ??= 'Justin';
-    // currentUser.phones ??= ['38516419710'];
-    // currentUser.emails ??= ['some@email.com'];
 
     try {
       await InfobipMobilemessaging.saveUser(currentUser);
@@ -237,7 +235,6 @@ class _HomePageState extends State<HomePage> {
       _showDialog('fetched User Data', user.toJson().toString());
     } on PlatformException catch (e) {
       log('Error happened: code is ${e.code}, \nmessage: ${e.message}, \ndetails: ${e.details}');
-
     }
   }
 
@@ -342,10 +339,14 @@ class _HomePageState extends State<HomePage> {
               ),
             ListTile(
               title: const Text('Depersonalize Installation'),
-              onTap: () {
-                InfobipMobilemessaging.depersonalizeInstallation(
-                  'pushRegistrationId to depersonalize',
-                );
+              onTap: () async {
+                try {
+                  await InfobipMobilemessaging.depersonalizeInstallation('pushRegistrationId to depersonalize');
+                } on PlatformException catch (e) {
+                  log('MobileMessaging: code ${e.code}');
+                  log('MobileMessaging: message ${e.message}');
+                  log('MobileMessaging: details ${e.details}');
+                }
               },
             ),
             ListTile(

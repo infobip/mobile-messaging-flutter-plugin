@@ -448,7 +448,7 @@ public class SwiftInfobipMobilemessagingPlugin: NSObject, FlutterPlugin {
         MobileMessaging.depersonalizeInstallation(withPushRegistrationId: pushRegId, completion: { (installations, error) in
             if let error = error {
                 return result(
-                    FlutterError( code: error.mm_code ?? "0",
+                    FlutterError( code: error.mm_code ?? String(error.code),
                                   message: error.mm_message,
                                   details: error.description ))
             } else {

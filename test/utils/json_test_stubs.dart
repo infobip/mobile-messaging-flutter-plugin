@@ -126,9 +126,17 @@ Map<String, dynamic> get userIdentityExampleJson => {
       'externalUserId': '123456',
     };
 
-Map<String, dynamic> get personalizeContextExampleJson => {
-      'userIdentity': userIdentityExampleJson,
-      'userAttributes': {
+Map<String, dynamic> get userAttributesExampleJson => {
+      'firstName': 'Jon',
+      'middleName': 'Cletus',
+      'lastName': 'Snow',
+      'gender': 'Male',
+      'birthday': '1989-01-13',
+      'tags': [
+        'firstTag',
+        'secondTag',
+      ],
+      'customAttributes': {
         'alList': [
           {
             'alDate': '2021-10-11',
@@ -139,6 +147,11 @@ Map<String, dynamic> get personalizeContextExampleJson => {
           },
         ],
       },
+    };
+
+Map<String, dynamic> get personalizeContextExampleJson => {
+      'userIdentity': userIdentityExampleJson,
+      'userAttributes': userAttributesExampleJson,
       'forceDepersonalize': true,
       'keepAsLead': false,
     };
@@ -149,7 +162,7 @@ Map<String, dynamic> get userDataExampleJson => {
       'lastName': 'Last',
       'middleName': 'Middle',
       'gender': 'Male',
-      'birthday': '01-01-1999',
+      'birthday': '1999-01-13',
       'phones': [
         '38516419710',
       ],

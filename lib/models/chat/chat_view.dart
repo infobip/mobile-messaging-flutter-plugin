@@ -119,7 +119,7 @@ class ChatViewController {
 
   final Map<String, List<Function>?> _callbacks = HashMap();
 
-  /// Navigates chat from [THREAD] back to [THREAD_LIST] destination in multithread chat.
+  /// Navigates chat from `THREAD` back to `THREAD_LIST` destination in multithread chat.
   /// It does nothing if widget is not multithread.
   /// All multi-thread chat destinations:
   /// LOADING, THREAD_LIST, LOADING_THREAD, THREAD, CLOSED_THREAD, SINGLE_MODE_THREAD
@@ -150,11 +150,11 @@ class ChatViewController {
   }
 
   /// Set the theme of the Livechat Widget.
-  /// You can define widget themes in [https://portal.infobip.com/apps/livechat/widgets](Live chat widget setup page) in Infobip Portal, section `Advanced customization`.
-  /// Please check widget [https://www.infobip.com/docs/live-chat/widget-customization](documentation) for more details.
+  /// You can define widget themes in [Live chat widget setup page](https://portal.infobip.com/apps/livechat/widgets) in Infobip Portal, section `Advanced customization`.
+  /// Please check widget [documentation](https://www.infobip.com/docs/live-chat/widget-customization) for more details.
   ///
   /// Function allows to change widget theme while chat is shown - in runtime.
-  /// If you set widget theme before chat is initialized by [InAppChatView.init] the theme will be used once chat is loaded.
+  /// If you set widget theme before chat is initialized by `InAppChatView.init` the theme will be used once chat is loaded.
   ///
   /// Parameter [widgetTheme] unique theme name, empty or blank value is ignored.
   void setWidgetTheme(String widgetTheme) async {
@@ -216,7 +216,7 @@ class ChatViewController {
     }
     _eventsSubscription?.resume();
   }
-  
+
   /// Sets the chat exception handler in case you want to intercept and
   /// display the errors coming from the chat on your own (instead of relying on the prebuild error banners).
   ///
@@ -240,6 +240,7 @@ class ChatViewController {
       handleError(dynamic error) {
         onError?.call(error);
       }
+
       try {
         await _chatExceptionHandlerSubscription?.cancel();
       } catch (e) {

@@ -30,7 +30,7 @@ class FilterOptions {
     this.limit,
   });
 
-  /// Mapping [FilterOptions] to json. Formats fromDateTime and toDateTime for native to process.
+  /// Mapping [FilterOptions] to json. Formats [fromDateTime] and [toDateTime] for native to process.
   Map<String, dynamic> toJson() => {
         'fromDateTime': fromDateTime != null ? '${fromDateTime?.toIso8601String().substring(0, 19)}Z' : null,
         'toDateTime': toDateTime != null ? '${toDateTime?.toIso8601String().substring(0, 19)}Z' : null,

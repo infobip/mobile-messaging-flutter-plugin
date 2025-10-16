@@ -18,30 +18,26 @@ class WidgetAttachmentConfig {
   });
 
   factory WidgetAttachmentConfig.fromJson(Map<String, dynamic> json) => WidgetAttachmentConfig(
-      maxSize: json['maxSize'],
-      isEnabled: json['isEnabled'],
-      allowedExtensions: (json['allowedExtensions'] as List<dynamic>?)
-          ?.map((e) => e as String)
-          .toSet(),);
+        maxSize: json['maxSize'],
+        isEnabled: json['isEnabled'],
+        allowedExtensions: (json['allowedExtensions'] as List<dynamic>?)?.map((e) => e as String).toSet(),
+      );
 
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
-          other is WidgetAttachmentConfig &&
-              maxSize == other.maxSize &&
-              isEnabled == other.isEnabled &&
-              allowedExtensions == other.allowedExtensions;
+      other is WidgetAttachmentConfig &&
+          maxSize == other.maxSize &&
+          isEnabled == other.isEnabled &&
+          allowedExtensions == other.allowedExtensions;
 
   @override
-  int get hashCode =>
-      maxSize.hashCode ^
-      isEnabled.hashCode ^
-      allowedExtensions.hashCode;
+  int get hashCode => maxSize.hashCode ^ isEnabled.hashCode ^ allowedExtensions.hashCode;
 
   @override
   String toString() => 'WidgetAttachmentConfig('
-        'maxSize: $maxSize, '
-        'isEnabled: $isEnabled, '
-        'allowedExtensions: $allowedExtensions'
-        ')';
+      'maxSize: $maxSize, '
+      'isEnabled: $isEnabled, '
+      'allowedExtensions: $allowedExtensions'
+      ')';
 }
