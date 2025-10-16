@@ -1,3 +1,14 @@
+# 9.0.0
+## SDK Versions
+- Android 14.6.0 -> 14.6.2
+- iOS 13.12.4
+
+## Added
+- Android 16 support
+ 
+## Changed
+- Minimum version is Flutter 3.16.0 / Dart 3.2.0
+- Descriptions for UserData usage
 # 8.8.2
 ## SDK Versions
 - Android 14.6.0
