@@ -1,3 +1,10 @@
+# 9.1.0
+## SDK Versions
+-Android 14.6.0 -> 14.6.2
+-iOS 14.0.0
+
+ ## Changed
+- iOS minimum target increased to iOS 15
 # 9.0.0
 ## SDK Versions
 - Android 14.6.0 -> 14.6.2
