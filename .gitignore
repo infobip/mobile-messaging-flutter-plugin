@@ -14,3 +14,7 @@ build/
 *.iml
 
 pubspec.lock
+
+# Claude
+Claude.md
+./claude/*

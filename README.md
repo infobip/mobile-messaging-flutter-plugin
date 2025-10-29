@@ -11,7 +11,7 @@ The document describes plugin integration steps for your Flutter project.
 
 For iOS project:
 - Xcode 16.x
-- Minimum deployment target 13.0
+- Minimum deployment target 15.0
 
 For Android project:
 - Android Studio
