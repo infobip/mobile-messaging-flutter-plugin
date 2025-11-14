@@ -1,3 +1,13 @@
+# 9.1.1
+### SDK Versions
+  - Android: 14.6.2 → 14.7.4
+  - iOS: 14.0.0 → 14.0.1
+
+  ### Fixed
+  - Fixed in-app message display issues with certain CDN configurations in some regions
+
+  ### Changed
+  - Updated chat error handling to use new Android SDK exception model
 # 9.1.0
 ## SDK Versions
 -Android 14.6.0 -> 14.6.2
