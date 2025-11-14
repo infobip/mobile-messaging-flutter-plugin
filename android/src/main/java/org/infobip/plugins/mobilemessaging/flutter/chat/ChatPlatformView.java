@@ -270,21 +270,6 @@ public class ChatPlatformView implements PlatformView, MethodCallHandler {
     private InAppChatFragment.ErrorsHandler createErrorsHandler() {
         return new InAppChatFragment.ErrorsHandler() {
             @Override
-            public void handlerError(@NonNull String error) {
-                //Deprecated method
-            }
-
-            @Override
-            public void handlerWidgetError(@NonNull String error) {
-                //Deprecated method
-            }
-
-            @Override
-            public void handlerNoInternetConnectionError(boolean hasConnection) {
-                //Deprecated method
-            }
-
-            @Override
             public boolean handleError(@NonNull InAppChatException exception) {
                 eventHandler.sendEvent(ChatViewEvent.EVENT_CHAT_EXCEPTION_RECEIVED, exception.toJSON());
                 return true;
