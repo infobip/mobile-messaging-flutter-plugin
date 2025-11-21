@@ -1,3 +1,6 @@
+# 9.2.0
+## Changed
+- Swift version increased from 5.0 to 5.5 in iOS podspec.
 # 9.1.2
 ### SDK Versions
   - Android: 14.6.2 → 14.7.4
