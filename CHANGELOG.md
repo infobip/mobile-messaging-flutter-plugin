@@ -1,3 +1,9 @@
+# 9.2.1
+## SDK Versions
+- iOS: 14.0.1 → 14.1.0
+
+## Changed
+- Increase version for native iOS SDK. 
 # 9.2.0
 ## Changed
 - Swift version increased from 5.0 to 5.5 in iOS podspec.
