@@ -155,10 +155,10 @@ class CustomizationUtils {
             settings.advancedSettings.mainFont = font
         }
  
-        if let mainFontSize = settings.advancedSettings.charCountFont?.pointSize,
+        if let mainFontSize = settings.advancedSettings.charCounterFont?.pointSize,
            let newFontPath = customization.ios?.charCountFont,
            let font = getFont(with: newFontPath, with: registrar, size: mainFontSize) {
-            settings.advancedSettings.charCountFont = font
+            settings.advancedSettings.charCounterFont = font
         }
     }
 
