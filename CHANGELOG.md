@@ -1,3 +1,13 @@
+# 9.2.3
+## SDK Versions
+
+  - Android 14.7.4 → 14.7.9
+  - iOS 14.1.0 → 14.1.1
+
+##  Fixed
+
+  - Dynamic base url bug fix
+  - Inbox data mapping consistency improvements (Android)
 # 9.2.2
 ## SDK Versions
 - iOS: 14.0.1 → 14.1.0
