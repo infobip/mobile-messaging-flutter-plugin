@@ -6,6 +6,8 @@
 //  Licensed under the Apache License, Version 2.0
 //
 
+import 'package:collection/collection.dart';
+
 import 'inbox_message.dart';
 
 /// An [Inbox] class.
@@ -46,4 +48,18 @@ class Inbox {
       : countTotal = json['countTotal'],
         countUnread = json['countUnread'],
         messages = Inbox._resolveLists(json['messages']);
+
+  static const DeepCollectionEquality _deepCollectionEquality = DeepCollectionEquality();
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is Inbox &&
+          runtimeType == other.runtimeType &&
+          _deepCollectionEquality.equals(messages, other.messages) &&
+          countTotal == other.countTotal &&
+          countUnread == other.countUnread;
+
+  @override
+  int get hashCode => _deepCollectionEquality.hash(messages) ^ countTotal.hashCode ^ countUnread.hashCode;
 }

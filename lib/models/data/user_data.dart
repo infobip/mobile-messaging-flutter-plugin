@@ -9,9 +9,8 @@
 //
 
 import 'package:collection/collection.dart';
-import 'package:flutter/foundation.dart';
-import '../../infobip_mobilemessaging.dart';
 
+import '../../infobip_mobilemessaging.dart';
 import 'installation.dart';
 
 /// Gender of the User
@@ -152,6 +151,8 @@ class UserData {
     }..removeWhere((dynamic key, dynamic value) => value == null);
   }
 
+  static const DeepCollectionEquality _deepCollectionEquality = DeepCollectionEquality();
+
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
@@ -163,11 +164,11 @@ class UserData {
           middleName == other.middleName &&
           gender == other.gender &&
           birthday == other.birthday &&
-          listEquals(phones, other.phones) &&
-          listEquals(emails, other.emails) &&
-          listEquals(tags, other.tags) &&
-          const DeepCollectionEquality().equals(customAttributes, other.customAttributes) &&
-          const DeepCollectionEquality().equals(installations, other.installations);
+          _deepCollectionEquality.equals(phones, other.phones) &&
+          _deepCollectionEquality.equals(emails, other.emails) &&
+          _deepCollectionEquality.equals(tags, other.tags) &&
+          _deepCollectionEquality.equals(customAttributes, other.customAttributes) &&
+          _deepCollectionEquality.equals(installations, other.installations);
 
   @override
   int get hashCode =>
@@ -177,9 +178,9 @@ class UserData {
       middleName.hashCode ^
       gender.hashCode ^
       birthday.hashCode ^
-      phones.hashCode ^
-      emails.hashCode ^
-      tags.hashCode ^
-      customAttributes.hashCode ^
-      installations.hashCode;
+      _deepCollectionEquality.hash(phones) ^
+      _deepCollectionEquality.hash(emails) ^
+      _deepCollectionEquality.hash(tags) ^
+      _deepCollectionEquality.hash(customAttributes) ^
+      _deepCollectionEquality.hash(installations);
 }

@@ -7,7 +7,6 @@
 //
 
 import 'package:collection/collection.dart';
-import 'package:flutter/foundation.dart';
 
 import 'user_data.dart';
 
@@ -36,17 +35,20 @@ class UserIdentity {
         'externalUserId': externalUserId,
       }..removeWhere((dynamic key, dynamic value) => value == null);
 
+  static const DeepCollectionEquality _deepCollectionEquality = DeepCollectionEquality();
+
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
       other is UserIdentity &&
           runtimeType == other.runtimeType &&
-          listEquals(phones, other.phones) &&
-          listEquals(emails, other.emails) &&
+          _deepCollectionEquality.equals(phones, other.phones) &&
+          _deepCollectionEquality.equals(emails, other.emails) &&
           externalUserId == other.externalUserId;
 
   @override
-  int get hashCode => phones.hashCode ^ emails.hashCode ^ externalUserId.hashCode;
+  int get hashCode =>
+      _deepCollectionEquality.hash(phones) ^ _deepCollectionEquality.hash(emails) ^ externalUserId.hashCode;
 }
 
 /// [UserIdentity] class to update Person profile with the data provided. Overrides any existing values with the
@@ -95,6 +97,8 @@ class UserAttributes {
         'customAttributes': customAttributes,
       }..removeWhere((dynamic key, dynamic value) => value == null);
 
+  static const DeepCollectionEquality _deepCollectionEquality = DeepCollectionEquality();
+
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
@@ -105,8 +109,8 @@ class UserAttributes {
           lastName == other.lastName &&
           gender == other.gender &&
           birthday == other.birthday &&
-          listEquals(tags, other.tags) &&
-          const DeepCollectionEquality().equals(customAttributes, other.customAttributes);
+          _deepCollectionEquality.equals(tags, other.tags) &&
+          _deepCollectionEquality.equals(customAttributes, other.customAttributes);
 
   @override
   int get hashCode =>
@@ -115,8 +119,8 @@ class UserAttributes {
       lastName.hashCode ^
       gender.hashCode ^
       birthday.hashCode ^
-      tags.hashCode ^
-      customAttributes.hashCode;
+      _deepCollectionEquality.hash(tags) ^
+      _deepCollectionEquality.hash(customAttributes);
 }
 
 /// [PersonalizeContext] class for personalization with parameters.
@@ -145,8 +149,22 @@ class PersonalizeContext {
   /// Mapping [PersonalizeContext] to json.
   Map<String, dynamic> toJson() => {
         'userIdentity': userIdentity!.toJson(),
-        'userAttributes': userAttributes!.toJson(),
+        'userAttributes': userAttributes?.toJson(),
         'forceDepersonalize': forceDepersonalize,
         'keepAsLead': keepAsLead,
       };
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is PersonalizeContext &&
+          runtimeType == other.runtimeType &&
+          userIdentity == other.userIdentity &&
+          userAttributes == other.userAttributes &&
+          forceDepersonalize == other.forceDepersonalize &&
+          keepAsLead == other.keepAsLead;
+
+  @override
+  int get hashCode =>
+      userIdentity.hashCode ^ userAttributes.hashCode ^ forceDepersonalize.hashCode ^ keepAsLead.hashCode;
 }

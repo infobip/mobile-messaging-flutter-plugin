@@ -165,6 +165,8 @@ class Installation {
   /// Returns [pushRegistrationId] for installation.
   String? getPushRegistrationId() => pushRegistrationId;
 
+  static const DeepCollectionEquality _deepCollectionEquality = DeepCollectionEquality();
+
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
@@ -187,7 +189,7 @@ class Installation {
           deviceTimezoneOffset == other.deviceTimezoneOffset &&
           applicationUserId == other.applicationUserId &&
           deviceName == other.deviceName &&
-          const DeepCollectionEquality().equals(customAttributes, other.customAttributes);
+          _deepCollectionEquality.equals(customAttributes, other.customAttributes);
 
   @override
   int get hashCode =>
@@ -208,7 +210,7 @@ class Installation {
       deviceTimezoneOffset.hashCode ^
       applicationUserId.hashCode ^
       deviceName.hashCode ^
-      customAttributes.hashCode;
+      _deepCollectionEquality.hash(customAttributes);
 }
 
 /// Helper class for setting [Installation] as a primary.

@@ -6,7 +6,7 @@
 //  Licensed under the Apache License, Version 2.0
 //
 
-import 'package:flutter/foundation.dart';
+import 'package:collection/collection.dart';
 
 /// MobileMessaging [Message] class.
 class Message {
@@ -122,6 +122,8 @@ class Message {
         inAppDismissTitle = json['inAppDismissTitle'],
         chat = json['chat'];
 
+  static const MapEquality<String, dynamic> _mapEquality = MapEquality<String, dynamic>();
+
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
@@ -135,13 +137,13 @@ class Message {
           icon == other.icon &&
           silent == other.silent &&
           category == other.category &&
-          mapEquals(customPayload, other.customPayload) &&
+          _mapEquality.equals(customPayload, other.customPayload) &&
           internalData == other.internalData &&
           receivedTimestamp == other.receivedTimestamp &&
           seenDate == other.seenDate &&
           contentUrl == other.contentUrl &&
           seen == other.seen &&
-          mapEquals(originalPayload, other.originalPayload) &&
+          _mapEquality.equals(originalPayload, other.originalPayload) &&
           browserUrl == other.browserUrl &&
           deeplink == other.deeplink &&
           webViewUrl == other.webViewUrl &&
@@ -159,13 +161,13 @@ class Message {
       icon.hashCode ^
       silent.hashCode ^
       category.hashCode ^
-      customPayload.hashCode ^
+      _mapEquality.hash(customPayload) ^
       internalData.hashCode ^
       receivedTimestamp.hashCode ^
       seenDate.hashCode ^
       contentUrl.hashCode ^
       seen.hashCode ^
-      originalPayload.hashCode ^
+      _mapEquality.hash(originalPayload) ^
       browserUrl.hashCode ^
       deeplink.hashCode ^
       webViewUrl.hashCode ^

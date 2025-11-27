@@ -32,11 +32,13 @@ class FilterOptions {
 
   /// Mapping [FilterOptions] to json. Formats [fromDateTime] and [toDateTime] for native to process.
   Map<String, dynamic> toJson() => {
-        'fromDateTime': fromDateTime != null ? '${fromDateTime?.toIso8601String().substring(0, 19)}Z' : null,
-        'toDateTime': toDateTime != null ? '${toDateTime?.toIso8601String().substring(0, 19)}Z' : null,
+        'fromDateTime': fromDateTime != null ? timeFormatter(fromDateTime!) : null,
+        'toDateTime': toDateTime != null ? timeFormatter(toDateTime!) : null,
         'topic': topic,
         'limit': limit,
-      };
+      }..removeWhere((dynamic key, dynamic value) => value == null);
+
+  String timeFormatter(DateTime datetime) => '${datetime.toIso8601String().substring(0, 19)}Z';
 
   @override
   bool operator ==(Object other) =>

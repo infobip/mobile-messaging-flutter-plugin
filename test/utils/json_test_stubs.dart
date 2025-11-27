@@ -1,9 +1,8 @@
+//   json_test_stubs.dart
+//   MobileMessagingFlutter
 //
-//  json_test_stubs.dart
-//  MobileMessagingFlutter
-//
-//  Copyright (c) 2016-2025 Infobip Limited
-//  Licensed under the Apache License, Version 2.0
+//   Copyright (c) 2016-2025 Infobip Limited
+//   Licensed under the Apache License, Version 2.0
 //
 
 Map<String, dynamic> get configurationExampleJson => {

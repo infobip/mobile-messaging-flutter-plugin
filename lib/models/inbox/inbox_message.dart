@@ -6,7 +6,7 @@
 //  Licensed under the Apache License, Version 2.0
 //
 
-import 'package:flutter/foundation.dart';
+import 'package:collection/collection.dart';
 
 /// A message stored in the inbox.
 ///
@@ -34,9 +34,6 @@ class InboxMessage {
 
   /// Android only: vibrate for the message.
   final bool? vibrate;
-
-  /// Android only: icon for the message.
-  final String? icon;
 
   /// Optional: silent message flag.
   final bool? silent;
@@ -83,7 +80,6 @@ class InboxMessage {
     this.body,
     this.sound,
     this.vibrate,
-    this.icon,
     this.silent,
     this.category,
     this.customPayload,
@@ -101,13 +97,12 @@ class InboxMessage {
   /// Parsing InboxMessage from json.
   InboxMessage.fromJson(Map<String, dynamic> json)
       : messageId = json['messageId'],
-        topic = json['inboxData'] != null ? json['inboxData']['inbox']['topic'] : json['topic'],
-        seen = json['inboxData'] != null ? json['inboxData']['inbox']['seen'] : json['seen'],
+        topic = json['topic'],
+        seen = json['seen'],
         title = json['title'],
         body = json['body'],
         sound = json['sound'],
         vibrate = json['vibrate'],
-        icon = json['icon'],
         silent = json['silent'],
         category = json['category'],
         customPayload = json['customPayload'],
@@ -121,6 +116,8 @@ class InboxMessage {
         inAppDismissTitle = json['inAppDismissTitle'],
         sentTimestamp = json['sentTimestamp'];
 
+  static const DeepCollectionEquality _deepCollectionEquality = DeepCollectionEquality();
+
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
@@ -133,13 +130,12 @@ class InboxMessage {
           body == other.body &&
           sound == other.sound &&
           vibrate == other.vibrate &&
-          icon == other.icon &&
           silent == other.silent &&
           category == other.category &&
-          mapEquals(customPayload, other.customPayload) &&
+          _deepCollectionEquality.equals(customPayload, other.customPayload) &&
           internalData == other.internalData &&
           contentUrl == other.contentUrl &&
-          mapEquals(originalPayload, other.originalPayload) &&
+          _deepCollectionEquality.equals(originalPayload, other.originalPayload) &&
           browserUrl == other.browserUrl &&
           deeplink == other.deeplink &&
           webViewUrl == other.webViewUrl &&
@@ -156,13 +152,12 @@ class InboxMessage {
       body.hashCode ^
       sound.hashCode ^
       vibrate.hashCode ^
-      icon.hashCode ^
       silent.hashCode ^
       category.hashCode ^
-      customPayload.hashCode ^
+      _deepCollectionEquality.hash(customPayload) ^
       internalData.hashCode ^
       contentUrl.hashCode ^
-      originalPayload.hashCode ^
+      _deepCollectionEquality.hash(originalPayload) ^
       browserUrl.hashCode ^
       deeplink.hashCode ^
       webViewUrl.hashCode ^
