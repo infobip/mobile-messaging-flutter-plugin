@@ -1,3 +1,7 @@
+# 9.2.4
+## SDK Versions
+- iOS [14.1.1 → 14.1.3]
+ 
 # 9.2.3
 ## SDK Versions
 
