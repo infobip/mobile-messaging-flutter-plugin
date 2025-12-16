@@ -47,6 +47,7 @@ public class SwiftInfobipMobilemessagingPlugin: NSObject, FlutterPlugin {
     var willUseChatExceptionHandler = false
     private var chatJwtRequestQueue: [((String?) -> Void)] = []
     private let chatJwtQueueLock = NSLock()
+    private var isChatAvailable = false
     
     @objc
     func supportedEvents() -> [String]! {
@@ -126,6 +127,8 @@ public class SwiftInfobipMobilemessagingPlugin: NSObject, FlutterPlugin {
             setChatJwtProvider(call: call, result: result)
         } else if call.method == "setChatExceptionHandler" {
             setChatExceptionHandler(call: call, result: result)
+        } else if call.method == "isChatAvailable" {
+            isChatAvailable(call: call, result: result)
         } else if call.method == "submitEvent" {
             submitEvent(call: call, result: result)
         } else if call.method == "submitEventImmediately" {
@@ -581,6 +584,10 @@ public class SwiftInfobipMobilemessagingPlugin: NSObject, FlutterPlugin {
     func setChatExceptionHandler(call: FlutterMethodCall, result: @escaping FlutterResult) {
         return SwiftInfobipMobilemessagingPlugin.digestChatExceptionHandler(call, result)
     }
+
+    func isChatAvailable(call: FlutterMethodCall, result: @escaping FlutterResult) {
+        return result(isChatAvailable)
+    }
     
     func sendContextualData(call: FlutterMethodCall, result: @escaping FlutterResult) {
         guard let args = call.arguments as? [String: Any],
@@ -1024,5 +1031,9 @@ extension SwiftInfobipMobilemessagingPlugin: MMInAppChatDelegate {
         
         eventsManager?.propagate(EventName.inAppChat_exceptionReceived, payload)
         return .noDisplay
+    }
+    
+    public func inAppChatIsEnabled(_ enabled: Bool) {
+        isChatAvailable = enabled
     }
 }

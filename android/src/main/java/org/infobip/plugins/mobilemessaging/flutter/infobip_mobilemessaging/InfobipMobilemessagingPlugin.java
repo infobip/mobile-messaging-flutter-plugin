@@ -287,6 +287,9 @@ public class InfobipMobilemessagingPlugin implements FlutterPlugin, MethodCallHa
             case "setChatExceptionHandler":
                 setChatExceptionHandler(call, result);
                 break;
+            case "isChatAvailable":
+                isChatAvailable(result);
+                break;
             default:
                 result.notImplemented();
                 break;
@@ -1174,6 +1177,10 @@ public class InfobipMobilemessagingPlugin implements FlutterPlugin, MethodCallHa
             InAppChat.getInstance(activity.getApplication()).inAppChatScreen().setErrorHandler(null);
         }
         result.success(null);
+    }
+
+    private void isChatAvailable(final MethodChannel.Result result) {
+        result.success(InAppChat.getInstance(activity.getApplication()).isChatAvailable());
     }
     //endregion
 

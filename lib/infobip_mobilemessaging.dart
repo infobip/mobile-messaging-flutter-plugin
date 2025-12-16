@@ -70,9 +70,9 @@ class InfobipMobilemessaging {
   static Configuration? _configuration;
 
   static MessageStorage? _defaultMessageStorage;
-  
+
   static StreamSubscription? _platformNativeLogsSubscription;
-  
+
   static StreamSubscription? _chatJwtRequestsSubscription;
 
   static StreamSubscription? _chatExceptionHandlerSubscription;
@@ -141,6 +141,10 @@ class InfobipMobilemessaging {
       cancelOnError: false,
     );
   }
+
+  /// Checks whether the in-app chat is ready to be shown to the user
+  /// In-app chat is considered ready when the widget configuration has been synced and Infobip's unique push registration ID has been issued.
+  static Future<bool> isChatAvailable() async => await _channel.invokeMethod('isChatAvailable');
 
   /// Saves [UserData] to server. Recommended to work with data acquired by [fetchUser].
   static Future<void> saveUser(UserData userData) async =>

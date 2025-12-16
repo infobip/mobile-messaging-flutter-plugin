@@ -289,10 +289,23 @@ class _HomePageState extends State<HomePage> {
         body: ListView(
           children: [
             ...pages.map((d) => DemoTile(demo: d)),
-            ListTile(
+          ListTile(
               title: const Text('Chat Examples'),
-              onTap: () {
-                ChatExamples.showChatExamplesDialog(context);
+              onTap: () async {
+                try {
+                  final bool isAvailable = await InfobipMobilemessaging.isChatAvailable();                  
+                  if (isAvailable) {
+                    ChatExamples.showChatExamplesDialog(context);
+                  } else {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(content: Text('Chat is currently not available')),
+                    );
+                  }
+                } catch (e) {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(content: Text('Error checking chat availability: $e')),
+                  );
+                }
               },
             ),
             ListTile(
