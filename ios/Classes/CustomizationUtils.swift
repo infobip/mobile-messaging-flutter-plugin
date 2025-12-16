@@ -45,6 +45,8 @@ struct ChatCustomization: Decodable {
     var chatInputSeparatorLineColor: String?
     var chatInputSeparatorLineVisible: Bool?
     var chatInputCursorColor: String?
+    var chatInputCharCounterDefaultColor: String?
+    var chatInputCharCounterAlertColor: String?
     var networkErrorTextColor: String?
     var networkErrorLabelBackgroundColor: String?
     var shouldHandleKeyboardAppearance: Bool?
@@ -108,6 +110,8 @@ class CustomizationUtils {
         setNotNil(&settings.chatInputSeparatorLineColor, customization.chatInputSeparatorLineColor?.toColor())
         setNotNil(&settings.advancedSettings.isLineSeparatorHidden, customization.chatInputSeparatorLineVisible)
         setNotNil(&settings.advancedSettings.typingIndicatorColor, customization.chatInputCursorColor?.toColor())
+        setNotNil(&settings.advancedSettings.charCounterDefaultColor, customization.chatInputCharCounterDefaultColor?.toColor())
+        setNotNil(&settings.advancedSettings.charCounterAlertColor, customization.chatInputCharCounterAlertColor?.toColor())
         setNotNil(&settings.errorLabelTextColor, customization.networkErrorTextColor?.toColor())
         setNotNil(&settings.errorLabelBackgroundColor, customization.networkErrorLabelBackgroundColor?.toColor()) 
         setNotNil(&settings.advancedSettings.mainPlaceholderTextColor, customization.chatInputHintTextColor?.toColor())

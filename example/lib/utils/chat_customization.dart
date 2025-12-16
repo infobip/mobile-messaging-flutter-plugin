@@ -62,6 +62,9 @@ ChatCustomization customBranding = ChatCustomization(
   chatInputSeparatorLineColor: '#BDBDBD',
   chatInputSeparatorLineVisible: true,
   chatInputCursorColor: '#9E9E9E',
+  chatInputCharCounterTextAppearance: 'TextAppearance_AppCompat_Subtitle',
+  chatInputCharCounterDefaultColor: '#d0d32f',
+  chatInputCharCounterAlertColor: '#2fd358',
   shouldHandleKeyboardAppearance: true,
 );
 

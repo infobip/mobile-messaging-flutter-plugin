@@ -407,6 +407,9 @@ class ChatCustomization {
   final String? chatInputSeparatorLineColor;
   final bool? chatInputSeparatorLineVisible;
   final String? chatInputCursorColor;
+  final String? chatInputCharCounterTextAppearance;
+  final String? chatInputCharCounterDefaultColor;
+  final String? chatInputCharCounterAlertColor;
   final bool? shouldHandleKeyboardAppearance; // iOS only
 
   ChatCustomization({
@@ -438,6 +441,9 @@ class ChatCustomization {
     this.chatInputSeparatorLineColor,
     this.chatInputSeparatorLineVisible,
     this.chatInputCursorColor,
+    this.chatInputCharCounterTextAppearance,
+    this.chatInputCharCounterDefaultColor,
+    this.chatInputCharCounterAlertColor,
     this.shouldHandleKeyboardAppearance,
   });
 
@@ -470,6 +476,9 @@ class ChatCustomization {
         'chatInputSeparatorLineColor': chatInputSeparatorLineColor,
         'chatInputSeparatorLineVisible': chatInputSeparatorLineVisible,
         'chatInputCursorColor': chatInputCursorColor,
+        'chatInputCharCounterTextAppearance': chatInputCharCounterTextAppearance,
+        'chatInputCharCounterDefaultColor': chatInputCharCounterDefaultColor,
+        'chatInputCharCounterAlertColor': chatInputCharCounterAlertColor,
         'shouldHandleKeyboardAppearance': shouldHandleKeyboardAppearance,
       };
 }

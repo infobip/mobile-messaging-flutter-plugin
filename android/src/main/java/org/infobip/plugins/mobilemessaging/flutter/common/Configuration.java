@@ -253,6 +253,9 @@ public class Configuration {
         String sendButtonIcon;
         String attachmentButtonIcon;
         Boolean chatInputSeparatorVisible;
+        String chatInputCharCounterTextAppearance;
+        String chatInputCharCounterDefaultColor;
+        String chatInputCharCounterAlertColor;
         AndroidInAppChatCustomization android;
 
         public String getWidgetTheme() {
@@ -373,6 +376,30 @@ public class Configuration {
 
         public void setChatInputSeparatorVisible(Boolean chatInputSeparatorVisible) {
             this.chatInputSeparatorVisible = chatInputSeparatorVisible;
+        }
+
+        public String getChatInputCharCounterTextAppearance() {
+            return chatInputCharCounterTextAppearance;
+        }
+
+        public void setChatInputCharCounterTextAppearance(String chatInputCharCounterTextAppearance) {
+            this.chatInputCharCounterTextAppearance = chatInputCharCounterTextAppearance;
+        }
+
+        public String getChatInputCharCounterDefaultColor() {
+            return chatInputCharCounterDefaultColor;
+        }
+
+        public void setChatInputCharCounterDefaultColor(String chatInputCharCounterDefaultColor) {
+            this.chatInputCharCounterDefaultColor = chatInputCharCounterDefaultColor;
+        }
+
+        public String getChatInputCharCounterAlertColor() {
+            return chatInputCharCounterAlertColor;
+        }
+
+        public void setChatInputCharCounterAlertColor(String chatInputCharCounterAlertColor) {
+            this.chatInputCharCounterAlertColor = chatInputCharCounterAlertColor;
         }
 
         public AndroidInAppChatCustomization getAndroid() {

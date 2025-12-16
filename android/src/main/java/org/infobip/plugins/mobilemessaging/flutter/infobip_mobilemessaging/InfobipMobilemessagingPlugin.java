@@ -25,6 +25,10 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.res.AssetFileDescriptor;
+import android.content.res.AssetManager;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
 import android.os.Build;
 
 import androidx.annotation.NonNull;
@@ -51,6 +55,9 @@ import org.infobip.mobile.messaging.chat.core.InAppChatException;
 import org.infobip.mobile.messaging.chat.core.MultithreadStrategy;
 import org.infobip.mobile.messaging.chat.core.widget.LivechatWidgetLanguage;
 import org.infobip.mobile.messaging.chat.view.InAppChatErrorsHandler;
+import org.infobip.mobile.messaging.chat.view.styles.InAppChatTheme;
+import org.infobip.mobile.messaging.chat.view.styles.PluginChatCustomization;
+import org.infobip.mobile.messaging.chat.view.styles.PluginChatCustomization.DrawableLoader;
 import org.infobip.mobile.messaging.inbox.Inbox;
 import org.infobip.mobile.messaging.inbox.InboxMapper;
 import org.infobip.mobile.messaging.inbox.MobileInbox;
@@ -71,7 +78,7 @@ import org.infobip.mobile.messaging.storage.MessageStore;
 import org.infobip.mobile.messaging.util.PreferenceHelper;
 import org.infobip.mobile.messaging.chat.core.JwtProvider;
 import org.infobip.mobile.messaging.chat.core.JwtProvider.JwtCallback;
-import org.infobip.plugins.mobilemessaging.flutter.chat.ChatCustomization;
+import org.infobip.mobile.messaging.util.StringUtils;
 import org.infobip.plugins.mobilemessaging.flutter.chat.ChatViewFactory;
 import org.infobip.plugins.mobilemessaging.flutter.common.ConfigCache;
 import org.infobip.plugins.mobilemessaging.flutter.common.Configuration;
@@ -86,6 +93,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -107,6 +115,8 @@ import io.flutter.plugin.common.MethodCall;
 import io.flutter.plugin.common.MethodChannel;
 import io.flutter.plugin.common.MethodChannel.MethodCallHandler;
 import io.flutter.plugin.common.PluginRegistry;
+import io.flutter.FlutterInjector;
+import io.flutter.embedding.engine.loader.FlutterLoader;
 
 /**
  * InfobipMobilemessagingPlugin
@@ -1104,10 +1114,35 @@ public class InfobipMobilemessagingPlugin implements FlutterPlugin, MethodCallHa
         }
     }
 
+    private PluginChatCustomization.DrawableLoader createDrawableLoader() {
+        return new PluginChatCustomization.DrawableLoader() {
+            FlutterLoader loader = FlutterInjector.instance().flutterLoader();
+
+            @Override
+            public @Nullable Drawable loadDrawable(@NonNull Context context, @Nullable String drawableSrc) {
+                AssetManager assets = context.getAssets();
+                try (AssetFileDescriptor fileDescriptor = assets.openFd(loader.getLookupKeyForAsset(drawableSrc))) {
+                    return new BitmapDrawable(context.getResources(), fileDescriptor.createInputStream());
+                } catch (IOException e) {
+                    FlutterLogger.e(TAG, "loadDrawable: " + drawableSrc + e.getMessage());
+                    return null;
+                }
+            }
+        };
+    }
+
     private void setChatCustomization(MethodCall call, MethodChannel.Result result) {
         try {
-            ChatCustomization customization = new Gson().fromJson(call.arguments.toString(), ChatCustomization.class);
-            InAppChat.getInstance(activity.getApplication()).setTheme(customization.createTheme(activity));
+            PluginChatCustomization customization = null;
+            if (StringUtils.isNotBlank(call.arguments.toString())) {
+                customization = PluginChatCustomization.Companion.parseOrNull(call.arguments.toString());
+            }
+            if (customization != null) {
+                InAppChatTheme theme = customization.createTheme(activity.getApplicationContext(), createDrawableLoader());
+                InAppChat.getInstance(activity.getApplication()).setTheme(theme);
+            } else {
+                FlutterLogger.d(TAG, "Chat customization object is null or invalid.");
+            }
         } catch (Exception e) {
             FlutterLogger.d(TAG, "Failed to set customization", e);
             result.error(e.getMessage(), e.getMessage(), e.getLocalizedMessage());
