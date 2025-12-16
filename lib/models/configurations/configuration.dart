@@ -45,6 +45,9 @@ class Configuration {
   final InAppChatCustomization? inAppChatCustomization;
 
   final String? userDataJwt;
+  
+   /// Enables logging in Debug runs.
+  final bool? logging;
 
   /// Default constructor with all params.
   Configuration({
@@ -60,6 +63,7 @@ class Configuration {
     this.webRTCUI,
     this.inAppChatCustomization,
     this.userDataJwt,
+    this.logging,
   });
 
   /// Mapping [Configuration] to json.
@@ -78,6 +82,7 @@ class Configuration {
         // ignore: deprecated_member_use_from_same_package
         'inAppChatCustomization': inAppChatCustomization?.toJson(),
         'userDataJwt': userDataJwt,
+        'logging': logging,
       };
 }
 
@@ -166,9 +171,6 @@ class IOSSettings {
   /// Perform deletion of local data on start.
   final bool? forceCleanup;
 
-  /// Enables logging in Debug runs in XCode, recommended value `true`.
-  final bool? logging;
-
   /// WebView settings.
   final WebViewSettings? webViewSettings;
 
@@ -179,7 +181,6 @@ class IOSSettings {
   IOSSettings({
     this.notificationTypes,
     this.forceCleanup,
-    this.logging,
     this.webViewSettings,
     this.withoutRegisteringForRemoteNotifications,
   });
@@ -188,7 +189,6 @@ class IOSSettings {
   Map<String, dynamic> toJson() => {
         'notificationTypes': notificationTypes,
         'forceCleanup': forceCleanup,
-        'logging': logging,
         'webViewSettings': webViewSettings?.toJson(),
         'withoutRegisteringForRemoteNotifications': withoutRegisteringForRemoteNotifications,
       };

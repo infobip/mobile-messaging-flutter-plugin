@@ -16,9 +16,10 @@ import android.content.res.Resources;
 import android.graphics.Color;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
-import android.util.Log;
 
 import androidx.annotation.Nullable;
+
+import org.infobip.plugins.mobilemessaging.flutter.common.FlutterLogger;
 
 import org.infobip.mobile.messaging.chat.view.styles.InAppChatInputViewStyle;
 import org.infobip.mobile.messaging.chat.view.styles.InAppChatStyle;
@@ -257,7 +258,7 @@ public class ChatCustomization {
         try {
             result = Integer.valueOf(Color.parseColor(color));
         } catch (IllegalArgumentException e) {
-            Log.e(TAG, "parseColor: " + color + e.getMessage());
+            FlutterLogger.e(TAG, "parseColor: " + color + e.getMessage());
         }
         return result;
     }
@@ -284,7 +285,7 @@ public class ChatCustomization {
             }
             return Integer.valueOf(resId);
         } catch (Exception e) {
-            Log.e(TAG, "getResId: " + resPath + e.getMessage());
+            FlutterLogger.e(TAG, "getResId: " + resPath + e.getMessage());
             return null;
         }
     }
@@ -294,7 +295,7 @@ public class ChatCustomization {
         try (AssetFileDescriptor fileDescriptor = assets.openFd(loader.getLookupKeyForAsset(drawableSrc))) {
             return new BitmapDrawable(context.getResources(), fileDescriptor.createInputStream());
         } catch (IOException e) {
-            Log.e(TAG, "loadDrawable: " + drawableSrc + e.getMessage());
+            FlutterLogger.e(TAG, "loadDrawable: " + drawableSrc + e.getMessage());
             return null;
         }
 

@@ -76,7 +76,7 @@ class Configuration {
         self.inAppChatEnabled = rawConfig[Configuration.Keys.inAppChatEnabled].unwrap(orDefault: false)
         self.fullFeaturedInAppsEnabled = rawConfig[Configuration.Keys.fullFeaturedInAppsEnabled].unwrap(orDefault: false)
         self.forceCleanup = ios[Configuration.Keys.forceCleanup].unwrap(orDefault: false)
-        self.logging = ios[Configuration.Keys.logging].unwrap(orDefault: false)
+        self.logging = rawConfig[Configuration.Keys.logging].unwrap(orDefault: false)
         self.withoutRegisteringForRemoteNotifications = ios[Configuration.Keys.withoutRegisteringForRemoteNotifications].unwrap(orDefault: false)
         self.userDataJwt = rawConfig[Configuration.Keys.userDataJwt].unwrap(orDefault: nil)
         

@@ -18,6 +18,7 @@ import 'models/chat/chat_exception.dart';
 import 'models/configurations/configuration.dart';
 import 'models/data/installation.dart';
 import 'models/data/message.dart';
+import 'models/data/native_log.dart';
 import 'models/data/personalize_context.dart';
 import 'models/data/user_data.dart';
 import 'models/inbox/filter_options.dart';
@@ -69,8 +70,11 @@ class InfobipMobilemessaging {
   static Configuration? _configuration;
 
   static MessageStorage? _defaultMessageStorage;
-
+  
+  static StreamSubscription? _platformNativeLogsSubscription;
+  
   static StreamSubscription? _chatJwtRequestsSubscription;
+
   static StreamSubscription? _chatExceptionHandlerSubscription;
 
   /// Subscribes to [LibraryEvent] to perform provided callback function.
@@ -109,8 +113,33 @@ class InfobipMobilemessaging {
     InfobipMobilemessaging._configuration = configuration;
     String str = await _getVersion();
     configuration.pluginVersion = str;
+    if (configuration.logging ?? false) {
+      subscribePlatformNativeLogs();
+    }
 
     await _channel.invokeMethod('init', jsonEncode(configuration.toJson()));
+  }
+
+  /// Starts subscription to platform native logs.
+  static Future<void> subscribePlatformNativeLogs() async {
+    _platformNativeLogsSubscription?.cancel();
+    _platformNativeLogsSubscription = _libraryEvent.receiveBroadcastStream().listen(
+      (dynamic event) {
+        try {
+          LibraryEvent libraryEvent = LibraryEvent.fromJson(jsonDecode(event));
+          if (libraryEvent.eventName == 'internal.platformNativeLogSent') {
+            NativeLog nativeLog = NativeLog.fromJson(libraryEvent.payload);
+            log(nativeLog.message);
+          }
+        } catch (error) {
+          log('Failed parse native log event: $error');
+        }
+      },
+      onError: (dynamic error) {
+        log('Failed to subscribe native logs: $error');
+      },
+      cancelOnError: false,
+    );
   }
 
   /// Saves [UserData] to server. Recommended to work with data acquired by [fetchUser].

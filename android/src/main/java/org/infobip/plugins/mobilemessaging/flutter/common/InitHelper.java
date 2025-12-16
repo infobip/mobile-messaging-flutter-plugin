@@ -19,9 +19,10 @@ import android.content.res.Resources;
 import android.graphics.Color;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
-import android.util.Log;
 
 import androidx.annotation.NonNull;
+
+import org.infobip.plugins.mobilemessaging.flutter.common.FlutterLogger;
 
 import org.infobip.mobile.messaging.MobileMessaging;
 import org.infobip.mobile.messaging.MobileMessagingCore;
@@ -268,7 +269,7 @@ public class InitHelper {
                         )
                 );
             } catch (IllegalArgumentException e) {
-                Log.e(TAG, "Color in invalid format.", e);
+                FlutterLogger.e(TAG, "Color in invalid format.", e);
                 return null;
             }
         }
@@ -281,7 +282,7 @@ public class InitHelper {
         try (AssetFileDescriptor fileDescriptor = assets.openFd(loader.getLookupKeyForAsset(drawableSrc))) {
             return new BitmapDrawable(activity.getResources(), fileDescriptor.createInputStream());
         } catch (IOException e) {
-            Log.e(TAG, "Failed to load image " + drawableSrc, e);
+            FlutterLogger.e(TAG, "Failed to load image " + drawableSrc, e);
             return null;
         }
 

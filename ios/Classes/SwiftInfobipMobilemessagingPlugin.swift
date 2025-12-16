@@ -233,7 +233,7 @@ public class SwiftInfobipMobilemessagingPlugin: NSObject, FlutterPlugin {
         
         MobileMessaging.userAgent.pluginVersion = "flutter \(configuration.pluginVersion)"
         if (configuration.logging) {
-            MobileMessaging.logger = MMDefaultLogger()
+            MobileMessaging.logger = InfobipMobileMessagingLogger(eventsManager)
         }
         
         if configuration.defaultMessageStorage {

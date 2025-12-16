@@ -19,7 +19,6 @@ import androidx.annotation.StringRes;
 import androidx.collection.ArraySet;
 import androidx.core.app.ActivityCompat;
 
-import org.infobip.mobile.messaging.logging.MobileMessagingLogger;
 import org.infobip.mobile.messaging.permissions.PermissionsHelper;
 
 import java.util.Set;
@@ -74,6 +73,7 @@ public class PermissionsRequestManager {
     protected PermissionsRequester permissionsRequester;
     protected PermissionsHelper permissionsHelper;
     public static final int REQ_CODE_POST_NOTIFICATIONS_PERMISSIONS = 10000;
+    private static final String TAG = "PermissionsRequestManager";
 
     public PermissionsRequestManager(@NonNull PermissionsRequester permissionsRequester) {
         this.permissionsRequester = permissionsRequester;
@@ -158,7 +158,7 @@ public class PermissionsRequestManager {
     }
 
     protected void openSettings(Activity activity) {
-        MobileMessagingLogger.d("Will open application settings activity");
+        FlutterLogger.d(TAG, "Will open application settings activity");
         Intent intent = new Intent(android.provider.Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
         Uri uri = Uri.fromParts("package", activity.getPackageName(), null);
         intent.setData(uri);

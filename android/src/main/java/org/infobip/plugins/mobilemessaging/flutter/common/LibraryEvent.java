@@ -24,6 +24,8 @@ public class LibraryEvent {
     public static final String EVENT_PERSONALIZED = "personalized";
     public static final String EVENT_DEPERSONALIZED = "depersonalized";
 
+    public static final String EVENT_PLATFORM_NATIVE_LOG_SENT = "internal.platformNativeLogSent";
+
     public static final String EVENT_NOTIFICATION_TAPPED = "notificationTapped";
     public static final String EVENT_NOTIFICATION_ACTION_TAPPED = "actionTapped";
     public static final String EVENT_MESSAGE_RECEIVED = "messageReceived";

@@ -10,11 +10,11 @@ package org.infobip.plugins.mobilemessaging.flutter.chat;
 
 import android.app.Activity;
 import android.content.Context;
-import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
 
+import org.infobip.plugins.mobilemessaging.flutter.common.FlutterLogger;
 import org.infobip.mobile.messaging.api.chat.WidgetAttachmentConfig;
 import org.infobip.mobile.messaging.api.chat.WidgetInfo;
 import org.infobip.mobile.messaging.chat.attachments.InAppChatAttachment;
@@ -126,7 +126,7 @@ public class ChatPlatformView implements PlatformView, MethodCallHandler {
     //region MethodCallHandler
     @Override
     public void onMethodCall(@NonNull MethodCall call, @NonNull MethodChannel.Result result) {
-        Log.d(TAG, "onMethodCall: " + call.method.toString());
+        FlutterLogger.d(TAG, "onMethodCall: " + call.method.toString());
         switch (call.method) {
             case "setLanguage":
                 setLanguage(call, result);
@@ -429,7 +429,7 @@ public class ChatPlatformView implements PlatformView, MethodCallHandler {
                     .putOpt("themeNames", widgetTheme)
                     .putOpt("attachmentConfig", attachmentConfig);
         } catch (JSONException e) {
-            Log.e(TAG, "Cannot convert WidgetInfo to JSON: " + e.getMessage());
+            FlutterLogger.e(TAG, "Cannot convert WidgetInfo to JSON: " + e.getMessage());
             return null;
         }
     }
@@ -453,7 +453,7 @@ public class ChatPlatformView implements PlatformView, MethodCallHandler {
                     .putOpt("type", type)
                     .putOpt("caption", caption);
         } catch (JSONException e) {
-            Log.e(TAG, "Cannot convert chat attachment to JSON: " + e.getMessage());
+            FlutterLogger.e(TAG, "Cannot convert chat attachment to JSON: " + e.getMessage());
             return null;
         }
     }

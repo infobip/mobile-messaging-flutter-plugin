@@ -8,8 +8,6 @@
 
 package org.infobip.plugins.mobilemessaging.flutter.common;
 
-import android.util.Log;
-
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -32,7 +30,7 @@ public class StreamHandler implements EventChannel.StreamHandler {
 
     @Override
     public void onListen(Object arguments, EventChannel.EventSink events) {
-        Log.d(TAG, "StreamHandler.onListen: " + events);
+        FlutterLogger.d(TAG, "StreamHandler.onListen: " + events);
         eventSink = events;
         for (JSONObject item : cached) {
             sendCachedEvent(item);
@@ -45,7 +43,7 @@ public class StreamHandler implements EventChannel.StreamHandler {
     }
 
     private boolean sendCachedEvent(JSONObject eventObj) {
-        Log.d(TAG, "sendEvent from cached: " + eventObj);
+        FlutterLogger.d(TAG, "sendEvent from cached: " + eventObj);
         eventSink.success(eventObj.toString());
         return true;
     }
@@ -59,8 +57,14 @@ public class StreamHandler implements EventChannel.StreamHandler {
     }
 
     public boolean sendEvent(String event, Object payload, boolean withCache) {
-        String payloadLabel = (payload != null) ? "(with payload)" : "(without payload)";
-        Log.d(TAG, "sendEvent: " + payloadLabel + " " + event);
+        return sendEvent(event, payload, withCache, true);
+    }
+
+    public boolean sendEvent(String event, Object payload, boolean withCache, boolean withLogs) {
+        if (withLogs) {
+            String payloadLabel = (payload != null) ? "(with payload)" : "(without payload)";
+            FlutterLogger.d(TAG, "sendEvent: " + payloadLabel + " " + event);
+        }
         if (event == null) {
             return false;
         }
@@ -72,19 +76,25 @@ public class StreamHandler implements EventChannel.StreamHandler {
                 eventData.put("payload", payload);
             }
         } catch (JSONException e) {
-            Log.e(TAG, e.getMessage(), e);
+            if (withLogs) {
+                FlutterLogger.e(TAG, e.getMessage(), e);
+            }
             return false;
         }
 
         if (eventSink != null) {
-            Log.d(TAG, "Sending event to Flutter: " + event);
+            if (withLogs) {
+                FlutterLogger.d(TAG, "Sending event to Flutter: " + event);
+            }
             eventSink.success(eventData.toString());
             return true;
         } else if (withCache) {
-            Log.d(TAG, "Adding event to cached: " + event);
+            if (withLogs) {
+                FlutterLogger.d(TAG, "Adding event to cached: " + event);
+            }
             cached.add(eventData);
-        } else {
-            Log.d(TAG, "Could not send event: " + event);
+        } else if (withLogs) {
+            FlutterLogger.d(TAG, "Could not send event: " + event);
         }
 
         return false;

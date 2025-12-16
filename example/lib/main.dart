@@ -33,13 +33,13 @@ final mmconf.Configuration ibConfig = mmconf.Configuration(
   inAppChatEnabled: true,
   fullFeaturedInAppsEnabled: true,
   defaultMessageStorage: true,
+  logging: true,
   androidSettings: mmconf.AndroidSettings(
     multipleNotifications: true,
   ),
   iosSettings: mmconf.IOSSettings(
     notificationTypes: ['alert', 'badge', 'sound'],
     forceCleanup: false,
-    logging: true,
     withoutRegisteringForRemoteNotifications: false,
   ),
   webRTCUI: mmconf.WebRTCUI(configurationId: 'Your WEBRTC push configuration id'),

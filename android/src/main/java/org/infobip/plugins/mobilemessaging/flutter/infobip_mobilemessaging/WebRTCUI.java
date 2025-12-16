@@ -16,7 +16,10 @@ import org.infobip.mobile.messaging.util.StringUtils;
 import org.infobip.plugins.mobilemessaging.flutter.common.ConfigCache;
 import org.infobip.plugins.mobilemessaging.flutter.common.Configuration;
 import org.infobip.plugins.mobilemessaging.flutter.common.ErrorCodes;
+import org.infobip.plugins.mobilemessaging.flutter.common.FlutterLogWriter;
+import org.infobip.plugins.mobilemessaging.flutter.common.FlutterLogger;
 
+import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
 
 import io.flutter.plugin.common.MethodChannel;
@@ -33,6 +36,7 @@ public class WebRTCUI {
     }
 
     private static Object infobipRtcUiInstance = null;
+    private static final String TAG = "WebRTCUI";
 
     private Class<?> successListenerClass = null;
     private Class<?> errorListenerClass = null;
@@ -103,6 +107,45 @@ public class WebRTCUI {
             errorCallback.error(new RuntimeException("Cannot enable calls. ", e));
         } catch (Throwable t) {
             errorCallback.error(new RuntimeException("Something went wrong. ", t));
+        }
+    }
+
+    public void enforceLogsWriter(FlutterLogWriter writer) {
+        try {
+            Class<?> rtcUiLoggerClass = Class.forName("com.infobip.webrtc.ui.logging.RtcUiLogger");
+            Object rtcUiLoggerInstance = rtcUiLoggerClass.getField("INSTANCE").get(null);
+
+            Method init = rtcUiLoggerClass.getDeclaredMethod("init", Context.class);
+            init.setAccessible(true);
+            init.invoke(rtcUiLoggerInstance, appContext);
+
+            Method enforce = rtcUiLoggerClass.getDeclaredMethod("enforce");
+            enforce.setAccessible(true);
+            enforce.invoke(rtcUiLoggerInstance);
+
+            Class<?> rtcUiWriterClass = Class.forName("com.infobip.webrtc.ui.logging.RtcUiWriter");
+            Object writerInstance = Proxy.newProxyInstance(
+                    rtcUiWriterClass.getClassLoader(),
+                    new Class[]{rtcUiWriterClass},
+                    (proxy, method, args) -> {
+                        if ("write".equals(method.getName())) {
+                            Object level = args != null && args.length > 0 ? args[0] : null;
+                            String levelName = (level instanceof Enum<?>) ? ((Enum<?>) level).name() : null;
+                            String tag = args != null && args.length > 1 && args[1] instanceof String ? (String) args[1] : "";
+                            String message = args != null && args.length > 2 && args[2] instanceof String ? (String) args[2] : "";
+                            Throwable throwable = args != null && args.length > 3 && args[3] instanceof Throwable ? (Throwable) args[3] : null;
+                            writer.write(levelName, tag, message, throwable);
+                        }
+                        return null;
+                    });
+
+            Method setWriter = rtcUiLoggerClass.getDeclaredMethod("setWriter", rtcUiWriterClass);
+            setWriter.setAccessible(true);
+            setWriter.invoke(rtcUiLoggerInstance, writerInstance);
+        } catch (ClassNotFoundException e) {
+            // Ignored - Android WebRtcUi not enabled - no logs to enable
+        } catch (Throwable t) {
+            FlutterLogger.e(TAG, "Cannot enable native logs for WebRTCUI. Something went wrong.", t);
         }
     }
 

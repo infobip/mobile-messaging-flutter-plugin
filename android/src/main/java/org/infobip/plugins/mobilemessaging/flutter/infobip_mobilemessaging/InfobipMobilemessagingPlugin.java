@@ -26,7 +26,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Build;
-import android.util.Log;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -60,6 +59,7 @@ import org.infobip.mobile.messaging.interactive.InteractiveEvent;
 import org.infobip.mobile.messaging.interactive.MobileInteractive;
 import org.infobip.mobile.messaging.interactive.NotificationAction;
 import org.infobip.mobile.messaging.interactive.NotificationCategory;
+import org.infobip.mobile.messaging.logging.MobileMessagingLogger;
 import org.infobip.mobile.messaging.mobileapi.InternalSdkError;
 import org.infobip.mobile.messaging.mobileapi.MobileMessagingError;
 import org.infobip.mobile.messaging.mobileapi.Result;
@@ -79,6 +79,8 @@ import org.infobip.plugins.mobilemessaging.flutter.common.ErrorCodes;
 import org.infobip.plugins.mobilemessaging.flutter.common.InitHelper;
 import org.infobip.plugins.mobilemessaging.flutter.common.PermissionsRequestManager;
 import org.infobip.plugins.mobilemessaging.flutter.common.StreamHandler;
+import org.infobip.plugins.mobilemessaging.flutter.common.FlutterLogWriter;
+import org.infobip.plugins.mobilemessaging.flutter.common.FlutterLogger;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -136,7 +138,7 @@ public class InfobipMobilemessagingPlugin implements FlutterPlugin, MethodCallHa
 
     @Override
     public void onAttachedToEngine(@NonNull FlutterPluginBinding flutterPluginBinding) {
-        Log.d(TAG, "onAttachedToEngine");
+        FlutterLogger.d(TAG, "onAttachedToEngine");
         methodChannel = new MethodChannel(flutterPluginBinding.getBinaryMessenger(), "infobip_mobilemessaging");
 
         binaryMessenger = flutterPluginBinding.getBinaryMessenger();
@@ -148,15 +150,15 @@ public class InfobipMobilemessagingPlugin implements FlutterPlugin, MethodCallHa
 
     @Override
     public void onDetachedFromEngine(@NonNull FlutterPluginBinding binding) {
-        Log.d(TAG, "onDetachedFromEngine");
+        FlutterLogger.d(TAG, "onDetachedFromEngine");
         methodChannel.setMethodCallHandler(null);
         broadcastChannel.setStreamHandler(null);
     }
 
     @Override
     public void onMethodCall(@NonNull MethodCall call, @NonNull MethodChannel.Result result) {
-        Log.d(TAG, "onMethodCall: " + call.method.toString());
-        Log.i(TAG, "activity: " + activity.toString());
+        FlutterLogger.d(TAG, "onMethodCall: " + call.method.toString());
+        FlutterLogger.i(TAG, "activity: " + activity.toString());
         switch (call.method) {
             case "init":
                 init(call, result);
@@ -284,7 +286,7 @@ public class InfobipMobilemessagingPlugin implements FlutterPlugin, MethodCallHa
     //region ActivityAware
     @Override
     public void onAttachedToActivity(@NonNull ActivityPluginBinding binding) {
-        Log.d(TAG, "onAttachedToActivity");
+        FlutterLogger.d(TAG, "onAttachedToActivity");
         activity = binding.getActivity();
         notifyActivityObservers(activity);
         methodChannel.setMethodCallHandler(this);
@@ -296,7 +298,7 @@ public class InfobipMobilemessagingPlugin implements FlutterPlugin, MethodCallHa
 
     @Override
     public void onDetachedFromActivityForConfigChanges() {
-        Log.d(TAG, "onDetachedFromActivityForConfigChanges");
+        FlutterLogger.d(TAG, "onDetachedFromActivityForConfigChanges");
         activity = null;
         notifyActivityObservers(null);
         if (pluginBinding != null) {
@@ -306,7 +308,7 @@ public class InfobipMobilemessagingPlugin implements FlutterPlugin, MethodCallHa
 
     @Override
     public void onReattachedToActivityForConfigChanges(@NonNull ActivityPluginBinding binding) {
-        Log.d(TAG, "onReattachedToActivityForConfigChanges");
+        FlutterLogger.d(TAG, "onReattachedToActivityForConfigChanges");
         activity = binding.getActivity();
         notifyActivityObservers(activity);
         binding.addRequestPermissionsResultListener(this);
@@ -315,7 +317,7 @@ public class InfobipMobilemessagingPlugin implements FlutterPlugin, MethodCallHa
 
     @Override
     public void onDetachedFromActivity() {
-        Log.d(TAG, "onDetachedFromActivity");
+        FlutterLogger.d(TAG, "onDetachedFromActivity");
         activity = null;
         notifyActivityObservers(null);
         if (pluginBinding != null) {
@@ -325,7 +327,7 @@ public class InfobipMobilemessagingPlugin implements FlutterPlugin, MethodCallHa
 
     private void notifyActivityObservers(Activity activity) {
         String name = (activity != null) ? String.valueOf(activity.hashCode()) : "null";
-        Log.d(TAG, "notifyActivityObservers(Activity=" + name + ")");
+        FlutterLogger.d(TAG, "notifyActivityObservers(Activity=" + name + ")");
         if (chatViewFactory != null) {
             chatViewFactory.setActivity(activity);
         }
@@ -335,12 +337,12 @@ public class InfobipMobilemessagingPlugin implements FlutterPlugin, MethodCallHa
     //region ServiceAware
     @Override
     public void onAttachedToService(@NonNull ServicePluginBinding binding) {
-        Log.d(TAG, "onAttachedToService");
+        FlutterLogger.d(TAG, "onAttachedToService");
     }
 
     @Override
     public void onDetachedFromService() {
-        Log.d(TAG, "onDetachedFromService");
+        FlutterLogger.d(TAG, "onDetachedFromService");
     }
     //endregion
 
@@ -365,7 +367,7 @@ public class InfobipMobilemessagingPlugin implements FlutterPlugin, MethodCallHa
                     payload.put("inputText", notificationAction.getInputText());
                     broadcastHandler.sendEvent(event, payload);
                 } catch (JSONException e) {
-                    Log.e(TAG, e.getMessage(), e);
+                    FlutterLogger.e(TAG, e.getMessage(), e);
                 }
                 return;
             }
@@ -424,7 +426,7 @@ public class InfobipMobilemessagingPlugin implements FlutterPlugin, MethodCallHa
             }
             final String event = messageBroadcastEventMap.get(intent.getAction());
             if (event == null) {
-                Log.w(TAG, "Cannot process event for broadcast: " + intent.getAction());
+                FlutterLogger.w(TAG, "Cannot process event for broadcast: " + intent.getAction());
                 return;
             }
 
@@ -467,7 +469,7 @@ public class InfobipMobilemessagingPlugin implements FlutterPlugin, MethodCallHa
     }
 
     private void init(MethodCall call, final MethodChannel.Result result) {
-        Log.d(TAG, "init");
+        FlutterLogger.d(TAG, "init");
 
         final Configuration configuration = new Gson().fromJson(call.arguments.toString(), Configuration.class);
         ConfigCache.getInstance().setConfiguration(configuration);
@@ -495,12 +497,23 @@ public class InfobipMobilemessagingPlugin implements FlutterPlugin, MethodCallHa
                 // so we can safely claim that we are in foreground
                 initHelper.setForeground();
 
+                if (configuration.isLogging()) {
+                    FlutterLogWriter writer = new FlutterLogWriter(broadcastHandler);
+                    FlutterLogger.useFlutterConsole(writer);
+                    MobileMessagingLogger.enforce();
+                    MobileMessagingLogger.setWriter(writer);
+                    webRTCUI.enforceLogsWriter(writer);
+                } else {
+                    FlutterLogger.useNativeLogcat();
+                    MobileMessagingLogger.reset();
+                }
+
                 result.success("OK");
             }
 
             @Override
             public void onError(InternalSdkError e, @Nullable Integer googleErrorCode) {
-                Log.e(TAG, "Cannot start SDK: " + e.get() + " errorCode: " + googleErrorCode);
+                FlutterLogger.e(TAG, "Cannot start SDK: " + e.get() + " errorCode: " + googleErrorCode);
                 result.error(googleErrorCode.toString(), e.get(), e);
             }
         });
@@ -546,7 +559,7 @@ public class InfobipMobilemessagingPlugin implements FlutterPlugin, MethodCallHa
             final Installation installation = InstallationJson.resolveInstallation(jsonObject);
             mobileMessaging().saveInstallation(installation, installationResultListener(result));
         } catch (JSONException e) {
-            Log.w(TAG, e.getMessage(), e);
+            FlutterLogger.w(TAG, e.getMessage(), e);
             result.error(ErrorCodes.SAVE_INSTALLATION.getErrorCode(), e.getMessage(), e.getLocalizedMessage());
         }
     }
@@ -644,7 +657,7 @@ public class InfobipMobilemessagingPlugin implements FlutterPlugin, MethodCallHa
             mobileMessaging().submitEvent(customEvent);
             result.success("Success");
         } catch (JSONException e) {
-            Log.w(TAG, e.getMessage(), e);
+            FlutterLogger.w(TAG, e.getMessage(), e);
             result.error(ErrorCodes.CUSTOM_EVENT.getErrorCode(), "Cannot send custom event", null);
         }
     }
@@ -655,7 +668,7 @@ public class InfobipMobilemessagingPlugin implements FlutterPlugin, MethodCallHa
             final CustomEvent customEvent = CustomEventJson.fromJSON(jsonObject);
             mobileMessaging().submitEvent(customEvent, customEventResultListener(result));
         } catch (JSONException e) {
-            Log.w(TAG, e.getMessage(), e);
+            FlutterLogger.w(TAG, e.getMessage(), e);
             result.error(ErrorCodes.CUSTOM_EVENT.getErrorCode(), "Cannot send custom event", null);
         }
     }
@@ -769,11 +782,11 @@ public class InfobipMobilemessagingPlugin implements FlutterPlugin, MethodCallHa
 
     //region PermissionsRequester for Post Notifications Permission
     public void registerForAndroidRemoteNotifications() {
-        Log.w(TAG, "calling register");
+        FlutterLogger.w(TAG, "calling register");
         if (activity != null) {
             permissionsRequestManager.isRequiredPermissionsGranted(activity, this);
         } else {
-            Log.e(TAG, "Cannot register for remote notifications, activity does not exist");
+            FlutterLogger.e(TAG, "Cannot register for remote notifications, activity does not exist");
         }
     }
 
@@ -787,7 +800,7 @@ public class InfobipMobilemessagingPlugin implements FlutterPlugin, MethodCallHa
 
     @Override
     public void onPermissionGranted() {
-        Log.i(TAG, "Post Notification permission granted");
+        FlutterLogger.i(TAG, "Post Notification permission granted");
     }
 
     @NonNull
@@ -825,7 +838,7 @@ public class InfobipMobilemessagingPlugin implements FlutterPlugin, MethodCallHa
             MobileInboxFilterOptions filterOptions = mobileInboxFilterOptionsFromJSON(jsonObj);
             MobileInbox.getInstance(activity.getApplication()).fetchInbox(token, externalUserId, filterOptions, inboxResultListener(result));
         } catch (Exception e) {
-            Log.d(TAG, "Failed fetching inbox messages, invalid number of arguments");
+            FlutterLogger.d(TAG, "Failed fetching inbox messages, invalid number of arguments");
             result.error(ErrorCodes.INBOX_ERROR.getErrorCode(), e.getMessage(), e.getLocalizedMessage());
         }
     }
@@ -838,7 +851,7 @@ public class InfobipMobilemessagingPlugin implements FlutterPlugin, MethodCallHa
             MobileInboxFilterOptions filterOptions = mobileInboxFilterOptionsFromJSON(jsonObj);
             MobileInbox.getInstance(activity.getApplication()).fetchInbox(externalUserId, filterOptions, inboxResultListener(result));
         } catch (Exception e) {
-            Log.d(TAG, "Failed fetching inbox messages, invalid arguments");
+            FlutterLogger.d(TAG, "Failed fetching inbox messages, invalid arguments");
             result.error(ErrorCodes.INBOX_ERROR.getErrorCode(), e.getMessage(), e.getLocalizedMessage());
         }
     }
@@ -864,7 +877,7 @@ public class InfobipMobilemessagingPlugin implements FlutterPlugin, MethodCallHa
             String[] messageIds = resolveStringArray(json);
             MobileInbox.getInstance(activity.getApplication()).setSeen(externalUserId, messageIds, setSeenResultListener(result));
         } catch (Exception e) {
-            Log.d(TAG, "Failed setting inbox as seen: ");
+            FlutterLogger.d(TAG, "Failed setting inbox as seen: ");
             result.error(ErrorCodes.INBOX_ERROR.getErrorCode(), e.getMessage(), e.getLocalizedMessage());
         }
     }
@@ -890,7 +903,7 @@ public class InfobipMobilemessagingPlugin implements FlutterPlugin, MethodCallHa
             mobileMessaging().setMessagesSeen(messageIds);
             result.success(call.arguments.toString());
         } catch (Exception e) {
-            Log.d(TAG, "Failed marking messages as seen");
+            FlutterLogger.d(TAG, "Failed marking messages as seen");
             result.error(e.getMessage(), e.getMessage(), e.getLocalizedMessage());
         }
 
@@ -961,7 +974,7 @@ public class InfobipMobilemessagingPlugin implements FlutterPlugin, MethodCallHa
             if (streamHandler != null) {
                 streamHandler.sendEvent(EVENT_INAPPCHAT_JWT_REQUESTED, null, false);
             } else {
-                Log.e(TAG, "Flutter StreamHandler is null, cannot send request for JWT.");
+                FlutterLogger.e(TAG, "Flutter StreamHandler is null, cannot send request for JWT.");
             }
         }
 
@@ -984,11 +997,11 @@ public class InfobipMobilemessagingPlugin implements FlutterPlugin, MethodCallHa
                 if (activity != null) {
                     activity.runOnUiThread(runnable);
                 } else {
-                    Log.w(TAG, "Flutter activity is null, cannot resume with JWT value on UI thread.");
+                    FlutterLogger.w(TAG, "Flutter activity is null, cannot resume with JWT value on UI thread.");
                     runnable.run();
                 }
             } catch (Exception e) {
-                Log.w(TAG, "Could not resume with JWT value " + newJwt, e);
+                FlutterLogger.w(TAG, "Could not resume with JWT value " + newJwt, e);
             }
         }
 
@@ -1004,11 +1017,11 @@ public class InfobipMobilemessagingPlugin implements FlutterPlugin, MethodCallHa
                 if (activity != null) {
                     activity.runOnUiThread(runnable);
                 } else {
-                    Log.w(TAG, "Flutter activity is null, cannot resume with JWT error on UI thread.");
+                    FlutterLogger.w(TAG, "Flutter activity is null, cannot resume with JWT error on UI thread.");
                     runnable.run();
                 }
             } catch (Exception e) {
-                Log.w(TAG, "Could not resume with JWT error " + throwable.getMessage(), e);
+                FlutterLogger.w(TAG, "Could not resume with JWT error " + throwable.getMessage(), e);
             }
         }
 
@@ -1060,7 +1073,7 @@ public class InfobipMobilemessagingPlugin implements FlutterPlugin, MethodCallHa
         try {
             jwt = call.arguments();
         } catch (Exception e) {
-            Log.e(TAG, "Could not parse JWT argument: " + e.getMessage(), e);
+            FlutterLogger.e(TAG, "Could not parse JWT argument: " + e.getMessage(), e);
         }
 
         if (jwt != null && !jwt.isEmpty()) {
@@ -1076,7 +1089,7 @@ public class InfobipMobilemessagingPlugin implements FlutterPlugin, MethodCallHa
             @Nullable String title = call.arguments();
             InAppChat.getInstance(activity.getApplication()).setChatPushTitle(title);
         } catch (Exception e) {
-            Log.d(TAG, "Failed setting chat push title");
+            FlutterLogger.d(TAG, "Failed setting chat push title");
             result.error(e.getMessage(), e.getMessage(), e.getLocalizedMessage());
         }
     }
@@ -1086,7 +1099,7 @@ public class InfobipMobilemessagingPlugin implements FlutterPlugin, MethodCallHa
             @Nullable String body = call.arguments();
             InAppChat.getInstance(activity.getApplication()).setChatPushBody(body);
         } catch (Exception e) {
-            Log.d(TAG, "Failed setting chat push body");
+            FlutterLogger.d(TAG, "Failed setting chat push body");
             result.error(e.getMessage(), e.getMessage(), e.getLocalizedMessage());
         }
     }
@@ -1096,7 +1109,7 @@ public class InfobipMobilemessagingPlugin implements FlutterPlugin, MethodCallHa
             ChatCustomization customization = new Gson().fromJson(call.arguments.toString(), ChatCustomization.class);
             InAppChat.getInstance(activity.getApplication()).setTheme(customization.createTheme(activity));
         } catch (Exception e) {
-            Log.d(TAG, "Failed to set customization", e);
+            FlutterLogger.d(TAG, "Failed to set customization", e);
             result.error(e.getMessage(), e.getMessage(), e.getLocalizedMessage());
         }
     }

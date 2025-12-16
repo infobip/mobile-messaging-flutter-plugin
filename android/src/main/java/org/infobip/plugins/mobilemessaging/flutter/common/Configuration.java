@@ -25,6 +25,7 @@ public class Configuration {
     WebRTCUI webRTCUI;
     InAppChatCustomization inAppChatCustomization;
     String userDataJwt;
+    boolean logging;
 
     public static class WebRTCUI {
         private String configurationId;
@@ -681,5 +682,13 @@ public class Configuration {
 
     public void setFullFeaturedInAppsEnabled(boolean fullFeaturedInAppsEnabled) {
         this.fullFeaturedInAppsEnabled = fullFeaturedInAppsEnabled;
+    }
+
+    public boolean isLogging() {
+        return logging;
+    }
+
+    public void setLogging(boolean logging) {
+        this.logging = logging;
     }
 }
