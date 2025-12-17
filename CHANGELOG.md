@@ -1,3 +1,15 @@
+# 9.3.0
+## SDK Versions
+- Android [14.7.9 -> 14.9.3]
+
+## Added
+- Platform native logs can be routed to Flutter console by setting `Configuration.logging = true`
+- In-app chat message length limit 4096 characters
+- In-app chat input character counter
+- New method 'InfobipMobilemessaging.isChatAvailable()' to check in-app chat availability
+
+## Changed
+- `Configuration.IOSSettings.logging` replaced with new `Configuration.logging`
 # 9.2.4
 ## SDK Versions
 - iOS [14.1.1 → 14.1.3]
