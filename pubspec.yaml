@@ -1,6 +1,6 @@
 name: infobip_mobilemessaging
 description: Infobip Mobile Messaging Flutter Plugin for Push notifications, LiveChat, and WebRTC calls.
-version: 9.3.0
+version: 9.3.1
 homepage: https://github.com/infobip/mobile-messaging-flutter-plugin#readme
 repository: https://github.com/infobip/mobile-messaging-flutter-plugin
 issue_tracker: https://github.com/infobip/mobile-messaging-flutter-plugin/issues

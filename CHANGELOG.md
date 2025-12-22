@@ -1,3 +1,10 @@
+# 9.3.1
+## SDK Versions
+- Android 14.9.3
+- iOS 14.1.3
+ 
+## Fixed
+- Race conditions between Infobip Mobile Messaging library events
 # 9.3.0
 ## SDK Versions
 - Android [14.7.9 -> 14.9.3]
