@@ -36,32 +36,11 @@ class InfobipMobilemessaging {
   static const MethodChannel _channel = MethodChannel('infobip_mobilemessaging');
   static const EventChannel _libraryEvent = EventChannel('infobip_mobilemessaging/broadcast');
   static final StreamSubscription _libraryEventSubscription = _libraryEvent.receiveBroadcastStream().listen(
-    (dynamic event) {
-      log('Received event: $event');
-      LibraryEvent libraryEvent = LibraryEvent.fromJson(jsonDecode(event));
-      if (callbacks.containsKey(libraryEvent.eventName)) {
-        callbacks[libraryEvent.eventName]?.forEach((callback) {
-          log('Calling ${libraryEvent.eventName} with payload ${libraryEvent.payload == null ? 'NULL' : libraryEvent.payload.toString()}');
-          if (libraryEvent.eventName == LibraryEvent.messageReceived ||
-              libraryEvent.eventName == LibraryEvent.notificationTapped ||
-              libraryEvent.eventName == LibraryEvent.actionTapped) {
-            callback(Message.fromJson(libraryEvent.payload));
-          } else if (libraryEvent.eventName == LibraryEvent.installationUpdated) {
-            callback(Installation.fromJson(libraryEvent.payload).toString());
-          } else if (libraryEvent.eventName == LibraryEvent.userUpdated) {
-            callback(UserData.fromJson(libraryEvent.payload));
-          } else if (libraryEvent.payload != null) {
-            callback(libraryEvent.payload);
-          } else {
-            callback(libraryEvent.eventName);
-          }
-        });
-      }
-    },
+    _handleLibraryEvent,
     onError: (dynamic error) {
       log('Received error: ${error.message}');
     },
-    cancelOnError: true,
+    cancelOnError: false,
   );
 
   /// Callbacks to be invoked by Mobile Messaging plugin.
@@ -71,11 +50,98 @@ class InfobipMobilemessaging {
 
   static MessageStorage? _defaultMessageStorage;
 
-  static StreamSubscription? _platformNativeLogsSubscription;
+  /// Chat JWT provider callback and error handler
+  static Future<String> Function()? _chatJwtProvider;
+  static void Function(Object error)? _chatJwtProviderErrorHandler;
 
-  static StreamSubscription? _chatJwtRequestsSubscription;
+  /// Chat exception handler callback and error handler
+  static Future<void> Function(ChatException exception)? _chatExceptionHandler;
+  static void Function(Object error)? _chatExceptionErrorHandler;
 
-  static StreamSubscription? _chatExceptionHandlerSubscription;
+  /// Unified event dispatcher for all library events
+  static void _handleLibraryEvent(dynamic event) {
+    try {
+      log('Received event: $event');
+      LibraryEvent libraryEvent = LibraryEvent.fromJson(jsonDecode(event));
+
+      // Route to appropriate handler based on event type
+      switch (libraryEvent.eventName) {
+        case 'internal.platformNativeLogSent':
+          _handleNativeLog(libraryEvent);
+          break;
+
+        case 'inAppChat.internal.jwtRequested':
+          _handleChatJwtRequest(libraryEvent);
+          break;
+
+        case 'inAppChat.internal.exceptionReceived':
+          _handleChatException(libraryEvent);
+          break;
+
+        default:
+          _handleGeneralEvent(libraryEvent);
+          break;
+      }
+    } catch (error) {
+      log('Error processing event: $error');
+    }
+  }
+
+  /// Handles native log events
+  static void _handleNativeLog(LibraryEvent libraryEvent) {
+    NativeLog nativeLog = NativeLog.fromJson(libraryEvent.payload);
+    log(nativeLog.message);
+  }
+
+  /// Handles JWT request events
+  static void _handleChatJwtRequest(LibraryEvent libraryEvent) {
+    if (_chatJwtProvider == null) {
+      log('JWT requested but no provider set');
+      return;
+    }
+
+    _chatJwtProvider!().then((String jwt) {
+      _channel.invokeMethod('setChatJwt', jwt);
+    }).catchError((dynamic error) {
+      log('JWT provider error: $error');
+      _channel.invokeMethod('setChatJwt', null);
+      _chatJwtProviderErrorHandler?.call(error);
+    });
+  }
+
+  /// Handles chat exception events
+  static void _handleChatException(LibraryEvent libraryEvent) {
+    if (_chatExceptionHandler != null) {
+      try {
+        _chatExceptionHandler!(ChatException.fromJson(libraryEvent.payload));
+      } catch (error) {
+        _chatExceptionErrorHandler?.call(error);
+      }
+    }
+  }
+
+  /// Handles general library events
+  /// Dispatches events to registered callbacks
+  static void _handleGeneralEvent(LibraryEvent libraryEvent) {
+    if (callbacks.containsKey(libraryEvent.eventName)) {
+      callbacks[libraryEvent.eventName]?.forEach((callback) {
+        log('Calling ${libraryEvent.eventName} with payload ${libraryEvent.payload == null ? 'NULL' : libraryEvent.payload.toString()}');
+        if (libraryEvent.eventName == LibraryEvent.messageReceived ||
+            libraryEvent.eventName == LibraryEvent.notificationTapped ||
+            libraryEvent.eventName == LibraryEvent.actionTapped) {
+          callback(Message.fromJson(libraryEvent.payload));
+        } else if (libraryEvent.eventName == LibraryEvent.installationUpdated) {
+          callback(Installation.fromJson(libraryEvent.payload).toString());
+        } else if (libraryEvent.eventName == LibraryEvent.userUpdated) {
+          callback(UserData.fromJson(libraryEvent.payload));
+        } else if (libraryEvent.payload != null) {
+          callback(libraryEvent.payload);
+        } else {
+          callback(libraryEvent.eventName);
+        }
+      });
+    }
+  }
 
   /// Subscribes to [LibraryEvent] to perform provided callback function.
   static void on(String eventName, Function callback) async {
@@ -113,33 +179,8 @@ class InfobipMobilemessaging {
     InfobipMobilemessaging._configuration = configuration;
     String str = await _getVersion();
     configuration.pluginVersion = str;
-    if (configuration.logging ?? false) {
-      subscribePlatformNativeLogs();
-    }
 
     await _channel.invokeMethod('init', jsonEncode(configuration.toJson()));
-  }
-
-  /// Starts subscription to platform native logs.
-  static Future<void> subscribePlatformNativeLogs() async {
-    _platformNativeLogsSubscription?.cancel();
-    _platformNativeLogsSubscription = _libraryEvent.receiveBroadcastStream().listen(
-      (dynamic event) {
-        try {
-          LibraryEvent libraryEvent = LibraryEvent.fromJson(jsonDecode(event));
-          if (libraryEvent.eventName == 'internal.platformNativeLogSent') {
-            NativeLog nativeLog = NativeLog.fromJson(libraryEvent.payload);
-            log(nativeLog.message);
-          }
-        } catch (error) {
-          log('Failed parse native log event: $error');
-        }
-      },
-      onError: (dynamic error) {
-        log('Failed to subscribe native logs: $error');
-      },
-      cancelOnError: false,
-    );
   }
 
   /// Checks whether the in-app chat is ready to be shown to the user
@@ -310,33 +351,9 @@ class InfobipMobilemessaging {
     Future<String> Function() jwtProvider, [
     void Function(Object error)? onError,
   ]) async {
-    handleError(dynamic error) {
-      _channel.invokeMethod('setChatJwt', null);
-      onError?.call(error);
-    }
-
-    _chatJwtRequestsSubscription?.cancel();
-    _chatJwtRequestsSubscription = _libraryEvent.receiveBroadcastStream().listen(
-      (dynamic event) {
-        try {
-          LibraryEvent libraryEvent = LibraryEvent.fromJson(jsonDecode(event));
-          if (libraryEvent.eventName == 'inAppChat.internal.jwtRequested') {
-            jwtProvider().then((String jwt) {
-              _channel.invokeMethod('setChatJwt', jwt);
-            }).catchError((dynamic error) {
-              handleError(error);
-            });
-          }
-        } catch (error) {
-          handleError(error);
-        }
-      },
-      onError: (dynamic error) {
-        handleError(error);
-      },
-      cancelOnError: false,
-    );
-
+    _chatJwtProvider = jwtProvider;
+    _chatJwtProviderErrorHandler = onError;
+    _libraryEventSubscription.resume();
     await _channel.invokeMethod('setChatJwtProvider');
   }
 
@@ -359,28 +376,10 @@ class InfobipMobilemessaging {
     Future<void> Function(ChatException exception)? exceptionHandler, [
     void Function(Object error)? onError,
   ]) async {
+    _chatExceptionHandler = exceptionHandler;
+    _chatExceptionErrorHandler = onError;
     if (exceptionHandler != null) {
-      handleError(dynamic error) {
-        onError?.call(error);
-      }
-
-      _chatExceptionHandlerSubscription?.cancel();
-      _chatExceptionHandlerSubscription = _libraryEvent.receiveBroadcastStream().listen(
-        (dynamic event) {
-          try {
-            LibraryEvent libraryEvent = LibraryEvent.fromJson(jsonDecode(event));
-            if (libraryEvent.eventName == 'inAppChat.internal.exceptionReceived') {
-              exceptionHandler(ChatException.fromJson(libraryEvent.payload));
-            }
-          } catch (error) {
-            handleError(error);
-          }
-        },
-        onError: (dynamic error) {
-          handleError(error);
-        },
-        cancelOnError: false,
-      );
+      _libraryEventSubscription.resume();
     }
     await _channel.invokeMethod('setChatExceptionHandler', exceptionHandler != null);
   }
