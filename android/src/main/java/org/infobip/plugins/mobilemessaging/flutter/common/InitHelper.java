@@ -1,9 +1,8 @@
+//   InitHelper.java
+//   MobileMessagingFlutter
 //
-//  InitHelper.java
-//  MobileMessagingFlutter
-//
-//  Copyright (c) 2016-2025 Infobip Limited
-//  Licensed under the Apache License, Version 2.0
+//   Copyright (c) 2016-2026 Infobip Limited
+//   Licensed under the Apache License, Version 2.0
 //
 
 package org.infobip.plugins.mobilemessaging.flutter.common;
@@ -242,11 +241,45 @@ public class InitHelper {
                         new InAppChatStyle(
                                 Color.parseColor(inAppChatCustomization.getChatBackgroundColor()),
                                 Color.parseColor(inAppChatCustomization.getAndroid().getChatProgressBarColor()),
+
+                                // Deprecated network connection error parameters
+                                null, // networkConnectionText (deprecated)
+                                null, // networkConnectionTextRes (deprecated)
+                                null, // networkConnectionTextAppearance (deprecated)
+                                0, // networkConnectionTextColor (deprecated)
+                                0, // networkConnectionLabelBackgroundColor (deprecated)
+
+                                // Current network connection error parameters
                                 inAppChatCustomization.getAndroid().getChatNetworkConnectionErrorText(),
                                 null,
                                 getResId(activity.getResources(), inAppChatCustomization.getAndroid().getChatNetworkConnectionErrorTextAppearanceRes(), activity.getPackageName()),
                                 Color.parseColor(inAppChatCustomization.getNoConnectionAlertTextColor()),
-                                Color.parseColor(inAppChatCustomization.getNoConnectionAlertBackgroundColor())
+                                Color.parseColor(inAppChatCustomization.getNoConnectionAlertBackgroundColor()),
+                                loadDrawable(inAppChatCustomization.getAndroid().getChatNetworkConnectionErrorIcon(), loader),
+                                Color.parseColor(inAppChatCustomization.getAndroid().getChatNetworkConnectionErrorIconTint()),
+
+
+                                inAppChatCustomization.getChatBannerErrorTextColor() != null ? Color.parseColor(inAppChatCustomization.getChatBannerErrorTextColor()) : null,
+                                inAppChatCustomization.getChatBannerErrorTextAppearance() != null ? getResId(activity.getResources(), inAppChatCustomization.getChatBannerErrorTextAppearance(), activity.getPackageName()) : null,
+                                inAppChatCustomization.getChatBannerErrorBackgroundColor() != null ? Color.parseColor(inAppChatCustomization.getChatBannerErrorBackgroundColor()) : null,
+                                inAppChatCustomization.getChatBannerErrorIcon() != null ? loadDrawable(inAppChatCustomization.getChatBannerErrorIcon(), loader) : null,
+                                inAppChatCustomization.getChatBannerErrorIconTint() != null ? Color.parseColor(inAppChatCustomization.getChatBannerErrorIconTint()) : null,
+
+                                inAppChatCustomization.getChatFullScreenErrorTitleText(),
+                                null,
+                                Color.parseColor(inAppChatCustomization.getChatFullScreenErrorTitleTextColor()),
+                                getResId(activity.getResources(), inAppChatCustomization.getChatFullScreenErrorTitleTextAppearance(), activity.getPackageName()),
+                                inAppChatCustomization.getChatFullScreenErrorDescriptionText(),
+                                null,
+                                Color.parseColor(inAppChatCustomization.getChatFullScreenErrorDescriptionTextColor()),
+                                getResId(activity.getResources(), inAppChatCustomization.getChatFullScreenErrorDescriptionTextAppearance(), activity.getPackageName()),
+                                Color.parseColor(inAppChatCustomization.getChatFullScreenErrorBackgroundColor()),
+                                loadDrawable(inAppChatCustomization.getChatFullScreenErrorIcon(), loader),
+                                Color.parseColor(inAppChatCustomization.getChatFullScreenErrorIconTint()),
+                                inAppChatCustomization.getChatFullScreenErrorRefreshButtonText(),
+                                null,
+                                Color.parseColor(inAppChatCustomization.getChatFullScreenErrorRefreshButtonTextColor()),
+                                inAppChatCustomization.getChatFullScreenErrorRefreshButtonVisible()
                         ),
                         new InAppChatInputViewStyle(
                                 getResId(activity.getResources(), inAppChatCustomization.getAndroid().getChatInputTextAppearance(), activity.getPackageName()),

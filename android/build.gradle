@@ -1,3 +1,10 @@
+//   build.gradle
+//   MobileMessagingFlutter
+//
+//   Copyright (c) 2016-2026 Infobip Limited
+//   Licensed under the Apache License, Version 2.0
+//
+
 plugins {
     id "com.android.library"
 }
@@ -15,7 +22,7 @@ rootProject.allprojects {
 }
 
 ext {
-    mm_version = "14.9.3"
+    mm_version = "14.11.0"
     mm_minSdkVersion = 23
     mm_compileSdkVersion = 36
     mm_kotlinVersion = "2.1.21"

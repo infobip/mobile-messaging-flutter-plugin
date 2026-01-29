@@ -131,22 +131,19 @@ class MobileMessagingEventsManager: NSObject, FlutterStreamHandler {
         default: break
         }
 
-        do {
-            _eventSink?(String(data: try JSONSerialization.data(withJSONObject: ["eventName": eventName, "payload": notificationResult]), encoding: String.Encoding.utf8))
-        } catch {
-            //
-        }
+        propagate(eventName, notificationResult)
     }
     
-    // Used by chat for native to flutter async communication
-    func propagate(_ eventName: String, _ payload: [String: Any]? = nil) {
+    func propagate(_ eventName: String? = "", _ payload: Any? = nil) {
         do {
-            _eventSink?(String(data: try JSONSerialization.data(withJSONObject: ["eventName": eventName, "payload": payload ?? ""]), encoding: String.Encoding.utf8))
+            let eventData = String(data: try JSONSerialization.data(withJSONObject: ["eventName": eventName, "payload": payload ?? ""]), encoding: String.Encoding.utf8)
+            DispatchQueue.main.async { [weak self] in // Required as Flutter's EventSink is not thread-safe:  https://docs.flutter.dev/platform-integration/platform-channels#channels-and-platform-threading
+                self?._eventSink?(eventData)
+            }
         } catch {
             MMLogDebug("Failed to propagate event\(eventName)")
         }
     }
-    
 }
 
 class ChatMobileMessagingEventsManager: MobileMessagingEventsManager {
@@ -194,11 +191,6 @@ class ChatMobileMessagingEventsManager: MobileMessagingEventsManager {
         default:
             break
         }
-        
-        do {
-            _eventSink?(String(data: try JSONSerialization.data(withJSONObject: ["eventName": eventName, "payload": notificationResult]), encoding: String.Encoding.utf8))
-        } catch {
-            //
-        }
+        propagate(eventName, notificationResult)
     }
 }

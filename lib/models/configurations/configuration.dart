@@ -1,9 +1,8 @@
+//   configuration.dart
+//   MobileMessagingFlutter
 //
-//  configuration.dart
-//  MobileMessagingFlutter
-//
-//  Copyright (c) 2016-2025 Infobip Limited
-//  Licensed under the Apache License, Version 2.0
+//   Copyright (c) 2016-2026 Infobip Limited
+//   Licensed under the Apache License, Version 2.0
 //
 
 import '../message_storage/default_message_storage.dart';
@@ -45,7 +44,7 @@ class Configuration {
   final InAppChatCustomization? inAppChatCustomization;
 
   final String? userDataJwt;
-  
+
    /// Enables logging in Debug runs.
   final bool? logging;
 
@@ -385,6 +384,29 @@ class ChatCustomization {
   final String? networkErrorTextColor;
   final String? networkErrorTextAppearance;
   final String? networkErrorLabelBackgroundColor;
+  final String? networkErrorIcon; // android only
+  final String? networkErrorIconTint; // android only
+
+  // Snackbar error
+  final String? chatBannerErrorTextColor;
+  final String? chatBannerErrorTextAppearance; // android only
+  final String? chatBannerErrorBackgroundColor;
+  final String? chatBannerErrorIcon;
+  final String? chatBannerErrorIconTint;
+
+  // ErrorScreen
+  final String? chatFullScreenErrorTitleText;
+  final String? chatFullScreenErrorTitleTextColor;
+  final String? chatFullScreenErrorTitleTextAppearance;
+  final String? chatFullScreenErrorDescriptionText;
+  final String? chatFullScreenErrorDescriptionTextColor;
+  final String? chatFullScreenErrorDescriptionTextAppearance;
+  final String? chatFullScreenErrorBackgroundColor;
+  final String? chatFullScreenErrorIcon;
+  final String? chatFullScreenErrorIconTint;
+  final String? chatFullScreenErrorRefreshButtonText;
+  final String? chatFullScreenErrorRefreshButtonTextColor;
+  final bool? chatFullScreenErrorRefreshButtonVisible;
 
   // Chat
   final String? chatBackgroundColor;
@@ -423,6 +445,25 @@ class ChatCustomization {
     this.networkErrorTextColor,
     this.networkErrorTextAppearance,
     this.networkErrorLabelBackgroundColor,
+    this.networkErrorIcon,
+    this.networkErrorIconTint,
+    this.chatBannerErrorTextColor,
+    this.chatBannerErrorTextAppearance,
+    this.chatBannerErrorBackgroundColor,
+    this.chatBannerErrorIcon,
+    this.chatBannerErrorIconTint,
+    this.chatFullScreenErrorTitleText,
+    this.chatFullScreenErrorTitleTextColor,
+    this.chatFullScreenErrorTitleTextAppearance,
+    this.chatFullScreenErrorDescriptionText,
+    this.chatFullScreenErrorDescriptionTextColor,
+    this.chatFullScreenErrorDescriptionTextAppearance,
+    this.chatFullScreenErrorBackgroundColor,
+    this.chatFullScreenErrorIcon,
+    this.chatFullScreenErrorIconTint,
+    this.chatFullScreenErrorRefreshButtonText,
+    this.chatFullScreenErrorRefreshButtonTextColor,
+    this.chatFullScreenErrorRefreshButtonVisible,
     this.chatBackgroundColor,
     this.chatProgressBarColor,
     this.chatInputTextAppearance,
@@ -458,6 +499,25 @@ class ChatCustomization {
         'networkErrorTextColor': networkErrorTextColor,
         'networkErrorTextAppearance': networkErrorTextAppearance,
         'networkErrorLabelBackgroundColor': networkErrorLabelBackgroundColor,
+        'networkErrorIcon': networkErrorIcon,
+        'networkErrorIconTint': networkErrorIconTint,
+        'chatBannerErrorTextColor': chatBannerErrorTextColor,
+        'chatBannerErrorTextAppearance': chatBannerErrorTextAppearance,
+        'chatBannerErrorBackgroundColor': chatBannerErrorBackgroundColor,
+        'chatBannerErrorIcon': chatBannerErrorIcon,
+        'chatBannerErrorIconTint': chatBannerErrorIconTint,
+        'chatFullScreenErrorTitleText': chatFullScreenErrorTitleText,
+        'chatFullScreenErrorTitleTextColor': chatFullScreenErrorTitleTextColor,
+        'chatFullScreenErrorTitleTextAppearance': chatFullScreenErrorTitleTextAppearance,
+        'chatFullScreenErrorDescriptionText': chatFullScreenErrorDescriptionText,
+        'chatFullScreenErrorDescriptionTextColor': chatFullScreenErrorDescriptionTextColor,
+        'chatFullScreenErrorDescriptionTextAppearance': chatFullScreenErrorDescriptionTextAppearance,
+        'chatFullScreenErrorBackgroundColor': chatFullScreenErrorBackgroundColor,
+        'chatFullScreenErrorIcon': chatFullScreenErrorIcon,
+        'chatFullScreenErrorIconTint': chatFullScreenErrorIconTint,
+        'chatFullScreenErrorRefreshButtonText': chatFullScreenErrorRefreshButtonText,
+        'chatFullScreenErrorRefreshButtonTextColor': chatFullScreenErrorRefreshButtonTextColor,
+        'chatFullScreenErrorRefreshButtonVisible': chatFullScreenErrorRefreshButtonVisible,
         'chatBackgroundColor': chatBackgroundColor,
         'chatProgressBarColor': chatProgressBarColor,
         'chatInputTextAppearance': chatInputTextAppearance,
@@ -500,6 +560,23 @@ class InAppChatCustomization {
   final String? sendButtonIcon;
   final String? attachmentButtonIcon;
   final bool? chatInputSeparatorVisible;
+  final String? chatBannerErrorTextColor;
+  final String? chatBannerErrorTextAppearance;
+  final String? chatBannerErrorBackgroundColor;
+  final String? chatBannerErrorIcon;
+  final String? chatBannerErrorIconTint;
+  final String? chatFullScreenErrorTitleText;
+  final String? chatFullScreenErrorTitleTextColor;
+  final String? chatFullScreenErrorTitleTextAppearance;
+  final String? chatFullScreenErrorDescriptionText;
+  final String? chatFullScreenErrorDescriptionTextColor;
+  final String? chatFullScreenErrorDescriptionTextAppearance;
+  final String? chatFullScreenErrorBackgroundColor;
+  final String? chatFullScreenErrorIcon;
+  final String? chatFullScreenErrorIconTint;
+  final String? chatFullScreenErrorRefreshButtonText;
+  final String? chatFullScreenErrorRefreshButtonTextColor;
+  final bool? chatFullScreenErrorRefreshButtonVisible;
   final AndroidInAppChatCustomization? android;
   final IOSInAppChatCustomization? ios;
 
@@ -519,6 +596,23 @@ class InAppChatCustomization {
     this.sendButtonIcon,
     this.attachmentButtonIcon,
     this.chatInputSeparatorVisible,
+    this.chatBannerErrorTextColor,
+    this.chatBannerErrorTextAppearance,
+    this.chatBannerErrorBackgroundColor,
+    this.chatBannerErrorIcon,
+    this.chatBannerErrorIconTint,
+    this.chatFullScreenErrorTitleText,
+    this.chatFullScreenErrorTitleTextColor,
+    this.chatFullScreenErrorTitleTextAppearance,
+    this.chatFullScreenErrorDescriptionText,
+    this.chatFullScreenErrorDescriptionTextColor,
+    this.chatFullScreenErrorDescriptionTextAppearance,
+    this.chatFullScreenErrorBackgroundColor,
+    this.chatFullScreenErrorIcon,
+    this.chatFullScreenErrorIconTint,
+    this.chatFullScreenErrorRefreshButtonText,
+    this.chatFullScreenErrorRefreshButtonTextColor,
+    this.chatFullScreenErrorRefreshButtonVisible,
     this.android,
     this.ios,
   });
@@ -539,6 +633,23 @@ class InAppChatCustomization {
         'sendButtonIcon': sendButtonIcon,
         'attachmentButtonIcon': attachmentButtonIcon,
         'chatInputSeparatorVisible': chatInputSeparatorVisible,
+        'chatBannerErrorTextColor': chatBannerErrorTextColor,
+        'chatBannerErrorTextAppearance': chatBannerErrorTextAppearance,
+        'chatBannerErrorBackgroundColor': chatBannerErrorBackgroundColor,
+        'chatBannerErrorIcon': chatBannerErrorIcon,
+        'chatBannerErrorIconTint': chatBannerErrorIconTint,
+        'chatFullScreenErrorTitleText': chatFullScreenErrorTitleText,
+        'chatFullScreenErrorTitleTextColor': chatFullScreenErrorTitleTextColor,
+        'chatFullScreenErrorTitleTextAppearance': chatFullScreenErrorTitleTextAppearance,
+        'chatFullScreenErrorDescriptionText': chatFullScreenErrorDescriptionText,
+        'chatFullScreenErrorDescriptionTextColor': chatFullScreenErrorDescriptionTextColor,
+        'chatFullScreenErrorDescriptionTextAppearance': chatFullScreenErrorDescriptionTextAppearance,
+        'chatFullScreenErrorBackgroundColor': chatFullScreenErrorBackgroundColor,
+        'chatFullScreenErrorIcon': chatFullScreenErrorIcon,
+        'chatFullScreenErrorIconTint': chatFullScreenErrorIconTint,
+        'chatFullScreenErrorRefreshButtonText': chatFullScreenErrorRefreshButtonText,
+        'chatFullScreenErrorRefreshButtonTextColor': chatFullScreenErrorRefreshButtonTextColor,
+        'chatFullScreenErrorRefreshButtonVisible': chatFullScreenErrorRefreshButtonVisible,
         'android': android?.toJson(),
         'ios': ios?.toJson(),
       };
@@ -563,8 +674,11 @@ class AndroidInAppChatCustomization {
 
   //chat
   final String? chatProgressBarColor;
-  final String? chatNetworkConnectionErrorTextAppearanceRes;
+
   final String? chatNetworkConnectionErrorText;
+  final String? chatNetworkConnectionErrorTextAppearanceRes;
+  final String? chatNetworkConnectionErrorIcon;
+  final String? chatNetworkConnectionErrorIconTint;
 
   //input
   final String? chatInputTextColor;
@@ -595,8 +709,10 @@ class AndroidInAppChatCustomization {
     this.chatMenuItemSaveAttachmentIcon,
     //chat
     this.chatProgressBarColor,
-    this.chatNetworkConnectionErrorTextAppearanceRes,
     this.chatNetworkConnectionErrorText,
+    this.chatNetworkConnectionErrorTextAppearanceRes,
+    this.chatNetworkConnectionErrorIcon,
+    this.chatNetworkConnectionErrorIconTint,
     //input
     this.chatInputTextColor,
     this.chatInputAttachmentIconTint,
@@ -627,8 +743,10 @@ class AndroidInAppChatCustomization {
         'chatMenuItemSaveAttachmentIcon': chatMenuItemSaveAttachmentIcon,
         //chat
         'chatProgressBarColor': chatProgressBarColor,
-        'chatNetworkConnectionErrorTextAppearanceRes': chatNetworkConnectionErrorTextAppearanceRes,
         'chatNetworkConnectionErrorText': chatNetworkConnectionErrorText,
+        'chatNetworkConnectionErrorTextAppearanceRes': chatNetworkConnectionErrorTextAppearanceRes,
+        'chatNetworkConnectionErrorIcon': chatNetworkConnectionErrorIcon,
+        'chatNetworkConnectionErrorIconTint': chatNetworkConnectionErrorIconTint,
         //input
         'chatInputTextColor': chatInputTextColor,
         'chatInputAttachmentIconTint': chatInputAttachmentIconTint,

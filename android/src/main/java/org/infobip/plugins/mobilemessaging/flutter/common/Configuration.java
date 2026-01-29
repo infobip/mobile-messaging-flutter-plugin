@@ -1,9 +1,8 @@
+//   Configuration.java
+//   MobileMessagingFlutter
 //
-//  Configuration.java
-//  MobileMessagingFlutter
-//
-//  Copyright (c) 2016-2025 Infobip Limited
-//  Licensed under the Apache License, Version 2.0
+//   Copyright (c) 2016-2026 Infobip Limited
+//   Licensed under the Apache License, Version 2.0
 //
 
 package org.infobip.plugins.mobilemessaging.flutter.common;
@@ -256,6 +255,25 @@ public class Configuration {
         String chatInputCharCounterTextAppearance;
         String chatInputCharCounterDefaultColor;
         String chatInputCharCounterAlertColor;
+        // Snackbar error properties
+        String chatBannerErrorTextColor;
+        String chatBannerErrorTextAppearance;
+        String chatBannerErrorBackgroundColor;
+        String chatBannerErrorIcon;
+        String chatBannerErrorIconTint;
+        // Error screen properties
+        String chatFullScreenErrorTitleText;
+        String chatFullScreenErrorTitleTextColor;
+        String chatFullScreenErrorTitleTextAppearance;
+        String chatFullScreenErrorDescriptionText;
+        String chatFullScreenErrorDescriptionTextColor;
+        String chatFullScreenErrorDescriptionTextAppearance;
+        String chatFullScreenErrorBackgroundColor;
+        String chatFullScreenErrorIcon;
+        String chatFullScreenErrorIconTint;
+        String chatFullScreenErrorRefreshButtonText;
+        String chatFullScreenErrorRefreshButtonTextColor;
+        Boolean chatFullScreenErrorRefreshButtonVisible;
         AndroidInAppChatCustomization android;
 
         public String getWidgetTheme() {
@@ -402,6 +420,142 @@ public class Configuration {
             this.chatInputCharCounterAlertColor = chatInputCharCounterAlertColor;
         }
 
+        public String getChatBannerErrorTextColor() {
+            return chatBannerErrorTextColor;
+        }
+
+        public void setChatBannerErrorTextColor(String chatBannerErrorTextColor) {
+            this.chatBannerErrorTextColor = chatBannerErrorTextColor;
+        }
+
+        public String getChatBannerErrorTextAppearance() {
+            return chatBannerErrorTextAppearance;
+        }
+
+        public void setChatBannerErrorTextAppearance(String chatBannerErrorTextAppearance) {
+            this.chatBannerErrorTextAppearance = chatBannerErrorTextAppearance;
+        }
+
+        public String getChatBannerErrorBackgroundColor() {
+            return chatBannerErrorBackgroundColor;
+        }
+
+        public void setChatBannerErrorBackgroundColor(String chatBannerErrorBackgroundColor) {
+            this.chatBannerErrorBackgroundColor = chatBannerErrorBackgroundColor;
+        }
+
+        public String getChatBannerErrorIcon() {
+            return chatBannerErrorIcon;
+        }
+
+        public void setChatBannerErrorIcon(String chatBannerErrorIcon) {
+            this.chatBannerErrorIcon = chatBannerErrorIcon;
+        }
+
+        public String getChatBannerErrorIconTint() {
+            return chatBannerErrorIconTint;
+        }
+
+        public void setChatBannerErrorIconTint(String chatBannerErrorIconTint) {
+            this.chatBannerErrorIconTint = chatBannerErrorIconTint;
+        }
+
+        public String getChatFullScreenErrorTitleText() {
+            return chatFullScreenErrorTitleText;
+        }
+
+        public void setChatFullScreenErrorTitleText(String chatFullScreenErrorTitleText) {
+            this.chatFullScreenErrorTitleText = chatFullScreenErrorTitleText;
+        }
+
+        public String getChatFullScreenErrorTitleTextColor() {
+            return chatFullScreenErrorTitleTextColor;
+        }
+
+        public void setChatFullScreenErrorTitleTextColor(String chatFullScreenErrorTitleTextColor) {
+            this.chatFullScreenErrorTitleTextColor = chatFullScreenErrorTitleTextColor;
+        }
+
+        public String getChatFullScreenErrorTitleTextAppearance() {
+            return chatFullScreenErrorTitleTextAppearance;
+        }
+
+        public void setChatFullScreenErrorTitleTextAppearance(String chatFullScreenErrorTitleTextAppearance) {
+            this.chatFullScreenErrorTitleTextAppearance = chatFullScreenErrorTitleTextAppearance;
+        }
+
+        public String getChatFullScreenErrorDescriptionText() {
+            return chatFullScreenErrorDescriptionText;
+        }
+
+        public void setChatFullScreenErrorDescriptionText(String chatFullScreenErrorDescriptionText) {
+            this.chatFullScreenErrorDescriptionText = chatFullScreenErrorDescriptionText;
+        }
+
+        public String getChatFullScreenErrorDescriptionTextColor() {
+            return chatFullScreenErrorDescriptionTextColor;
+        }
+
+        public void setChatFullScreenErrorDescriptionTextColor(String chatFullScreenErrorDescriptionTextColor) {
+            this.chatFullScreenErrorDescriptionTextColor = chatFullScreenErrorDescriptionTextColor;
+        }
+
+        public String getChatFullScreenErrorDescriptionTextAppearance() {
+            return chatFullScreenErrorDescriptionTextAppearance;
+        }
+
+        public void setChatFullScreenErrorDescriptionTextAppearance(String chatFullScreenErrorDescriptionTextAppearance) {
+            this.chatFullScreenErrorDescriptionTextAppearance = chatFullScreenErrorDescriptionTextAppearance;
+        }
+
+        public String getChatFullScreenErrorBackgroundColor() {
+            return chatFullScreenErrorBackgroundColor;
+        }
+
+        public void setChatFullScreenErrorBackgroundColor(String chatFullScreenErrorBackgroundColor) {
+            this.chatFullScreenErrorBackgroundColor = chatFullScreenErrorBackgroundColor;
+        }
+
+        public String getChatFullScreenErrorIcon() {
+            return chatFullScreenErrorIcon;
+        }
+
+        public void setChatFullScreenErrorIcon(String chatFullScreenErrorIcon) {
+            this.chatFullScreenErrorIcon = chatFullScreenErrorIcon;
+        }
+
+        public String getChatFullScreenErrorIconTint() {
+            return chatFullScreenErrorIconTint;
+        }
+
+        public void setChatFullScreenErrorIconTint(String chatFullScreenErrorIconTint) {
+            this.chatFullScreenErrorIconTint = chatFullScreenErrorIconTint;
+        }
+
+        public String getChatFullScreenErrorRefreshButtonText() {
+            return chatFullScreenErrorRefreshButtonText;
+        }
+
+        public void setChatFullScreenErrorRefreshButtonText(String chatFullScreenErrorRefreshButtonText) {
+            this.chatFullScreenErrorRefreshButtonText = chatFullScreenErrorRefreshButtonText;
+        }
+
+        public String getChatFullScreenErrorRefreshButtonTextColor() {
+            return chatFullScreenErrorRefreshButtonTextColor;
+        }
+
+        public void setChatFullScreenErrorRefreshButtonTextColor(String chatFullScreenErrorRefreshButtonTextColor) {
+            this.chatFullScreenErrorRefreshButtonTextColor = chatFullScreenErrorRefreshButtonTextColor;
+        }
+
+        public Boolean getChatFullScreenErrorRefreshButtonVisible() {
+            return chatFullScreenErrorRefreshButtonVisible;
+        }
+
+        public void setChatFullScreenErrorRefreshButtonVisible(Boolean chatFullScreenErrorRefreshButtonVisible) {
+            this.chatFullScreenErrorRefreshButtonVisible = chatFullScreenErrorRefreshButtonVisible;
+        }
+
         public AndroidInAppChatCustomization getAndroid() {
             return android;
         }
@@ -425,8 +579,10 @@ public class Configuration {
         Boolean chatSubtitleCentered;
         Boolean chatTitleCentered;
         String chatInputTextAppearance;
-        String chatNetworkConnectionErrorTextAppearanceRes;
         String chatNetworkConnectionErrorText;
+        String chatNetworkConnectionErrorTextAppearanceRes;
+        String chatNetworkConnectionErrorIcon;
+        String chatNetworkConnectionErrorIconTint;
         String chatNavigationIcon;
         Boolean chatStatusBarColorLight;
         String chatStatusBarBackgroundColor;
@@ -542,12 +698,36 @@ public class Configuration {
             this.chatInputTextAppearance = chatInputTextAppearance;
         }
 
+        public String getChatNetworkConnectionErrorText() {
+            return chatNetworkConnectionErrorText;
+        }
+
+        public void setChatNetworkConnectionErrorText(String chatNetworkConnectionErrorText) {
+            this.chatNetworkConnectionErrorText = chatNetworkConnectionErrorText;
+        }
+
         public String getChatNetworkConnectionErrorTextAppearanceRes() {
             return chatNetworkConnectionErrorTextAppearanceRes;
         }
 
         public void setChatNetworkConnectionErrorTextAppearanceRes(String chatNetworkConnectionErrorTextAppearanceRes) {
             this.chatNetworkConnectionErrorTextAppearanceRes = chatNetworkConnectionErrorTextAppearanceRes;
+        }
+
+        public String getChatNetworkConnectionErrorIcon() {
+            return chatNetworkConnectionErrorIcon;
+        }
+
+        public void setChatNetworkConnectionErrorIcon(String chatNetworkConnectionErrorIcon) {
+            this.chatNetworkConnectionErrorIcon = chatNetworkConnectionErrorIcon;
+        }
+
+        public String getChatNetworkConnectionErrorIconTint() {
+            return chatNetworkConnectionErrorIconTint;
+        }
+
+        public void setChatNetworkConnectionErrorIconTint(String chatNetworkConnectionErrorIconTint) {
+            this.chatNetworkConnectionErrorIconTint = chatNetworkConnectionErrorIconTint;
         }
 
         public String getChatNavigationIcon() {
@@ -572,14 +752,6 @@ public class Configuration {
 
         public void setChatTitleTextAppearanceRes(String chatTitleTextAppearanceRes) {
             this.chatTitleTextAppearanceRes = chatTitleTextAppearanceRes;
-        }
-
-        public String getChatNetworkConnectionErrorText() {
-            return chatNetworkConnectionErrorText;
-        }
-
-        public void setChatNetworkConnectionErrorText(String chatNetworkConnectionErrorText) {
-            this.chatNetworkConnectionErrorText = chatNetworkConnectionErrorText;
         }
 
         public String getChatStatusBarBackgroundColor() {

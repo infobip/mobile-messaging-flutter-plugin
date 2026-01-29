@@ -1,9 +1,8 @@
+//   chat_customization.dart
+//   MobileMessagingFlutter
 //
-//  chat_customization.dart
-//  MobileMessagingFlutter
-//
-//  Copyright (c) 2016-2025 Infobip Limited
-//  Licensed under the Apache License, Version 2.0
+//   Copyright (c) 2016-2026 Infobip Limited
+//   Licensed under the Apache License, Version 2.0
 //
 
 library chat_customization;
@@ -42,8 +41,25 @@ ChatCustomization customBranding = ChatCustomization(
   attachmentPreviewToolbarSaveMenuItemIcon: 'assets/ic_download.png',
   attachmentPreviewToolbarMenuItemsIconTint: '#9E9E9E',
   networkErrorText: 'Network error',
-  networkErrorTextColor: '#FFFFFF',
-  networkErrorLabelBackgroundColor: '#212121',
+  networkErrorTextColor: '#FF5722',
+  networkErrorTextAppearance: 'TextAppearance_AppCompat_Medium',
+  networkErrorLabelBackgroundColor: '#3F51B5',
+  networkErrorIconTint: '#FFC107',
+  chatBannerErrorTextColor: '#FF6F00',
+  chatBannerErrorTextAppearance: 'TextAppearance_AppCompat_Medium',
+  chatBannerErrorBackgroundColor: '#FFE0B2',
+  chatBannerErrorIconTint: '#E65100',
+  chatFullScreenErrorTitleText: 'Oops! Something went wrong',
+  chatFullScreenErrorTitleTextColor: '#E91E63',
+  chatFullScreenErrorTitleTextAppearance: 'TextAppearance_AppCompat_Large',
+  chatFullScreenErrorDescriptionText: 'Please check your connection and try again',
+  chatFullScreenErrorDescriptionTextColor: '#00BCD4',
+  chatFullScreenErrorDescriptionTextAppearance: 'TextAppearance_AppCompat_Body1',
+  chatFullScreenErrorBackgroundColor: '#e06666',
+  chatFullScreenErrorIconTint: '#FF9800',
+  chatFullScreenErrorRefreshButtonText: 'Retry',
+  chatFullScreenErrorRefreshButtonTextColor: '#4CAF50',
+  chatFullScreenErrorRefreshButtonVisible: true,
   chatBackgroundColor: '#FFFFFF',
   chatProgressBarColor: '#9E9E9E',
   chatInputTextAppearance: 'TextAppearance_AppCompat',
