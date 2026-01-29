@@ -1,3 +1,14 @@
+# 9.4.0
+## SDK Versions
+- Android [14.10.0 -> 14.11.0]
+- iOS [14.1.1 -> 14.3.0]
+
+## Added
+- In-app chat error snackbar customization options.
+ 
+## Changed
+- In-app chat error fullscreen customization options. Please follow migration guide
+- In-app chat network error customization options. Please follow migration guide
 # 9.3.1
 ## SDK Versions
 - Android 14.9.3
