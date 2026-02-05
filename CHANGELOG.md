@@ -1,3 +1,6 @@
+# 9.5.0
+ ## Changed
+- Right-to-left languages now change layout direction
 # 9.4.0
 ## SDK Versions
 - Android [14.10.0 -> 14.11.0]
