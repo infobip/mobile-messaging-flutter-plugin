@@ -1,3 +1,10 @@
+# 9.6.0
+## SDK Versions
+- Android [14.13.0 -> 14.14.1]
+- iOS [14.4.3]
+
+## Fixed
+- UserData behavior across platforms is unified: setting values to null will remove them for Android.
 # 9.5.0
  ## Changed
 - Right-to-left languages now change layout direction
