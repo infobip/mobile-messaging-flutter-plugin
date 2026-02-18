@@ -95,7 +95,7 @@ class UserAttributes {
         'birthday': birthday,
         'tags': tags,
         'customAttributes': customAttributes,
-      }..removeWhere((dynamic key, dynamic value) => value == null);
+      };
 
   static const DeepCollectionEquality _deepCollectionEquality = DeepCollectionEquality();
 
