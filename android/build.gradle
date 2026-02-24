@@ -22,7 +22,7 @@ rootProject.allprojects {
 }
 
 ext {
-    mm_version = "14.14.1"
+    mm_version = "14.14.2"
     mm_minSdkVersion = 23
     mm_compileSdkVersion = 36
     mm_kotlinVersion = "2.1.21"
@@ -59,7 +59,7 @@ dependencies {
     implementation "com.infobip:infobip-mobile-messaging-android-chat-sdk:$mm_version@aar"
     implementation "com.infobip:infobip-mobile-messaging-android-inbox-sdk:$mm_version@aar"
     if (withWebRTCUI.toBoolean()) {
-        implementation implementation("com.infobip:infobip-rtc-ui:$mm_version") {
+        implementation("com.infobip:infobip-rtc-ui:$mm_version") {
             transitive = true
         }
     }
