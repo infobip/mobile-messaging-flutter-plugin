@@ -1,3 +1,10 @@
+# 9.6.1
+## SDK Versions
+- Android [14.14.1 -> 14.14.2]
+- iOS [14.4.3]
+ 
+## Changed
+- Android SDK version updated.
 # 9.6.0
 ## SDK Versions
 - Android [14.13.0 -> 14.14.1]
