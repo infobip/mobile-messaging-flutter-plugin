@@ -32,10 +32,6 @@ target 'Runner' do
   use_frameworks!
   use_modular_headers!
   pod 'MobileMessaging'
-       
-      target 'MobileMessagingNotificationExtension' do
-          inherit! :search_paths
-      end
 
   flutter_install_all_ios_pods File.dirname(File.realpath(__FILE__))
 end
@@ -43,14 +39,14 @@ end
 post_install do |installer|
   installer.pods_project.targets.each do |target|
     flutter_additional_ios_build_settings(target)
-    
+
     if (target.name&.eql?('infobip_mobilemessaging'))
           target.build_configurations.each do |config|
             config.build_settings['GCC_PREPROCESSOR_DEFINITIONS'] = '$(inherited) COCOAPODS=1 WEBRTCUI_ENABLED=1'
             config.build_settings['OTHER_SWIFT_FLAGS'] = '$(inherited) -D WEBRTCUI_ENABLED'
         end
     end
-    
+
     #fix for the DT_TOOLCHAIN_DIR cannot be used to evaluate LIBRARY_SEARCH_PATHS, use TOOLCHAIN_DIR instead in xcode 15 issue
     target.build_configurations.each do |config|
       xcconfig_path = config.base_configuration_reference.real_path
@@ -63,4 +59,9 @@ post_install do |installer|
     end
 
   end
+end
+
+target 'MobileMessagingNotificationServiceExtension' do
+    use_frameworks!
+  pod 'MobileMessagingNotificationExtension'
 end
