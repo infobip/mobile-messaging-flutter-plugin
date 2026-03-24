@@ -1,3 +1,11 @@
+# 9.7.0
+## SDK Versions
+- Android [14.14.2]
+- iOS [15.0.0]
+ 
+## Changed
+- From this version we have updated the way you need to integrate the Notification service extension for iOS, please check our migration guide: https://github.com/infobip/mobile-messaging-flutter-plugin/wiki/Migration-Guides#migration-from-96x-to-97x.
+ 
 # 9.6.1
 ## SDK Versions
 - Android [14.14.1 -> 14.14.2]
