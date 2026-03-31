@@ -107,9 +107,10 @@ class MobileMessagingEventsManager: NSObject, FlutterStreamHandler {
         case MMNotificationActionTapped:
             eventName = EventName.actionTapped
             if let message = notification.userInfo?[MMNotificationKeyMessage] as? MM_MTMessage, let actionIdentifier = notification.userInfo?[MMNotificationKeyActionIdentifier] as? String {
-                var parameters = [message.dictionary(), actionIdentifier] as [Any]
+                var parameters = message.dictionary()
+                parameters["id"] = actionIdentifier
                 if let textInput = notification.userInfo?[MMNotificationKeyActionTextInput] as? String {
-                    parameters.append(textInput)
+                    parameters["inputText"] = textInput
                 }
                 notificationResult = parameters
             }
