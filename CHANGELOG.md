@@ -1,3 +1,14 @@
+# 9.7.2
+## SDK Versions
+- Android [14.16.0]
+- iOS [15.0.0]
+
+ 
+## Changed
+- Introduced better event caching handling when the app is in killed state
+ 
+## Fixed
+- Minor bugs
 # 9.7.1
 ## SDK Versions
 - Android [14.14.2 -> 14.14.5]
