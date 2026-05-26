@@ -12,6 +12,7 @@ import 'dart:convert';
 import 'dart:developer';
 import 'dart:io';
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 
 import 'models/chat/chat_exception.dart';
@@ -45,6 +46,27 @@ class InfobipMobilemessaging {
 
   /// Callbacks to be invoked by Mobile Messaging plugin.
   static Map<String, List<Function>?> callbacks = HashMap();
+
+  // Events that arrived before any callback was registered for their type.
+  // Drained per event type the first time on() registers a handler for it.
+  // Matches the CacheManager pattern from the React Native plugin.
+  static final Map<String, List<LibraryEvent>> _bufferedEvents = {};
+
+  // Maximum number of events held per event type. When the cap is reached the
+  // oldest entry is evicted so the buffer always contains the most recent ones.
+  static const int _maxBufferSizePerEvent = 100;
+
+  /// Injects a raw event JSON string as if it arrived from the native EventChannel.
+  /// Only intended for unit tests — not part of the public API.
+  @visibleForTesting
+  static void handleEventForTesting(String eventJson) => _handleLibraryEvent(eventJson);
+
+  /// Resets all runtime state. Only intended for unit tests.
+  @visibleForTesting
+  static void clearForTesting() {
+    callbacks.clear();
+    _bufferedEvents.clear();
+  }
 
   static Configuration? _configuration;
 
@@ -121,30 +143,43 @@ class InfobipMobilemessaging {
   }
 
   /// Handles general library events
-  /// Dispatches events to registered callbacks
+  /// Dispatches events to registered callbacks, or buffers them if none are registered yet.
   static void _handleGeneralEvent(LibraryEvent libraryEvent) {
-    if (callbacks.containsKey(libraryEvent.eventName)) {
-      callbacks[libraryEvent.eventName]?.forEach((callback) {
+    final eventCallbacks = callbacks[libraryEvent.eventName];
+    if (eventCallbacks != null && eventCallbacks.isNotEmpty) {
+      for (final callback in eventCallbacks) {
         log('Calling ${libraryEvent.eventName} with payload ${libraryEvent.payload == null ? 'NULL' : libraryEvent.payload.toString()}');
-        if (libraryEvent.eventName == LibraryEvent.messageReceived ||
-            libraryEvent.eventName == LibraryEvent.notificationTapped ||
-            libraryEvent.eventName == LibraryEvent.actionTapped) {
-          callback(Message.fromJson(libraryEvent.payload));
-        } else if (libraryEvent.eventName == LibraryEvent.installationUpdated) {
-          callback(Installation.fromJson(libraryEvent.payload).toString());
-        } else if (libraryEvent.eventName == LibraryEvent.userUpdated) {
-          callback(UserData.fromJson(libraryEvent.payload));
-        } else if (libraryEvent.payload != null) {
-          callback(libraryEvent.payload);
-        } else {
-          callback(libraryEvent.eventName);
-        }
-      });
+        _dispatchToCallback(libraryEvent.eventName, callback, libraryEvent.payload);
+      }
+    } else {
+      // No callback registered yet — buffer the event so it can be replayed
+      // when on() is called, matching the CacheManager pattern from the RN plugin.
+      final buffer = _bufferedEvents.putIfAbsent(libraryEvent.eventName, () => []);
+      if (buffer.length >= _maxBufferSizePerEvent) {
+        buffer.removeAt(0);
+      }
+      buffer.add(libraryEvent);
+    }
+  }
+
+  static void _dispatchToCallback(String eventName, Function callback, dynamic payload) {
+    if (eventName == LibraryEvent.messageReceived ||
+        eventName == LibraryEvent.notificationTapped ||
+        eventName == LibraryEvent.actionTapped) {
+      callback(Message.fromJson(payload));
+    } else if (eventName == LibraryEvent.installationUpdated) {
+      callback(Installation.fromJson(payload).toString());
+    } else if (eventName == LibraryEvent.userUpdated) {
+      callback(UserData.fromJson(payload));
+    } else if (payload != null) {
+      callback(payload);
+    } else {
+      callback(eventName);
     }
   }
 
   /// Subscribes to [LibraryEvent] to perform provided callback function.
-  static void on(String eventName, Function callback) async {
+  static void on(String eventName, Function callback) {
     if (callbacks.containsKey(eventName)) {
       var existed = callbacks[eventName];
       existed?.add(callback);
@@ -153,10 +188,22 @@ class InfobipMobilemessaging {
       callbacks.putIfAbsent(eventName, () => List.of([callback]));
     }
     _libraryEventSubscription.resume();
+
+    // Replay any events that arrived before this callback was registered.
+    final buffered = _bufferedEvents.remove(eventName);
+    if (buffered != null) {
+      for (final event in buffered) {
+        try {
+          _dispatchToCallback(eventName, callback, event.payload);
+        } catch (error) {
+          log('Error replaying buffered event ${event.eventName}: $error');
+        }
+      }
+    }
   }
 
   /// Unregisters handler from [LibraryEvent].
-  static void unregister(String eventName, Function? callback) async {
+  static void unregister(String eventName, Function? callback) {
     if (callbacks.containsKey(eventName)) {
       var existed = callbacks[eventName];
       existed?.remove(callback);
@@ -167,7 +214,7 @@ class InfobipMobilemessaging {
   }
 
   /// Unsubscribes all handlers from given [LibraryEvent].
-  static void unregisterAllHandlers(String eventName) async {
+  static void unregisterAllHandlers(String eventName) {
     if (callbacks.containsKey(eventName)) {
       callbacks.removeWhere((key, value) => key == eventName);
     }

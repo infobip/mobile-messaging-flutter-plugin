@@ -382,6 +382,11 @@ public class ChatPlatformView implements PlatformView, MethodCallHandler {
                 return false;
             }
 
+            @Override
+            public boolean onChatUrlInteracted(@NonNull String url) {
+                return false;
+            }
+
         };
     }
 
