@@ -138,12 +138,16 @@ class PersonalizeContext {
   /// Flag to perform personalization without promoting profile to [Type.CUSTOMER] and keep [Type.LEAD].
   final bool? keepAsLead;
 
+  /// Flag to mark this installation as primary for the personalized user.
+  final bool? setDeviceAsPrimary;
+
   /// Default constructor with all params.
   PersonalizeContext({
     this.userIdentity,
     this.userAttributes,
     this.forceDepersonalize,
     this.keepAsLead,
+    this.setDeviceAsPrimary,
   });
 
   /// Mapping [PersonalizeContext] to json.
@@ -152,6 +156,7 @@ class PersonalizeContext {
         'userAttributes': userAttributes?.toJson(),
         'forceDepersonalize': forceDepersonalize,
         'keepAsLead': keepAsLead,
+        'setDeviceAsPrimary': setDeviceAsPrimary,
       };
 
   @override
@@ -162,9 +167,10 @@ class PersonalizeContext {
           userIdentity == other.userIdentity &&
           userAttributes == other.userAttributes &&
           forceDepersonalize == other.forceDepersonalize &&
-          keepAsLead == other.keepAsLead;
+          keepAsLead == other.keepAsLead &&
+          setDeviceAsPrimary == other.setDeviceAsPrimary;
 
   @override
   int get hashCode =>
-      userIdentity.hashCode ^ userAttributes.hashCode ^ forceDepersonalize.hashCode ^ keepAsLead.hashCode;
+      userIdentity.hashCode ^ userAttributes.hashCode ^ forceDepersonalize.hashCode ^ keepAsLead.hashCode ^ setDeviceAsPrimary.hashCode;
 }

@@ -412,8 +412,9 @@ public class SwiftInfobipMobilemessagingPlugin: NSObject, FlutterPlugin {
         let ua = uaDict == nil ? nil : MMUserAttributes(dictRepresentation: uaDict!)
         let keepAsLead = (context["keepAsLead"] as? Bool) ?? false
         let forceDepersonalize = context["forceDepersonalize"] as? Bool ?? false
-        
-        MobileMessaging.personalize(forceDepersonalize: forceDepersonalize, keepAsLead: keepAsLead, userIdentity: ui, userAttributes: ua) { (error) in
+        let setDeviceAsPrimary = (context["setDeviceAsPrimary"] as? Bool) ?? false
+
+        MobileMessaging.personalize(forceDepersonalize: forceDepersonalize, keepAsLead: keepAsLead, setDeviceAsPrimary: setDeviceAsPrimary, userIdentity: ui, userAttributes: ua) { (error) in
             if let error = error {
                 return result(
                     FlutterError( code: error.mm_code ?? "0",

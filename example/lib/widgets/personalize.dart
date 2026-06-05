@@ -23,6 +23,9 @@ class _PersonalizeState extends State<Personalize> {
   final _externalUserIdController = TextEditingController();
   var _isLoading = true;
   var _isPersonalized = false;
+  var _forceDepersonalize = true;
+  var _keepAsLead = false;
+  var _setDeviceAsPrimary = false;
 
   @override
   void initState() {
@@ -61,8 +64,9 @@ class _PersonalizeState extends State<Personalize> {
         PersonalizeContext(
           userIdentity: userIdentity,
           userAttributes: null,
-          forceDepersonalize: true,
-          keepAsLead: false,
+          forceDepersonalize: _forceDepersonalize,
+          keepAsLead: _keepAsLead,
+          setDeviceAsPrimary: _setDeviceAsPrimary,
         ),
       );
     } catch (e) {
@@ -94,6 +98,21 @@ class _PersonalizeState extends State<Personalize> {
                       enabled: !_isPersonalized,
                       controller: _externalUserIdController,
                       decoration: const InputDecoration(label: Text('ExternalUserId')),
+                    ),
+                    SwitchListTile(
+                      title: const Text('Force Depersonalize'),
+                      value: _forceDepersonalize,
+                      onChanged: _isPersonalized ? null : (v) => setState(() => _forceDepersonalize = v),
+                    ),
+                    SwitchListTile(
+                      title: const Text('Keep As Lead'),
+                      value: _keepAsLead,
+                      onChanged: _isPersonalized ? null : (v) => setState(() => _keepAsLead = v),
+                    ),
+                    SwitchListTile(
+                      title: const Text('Set As Primary'),
+                      value: _setDeviceAsPrimary,
+                      onChanged: _isPersonalized ? null : (v) => setState(() => _setDeviceAsPrimary = v),
                     ),
                     _isPersonalized
                         ? ElevatedButton(
