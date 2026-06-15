@@ -1,3 +1,13 @@
+# 9.8.0
+## SDK Versions
+- Android [15.0.0]
+- iOS [15.5.0]
+  
+## Added
+- `setDeviceAsPrimary` field added to personalization options.
+  
+## Changed
+- JWT supplier is now cleared on SDK cleanup (Android and iOS).
 # 9.7.2
 ## SDK Versions
 - Android [14.16.0]
