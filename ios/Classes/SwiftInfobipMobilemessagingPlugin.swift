@@ -428,15 +428,18 @@ public class SwiftInfobipMobilemessagingPlugin: NSObject, FlutterPlugin {
     
     func depersonalize(result: @escaping FlutterResult) {
         MobileMessaging.depersonalize(completion: { (status, error) in
-            if (status == MMSuccessPending.pending) {
-                return result("pending")
-            } else if let error = error {
+            if let error = error {
                 return result(
                     FlutterError( code: error.mm_code ?? "0",
                                   message: error.mm_message,
                                   details: error.description ))
             } else {
-                return result(Constants.resultSuccess)
+                MobileMessaging.jwtSupplier = nil
+                if (status == MMSuccessPending.pending) {
+                    return result("pending")
+                } else {
+                    return result(Constants.resultSuccess)
+                }
             }
         })
     }
@@ -462,6 +465,7 @@ public class SwiftInfobipMobilemessagingPlugin: NSObject, FlutterPlugin {
     }
     
     func cleanup(result: @escaping FlutterResult) {
+        MobileMessaging.jwtSupplier = nil
         Configuration.saveConfigToDefaults(rawConfig: [:])
         MobileMessaging.cleanUpAndStop(false, completion: {
             return result(Constants.resultSuccess)
@@ -824,13 +828,11 @@ public class SwiftInfobipMobilemessagingPlugin: NSObject, FlutterPlugin {
     }
     
     func setUserDataJwt(call: FlutterMethodCall, result: @escaping FlutterResult) {
-        guard let jwtString = call.arguments as? String else {
-            return result(
-                FlutterError( code: "invalidSetUserDataJwt",
-                              message: "Error parsing JWT string",
-                              details: "Error parsing JWT string" ))
+        if let jwtString = call.arguments as? String, !jwtString.isEmpty {
+            MobileMessaging.jwtSupplier = VariableJwtSupplier(jwt: jwtString)
+        } else {
+            MobileMessaging.jwtSupplier = nil
         }
-        MobileMessaging.jwtSupplier = VariableJwtSupplier(jwt: jwtString)
         return result(Constants.resultSuccess)
     }
     

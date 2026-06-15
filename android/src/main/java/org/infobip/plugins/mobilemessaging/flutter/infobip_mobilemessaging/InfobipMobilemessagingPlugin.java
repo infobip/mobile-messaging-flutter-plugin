@@ -628,6 +628,7 @@ public class InfobipMobilemessagingPlugin implements FlutterPlugin, MethodCallHa
             @Override
             public void onResult(Result<SuccessPending, MobileMessagingError> result) {
                 if (result.isSuccess()) {
+                    mobileMessaging().setJwtSupplier(() -> null);
                     resultCallbacks.success(depersonalizeStates.get(result.getData()));
                 } else {
                     resultCallbacks.error(result.getError().getCode(), result.getError().getMessage(), result.getError().toString());
@@ -646,6 +647,7 @@ public class InfobipMobilemessagingPlugin implements FlutterPlugin, MethodCallHa
     }
 
     public void cleanup() {
+        mobileMessaging().setJwtSupplier(() -> null);
         mobileMessaging().cleanup();
     }
 
@@ -688,10 +690,14 @@ public class InfobipMobilemessagingPlugin implements FlutterPlugin, MethodCallHa
 
     public void setUserDataJwt(MethodCall call, final MethodChannel.Result result) {
         try {
-            String jwt = call.arguments.toString();
-            mobileMessaging().setJwtSupplier(() -> jwt);
+            String jwt = call.arguments != null ? call.arguments.toString() : null;
+            if (jwt == null || jwt.isEmpty()) {
+                mobileMessaging().setJwtSupplier(null);
+            } else {
+                mobileMessaging().setJwtSupplier(() -> jwt);
+            }
         } catch (Exception e) {
-            mobileMessaging().setJwtSupplier(() -> null);
+            mobileMessaging().setJwtSupplier(null);
             result.success("Successfully set JWT to null");
             return;
         }
