@@ -1,3 +1,15 @@
+# 9.9.0
+## SDK Versions
+- Android [15.1.0]
+- iOS [15.5.2]
+
+## Added
+- `ChatCustomization.chatInputAttachmentDisabledIconTint` field added to chat customization options.
+- `ChatCustomization.chatInputSendDisabledIconTint` field added to chat customization options.
+
+## Removed
+- `Configuration.inAppChatCustomization` deprecated field removed from configuration options.
+
 # 9.8.0
 ## SDK Versions
 - Android [15.0.0]

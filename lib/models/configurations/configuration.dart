@@ -39,10 +39,6 @@ class Configuration {
   /// Settings for [WebRTC](https://www.infobip.com/docs/voice-and-video/webrtc).
   final WebRTCUI? webRTCUI;
 
-  /// Customization for LiveChat.
-  @Deprecated('Should use [ChatCustomization] instead')
-  final InAppChatCustomization? inAppChatCustomization;
-
   final String? userDataJwt;
 
    /// Enables logging in Debug runs.
@@ -60,7 +56,6 @@ class Configuration {
     this.notificationCategories,
     this.defaultMessageStorage,
     this.webRTCUI,
-    this.inAppChatCustomization,
     this.userDataJwt,
     this.logging,
   });
@@ -78,8 +73,6 @@ class Configuration {
             (notificationCategories != null) ? notificationCategories!.map((e) => e.toJson()).toList() : null,
         'defaultMessageStorage': defaultMessageStorage,
         'webRTCUI': webRTCUI?.toJson(),
-        // ignore: deprecated_member_use_from_same_package
-        'inAppChatCustomization': inAppChatCustomization?.toJson(),
         'userDataJwt': userDataJwt,
         'logging': logging,
       };
@@ -420,10 +413,12 @@ class ChatCustomization {
   final String? chatInputHintTextColor;
   final String? chatInputAttachmentIcon;
   final String? chatInputAttachmentIconTint;
+  final String? chatInputAttachmentDisabledIconTint;
   final String? chatInputAttachmentBackgroundDrawable;
   final String? chatInputAttachmentBackgroundColor;
   final String? chatInputSendIcon;
   final String? chatInputSendIconTint;
+  final String? chatInputSendDisabledIconTint;
   final String? chatInputSendBackgroundDrawable;
   final String? chatInputSendBackgroundColor;
   final String? chatInputSeparatorLineColor;
@@ -473,10 +468,12 @@ class ChatCustomization {
     this.chatInputHintTextColor,
     this.chatInputAttachmentIcon,
     this.chatInputAttachmentIconTint,
+    this.chatInputAttachmentDisabledIconTint,
     this.chatInputAttachmentBackgroundDrawable,
     this.chatInputAttachmentBackgroundColor,
     this.chatInputSendIcon,
     this.chatInputSendIconTint,
+    this.chatInputSendDisabledIconTint,
     this.chatInputSendBackgroundDrawable,
     this.chatInputSendBackgroundColor,
     this.chatInputSeparatorLineColor,
@@ -527,10 +524,12 @@ class ChatCustomization {
         'chatInputHintTextColor': chatInputHintTextColor,
         'chatInputAttachmentIcon': chatInputAttachmentIcon,
         'chatInputAttachmentIconTint': chatInputAttachmentIconTint,
+        'chatInputAttachmentDisabledIconTint': chatInputAttachmentDisabledIconTint,
         'chatInputAttachmentBackgroundDrawable': chatInputAttachmentBackgroundDrawable,
         'chatInputAttachmentBackgroundColor': chatInputAttachmentBackgroundColor,
         'chatInputSendIcon': chatInputSendIcon,
         'chatInputSendIconTint': chatInputSendIconTint,
+        'chatInputSendDisabledIconTint': chatInputSendDisabledIconTint,
         'chatInputSendBackgroundDrawable': chatInputSendBackgroundDrawable,
         'chatInputSendBackgroundColor': chatInputSendBackgroundColor,
         'chatInputSeparatorLineColor': chatInputSeparatorLineColor,
@@ -540,281 +539,5 @@ class ChatCustomization {
         'chatInputCharCounterDefaultColor': chatInputCharCounterDefaultColor,
         'chatInputCharCounterAlertColor': chatInputCharCounterAlertColor,
         'shouldHandleKeyboardAppearance': shouldHandleKeyboardAppearance,
-      };
-}
-
-@Deprecated('Should use [ChatCustomization] instead')
-class InAppChatCustomization {
-  final String? toolbarTitle;
-  final String? toolbarTitleColor;
-  final String? toolbarTintColor;
-  final String? toolbarBackgroundColor;
-  final String? sendButtonTintColor;
-  final String? chatBackgroundColor;
-  final String? widgetTheme;
-  final String? noConnectionAlertTextColor;
-  final String? noConnectionAlertBackgroundColor;
-  final String? chatInputPlaceholderColor;
-  final String? chatInputCursorColor;
-  final String? chatInputBackgroundColor;
-  final String? sendButtonIcon;
-  final String? attachmentButtonIcon;
-  final bool? chatInputSeparatorVisible;
-  final String? chatBannerErrorTextColor;
-  final String? chatBannerErrorTextAppearance;
-  final String? chatBannerErrorBackgroundColor;
-  final String? chatBannerErrorIcon;
-  final String? chatBannerErrorIconTint;
-  final String? chatFullScreenErrorTitleText;
-  final String? chatFullScreenErrorTitleTextColor;
-  final String? chatFullScreenErrorTitleTextAppearance;
-  final String? chatFullScreenErrorDescriptionText;
-  final String? chatFullScreenErrorDescriptionTextColor;
-  final String? chatFullScreenErrorDescriptionTextAppearance;
-  final String? chatFullScreenErrorBackgroundColor;
-  final String? chatFullScreenErrorIcon;
-  final String? chatFullScreenErrorIconTint;
-  final String? chatFullScreenErrorRefreshButtonText;
-  final String? chatFullScreenErrorRefreshButtonTextColor;
-  final bool? chatFullScreenErrorRefreshButtonVisible;
-  final AndroidInAppChatCustomization? android;
-  final IOSInAppChatCustomization? ios;
-
-  InAppChatCustomization({
-    this.toolbarTitle,
-    this.toolbarTitleColor,
-    this.toolbarTintColor,
-    this.toolbarBackgroundColor,
-    this.sendButtonTintColor,
-    this.chatBackgroundColor,
-    this.widgetTheme,
-    this.noConnectionAlertTextColor,
-    this.noConnectionAlertBackgroundColor,
-    this.chatInputPlaceholderColor,
-    this.chatInputCursorColor,
-    this.chatInputBackgroundColor,
-    this.sendButtonIcon,
-    this.attachmentButtonIcon,
-    this.chatInputSeparatorVisible,
-    this.chatBannerErrorTextColor,
-    this.chatBannerErrorTextAppearance,
-    this.chatBannerErrorBackgroundColor,
-    this.chatBannerErrorIcon,
-    this.chatBannerErrorIconTint,
-    this.chatFullScreenErrorTitleText,
-    this.chatFullScreenErrorTitleTextColor,
-    this.chatFullScreenErrorTitleTextAppearance,
-    this.chatFullScreenErrorDescriptionText,
-    this.chatFullScreenErrorDescriptionTextColor,
-    this.chatFullScreenErrorDescriptionTextAppearance,
-    this.chatFullScreenErrorBackgroundColor,
-    this.chatFullScreenErrorIcon,
-    this.chatFullScreenErrorIconTint,
-    this.chatFullScreenErrorRefreshButtonText,
-    this.chatFullScreenErrorRefreshButtonTextColor,
-    this.chatFullScreenErrorRefreshButtonVisible,
-    this.android,
-    this.ios,
-  });
-
-  Map<String, dynamic> toJson() => {
-        'toolbarTitle': toolbarTitle,
-        'toolbarTitleColor': toolbarTitleColor,
-        'toolbarTintColor': toolbarTintColor,
-        'toolbarBackgroundColor': toolbarBackgroundColor,
-        'sendButtonTintColor': sendButtonTintColor,
-        'chatBackgroundColor': chatBackgroundColor,
-        'widgetTheme': widgetTheme,
-        'noConnectionAlertTextColor': noConnectionAlertTextColor,
-        'noConnectionAlertBackgroundColor': noConnectionAlertBackgroundColor,
-        'chatInputPlaceholderColor': chatInputPlaceholderColor,
-        'chatInputCursorColor': chatInputCursorColor,
-        'chatInputBackgroundColor': chatInputBackgroundColor,
-        'sendButtonIcon': sendButtonIcon,
-        'attachmentButtonIcon': attachmentButtonIcon,
-        'chatInputSeparatorVisible': chatInputSeparatorVisible,
-        'chatBannerErrorTextColor': chatBannerErrorTextColor,
-        'chatBannerErrorTextAppearance': chatBannerErrorTextAppearance,
-        'chatBannerErrorBackgroundColor': chatBannerErrorBackgroundColor,
-        'chatBannerErrorIcon': chatBannerErrorIcon,
-        'chatBannerErrorIconTint': chatBannerErrorIconTint,
-        'chatFullScreenErrorTitleText': chatFullScreenErrorTitleText,
-        'chatFullScreenErrorTitleTextColor': chatFullScreenErrorTitleTextColor,
-        'chatFullScreenErrorTitleTextAppearance': chatFullScreenErrorTitleTextAppearance,
-        'chatFullScreenErrorDescriptionText': chatFullScreenErrorDescriptionText,
-        'chatFullScreenErrorDescriptionTextColor': chatFullScreenErrorDescriptionTextColor,
-        'chatFullScreenErrorDescriptionTextAppearance': chatFullScreenErrorDescriptionTextAppearance,
-        'chatFullScreenErrorBackgroundColor': chatFullScreenErrorBackgroundColor,
-        'chatFullScreenErrorIcon': chatFullScreenErrorIcon,
-        'chatFullScreenErrorIconTint': chatFullScreenErrorIconTint,
-        'chatFullScreenErrorRefreshButtonText': chatFullScreenErrorRefreshButtonText,
-        'chatFullScreenErrorRefreshButtonTextColor': chatFullScreenErrorRefreshButtonTextColor,
-        'chatFullScreenErrorRefreshButtonVisible': chatFullScreenErrorRefreshButtonVisible,
-        'android': android?.toJson(),
-        'ios': ios?.toJson(),
-      };
-}
-
-class AndroidInAppChatCustomization {
-  //status bar
-  final bool? chatStatusBarColorLight;
-  final String? chatStatusBarBackgroundColor;
-
-  //toolbar
-  final String? chatNavigationIcon;
-  final String? chatNavigationIconTint;
-  final String? chatSubtitleText;
-  final String? chatSubtitleTextColor;
-  final String? chatSubtitleTextAppearanceRes;
-  final bool? chatSubtitleCentered;
-  final bool? chatTitleCentered;
-  final String? chatTitleTextAppearanceRes;
-  final String? chatMenuItemsIconTint;
-  final String? chatMenuItemSaveAttachmentIcon;
-
-  //chat
-  final String? chatProgressBarColor;
-
-  final String? chatNetworkConnectionErrorText;
-  final String? chatNetworkConnectionErrorTextAppearanceRes;
-  final String? chatNetworkConnectionErrorIcon;
-  final String? chatNetworkConnectionErrorIconTint;
-
-  //input
-  final String? chatInputTextColor;
-  final String? chatInputAttachmentIconTint;
-  final String? chatInputAttachmentBackgroundColor;
-  final String? chatInputAttachmentBackgroundDrawable;
-  final String? chatInputSendIconTint;
-  final String? chatInputSendBackgroundColor;
-  final String? chatInputSendBackgroundDrawable;
-  final String? chatInputSeparatorLineColor;
-  final String? chatInputHintText;
-  final String? chatInputTextAppearance;
-
-  AndroidInAppChatCustomization({
-    //status bar
-    this.chatStatusBarColorLight,
-    this.chatStatusBarBackgroundColor,
-    //toolbar
-    this.chatNavigationIcon,
-    this.chatNavigationIconTint,
-    this.chatSubtitleText,
-    this.chatSubtitleTextColor,
-    this.chatSubtitleTextAppearanceRes,
-    this.chatSubtitleCentered,
-    this.chatTitleCentered,
-    this.chatTitleTextAppearanceRes,
-    this.chatMenuItemsIconTint,
-    this.chatMenuItemSaveAttachmentIcon,
-    //chat
-    this.chatProgressBarColor,
-    this.chatNetworkConnectionErrorText,
-    this.chatNetworkConnectionErrorTextAppearanceRes,
-    this.chatNetworkConnectionErrorIcon,
-    this.chatNetworkConnectionErrorIconTint,
-    //input
-    this.chatInputTextColor,
-    this.chatInputAttachmentIconTint,
-    this.chatInputAttachmentBackgroundColor,
-    this.chatInputAttachmentBackgroundDrawable,
-    this.chatInputSendIconTint,
-    this.chatInputSendBackgroundColor,
-    this.chatInputSendBackgroundDrawable,
-    this.chatInputSeparatorLineColor,
-    this.chatInputHintText,
-    this.chatInputTextAppearance,
-  });
-
-  Map<String, dynamic> toJson() => {
-        //status bar
-        'chatStatusBarColorLight': chatStatusBarColorLight,
-        'chatStatusBarBackgroundColor': chatStatusBarBackgroundColor,
-        //toolbar
-        'chatNavigationIcon': chatNavigationIcon,
-        'chatNavigationIconTint': chatNavigationIconTint,
-        'chatSubtitleText': chatSubtitleText,
-        'chatSubtitleTextColor': chatSubtitleTextColor,
-        'chatSubtitleTextAppearanceRes': chatSubtitleTextAppearanceRes,
-        'chatSubtitleCentered': chatSubtitleCentered,
-        'chatTitleCentered': chatTitleCentered,
-        'chatTitleTextAppearanceRes': chatTitleTextAppearanceRes,
-        'chatMenuItemsIconTint': chatMenuItemsIconTint,
-        'chatMenuItemSaveAttachmentIcon': chatMenuItemSaveAttachmentIcon,
-        //chat
-        'chatProgressBarColor': chatProgressBarColor,
-        'chatNetworkConnectionErrorText': chatNetworkConnectionErrorText,
-        'chatNetworkConnectionErrorTextAppearanceRes': chatNetworkConnectionErrorTextAppearanceRes,
-        'chatNetworkConnectionErrorIcon': chatNetworkConnectionErrorIcon,
-        'chatNetworkConnectionErrorIconTint': chatNetworkConnectionErrorIconTint,
-        //input
-        'chatInputTextColor': chatInputTextColor,
-        'chatInputAttachmentIconTint': chatInputAttachmentIconTint,
-        'chatInputAttachmentBackgroundColor': chatInputAttachmentBackgroundColor,
-        'chatInputAttachmentBackgroundDrawable': chatInputAttachmentBackgroundDrawable,
-        'chatInputSendIconTint': chatInputSendIconTint,
-        'chatInputSendBackgroundColor': chatInputSendBackgroundColor,
-        'chatInputSendBackgroundDrawable': chatInputSendBackgroundDrawable,
-        'chatInputSeparatorLineColor': chatInputSeparatorLineColor,
-        'chatInputHintText': chatInputHintText,
-        'chatInputTextAppearance': chatInputTextAppearance,
-      };
-}
-
-@Deprecated('Should use [ChatCustomization] instead')
-class IOSInAppChatCustomization {
-  final String? attachmentPreviewBarsColor;
-  final String? attachmentPreviewItemsColor;
-  final double? textContainerTopMargin;
-  final double? textContainerLeftPadding;
-  final double? textContainerCornerRadius;
-  final double? textViewTopMargin;
-  final double? placeholderHeight;
-  final double? placeholderSideMargin;
-  final double? buttonHeight;
-  final double? buttonTouchableOverlap;
-  final double? buttonRightMargin;
-  final double? utilityButtonWidth;
-  final double? utilityButtonBottomMargin;
-  final double? initialHeight;
-  final String? mainFont;
-  final String? charCountFont;
-
-  IOSInAppChatCustomization({
-    this.attachmentPreviewBarsColor,
-    this.attachmentPreviewItemsColor,
-    this.textContainerTopMargin,
-    this.textContainerLeftPadding,
-    this.textContainerCornerRadius,
-    this.textViewTopMargin,
-    this.placeholderHeight,
-    this.placeholderSideMargin,
-    this.buttonHeight,
-    this.buttonTouchableOverlap,
-    this.buttonRightMargin,
-    this.utilityButtonWidth,
-    this.utilityButtonBottomMargin,
-    this.initialHeight,
-    this.mainFont,
-    this.charCountFont,
-  });
-
-  Map<String, dynamic> toJson() => {
-        'attachmentPreviewBarsColor': attachmentPreviewBarsColor,
-        'attachmentPreviewItemsColor': attachmentPreviewItemsColor,
-        'textContainerTopMargin': textContainerTopMargin,
-        'textContainerLeftPadding': textContainerLeftPadding,
-        'textContainerCornerRadius': textContainerCornerRadius,
-        'textViewTopMargin': textViewTopMargin,
-        'placeholderHeight': placeholderHeight,
-        'placeholderSideMargin': placeholderSideMargin,
-        'buttonHeight': buttonHeight,
-        'buttonTouchableOverlap': buttonTouchableOverlap,
-        'buttonRightMargin': buttonRightMargin,
-        'utilityButtonWidth': utilityButtonWidth,
-        'utilityButtonBottomMargin': utilityButtonBottomMargin,
-        'initialHeight': initialHeight,
-        'mainFont': mainFont,
-        'charCountFont': charCountFont,
       };
 }

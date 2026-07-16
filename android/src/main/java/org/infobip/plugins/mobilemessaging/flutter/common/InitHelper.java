@@ -7,40 +7,24 @@
 
 package org.infobip.plugins.mobilemessaging.flutter.common;
 
-import static org.infobip.mobile.messaging.logging.MobileMessagingLogger.TAG;
-
 import android.app.Activity;
 import android.content.Context;
-import android.content.res.AssetFileDescriptor;
-import android.content.res.AssetManager;
-import android.content.res.ColorStateList;
 import android.content.res.Resources;
 import android.graphics.Color;
-import android.graphics.drawable.BitmapDrawable;
-import android.graphics.drawable.Drawable;
 
 import androidx.annotation.NonNull;
 
-import org.infobip.plugins.mobilemessaging.flutter.common.FlutterLogger;
 
 import org.infobip.mobile.messaging.MobileMessaging;
 import org.infobip.mobile.messaging.MobileMessagingCore;
 import org.infobip.mobile.messaging.NotificationSettings;
 import org.infobip.mobile.messaging.app.ActivityLifecycleMonitor;
 import org.infobip.mobile.messaging.chat.InAppChat;
-import org.infobip.mobile.messaging.chat.view.styles.InAppChatInputViewStyle;
-import org.infobip.mobile.messaging.chat.view.styles.InAppChatStyle;
-import org.infobip.mobile.messaging.chat.view.styles.InAppChatTheme;
-import org.infobip.mobile.messaging.chat.view.styles.InAppChatToolbarStyle;
 import org.infobip.mobile.messaging.interactive.NotificationAction;
 import org.infobip.mobile.messaging.interactive.NotificationCategory;
 import org.infobip.mobile.messaging.storage.SQLiteMessageStore;
 
-import java.io.IOException;
 import java.util.List;
-
-import io.flutter.FlutterInjector;
-import io.flutter.embedding.engine.loader.FlutterLoader;
 
 public class InitHelper {
 
@@ -107,11 +91,6 @@ public class InitHelper {
         if (configuration.isInAppChatEnabled()) {
             InAppChat chat = InAppChat.getInstance(context);
             chat.activate();
-            chat.setTheme(createTheme(configuration));
-            String widgetTheme = getWidgetTheme(configuration);
-            if (widgetTheme != null) {
-                chat.setWidgetTheme(widgetTheme);
-            }
         }
 
         if (configuration.isFullFeaturedInAppsEnabled()) {
@@ -201,124 +180,6 @@ public class InitHelper {
         if (monitor != null) {
             monitor.onActivityResumed(activity);
         }
-    }
-
-    private String getWidgetTheme(Configuration configuration) {
-        Configuration.InAppChatCustomization inAppChatCustomization = configuration.getCustomization();
-        if (inAppChatCustomization != null) {
-            return inAppChatCustomization.getWidgetTheme();
-        }
-        return null;
-    }
-
-    private InAppChatTheme createTheme(Configuration configuration) {
-        FlutterLoader loader = FlutterInjector.instance().flutterLoader();
-        Configuration.InAppChatCustomization inAppChatCustomization = configuration.getCustomization();
-        if (inAppChatCustomization != null && inAppChatCustomization.getAndroid() != null) {
-            try {
-                InAppChatToolbarStyle toolbarStyle = new InAppChatToolbarStyle(
-                        Color.parseColor(inAppChatCustomization.getToolbarBackgroundColor()),
-                        Color.parseColor(inAppChatCustomization.getAndroid().getChatStatusBarBackgroundColor()),
-                        inAppChatCustomization.getAndroid().getChatStatusBarColorLight(),
-                        loadDrawable(inAppChatCustomization.getAndroid().getChatNavigationIcon(), loader),
-                        Color.parseColor(inAppChatCustomization.getAndroid().getChatNavigationIconTint()),
-                        loadDrawable(inAppChatCustomization.getAndroid().getChatMenuItemSaveAttachmentIcon(), loader),
-                        Color.parseColor(inAppChatCustomization.getAndroid().getChatMenuItemsIconTint()),
-                        getResId(activity.getResources(), inAppChatCustomization.getAndroid().getChatTitleTextAppearanceRes(), activity.getPackageName()),
-                        Color.parseColor(inAppChatCustomization.getToolbarTitleColor()),
-                        inAppChatCustomization.getToolbarTitle(),
-                        null,
-                        inAppChatCustomization.getAndroid().getChatTitleCentered(),
-                        getResId(activity.getResources(), inAppChatCustomization.getAndroid().getChatSubtitleTextAppearanceRes(), activity.getPackageName()),
-                        Color.parseColor(inAppChatCustomization.getAndroid().getChatSubtitleTextColor()),
-                        inAppChatCustomization.getAndroid().getChatSubtitleText(),
-                        null,
-                        inAppChatCustomization.getAndroid().getChatSubtitleCentered()
-                );
-                return new InAppChatTheme(
-                        toolbarStyle,
-                        toolbarStyle,
-                        new InAppChatStyle(
-                                Color.parseColor(inAppChatCustomization.getChatBackgroundColor()),
-                                Color.parseColor(inAppChatCustomization.getAndroid().getChatProgressBarColor()),
-
-                                // Deprecated network connection error parameters
-                                null, // networkConnectionText (deprecated)
-                                null, // networkConnectionTextRes (deprecated)
-                                null, // networkConnectionTextAppearance (deprecated)
-                                0, // networkConnectionTextColor (deprecated)
-                                0, // networkConnectionLabelBackgroundColor (deprecated)
-
-                                // Current network connection error parameters
-                                inAppChatCustomization.getAndroid().getChatNetworkConnectionErrorText(),
-                                null,
-                                getResId(activity.getResources(), inAppChatCustomization.getAndroid().getChatNetworkConnectionErrorTextAppearanceRes(), activity.getPackageName()),
-                                Color.parseColor(inAppChatCustomization.getNoConnectionAlertTextColor()),
-                                Color.parseColor(inAppChatCustomization.getNoConnectionAlertBackgroundColor()),
-                                loadDrawable(inAppChatCustomization.getAndroid().getChatNetworkConnectionErrorIcon(), loader),
-                                Color.parseColor(inAppChatCustomization.getAndroid().getChatNetworkConnectionErrorIconTint()),
-
-
-                                inAppChatCustomization.getChatBannerErrorTextColor() != null ? Color.parseColor(inAppChatCustomization.getChatBannerErrorTextColor()) : null,
-                                inAppChatCustomization.getChatBannerErrorTextAppearance() != null ? getResId(activity.getResources(), inAppChatCustomization.getChatBannerErrorTextAppearance(), activity.getPackageName()) : null,
-                                inAppChatCustomization.getChatBannerErrorBackgroundColor() != null ? Color.parseColor(inAppChatCustomization.getChatBannerErrorBackgroundColor()) : null,
-                                inAppChatCustomization.getChatBannerErrorIcon() != null ? loadDrawable(inAppChatCustomization.getChatBannerErrorIcon(), loader) : null,
-                                inAppChatCustomization.getChatBannerErrorIconTint() != null ? Color.parseColor(inAppChatCustomization.getChatBannerErrorIconTint()) : null,
-
-                                inAppChatCustomization.getChatFullScreenErrorTitleText(),
-                                null,
-                                Color.parseColor(inAppChatCustomization.getChatFullScreenErrorTitleTextColor()),
-                                getResId(activity.getResources(), inAppChatCustomization.getChatFullScreenErrorTitleTextAppearance(), activity.getPackageName()),
-                                inAppChatCustomization.getChatFullScreenErrorDescriptionText(),
-                                null,
-                                Color.parseColor(inAppChatCustomization.getChatFullScreenErrorDescriptionTextColor()),
-                                getResId(activity.getResources(), inAppChatCustomization.getChatFullScreenErrorDescriptionTextAppearance(), activity.getPackageName()),
-                                Color.parseColor(inAppChatCustomization.getChatFullScreenErrorBackgroundColor()),
-                                loadDrawable(inAppChatCustomization.getChatFullScreenErrorIcon(), loader),
-                                Color.parseColor(inAppChatCustomization.getChatFullScreenErrorIconTint()),
-                                inAppChatCustomization.getChatFullScreenErrorRefreshButtonText(),
-                                null,
-                                Color.parseColor(inAppChatCustomization.getChatFullScreenErrorRefreshButtonTextColor()),
-                                inAppChatCustomization.getChatFullScreenErrorRefreshButtonVisible()
-                        ),
-                        new InAppChatInputViewStyle(
-                                getResId(activity.getResources(), inAppChatCustomization.getAndroid().getChatInputTextAppearance(), activity.getPackageName()),
-                                Color.parseColor(inAppChatCustomization.getAndroid().getChatInputTextColor()),
-                                Color.parseColor(inAppChatCustomization.getChatInputBackgroundColor()),
-                                inAppChatCustomization.getAndroid().getChatInputHintText(),
-                                null,
-                                Color.parseColor(inAppChatCustomization.getChatInputPlaceholderColor()),
-                                loadDrawable(inAppChatCustomization.getAttachmentButtonIcon(), loader),
-                                ColorStateList.valueOf(Color.parseColor(inAppChatCustomization.getAndroid().getChatInputAttachmentIconTint())),
-                                loadDrawable(inAppChatCustomization.getAndroid().getChatInputAttachmentBackgroundDrawable(), loader),
-                                Color.parseColor(inAppChatCustomization.getAndroid().getChatInputAttachmentBackgroundColor()),
-                                loadDrawable(inAppChatCustomization.getSendButtonIcon(), loader),
-                                ColorStateList.valueOf(Color.parseColor(inAppChatCustomization.getAndroid().getChatInputSendIconTint())),
-                                loadDrawable(inAppChatCustomization.getAndroid().getChatInputSendBackgroundDrawable(), loader),
-                                Color.parseColor(inAppChatCustomization.getAndroid().getChatInputSendBackgroundColor()),
-                                Color.parseColor(inAppChatCustomization.getAndroid().getChatInputSeparatorLineColor()),
-                                inAppChatCustomization.getChatInputSeparatorVisible(),
-                                Color.parseColor(inAppChatCustomization.getChatInputCursorColor())
-                        )
-                );
-            } catch (IllegalArgumentException e) {
-                FlutterLogger.e(TAG, "Color in invalid format.", e);
-                return null;
-            }
-        }
-        return null;
-    }
-
-    private Drawable loadDrawable(String drawableSrc, FlutterLoader loader) {
-        AssetManager assets = activity.getApplication().getAssets();
-
-        try (AssetFileDescriptor fileDescriptor = assets.openFd(loader.getLookupKeyForAsset(drawableSrc))) {
-            return new BitmapDrawable(activity.getResources(), fileDescriptor.createInputStream());
-        } catch (IOException e) {
-            FlutterLogger.e(TAG, "Failed to load image " + drawableSrc, e);
-            return null;
-        }
-
     }
 
 }

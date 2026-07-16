@@ -36,10 +36,12 @@ struct ChatCustomization: Decodable {
     var chatInputHintTextColor: String?
     var chatInputAttachmentIcon: String?
     var chatInputAttachmentIconTint: String?
+    var chatInputAttachmentDisabledIconTint: String?
     var chatInputAttachmentBackgroundDrawable: String?
     var chatInputAttachmentBackgroundColor: String?
     var chatInputSendIcon: String?
     var chatInputSendIconTint: String?
+    var chatInputSendDisabledIconTint: String?
     var chatInputSendBackgroundDrawable: String?
     var chatInputSendBackgroundColor: String?
     var chatInputSeparatorLineColor: String?
@@ -118,6 +120,10 @@ class CustomizationUtils {
         setNotNil(&settings.advancedSettings.attachmentButtonIcon, getImage(with: customization.chatInputAttachmentIcon, with: registrar))
         setNotNil(&settings.advancedSettings.sendButtonIcon, getImage(with: customization.chatInputSendIcon, with: registrar))
         setNotNil(&settings.sendButtonTintColor, customization.chatInputSendIconTint?.toColor())
+        setNotNil(&settings.sendButtonTintDisabledColor, customization.chatInputSendDisabledIconTint?.toColor())
+        setNotNil(&settings.attachmentButtonTintColor, customization.chatInputAttachmentIconTint?.toColor())
+        setNotNil(&settings.attachmentButtonTintDisabledColor, customization.chatInputAttachmentDisabledIconTint?.toColor())
+        
         setNotNil(&settings.chatInputSeparatorLineColor, customization.chatInputSeparatorLineColor?.toColor())
         setNotNil(&settings.advancedSettings.isLineSeparatorHidden, customization.chatInputSeparatorLineVisible)
         setNotNil(&settings.advancedSettings.typingIndicatorColor, customization.chatInputCursorColor?.toColor())
