@@ -21,7 +21,8 @@ class EditFilterOptions extends StatefulWidget {
   final String externalUserId;
   final FilterOptions? filterOptions;
 
-  final void Function(String externalUserId, FilterOptions filterOptions) onEditFilterOptions;
+  final void Function(String externalUserId, FilterOptions filterOptions)
+      onEditFilterOptions;
 
   @override
   State<StatefulWidget> createState() => _EditFilterOptionsState();
@@ -42,7 +43,9 @@ class _EditFilterOptionsState extends State<EditFilterOptions> {
     _externalUserIdController.text = widget.externalUserId;
     if (widget.filterOptions != null) {
       _limitController.text = (widget.filterOptions!.limit ?? '').toString();
-      _topicController.text = widget.filterOptions!.topic ?? '';
+      _topicController.text = widget.filterOptions!.topic ??
+          widget.filterOptions!.topics?.join(', ') ??
+          '';
       _fromDateTime = widget.filterOptions!.fromDateTime;
       _toDateTime = widget.filterOptions!.toDateTime;
     }
@@ -83,7 +86,11 @@ class _EditFilterOptionsState extends State<EditFilterOptions> {
 
   void _submitFilterOptions() {
     final enteredLimit = int.tryParse(_limitController.text);
-    final enteredTopic = _topicController.text.trim();
+    final enteredTopics = _topicController.text
+        .split(',')
+        .map((t) => t.trim())
+        .where((t) => t.isNotEmpty)
+        .toList();
     if (enteredLimit != null && enteredLimit < 0) {
       showDialog(
         context: context,
@@ -107,7 +114,8 @@ class _EditFilterOptionsState extends State<EditFilterOptions> {
       _externalUserIdController.text.trim(),
       FilterOptions(
         limit: enteredLimit,
-        topic: enteredTopic.isNotEmpty ? enteredTopic : null,
+        topic: enteredTopics.length == 1 ? enteredTopics[0] : null,
+        topics: enteredTopics.length > 1 ? enteredTopics : null,
         fromDateTime: _fromDateTime,
         toDateTime: _toDateTime,
       ),
@@ -156,7 +164,8 @@ class _EditFilterOptionsState extends State<EditFilterOptions> {
                     controller: _topicController,
                     keyboardType: TextInputType.text,
                     decoration: const InputDecoration(
-                      label: Text('Topic'),
+                      label: Text('Topic(s)'),
+                      hintText: 'Optional, comma-separated',
                     ),
                   ),
                 ),
@@ -170,7 +179,9 @@ class _EditFilterOptionsState extends State<EditFilterOptions> {
               children: [
                 const Text('From'),
                 Text(
-                  _fromDateTime == null ? 'no datetime' : formatter.format(_fromDateTime!),
+                  _fromDateTime == null
+                      ? 'no datetime'
+                      : formatter.format(_fromDateTime!),
                 ),
                 IconButton(
                   onPressed: _fromDatePicker,
@@ -180,7 +191,9 @@ class _EditFilterOptionsState extends State<EditFilterOptions> {
                 ),
                 const Text('To'),
                 Text(
-                  _toDateTime == null ? 'no datetime' : formatter.format(_toDateTime!),
+                  _toDateTime == null
+                      ? 'no datetime'
+                      : formatter.format(_toDateTime!),
                 ),
                 IconButton(
                   onPressed: _toDatePicker,

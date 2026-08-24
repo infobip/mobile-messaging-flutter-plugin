@@ -289,11 +289,11 @@ class _HomePageState extends State<HomePage> {
         body: ListView(
           children: [
             ...pages.map((d) => DemoTile(demo: d)),
-          ListTile(
+            ListTile(
               title: const Text('Chat Examples'),
               onTap: () async {
                 try {
-                  final bool isAvailable = await InfobipMobilemessaging.isChatAvailable();                  
+                  final bool isAvailable = await InfobipMobilemessaging.isChatAvailable();
                   if (isAvailable) {
                     ChatExamples.showChatExamplesDialog(context);
                   } else {
@@ -364,12 +364,38 @@ class _HomePageState extends State<HomePage> {
             ),
             ListTile(
               title: const Text('Set Installation as Primary'),
-              onTap: () {
-                InstallationPrimary installation = InstallationPrimary(
-                  'pushRegistrationId to set as primary',
-                  true,
-                );
-                InfobipMobilemessaging.setInstallationAsPrimary(installation);
+              onTap: () async {
+                try {
+                  final installation =
+                      await InfobipMobilemessaging.getInstallation();
+                  final pushRegistrationId = installation.pushRegistrationId;
+
+                  if (pushRegistrationId == null ||
+                      pushRegistrationId.isEmpty) {
+                    if (!mounted) return;
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(
+                        content: Text(
+                          'Push registration is not available yet.',
+                        ),
+                      ),
+                    );
+                    return;
+                  }
+
+                  await InfobipMobilemessaging.setInstallationAsPrimary(
+                    InstallationPrimary(pushRegistrationId, true),
+                  );
+                } catch (e) {
+                  if (!mounted) return;
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(
+                      content: Text(
+                        'Unable to set installation as primary: $e',
+                      ),
+                    ),
+                  );
+                }
               },
             ),
             ListTile(

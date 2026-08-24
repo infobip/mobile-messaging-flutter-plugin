@@ -65,6 +65,8 @@ extension MMInbox {
         result["countTotal"] = countTotal
         result["countUnread"] = countUnread
         result["messages"] = messages.map({ return $0.dictionaryRepresentation })
+        result["countTotalFiltered"] = countTotalFiltered
+        result["countUnreadFiltered"] = countUnreadFiltered
         return result
     }
 }

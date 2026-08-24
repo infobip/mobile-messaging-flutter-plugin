@@ -71,7 +71,9 @@ class _CloudInboxScreenState extends State<CloudInboxScreen> {
   }
 
   void _editFilterOptions(String externalUserId, FilterOptions filterOptions) {
-    if (externalUserId.isEmpty || (_externalUserId == externalUserId && filterOptions == _filterOptions)) {
+    if (externalUserId.isEmpty ||
+        (_externalUserId == externalUserId &&
+            filterOptions == _filterOptions)) {
       return;
     }
     setState(() {
@@ -186,11 +188,23 @@ class _CloudInboxScreenState extends State<CloudInboxScreen> {
                       children: [
                         const SizedBox(width: 16),
                         _isInboxLoaded
-                            ? Text(
-                                'Inbox total: ${_inbox.countTotal}, unread: ${_inbox.countUnread}',
-                                style: const TextStyle(
-                                  fontWeight: FontWeight.w600,
-                                ),
+                            ? Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    'Inbox total: ${_inbox.countTotal}, unread: ${_inbox.countUnread}',
+                                    style: const TextStyle(
+                                      fontWeight: FontWeight.w600,
+                                    ),
+                                  ),
+                                  if (_inbox.countTotalFiltered != null)
+                                    Text(
+                                      'filtered total: ${_inbox.countTotalFiltered}, filtered unread: ${_inbox.countUnreadFiltered}',
+                                      style: const TextStyle(
+                                        fontWeight: FontWeight.w400,
+                                      ),
+                                    ),
+                                ],
                               )
                             : const Text('no messages yet'),
                       ],
@@ -199,13 +213,16 @@ class _CloudInboxScreenState extends State<CloudInboxScreen> {
                       child: !_isInboxLoaded || _inbox.messages!.isEmpty
                           ? ListView.builder(
                               itemCount: 1,
-                              itemBuilder: (BuildContext context, int index) => const ListTile(
-                                title: Text('Inbox messages will be shown here'),
+                              itemBuilder: (BuildContext context, int index) =>
+                                  const ListTile(
+                                title:
+                                    Text('Inbox messages will be shown here'),
                               ),
                             )
                           : ListView.builder(
                               itemCount: _inbox.messages?.length,
-                              itemBuilder: (BuildContext context, int index) => ListTile(
+                              itemBuilder: (BuildContext context, int index) =>
+                                  ListTile(
                                 title: Text(
                                   _inbox.messages![index].body!,
                                   style: values[index]
@@ -238,8 +255,11 @@ class _CloudInboxScreenState extends State<CloudInboxScreen> {
                                           TextButton(
                                             onPressed: () {
                                               try {
-                                                InfobipMobilemessaging.setInboxMessagesSeen(_externalUserId, [
-                                                  _inbox.messages![index].messageId,
+                                                InfobipMobilemessaging
+                                                    .setInboxMessagesSeen(
+                                                        _externalUserId, [
+                                                  _inbox.messages![index]
+                                                      .messageId,
                                                 ]);
                                                 setState(() {
                                                   values[index] = true;
@@ -250,7 +270,8 @@ class _CloudInboxScreenState extends State<CloudInboxScreen> {
                                                     'Error setting seen',
                                                   ),
                                                 );
-                                                ScaffoldMessenger.of(context).showSnackBar(snackBar);
+                                                ScaffoldMessenger.of(context)
+                                                    .showSnackBar(snackBar);
                                               }
                                               Navigator.pop(ctx);
                                             },
