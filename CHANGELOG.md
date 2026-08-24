@@ -1,3 +1,10 @@
+# 9.10.0
+## SDK Versions
+- Android [15.1.0]
+- iOS [15.5.2]
+
+## Added
+- Ability to filter inbox messages by multiple topics. See [wiki](https://github.com/infobip/mobile-messaging-flutter-plugin/wiki/Inbox) for more info.
 # 9.9.0
 ## SDK Versions
 - Android [15.1.0]
