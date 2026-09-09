@@ -1,3 +1,24 @@
+# 10.0.0
+## SDK Versions
+  - Android [16.1.0]
+  - iOS [15.7.1]
+
+## Added
+  ### iOS
+  - Swift Package Manager (SPM) support for the iOS side of the plugin, as an alternative to the existing CocoaPods integration.
+  - See the following migration guides for SPM:
+    - [Enabling SPM in Flutter applications](https://docs.flutter.dev/packages-and-plugins/swift-package-manager/for-app-developers)
+    - [Quick start guide](https://github.com/infobip/mobile-messaging-flutter-plugin#quick-start-guide) for full setup details.
+    - [SPM migration](https://github.com/infobip/mobile-messaging-flutter-plugin/wiki/Swift-Package-Manager-integration)
+    - [Integrating Notification Service Extension with SPM](https://github.com/infobip/mobile-messaging-sdk-ios/wiki/Integration-via-Swift-Package-Manager#Notification-Service-Extension)
+
+  > **Note:** This is a transition period. CocoaPods will still be fully supported until December 2nd, 2026, when CocoaPods Trunk is scheduled to become permanently read-only. You are not required to migrate to SPM right away. Cocoapods will continue receiving all plugin updates as before until the mentioned date. After that date, the iOS side of the plugin
+  will only be updated via Swift Package Manager.
+
+  ### Android
+  - **Breaking change:** `compileSdkVersion` bumped from 36 to 37 (Android 17), following the native Android SDK update to 16.1.0. Depending on your Android Gradle Plugin/SDK Manager setup, you may need to explicitly install the `Android SDK Platform 37` package
+    - see the [migration guide](https://github.com/infobip/mobile-messaging-flutter-plugin/wiki/Migration-Guides#breaking-change-compilesdkversion-bumped-to-37-android) for more details.
+    - If your app uses Mobile Messaging notification flows, in-app chat, or Infobip RTC calls, validate the upgrade on Android 17 devices and review any permission or lifecycle assumptions in your app code.
 # 9.10.0
 ## SDK Versions
 - Android [15.1.0]
