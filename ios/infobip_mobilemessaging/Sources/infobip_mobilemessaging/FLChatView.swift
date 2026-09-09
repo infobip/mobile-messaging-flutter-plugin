@@ -9,6 +9,9 @@
 import UIKit
 import Flutter
 import MobileMessaging
+#if canImport(InAppChat)
+import InAppChat
+#endif
 
 enum Constants {
     static let resultSuccess = "success"
@@ -282,6 +285,6 @@ public class FLChatView: NSObject, FlutterPlatformView {
     }
     
     func setExceptionHandler(call: FlutterMethodCall, result: @escaping FlutterResult) {
-        return SwiftInfobipMobilemessagingPlugin.digestChatExceptionHandler(call, result)
+        return InfobipMobilemessagingPlugin.digestChatExceptionHandler(call, result)
     }
 }

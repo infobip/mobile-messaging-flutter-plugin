@@ -30,7 +30,11 @@ const ignoredPatterns = [
   '.idea',
   'test_results',
   'package-lock.json',
-  'google-services.json'
+  'google-services.json',
+  'Package.swift',        // Swift Package Manager manifest
+  'Package.resolved',     // Swift Package Manager lockfile
+  '.swiftpm',             // Swift Package Manager metadata
+  '.build'                // Swift Package Manager build output
 ];
 
 function makeHeader(fileName) {

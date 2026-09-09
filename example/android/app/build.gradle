@@ -26,7 +26,7 @@ if (flutterVersionName == null) {
 
 ext {
     mm_example_minSdkVersion = 23
-    mm_example_compileSdkVersion = 36
+    mm_example_compileSdkVersion = 37
 }
 
 android {

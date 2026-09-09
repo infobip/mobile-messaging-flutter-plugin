@@ -8,7 +8,11 @@
 
 import UIKit
 import Flutter
+#if canImport(infobip_mobilemessaging)
+import infobip_mobilemessaging
+#else
 import MobileMessaging
+#endif
 
 @main
 @objc class AppDelegate: FlutterAppDelegate {

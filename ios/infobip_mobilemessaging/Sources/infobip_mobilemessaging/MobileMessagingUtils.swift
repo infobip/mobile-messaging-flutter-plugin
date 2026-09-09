@@ -9,6 +9,13 @@
 import Foundation
 import MobileMessaging
 
+#if canImport(MobileMessagingInbox)
+import MobileMessagingInbox
+#endif
+#if canImport(InAppChat)
+import InAppChat
+#endif
+
 extension MM_MTMessage {
     override func dictionary() -> [String: Any] {
         return self.dictionaryRepresentation

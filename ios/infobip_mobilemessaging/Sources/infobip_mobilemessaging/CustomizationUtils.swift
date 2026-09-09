@@ -11,6 +11,10 @@ import MobileMessaging
 import Flutter
 import UIKit
 
+#if canImport(InAppChat)
+import InAppChat
+#endif
+
 struct ToolbarCustomization: Decodable {
     var titleTextAppearance: String?
     var titleTextColor: String?

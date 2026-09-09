@@ -8,6 +8,9 @@
 
 import Foundation
 import MobileMessaging
+#if canImport(Flutter)
+import Flutter
+#endif
 
 class MobileMessagingEventsManager: NSObject, FlutterStreamHandler {
     

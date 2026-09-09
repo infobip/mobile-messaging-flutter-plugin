@@ -2,7 +2,7 @@ require 'yaml'
 
 pubspec = YAML.load_file(File.join('..', 'pubspec.yaml'))
 library_version = pubspec['version'].gsub('+', '-')
-mmVersion = "15.5.2"
+mmVersion = "15.7.1"
 
 Pod::Spec.new do |s|
   s.name             = 'infobip_mobilemessaging'
@@ -15,7 +15,8 @@ A new flutter plugin project.
   s.license          = { :file => '../LICENSE' }
   s.author           = { 'Infobip Mobile Messaging Team' => 'Team_Mobile_Messaging@infobip.com' }
   s.source           = { :path => '.' }
-  s.source_files = 'Classes/**/*'
+  s.source_files = 'infobip_mobilemessaging/Sources/**/*'
+  s.exclude_files = 'infobip_mobilemessaging/Sources/infobip_mobilemessaging/MobileMessagingPluginApplicationDelegate.swift'
   s.dependency 'Flutter'
   s.dependency "MobileMessaging/Core", mmVersion
   s.dependency "MobileMessaging/InAppChat", mmVersion

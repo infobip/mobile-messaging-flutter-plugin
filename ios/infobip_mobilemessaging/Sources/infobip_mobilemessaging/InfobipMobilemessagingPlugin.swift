@@ -1,5 +1,5 @@
 //
-//  SwiftInfobipMobilemessagingPlugin.swift
+//  InfobipMobilemessagingPlugin.swift
 //  MobileMessagingFlutter
 //
 //  Copyright (c) 2016-2025 Infobip Limited
@@ -9,6 +9,15 @@
 import Flutter
 import UIKit
 import MobileMessaging
+#if canImport(InAppChat)
+import InAppChat
+#endif
+#if canImport(MobileMessagingInbox)
+import MobileMessagingInbox
+#endif
+#if WEBRTCUI_ENABLED && canImport(WebRTCUI)
+import WebRTCUI
+#endif
 
 extension String {
     func toJSON() -> Any? {
@@ -36,7 +45,7 @@ extension UIApplication {
 
 public typealias DictionaryRepresentation = [String : Any]
 
-public class SwiftInfobipMobilemessagingPlugin: NSObject, FlutterPlugin {
+public class InfobipMobilemessagingPlugin: NSObject, FlutterPlugin {
     
     private var eventsManager: MobileMessagingEventsManager?
     private static var chatVC: MMChatViewController?
@@ -73,7 +82,7 @@ public class SwiftInfobipMobilemessagingPlugin: NSObject, FlutterPlugin {
     
     public static func register(with registrar: FlutterPluginRegistrar) {
         let channel = FlutterMethodChannel(name: "infobip_mobilemessaging", binaryMessenger: registrar.messenger())
-        let instance = SwiftInfobipMobilemessagingPlugin()
+        let instance = InfobipMobilemessagingPlugin()
         registrar.addMethodCallDelegate(instance, channel: channel)
         instance.controller = registrar
         
@@ -482,7 +491,7 @@ public class SwiftInfobipMobilemessagingPlugin: NSObject, FlutterPlugin {
         }
         
         let vc = shouldBePresentedModallyIOS ? MMChatViewController.makeRootNavigationViewController(): MMChatViewController.makeRootNavigationViewControllerWithCustomTransition()
-        SwiftInfobipMobilemessagingPlugin.chatVC = vc.children.first as? MMChatViewController
+        InfobipMobilemessagingPlugin.chatVC = vc.children.first as? MMChatViewController
         if shouldBePresentedModallyIOS {
             vc.modalPresentationStyle = .fullScreen
         }
@@ -517,7 +526,7 @@ public class SwiftInfobipMobilemessagingPlugin: NSObject, FlutterPlugin {
                               message: "Error parsing locale string",
                               details: "Error parsing locale string" ))
         }
-        guard let chatVC = SwiftInfobipMobilemessagingPlugin.chatVC else {
+        guard let chatVC = InfobipMobilemessagingPlugin.chatVC else {
             MobileMessaging.inAppChat?.setLanguage(localeString)
             return result(Constants.resultSuccess)
         }
@@ -578,7 +587,7 @@ public class SwiftInfobipMobilemessagingPlugin: NSObject, FlutterPlugin {
     }
     
     static func digestChatExceptionHandler(_ call: FlutterMethodCall, _ result: @escaping FlutterResult) {
-        guard let ibMMPlugin = MobileMessaging.inAppChat?.delegate as? SwiftInfobipMobilemessagingPlugin else {
+        guard let ibMMPlugin = MobileMessaging.inAppChat?.delegate as? InfobipMobilemessagingPlugin else {
             return result(FlutterError(error: .unableToSetExceptionHandler))
         }
         let enableHandler = (call.arguments as? Bool) ?? false
@@ -587,7 +596,7 @@ public class SwiftInfobipMobilemessagingPlugin: NSObject, FlutterPlugin {
     }
     
     func setChatExceptionHandler(call: FlutterMethodCall, result: @escaping FlutterResult) {
-        return SwiftInfobipMobilemessagingPlugin.digestChatExceptionHandler(call, result)
+        return InfobipMobilemessagingPlugin.digestChatExceptionHandler(call, result)
     }
 
     func isChatAvailable(call: FlutterMethodCall, result: @escaping FlutterResult) {
@@ -615,7 +624,7 @@ public class SwiftInfobipMobilemessagingPlugin: NSObject, FlutterPlugin {
                               details: nil ))
         }
         
-        if let chatVc = SwiftInfobipMobilemessagingPlugin.chatVC {
+        if let chatVc = InfobipMobilemessagingPlugin.chatVC {
             chatVc.sendContextualData(data, multiThreadStrategy: strategy) { error in
                 if let error = error {
                     result(FlutterError( code: error.mm_code ?? "0",
@@ -954,12 +963,12 @@ public class SwiftInfobipMobilemessagingPlugin: NSObject, FlutterPlugin {
     }
     
     func restartConnection() {
-        guard let chatVC = SwiftInfobipMobilemessagingPlugin.chatVC else { return }
+        guard let chatVC = InfobipMobilemessagingPlugin.chatVC else { return }
         chatVC.restartConnection()
     }
     
     func stopConnection() {
-        guard let chatVC = SwiftInfobipMobilemessagingPlugin.chatVC else { return }
+        guard let chatVC = InfobipMobilemessagingPlugin.chatVC else { return }
         chatVC.stopConnection()
     }
 }
@@ -1001,7 +1010,7 @@ class VariableJwtSupplier: NSObject, MMJwtSupplier {
     }
 }
 
-extension SwiftInfobipMobilemessagingPlugin: MMInAppChatDelegate {
+extension InfobipMobilemessagingPlugin: MMInAppChatDelegate {
     @objc public func getJWT() -> String? {
         guard willUseChatJWT else { return nil }
         var jwtResult: String?

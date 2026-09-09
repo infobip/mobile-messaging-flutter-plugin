@@ -22,9 +22,9 @@ rootProject.allprojects {
 }
 
 ext {
-    mm_version = "16.0.0"
+    mm_version = "16.1.0"
     mm_minSdkVersion = 23
-    mm_compileSdkVersion = 36
+    mm_compileSdkVersion = 37
     mm_kotlinVersion = "2.1.21"
     mm_gradlePluginVersion = "8.11.1"
     mm_coreKtxVersion = "1.17.0"

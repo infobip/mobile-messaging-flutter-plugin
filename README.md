@@ -7,15 +7,18 @@ The document describes plugin integration steps for your Flutter project.
 * [Quick start guide](#quick-start-guide)
 
 ## Requirements
-- Flutter 3.16.0+
+- Flutter:
+  - If using CocoaPods: 3.16.0+
+  - If using Swift Package Manager (SPM): 3.24.0+
 
-For iOS project:
-- Xcode 16.x
-- Minimum deployment target 15.0
+- For iOS project:
+  - Xcode 16.x
+  - Minimum deployment target 15.0
+  - CocoaPods 1.16.2
 
-For Android project:
-- Android Studio
-- Supported API Levels: 23 (Android 6.0 - Marshmallow) - 36 (Android 16)
+- For Android project:
+  - Android Studio
+  - Supported API Levels: 23 (Android 6.0 - Marshmallow) - 37 (Android 17)
 
 ## Quick start guide
 
@@ -33,7 +36,7 @@ $ pub get infobip_mobilemessaging
 
   ```yaml
   dependencies:
-    infobip_mobilemessaging: '^9.0.0'
+    infobip_mobilemessaging: '^10.0.0'
 
   ```
 
@@ -42,30 +45,42 @@ $ pub get infobip_mobilemessaging
 4. Configure platforms
 
    - **iOS**
-       1. Update the `ios/Podfile` with iOS deployment target platform 13.0 - `platform :ios, '13.0'` if needed, and perform in Terminal `cd ios && pod update `
-       2. Import MobileMessaging `@import MobileMessaging;` and add `[MobileMessagingPluginApplicationDelegate install];` into `<ProjectName>/ios/Runner/AppDelegate.m` (this is required for OS callbacks such as `didRegisterForRemoteNotifications` to be intercepted by native MobileMessaging SDK) :
-        ```objc
-               ...
-               @import MobileMessaging;
 
-               @implementation AppDelegate
+       The plugin ships both a CocoaPods podspec and a Swift Package Manager manifest, so your app can integrate it with either dependency manager.
 
-               - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
-               {
-                   ...
-                   [MobileMessagingPluginApplicationDelegate install];
-                   ...
-               }
-               ...
-        ```
+       #### Dependency manager setup
 
-     <details><summary>expand to see Swift code</summary>
+       <details open><summary><b>CocoaPods</b></summary>
 
-      ```swift
+       1. Update the `ios/Podfile` with iOS deployment target platform 15.0 - `platform :ios, '15.0'` if needed, and perform in Terminal `cd ios && pod install`
 
-               import MobileMessaging
-               ...
-               @UIApplicationMain
+       </details>
+
+       <details><summary><b>Swift Package Manager</b></summary>
+
+       1. Make sure your project uses Flutter 3.24+ with Swift Package Manager support enabled. To enable SPM, run the following command:
+        ```bash
+        flutter config --enable-swift-package-manager
+        ``` 
+        - see [Flutter's Swift Package Manager docs](https://docs.flutter.dev/packages-and-plugins/swift-package-manager/for-app-developers) for more information.
+       2. Run `flutter pub get` - Flutter reads the plugin's `Package.swift` and wires it into `FlutterGeneratedPluginSwiftPackage` automatically. No manual Xcode project changes are required for the main app target.
+       3. Set the iOS deployment target to 15.0.
+
+       </details>
+
+       2. Import MobileMessaging and add `MobileMessagingPluginApplicationDelegate.install()` into `<ProjectName>/ios/Runner/AppDelegate.swift` (this is required for OS callbacks such as `didRegisterForRemoteNotifications` to be intercepted by native MobileMessaging SDK). 
+       - If using SPM, import the `infobip_mobilemessaging` dependency.
+       - If using CocoaPods, import the `MobileMessaging` depdendency.
+       The AppDelegate should now look like the following:
+        ```swift
+               import UIKit
+               import Flutter
+               // if using Swift Package Manager, import the infobip_mobilemessaging dependency
+               import infobip_mobilemessaging
+               // if using CocoaPods, import the MobileMessaging dependency
+               import MobileMessaging 
+
+               @main
                @objc class AppDelegate: FlutterAppDelegate {
                  override func application(
                     _ application: UIApplication,
@@ -77,8 +92,25 @@ $ pub get infobip_mobilemessaging
                   }
                 }
                ...
-      ```
-      </details>
+        ```
+
+       > ### Notice
+       > An Objective-C `AppDelegate.m` is only supported with the CocoaPods integration:
+       > ```objc
+       >        ...
+       >        @import MobileMessaging;
+       >
+       >        @implementation AppDelegate
+       >
+       >        - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
+       >        {
+       >            ...
+       >            [MobileMessagingPluginApplicationDelegate install];
+       >            ...
+       >        }
+       >        ...
+       > ```
+       > Swift Package Manager integration requires a Swift `AppDelegate.swift`.
 
        3. Configure your project to support Push Notification as described in item 2 of [iOS integration quick start guide](https://github.com/infobip/mobile-messaging-sdk-ios#quick-start-guide)
        4. [Integrate Notification Service Extension](https://github.com/infobip/mobile-messaging-flutter-plugin/wiki/Delivery-improvements-and-rich-content-notifications) into your app in order to obtain:
