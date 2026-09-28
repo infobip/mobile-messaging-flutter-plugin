@@ -49,7 +49,7 @@ public class InfobipMobilemessagingPlugin: NSObject, FlutterPlugin {
     
     private var eventsManager: MobileMessagingEventsManager?
     private static var chatVC: MMChatViewController?
-    private var isStarted: Bool = false
+    private var activeConfiguration: [String: AnyObject]?
     private var webrtcConfigId: String?
     private var controller: FlutterPluginRegistrar?
     private var willUseChatJWT = false
@@ -193,54 +193,54 @@ public class InfobipMobilemessagingPlugin: NSObject, FlutterPlugin {
                               details: "Error parsing Configuration" ))
         }
         
-        let successCallback: FlutterResult = { [weak self] response in
-            Configuration.saveConfigToDefaults(rawConfig: json)
-            self?.isStarted = true
-            return result(response)
-        }
+        Configuration.removeLegacyPersistedConfig()
         
-        let cachedConfigDict = Configuration.getRawConfigFromDefaults()
-        if let cachedConfigDict = cachedConfigDict, (json as NSDictionary) != (cachedConfigDict as NSDictionary)
-        {
-            stop {
-                self.start(configuration: configuration, result: successCallback)
-            }
-        } else if cachedConfigDict == nil || !isStarted {
-            start(configuration: configuration, result: successCallback)
-        } else {
+        guard let activeConfiguration = activeConfiguration else {
+            return start(configuration: configuration, rawConfig: json, result: result)
+        }
+        guard (json as NSDictionary) != (activeConfiguration as NSDictionary) else {
             return result(Constants.resultSuccess)
+        }
+        stop {
+            self.start(configuration: configuration, rawConfig: json, result: result)
         }
     }
     
     private func stop(completion: @escaping () -> Void) {
-        self.isStarted = false
-        eventsManager?.stop()
-        MobileMessaging.stop(false, completion: completion)
+        activeConfiguration = nil
+        MobileMessaging.stop(false) {
+            DispatchQueue.main.async(execute: completion)
+        }
     }
     
-    private func start(configuration: Configuration, result: @escaping FlutterResult) {
+    private func start(configuration: Configuration, rawConfig: [String: AnyObject], result: @escaping FlutterResult) {
         MobileMessaging.privacySettings.systemInfoSendingDisabled = configuration.privacySettings[Configuration.Keys.systemInfoSendingDisabled].unwrap(orDefault: false)
         MobileMessaging.privacySettings.carrierInfoSendingDisabled = configuration.privacySettings[Configuration.Keys.carrierInfoSendingDisabled].unwrap(orDefault: false)
         MobileMessaging.privacySettings.userDataPersistingDisabled = configuration.privacySettings[Configuration.Keys.userDataPersistingDisabled].unwrap(orDefault: false)
         
-        var mobileMessaging = MobileMessaging
-            .withApplicationCode(configuration.appCode, notificationType: configuration.notificationType)
+        guard var mobileMessaging = MobileMessaging
+            .withApplicationCode(configuration.appCode, notificationType: configuration.notificationType) else {
+            return result(FlutterError(code: "initializationFailed",
+                                       message: "Failed to initialize the native MobileMessaging SDK",
+                                       details: nil))
+        }
+        activeConfiguration = rawConfig
         
         if configuration.inAppChatEnabled {
-            mobileMessaging = mobileMessaging?.withInAppChat()
+            mobileMessaging = mobileMessaging.withInAppChat()
             MobileMessaging.inAppChat?.delegate = self
         }
         
         if configuration.fullFeaturedInAppsEnabled {
-            mobileMessaging = mobileMessaging?.withFullFeaturedInApps()
+            mobileMessaging = mobileMessaging.withFullFeaturedInApps()
         }
         
         if let categories = configuration.categories {
-            mobileMessaging = mobileMessaging?.withInteractiveNotificationCategories(Set(categories))
+            mobileMessaging = mobileMessaging.withInteractiveNotificationCategories(Set(categories))
         }
         
         if let webViewSettings = configuration.webViewSettings {
-            mobileMessaging?.webViewSettings.configureWith(rawConfig: webViewSettings)
+            mobileMessaging.webViewSettings.configureWith(rawConfig: webViewSettings)
         }
         
         MobileMessaging.userAgent.pluginVersion = "flutter \(configuration.pluginVersion)"
@@ -249,14 +249,14 @@ public class InfobipMobilemessagingPlugin: NSObject, FlutterPlugin {
         }
         
         if configuration.defaultMessageStorage {
-            mobileMessaging = mobileMessaging?.withDefaultMessageStorage()
+            mobileMessaging = mobileMessaging.withDefaultMessageStorage()
         }
         
         if (configuration.withoutRegisteringForRemoteNotifications) {
-            mobileMessaging = mobileMessaging?.withoutRegisteringForRemoteNotifications()
+            mobileMessaging = mobileMessaging.withoutRegisteringForRemoteNotifications()
         }
         
-        mobileMessaging = mobileMessaging?.withJwtSupplier(VariableJwtSupplier(jwt: configuration.userDataJwt))
+        mobileMessaging = mobileMessaging.withJwtSupplier(VariableJwtSupplier(jwt: configuration.userDataJwt))
         
 #if WEBRTCUI_ENABLED
         if let webrtcDict = configuration.webRTCUI,
@@ -265,8 +265,10 @@ public class InfobipMobilemessagingPlugin: NSObject, FlutterPlugin {
         }
 #endif
         
-        mobileMessaging?.start({
-            return result(Constants.resultSuccess)
+        mobileMessaging.start({
+            DispatchQueue.main.async {
+                result(Constants.resultSuccess)
+            }
         })
         
         if let customization = configuration.customization {
@@ -474,10 +476,12 @@ public class InfobipMobilemessagingPlugin: NSObject, FlutterPlugin {
     }
     
     func cleanup(result: @escaping FlutterResult) {
+        activeConfiguration = nil
         MobileMessaging.jwtSupplier = nil
-        Configuration.saveConfigToDefaults(rawConfig: [:])
         MobileMessaging.cleanUpAndStop(false, completion: {
-            return result(Constants.resultSuccess)
+            DispatchQueue.main.async {
+                result(Constants.resultSuccess)
+            }
         })
     }
     

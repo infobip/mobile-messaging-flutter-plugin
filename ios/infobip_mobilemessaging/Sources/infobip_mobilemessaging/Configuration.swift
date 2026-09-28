@@ -10,7 +10,12 @@ import Foundation
 import MobileMessaging
 
 class Configuration {
-    static let userDefaultsConfigKey = "com.mobile-messaging.flutterPluginConfiguration"
+    /// Older plugin versions persisted the configuration under this key. It is no longer read.
+    private static let legacyUserDefaultsConfigKey = "com.mobile-messaging.flutterPluginConfiguration"
+    
+    static func removeLegacyPersistedConfig() {
+        UserDefaults.standard.removeObject(forKey: legacyUserDefaultsConfigKey)
+    }
     
     struct Keys {
         static let iosSettings = "iosSettings"
@@ -120,32 +125,5 @@ class Configuration {
         } else {
             self.webViewSettings = nil
         }
-    }
-    
-    static func saveConfigToDefaults(rawConfig: [String: AnyObject]) {
-        let data: Data = NSKeyedArchiver.archivedData(withRootObject: serializedConfig(from: rawConfig))
-        UserDefaults.standard.set(data, forKey: userDefaultsConfigKey)
-    }
-    
-    static func getRawConfigFromDefaults() -> [String: AnyObject]? {
-        let data = UserDefaults.standard.data(forKey: userDefaultsConfigKey)
-        guard let data = data else {
-            return nil
-        }
-        return NSKeyedUnarchiver.unarchiveObject(with: data) as? [String : AnyObject]
-    }
-    
-    private static func serializedConfig(from rawConfig: [String: AnyObject]) -> [String: AnyObject] {
-        var rawConfig = rawConfig
-        rawConfig.removeValue(forKey: Configuration.Keys.applicationCode)
-        rawConfig.removeValue(forKey: Configuration.Keys.userDataJwt)
-        
-        let serializableConfig = rawConfig.compactMapValues { value -> AnyObject? in
-            if value is NSString || value is NSNumber || value is NSArray || value is NSDictionary || value is NSDate || value is NSData {
-                return value
-            }
-            return nil
-        }
-        return serializableConfig
     }
 }

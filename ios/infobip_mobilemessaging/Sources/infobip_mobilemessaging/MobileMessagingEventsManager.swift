@@ -60,17 +60,14 @@ class MobileMessagingEventsManager: NSObject, FlutterStreamHandler {
         setupObservingMMNotifications()
     }
     
-    func stop() {
-        setupObservingMMNotifications(stopObservations: true)
+    deinit {
+        NotificationCenter.default.removeObserver(self)
     }
 
-    private func setupObservingMMNotifications(stopObservations: Bool = false) {
+    private func setupObservingMMNotifications() {
         supportedNotifications.forEach { (kv) in
             let name = NSNotification.Name(rawValue: kv.value)
-            NotificationCenter.default.removeObserver(self, name: name, object: nil)
-            if !stopObservations {
-                NotificationCenter.default.addObserver(self, selector: #selector(handleMMNotification(notification:)), name: name, object: nil)
-            }
+            NotificationCenter.default.addObserver(self, selector: #selector(handleMMNotification(notification:)), name: name, object: nil)
         }
     }
 
