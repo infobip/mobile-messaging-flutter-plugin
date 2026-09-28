@@ -1,3 +1,11 @@
+# 10.0.1
+## SDK Versions
+- Android [16.1.0]
+- iOS [15.7.1]
+
+## Fixed
+### iOS
+- Native SDK events (`personalized`, `installationUpdated`, etc.) stopped reaching Dart listeners after relaunching the app and initializing with the same configuration. Repeated `init` with an identical configuration no longer restarts the SDK, and event delivery is preserved across relaunch, `cleanup` and configuration changes.
 # 10.0.0
 ## SDK Versions
   - Android [16.1.0]
