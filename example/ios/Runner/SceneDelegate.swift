@@ -7,7 +7,6 @@
 //
 
 import UIKit
-import MobileMessaging
 
 class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 

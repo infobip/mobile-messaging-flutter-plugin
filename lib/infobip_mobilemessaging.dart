@@ -162,10 +162,19 @@ class InfobipMobilemessaging {
     }
   }
 
+  // The iOS SDK fires actionTapped for dismiss actions (swipe-away or in-app close).
+  // The action identifier is in payload['id'] before Message.fromJson discards it.
+  static const _iosDismissActionId = 'com.apple.UNNotificationDismissActionIdentifier';
+
   static void _dispatchToCallback(String eventName, Function callback, dynamic payload) {
     if (eventName == LibraryEvent.messageReceived ||
         eventName == LibraryEvent.notificationTapped ||
         eventName == LibraryEvent.actionTapped) {
+      if (eventName == LibraryEvent.actionTapped &&
+          payload is Map &&
+          payload['id'] == _iosDismissActionId) {
+        return;
+      }
       callback(Message.fromJson(payload));
     } else if (eventName == LibraryEvent.installationUpdated) {
       callback(Installation.fromJson(payload).toString());

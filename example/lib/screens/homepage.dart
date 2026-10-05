@@ -84,6 +84,10 @@ class _HomePageState extends State<HomePage> {
         _addLibraryEvent('Depersonalized'),
       },
     );
+    // Deeplinks can arrive through two different tap events, both need to be handled:
+    //  - notificationTapped: user tapped a push notification or a banner in-app message.
+    //  - actionTapped: user tapped an action button (interactive notification category action,
+    //    or the primary button of a popup / fullscreen in-app message).
     InfobipMobilemessaging.on(
       LibraryEvent.actionTapped,
       (Message event) => {
@@ -98,6 +102,7 @@ class _HomePageState extends State<HomePage> {
         log('Callback. NOTIFICATION_TAPPED event: $message'),
         _addLibraryEvent('Notification Tapped'),
         if (message.chat != null && message.chat!) {log('Chat Message Tapped')},
+        _handleDeeplinkEvent(message),
       },
     );
     InfobipMobilemessaging.on(
@@ -135,12 +140,31 @@ class _HomePageState extends State<HomePage> {
   //#endregion
 
   void _handleDeeplinkEvent(Message message) {
-    if (message.deeplink != null) {
-      Uri uri = Uri.parse(message.deeplink.toString());
-      List<String> pathSegments = uri.pathSegments;
-      for (var pathSegment in pathSegments) {
-        navigatorKey.currentState?.pushNamed('/$pathSegment');
-      }
+    final deeplink = message.deeplink?.trim();
+    if (deeplink == null || deeplink.isEmpty) {
+      return;
+    }
+    // The deeplink comes from the message payload, never let a malformed value throw inside the event callback.
+    // Note that Uri.tryParse() alone is not enough: an invalid percent-escape passes parsing and throws later,
+    // when the path segments are decoded.
+    final Uri uri;
+    try {
+      uri = Uri.parse(deeplink);
+    } on FormatException {
+      log('Ignoring malformed deeplink: $deeplink');
+      return;
+    }
+    // URLs of the form scheme://screenName have the screen name in uri.host and
+    // empty pathSegments (e.g. com.infobip.mobilemessaging://screen_one).
+    // Prepend the host so both host-style and path-style URLs are handled:
+    //   scheme://screen_one          → host=screen_one, pathSegments=[]
+    //   scheme://deeplink/screen_one → host=deeplink,   pathSegments=[screen_one]
+    final segments = [
+      if (uri.host.isNotEmpty) uri.host,
+      ...uri.pathSegments,
+    ];
+    for (var segment in segments) {
+      navigatorKey.currentState?.pushNamed('/$segment');
     }
   }
 
@@ -417,26 +441,6 @@ class _HomePageState extends State<HomePage> {
                     'alEvent1Date': '2021-10-19',
                   },
                 });
-              },
-            ),
-            ListTile(
-              title: const Text('Register Deeplink on Tap'),
-              onTap: () {
-                log('Tile "Register Deeplink on Tap" tapped');
-                InfobipMobilemessaging.on(
-                  'notificationTapped',
-                  _handleDeeplinkEvent,
-                );
-              },
-            ),
-            ListTile(
-              title: const Text('Unregister Deeplink on Tap'),
-              onTap: () {
-                log('Tile "Unregister Deeplink on Tap" tapped');
-                InfobipMobilemessaging.unregister(
-                  LibraryEvent.notificationTapped,
-                  _handleDeeplinkEvent,
-                );
               },
             ),
             ListTile(
