@@ -45,20 +45,6 @@ class ChatExamples {
         },
       ),
       SimpleDialogOption(
-        child: const Text('Use dark chat mode'),
-        onPressed: () async {
-          await InfobipMobilemessaging.setUIMode(ChatUIMode.dark);
-          if (context.mounted) Navigator.pop(context);
-        },
-      ),
-      SimpleDialogOption(
-        child: const Text('Use system color chat mode'),
-        onPressed: () async {
-          await InfobipMobilemessaging.setUIMode(ChatUIMode.auto);
-          if (context.mounted) Navigator.pop(context);
-        },
-      ),
-      SimpleDialogOption(
         child: const Text('Show chat screen customized'),
         onPressed: () {
           InfobipMobilemessaging.setChatCustomization(

@@ -32,9 +32,6 @@ import 'models/message_storage/message_storage.dart';
 // ignore: constant_identifier_names, public_member_api_docs
 enum ChatMultithreadStrategies { ALL, ALL_PLUS_NEW, ACTIVE }
 
-/// In-app chat color modes.
-enum ChatUIMode { auto, light, dark }
-
 /// Infobip Mobile Messaging class.
 class InfobipMobilemessaging {
   static const MethodChannel _channel = MethodChannel('infobip_mobilemessaging');
@@ -356,11 +353,6 @@ class InfobipMobilemessaging {
   /// Resets current unread chat push message counter to zero.
   /// MobileMessaging automatically resets the counter when chat is opened.
   static Future<void> resetMessageCounter() async => await _channel.invokeMethod('resetMessageCounter');
-
-  /// Sets the current and future in-app chat color mode.
-  /// This method has no effect on Android.
-  static Future<void> setUIMode(ChatUIMode mode) async =>
-      await _channel.invokeMethod('setUIMode', mode.name);
 
   /// Sets the language of the widget, in locale format e.g.: `en-US`.
   static Future<void> setLanguage(String language) async => await _channel.invokeMethod('setLanguage', language);

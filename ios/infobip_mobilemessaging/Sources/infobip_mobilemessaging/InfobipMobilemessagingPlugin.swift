@@ -126,8 +126,6 @@ public class InfobipMobilemessagingPlugin: NSObject, FlutterPlugin {
             setChatCustomization(call: call, result: result)
         } else if call.method == "setLanguage" {
             setLanguage(call: call, result: result)
-        } else if call.method == "setUIMode" {
-            setUIMode(call: call, result: result)
         } else if call.method == "setWidgetTheme" {
             setWidgetTheme(call: call, result: result)
         } else if call.method == "sendContextualData" {
@@ -525,24 +523,6 @@ public class InfobipMobilemessagingPlugin: NSObject, FlutterPlugin {
         setupChatCustomization(customization: customization)
     }
     
-    func setUIMode(call: FlutterMethodCall, result: @escaping FlutterResult) {
-        guard let modeName = call.arguments as? String else {
-            return result(FlutterError(code: "invalidUIMode", message: "Chat UI mode must be auto, light, or dark", details: nil))
-        }
-        guard ["auto", "light", "dark"].contains(modeName) else {
-            return result(FlutterError(code: "invalidUIMode", message: "Chat UI mode must be auto, light, or dark", details: nil))
-        }
-        Task { @MainActor in
-            switch modeName {
-            case "auto": MobileMessaging.inAppChat?.setUIMode(.auto)
-            case "light": MobileMessaging.inAppChat?.setUIMode(.light)
-            case "dark": MobileMessaging.inAppChat?.setUIMode(.dark)
-            default: break
-            }
-            result(Constants.resultSuccess)
-        }
-    }
-
     func setLanguage(call: FlutterMethodCall, result: @escaping FlutterResult) {
         guard let localeString = call.arguments as? String else {
             return result(
