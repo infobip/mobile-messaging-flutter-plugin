@@ -239,6 +239,9 @@ public class InfobipMobilemessagingPlugin implements FlutterPlugin, MethodCallHa
             case "setLanguage":
                 setLanguage(call, result);
                 break;
+            case "setUIMode":
+                setUIMode(call, result);
+                break;
             case "sendContextualData":
                 sendContextualData(call, result);
                 break;
@@ -955,6 +958,15 @@ public class InfobipMobilemessagingPlugin implements FlutterPlugin, MethodCallHa
 
     private void resetMessageCounter() {
         InAppChat.getInstance(activity.getApplication()).resetMessageCounter();
+    }
+
+    private void setUIMode(MethodCall call, final MethodChannel.Result result) {
+        Object mode = call.arguments;
+        if ("auto".equals(mode) || "light".equals(mode) || "dark".equals(mode)) {
+            result.success(null); // The Android SDK does not expose this iOS color mode API.
+        } else {
+            result.error("invalidUIMode", "Chat UI mode must be auto, light, or dark", null);
+        }
     }
 
     private void setLanguage(MethodCall call, final MethodChannel.Result result) {
