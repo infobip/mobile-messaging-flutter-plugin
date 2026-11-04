@@ -1,3 +1,15 @@
+# 10.1.0
+## SDK Versions
+- Android [16.3.0]
+- iOS [15.7.1]
+ 
+## Changed
+**Android**
+- improvements to chat attachment preview activity
+ 
+## Fixed
+**Android**
+- attachment download
 # 10.0.1
 ## SDK Versions
 - Android [16.1.0]
