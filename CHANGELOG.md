@@ -1,3 +1,11 @@
+# 10.2.0
+## SDK Versions
+- Android [16.7.0]
+- iOS [15.10.1]
+
+## Added
+- New `Configuration.inAppChatPushNavigationEnabled` flag to enable chat push notifications open InAppChat and navigates to proper thread
+- Translations for Swahili, Kinyarwanda and Luganda languages
 # 10.1.0
 ## SDK Versions
 - Android [16.3.0]
