@@ -31,6 +31,7 @@ final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
 final mmconf.Configuration ibConfig = mmconf.Configuration(
   applicationCode: 'your_app_code',
   inAppChatEnabled: true,
+  inAppChatPushNavigationEnabled: true,
   fullFeaturedInAppsEnabled: true,
   defaultMessageStorage: true,
   logging: true,

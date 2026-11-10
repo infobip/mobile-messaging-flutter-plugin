@@ -16,6 +16,7 @@ public class Configuration {
     String applicationCode;
     String pluginVersion = "unknown";
     boolean inAppChatEnabled;
+    boolean inAppChatPushNavigationEnabled;
     boolean fullFeaturedInAppsEnabled;
     AndroidSettings androidSettings;
     PrivacySettings privacySettings;
@@ -289,6 +290,14 @@ public class Configuration {
 
     public void setInAppChatEnabled(boolean inAppChatEnabled) {
         this.inAppChatEnabled = inAppChatEnabled;
+    }
+
+    public boolean isInAppChatPushNavigationEnabled() {
+        return inAppChatPushNavigationEnabled;
+    }
+
+    public void setInAppChatPushNavigationEnabled(boolean inAppChatPushNavigationEnabled) {
+        this.inAppChatPushNavigationEnabled = inAppChatPushNavigationEnabled;
     }
 
     public boolean isFullFeaturedInAppsEnabled() {

@@ -1,11 +1,14 @@
 # 10.1.0
 ## SDK Versions
 - Android [16.3.0]
-- iOS [15.7.1]
+- iOS [15.9.0]
  
 ## Changed
 **Android**
 - improvements to chat attachment preview activity
+
+**iOS**
+- chat push taps can open In-app chat in the matching thread when `inAppChatPushNavigationEnabled` is enabled
  
 ## Fixed
 **Android**

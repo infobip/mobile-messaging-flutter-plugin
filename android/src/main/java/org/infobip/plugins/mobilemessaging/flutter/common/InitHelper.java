@@ -11,9 +11,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.Color;
-
 import androidx.annotation.NonNull;
-
 
 import org.infobip.mobile.messaging.MobileMessaging;
 import org.infobip.mobile.messaging.MobileMessagingCore;
@@ -91,6 +89,7 @@ public class InitHelper {
         if (configuration.isInAppChatEnabled()) {
             InAppChat chat = InAppChat.getInstance(context);
             chat.activate();
+            chat.setPushNavigationEnabled(configuration.isInAppChatPushNavigationEnabled());
         }
 
         if (configuration.isFullFeaturedInAppsEnabled()) {

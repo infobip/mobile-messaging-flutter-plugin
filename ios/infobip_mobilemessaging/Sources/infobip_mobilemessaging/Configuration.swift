@@ -26,6 +26,7 @@ class Configuration {
         static let applicationCodePersistingDisabled = "applicationCodePersistingDisabled"
         static let applicationCode = "applicationCode"
         static let inAppChatEnabled = "inAppChatEnabled"
+        static let inAppChatPushNavigationEnabled = "inAppChatPushNavigationEnabled"
         static let fullFeaturedInAppsEnabled = "fullFeaturedInAppsEnabled"
         static let forceCleanup = "forceCleanup"
         static let logging = "logging"
@@ -44,6 +45,7 @@ class Configuration {
     
     let appCode: String
     let inAppChatEnabled: Bool
+    let inAppChatPushNavigationEnabled: Bool
     let fullFeaturedInAppsEnabled: Bool
     // let messageStorageEnabled: Bool
     let webRTCUI: [String: Any]?
@@ -79,6 +81,7 @@ class Configuration {
         self.webRTCUI = rawConfig[Configuration.Keys.webRTCUI] as? [String: Any]
         self.appCode = appCode
         self.inAppChatEnabled = rawConfig[Configuration.Keys.inAppChatEnabled].unwrap(orDefault: false)
+        self.inAppChatPushNavigationEnabled = rawConfig[Configuration.Keys.inAppChatPushNavigationEnabled].unwrap(orDefault: false)
         self.fullFeaturedInAppsEnabled = rawConfig[Configuration.Keys.fullFeaturedInAppsEnabled].unwrap(orDefault: false)
         self.forceCleanup = ios[Configuration.Keys.forceCleanup].unwrap(orDefault: false)
         self.logging = rawConfig[Configuration.Keys.logging].unwrap(orDefault: false)

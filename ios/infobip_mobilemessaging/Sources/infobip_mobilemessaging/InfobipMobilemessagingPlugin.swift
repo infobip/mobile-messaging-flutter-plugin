@@ -227,7 +227,9 @@ public class InfobipMobilemessagingPlugin: NSObject, FlutterPlugin {
         activeConfiguration = rawConfig
         
         if configuration.inAppChatEnabled {
-            mobileMessaging = mobileMessaging.withInAppChat()
+            mobileMessaging = mobileMessaging.withInAppChat(
+                pushPresentationMode: configuration.inAppChatPushNavigationEnabled ? .uikit : nil
+            )
             MobileMessaging.inAppChat?.delegate = self
         }
         

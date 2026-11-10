@@ -18,3 +18,4 @@ pubspec.lock
 # Claude
 Claude.md
 ./claude/*
+/AGENTS.md

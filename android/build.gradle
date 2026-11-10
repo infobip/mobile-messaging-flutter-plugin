@@ -22,7 +22,7 @@ rootProject.allprojects {
 }
 
 ext {
-    mm_version = "16.3.0"
+    mm_version = "16.7.0"
     mm_minSdkVersion = 23
     mm_compileSdkVersion = 37
     mm_kotlinVersion = "2.1.21"

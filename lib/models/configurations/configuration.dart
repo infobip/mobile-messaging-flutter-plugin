@@ -18,6 +18,11 @@ class Configuration {
   /// Enables [In-App chat](https://www.infobip.com/docs/live-chat).
   final bool? inAppChatEnabled;
 
+  /// Enables navigation to In-app chat and its specific thread after a chat push tap.
+  /// When omitted or null, defaults to false; set to true to enable
+  /// automatic navigation.
+  final bool inAppChatPushNavigationEnabled;
+
   /// Enables [In-App messages](https://www.infobip.com/docs/mobile-app-messaging/send-in-app-message).
   final bool? fullFeaturedInAppsEnabled;
 
@@ -49,6 +54,7 @@ class Configuration {
     required this.applicationCode,
     this.pluginVersion,
     this.inAppChatEnabled,
+    this.inAppChatPushNavigationEnabled = false,
     this.fullFeaturedInAppsEnabled,
     this.androidSettings,
     this.iosSettings,
@@ -65,6 +71,7 @@ class Configuration {
         'applicationCode': applicationCode,
         'pluginVersion': pluginVersion,
         'inAppChatEnabled': inAppChatEnabled,
+        'inAppChatPushNavigationEnabled': inAppChatPushNavigationEnabled,
         'fullFeaturedInAppsEnabled': fullFeaturedInAppsEnabled,
         'androidSettings': androidSettings?.toJson(),
         'iosSettings': iosSettings?.toJson(),
