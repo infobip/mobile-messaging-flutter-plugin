@@ -24,6 +24,7 @@ public class Configuration {
     boolean defaultMessageStorage;
     WebRTCUI webRTCUI;
     String userDataJwt;
+    List<String> trustedDomains;
     boolean logging;
 
     public static class WebRTCUI {
@@ -306,6 +307,14 @@ public class Configuration {
 
     public void setFullFeaturedInAppsEnabled(boolean fullFeaturedInAppsEnabled) {
         this.fullFeaturedInAppsEnabled = fullFeaturedInAppsEnabled;
+    }
+
+    public List<String> getTrustedDomains() {
+        return trustedDomains;
+    }
+
+    public void setTrustedDomains(List<String> trustedDomains) {
+        this.trustedDomains = trustedDomains;
     }
 
     public boolean isLogging() {

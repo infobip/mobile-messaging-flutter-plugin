@@ -22,6 +22,7 @@ import org.infobip.mobile.messaging.interactive.NotificationAction;
 import org.infobip.mobile.messaging.interactive.NotificationCategory;
 import org.infobip.mobile.messaging.storage.SQLiteMessageStore;
 
+import java.util.HashSet;
 import java.util.List;
 
 public class InitHelper {
@@ -103,6 +104,11 @@ public class InitHelper {
         }
 
         builder.withJwtSupplier(() -> configuration.userDataJwt);
+
+        List<String> trustedDomains = configuration.getTrustedDomains();
+        if (trustedDomains != null && !trustedDomains.isEmpty()) {
+            builder.withTrustedDomains(new HashSet<>(trustedDomains));
+        }
 
         return builder;
     }

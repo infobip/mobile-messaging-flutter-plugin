@@ -44,6 +44,7 @@ final mmconf.Configuration ibConfig = mmconf.Configuration(
     withoutRegisteringForRemoteNotifications: false,
   ),
   webRTCUI: mmconf.WebRTCUI(configurationId: 'Your WEBRTC push configuration id'),
+  // trustedDomains: ['example.com'],
 );
 
 class _MyAppState extends State<MyApp> {

@@ -260,6 +260,10 @@ public class InfobipMobilemessagingPlugin: NSObject, FlutterPlugin {
         
         mobileMessaging = mobileMessaging.withJwtSupplier(VariableJwtSupplier(jwt: configuration.userDataJwt))
         
+        if let trustedDomains = configuration.trustedDomains {
+            mobileMessaging = mobileMessaging.withTrustedDomains(trustedDomains)
+        }
+        
 #if WEBRTCUI_ENABLED
         if let webrtcDict = configuration.webRTCUI,
            let configId = webrtcDict[Configuration.Keys.configurationId] as? String {

@@ -46,6 +46,11 @@ class Configuration {
 
   final String? userDataJwt;
 
+  /// Optional list of trusted domains, e.g. `['example.com', 'trusted.org']`.
+  /// When set, the SDK opens only web view and browser URLs whose host matches one of these domains or their subdomains.
+  /// If not set or empty, all URLs are allowed.
+  final List<String>? trustedDomains;
+
    /// Enables logging in Debug runs.
   final bool? logging;
 
@@ -63,6 +68,7 @@ class Configuration {
     this.defaultMessageStorage,
     this.webRTCUI,
     this.userDataJwt,
+    this.trustedDomains,
     this.logging,
   });
 
@@ -81,6 +87,7 @@ class Configuration {
         'defaultMessageStorage': defaultMessageStorage,
         'webRTCUI': webRTCUI?.toJson(),
         'userDataJwt': userDataJwt,
+        'trustedDomains': trustedDomains,
         'logging': logging,
       };
 }

@@ -41,6 +41,7 @@ class Configuration {
         static let customization = "inAppChatCustomization"
         static let shouldHandleKeyboardAppearance = "shouldHandleKeyboardAppearance"
         static let userDataJwt = "userDataJwt"
+        static let trustedDomains = "trustedDomains"
     }
     
     let appCode: String
@@ -60,6 +61,7 @@ class Configuration {
     let withoutRegisteringForRemoteNotifications: Bool
     let customization: Customization?
     let userDataJwt: String?
+    let trustedDomains: [String]?
     
     init?(rawConfig: [String: AnyObject]) {
         guard let appCode = rawConfig[Configuration.Keys.applicationCode] as? String,
@@ -87,6 +89,11 @@ class Configuration {
         self.logging = rawConfig[Configuration.Keys.logging].unwrap(orDefault: false)
         self.withoutRegisteringForRemoteNotifications = ios[Configuration.Keys.withoutRegisteringForRemoteNotifications].unwrap(orDefault: false)
         self.userDataJwt = rawConfig[Configuration.Keys.userDataJwt].unwrap(orDefault: nil)
+        if let trustedDomains = rawConfig[Configuration.Keys.trustedDomains] as? [String], !trustedDomains.isEmpty {
+            self.trustedDomains = trustedDomains
+        } else {
+            self.trustedDomains = nil
+        }
         
         if let rawPrivacySettings = rawConfig[Configuration.Keys.privacySettings] as? [String: Any] {
             var ps = [String: Any]()
