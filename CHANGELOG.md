@@ -1,3 +1,10 @@
+# 10.3.0
+## SDK Versions
+- Android [16.7.0]
+- iOS [15.10.1]
+
+## Added
+- New `Configuration.trustedDomains` option to restrict which URLs the SDK can open from push notifications (webView and browser actions) to the listed domains and their subdomains. See [Trusted Domains Security](https://github.com/infobip/mobile-messaging-flutter-plugin/wiki/Trusted-Domains-Security) for more info.
 # 10.2.0
 ## SDK Versions
 - Android [16.7.0]
