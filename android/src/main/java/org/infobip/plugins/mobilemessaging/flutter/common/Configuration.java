@@ -47,6 +47,7 @@ public class Configuration {
         boolean multipleNotifications;
         String notificationAccentColor;
         FirebaseOptions firebaseOptions;
+        boolean appManagedFcmTokenLifecycle;
 
         public String getNotificationIcon() {
             return notificationIcon;
@@ -90,6 +91,14 @@ public class Configuration {
 
         public void setFirebaseOptions(FirebaseOptions firebaseOptions) {
             this.firebaseOptions = firebaseOptions;
+        }
+
+        public boolean isAppManagedFcmTokenLifecycle() {
+            return appManagedFcmTokenLifecycle;
+        }
+
+        public void setAppManagedFcmTokenLifecycle(boolean appManagedFcmTokenLifecycle) {
+            this.appManagedFcmTokenLifecycle = appManagedFcmTokenLifecycle;
         }
     }
 

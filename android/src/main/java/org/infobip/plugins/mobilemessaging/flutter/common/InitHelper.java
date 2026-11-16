@@ -109,6 +109,8 @@ public class InitHelper {
         if (trustedDomains != null && !trustedDomains.isEmpty()) {
             builder.withTrustedDomains(new HashSet<>(trustedDomains));
         }
+        boolean appManagedFcmTokenLifecycle = androidSettings != null && androidSettings.isAppManagedFcmTokenLifecycle();
+        builder.withAppManagedFcmTokenLifecycle(appManagedFcmTokenLifecycle);
 
         return builder;
     }

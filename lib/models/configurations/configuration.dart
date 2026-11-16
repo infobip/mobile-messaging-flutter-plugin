@@ -115,6 +115,9 @@ class AndroidSettings {
   /// Accent color for notification.
   final String? notificationAccentColor;
 
+  /// Whether FCM token lifecycle is managed by the host app rather than the Mobile Messaging SDK. Defaults to `false`.
+  final bool? appManagedFcmTokenLifecycle;
+
   /// Default constructor with all params.
   AndroidSettings({
     this.firebaseOptions,
@@ -124,6 +127,7 @@ class AndroidSettings {
     this.notificationSound,
     this.multipleNotifications,
     this.notificationAccentColor,
+    this.appManagedFcmTokenLifecycle,
   });
 
   /// Mapping [AndroidSettings] to json.
@@ -135,6 +139,7 @@ class AndroidSettings {
         'notificationSound': notificationSound,
         'multipleNotifications': multipleNotifications,
         'notificationAccentColor': notificationAccentColor,
+        'appManagedFcmTokenLifecycle': appManagedFcmTokenLifecycle,
       };
 }
 
