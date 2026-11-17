@@ -43,7 +43,8 @@ public class StreamHandler implements EventChannel.StreamHandler {
     }
 
     private boolean sendCachedEvent(JSONObject eventObj) {
-        FlutterLogger.d(TAG, "sendEvent from cached: " + eventObj);
+        // Cached payloads may contain personal data or credentials. Log only the event name.
+        FlutterLogger.d(TAG, "sendEvent from cached: " + eventObj.optString("eventName"));
         eventSink.success(eventObj.toString());
         return true;
     }

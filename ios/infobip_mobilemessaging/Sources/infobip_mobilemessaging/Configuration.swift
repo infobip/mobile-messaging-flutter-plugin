@@ -23,7 +23,6 @@ class Configuration {
         static let userDataPersistingDisabled = "userDataPersistingDisabled"
         static let carrierInfoSendingDisabled = "carrierInfoSendingDisabled"
         static let systemInfoSendingDisabled = "systemInfoSendingDisabled"
-        static let applicationCodePersistingDisabled = "applicationCodePersistingDisabled"
         static let applicationCode = "applicationCode"
         static let inAppChatEnabled = "inAppChatEnabled"
         static let inAppChatPushNavigationEnabled = "inAppChatPushNavigationEnabled"
@@ -100,7 +99,6 @@ class Configuration {
             ps[Configuration.Keys.userDataPersistingDisabled] = rawPrivacySettings[Configuration.Keys.userDataPersistingDisabled].unwrap(orDefault: false)
             ps[Configuration.Keys.carrierInfoSendingDisabled] = rawPrivacySettings[Configuration.Keys.carrierInfoSendingDisabled].unwrap(orDefault: false)
             ps[Configuration.Keys.systemInfoSendingDisabled] = rawPrivacySettings[Configuration.Keys.systemInfoSendingDisabled].unwrap(orDefault: false)
-            ps[Configuration.Keys.applicationCodePersistingDisabled] = rawPrivacySettings[Configuration.Keys.applicationCodePersistingDisabled].unwrap(orDefault: false)
             
             privacySettings = ps
         } else {

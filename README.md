@@ -147,9 +147,9 @@ $ pub get infobip_mobilemessaging
 
         await InfobipMobilemessaging.init(mmconf.Configuration(
           applicationCode: '<Your app code>',
+          logging: true, // for development only, don't enable it in production builds
           iosSettings: mmconf.IOSSettings(
             notificationTypes: ['alert', 'badge', 'sound'],
-            logging: true,
           ),
           androidSettings: mmconf.AndroidSettings(
             multipleNotifications: true,
@@ -163,6 +163,10 @@ $ pub get infobip_mobilemessaging
     ...
 
     ```
+
+    > ### Notice
+    > If your security requirements prohibit embedding the Application Code in your app, retrieve it from your backend before initializing the plugin. Obfuscation can make extraction harder, but does not keep the value secret.
+
 #### More details on SDK features and FAQ you can find on [Wiki](https://github.com/infobip/mobile-messaging-flutter-plugin/wiki)
 
 <br>

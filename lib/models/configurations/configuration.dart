@@ -51,7 +51,11 @@ class Configuration {
   /// If not set or empty, all URLs are allowed.
   final List<String>? trustedDomains;
 
-   /// Enables logging in Debug runs.
+  /// Enables SDK and plugin logging, forwarded to the Flutter console.
+  ///
+  /// Intended for development and troubleshooting only. On Android it enables verbose native SDK logs
+  /// also in release builds, so it should not be enabled in production apps.
+  /// When disabled, Android plugin logs are written to logcat only for debuggable builds (errors are always written).
   final bool? logging;
 
   /// Default constructor with all params.
@@ -230,20 +234,17 @@ class WebViewSettings {
 
 /// Helper class with privacy settings.
 class PrivacySettings {
-  final bool? applicationCodePersistingDisabled;
   final bool? userDataPersistingDisabled;
   final bool? carrierInfoSendingDisabled;
   final bool? systemInfoSendingDisabled;
 
   PrivacySettings({
-    this.applicationCodePersistingDisabled,
     this.userDataPersistingDisabled,
     this.carrierInfoSendingDisabled,
     this.systemInfoSendingDisabled,
   });
 
   Map<String, dynamic> toJson() => {
-        'applicationCodePersistingDisabled': applicationCodePersistingDisabled,
         'userDataPersistingDisabled': userDataPersistingDisabled,
         'carrierInfoSendingDisabled': carrierInfoSendingDisabled,
         'systemInfoSendingDisabled': systemInfoSendingDisabled,

@@ -148,6 +148,8 @@ public class InfobipMobilemessagingPlugin implements FlutterPlugin, MethodCallHa
 
     @Override
     public void onAttachedToEngine(@NonNull FlutterPluginBinding flutterPluginBinding) {
+        // Initialize logging before SDK startup so early logs respect the app's debuggable flag.
+        MobileMessagingLogger.init(flutterPluginBinding.getApplicationContext());
         FlutterLogger.d(TAG, "onAttachedToEngine");
         methodChannel = new MethodChannel(flutterPluginBinding.getBinaryMessenger(), "infobip_mobilemessaging");
 
@@ -167,8 +169,7 @@ public class InfobipMobilemessagingPlugin implements FlutterPlugin, MethodCallHa
 
     @Override
     public void onMethodCall(@NonNull MethodCall call, @NonNull MethodChannel.Result result) {
-        FlutterLogger.d(TAG, "onMethodCall: " + call.method.toString());
-        FlutterLogger.i(TAG, "activity: " + activity.toString());
+        FlutterLogger.d(TAG, "onMethodCall: " + call.method);
         switch (call.method) {
             case "init":
                 init(call, result);
@@ -1020,7 +1021,7 @@ public class InfobipMobilemessagingPlugin implements FlutterPlugin, MethodCallHa
                     runnable.run();
                 }
             } catch (Exception e) {
-                FlutterLogger.w(TAG, "Could not resume with JWT value " + newJwt, e);
+                FlutterLogger.w(TAG, "Could not resume with JWT value", e);
             }
         }
 

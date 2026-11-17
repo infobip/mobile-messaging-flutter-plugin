@@ -8,15 +8,18 @@
 
 package org.infobip.plugins.mobilemessaging.flutter.common;
 
-import android.util.Log;
-
 import org.infobip.mobile.messaging.logging.Level;
+import org.infobip.mobile.messaging.logging.MobileMessagingLogger;
 
 import androidx.annotation.Nullable;
 
 /**
  * Centralized logging utility for Flutter plugin code.
- * Routes logs to Flutter console via FlutterLogWriter when enabled.
+ * <p>
+ * When logging is enabled in the plugin configuration, logs are routed to the Flutter console via {@link FlutterLogWriter}.
+ * Otherwise logs are delegated to {@link MobileMessagingLogger}, which writes verbose/debug/info/warn logs
+ * only for debuggable builds (or when logging is enforced) and always writes errors.
+ * Never pass sensitive data (JWTs, tokens, payloads, personal data) to this logger.
  */
 public class FlutterLogger {
 
@@ -35,7 +38,7 @@ public class FlutterLogger {
     }
 
     /**
-     * Disable Flutter console logging, revert to native Logcat.
+     * Route logs through {@link MobileMessagingLogger}.
      */
     public static void useNativeLogcat() {
         FlutterLogger.writer = null;
@@ -55,7 +58,7 @@ public class FlutterLogger {
         if (writer != null) {
             writer.write(Level.VERBOSE.name(), tag, message, throwable);
         } else {
-            Log.v(tag, message, throwable);
+            MobileMessagingLogger.v(tag, message, throwable);
         }
     }
 
@@ -73,7 +76,7 @@ public class FlutterLogger {
         if (writer != null) {
             writer.write(Level.DEBUG.name(), tag, message, throwable);
         } else {
-            Log.d(tag, message, throwable);
+            MobileMessagingLogger.d(tag, message, throwable);
         }
     }
 
@@ -91,7 +94,7 @@ public class FlutterLogger {
         if (writer != null) {
             writer.write(Level.INFO.name(), tag, message, throwable);
         } else {
-            Log.i(tag, message, throwable);
+            MobileMessagingLogger.i(tag, message, throwable);
         }
     }
 
@@ -109,7 +112,7 @@ public class FlutterLogger {
         if (writer != null) {
             writer.write(Level.WARN.name(), tag, message, throwable);
         } else {
-            Log.w(tag, message, throwable);
+            MobileMessagingLogger.w(tag, message, throwable);
         }
     }
 
@@ -127,7 +130,7 @@ public class FlutterLogger {
         if (writer != null) {
             writer.write(Level.ERROR.name(), tag, message, throwable);
         } else {
-            Log.e(tag, message, throwable);
+            MobileMessagingLogger.e(tag, message, throwable);
         }
     }
 }

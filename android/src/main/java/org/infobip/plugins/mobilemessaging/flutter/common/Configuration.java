@@ -103,18 +103,9 @@ public class Configuration {
     }
 
     public static class PrivacySettings {
-        boolean applicationCodePersistingDisabled;
         boolean userDataPersistingDisabled;
         boolean carrierInfoSendingDisabled;
         boolean systemInfoSendingDisabled;
-
-        public boolean isApplicationCodePersistingDisabled() {
-            return applicationCodePersistingDisabled;
-        }
-
-        public void setApplicationCodePersistingDisabled(boolean applicationCodePersistingDisabled) {
-            this.applicationCodePersistingDisabled = applicationCodePersistingDisabled;
-        }
 
         public boolean isUserDataPersistingDisabled() {
             return userDataPersistingDisabled;
