@@ -1,3 +1,19 @@
+# 10.4.0
+## SDK Versions
+- Android [16.7.0]
+- iOS [15.10.1]
+
+## Added
+- New `AndroidSettings.appManagedFcmTokenLifecycle` option to let the host app manage the FCM token lifecycle instead of the Mobile Messaging SDK.
+
+## Changed
+- **Breaking:** removed `PrivacySettings.applicationCodePersistingDisabled`. The setting had no effect on either platform: on iOS the Application Code is stored in the Keychain, and on Android the setting was never applied. Remove it from your `PrivacySettings` configuration. No behavior change is expected.
+- `Configuration.logging` documentation clarified: it is intended for development and troubleshooting only and should not be enabled in production builds. See [How to enable logging](https://github.com/infobip/mobile-messaging-flutter-plugin/wiki/How-to-enable-logging).
+
+## Fixed
+**Android**
+- With `logging` disabled, plugin logs are no longer written to Logcat in release builds. They are now written only for debuggable builds, the same as SDK logs; errors are always written.
+- Plugin logs no longer include event payloads (message content, push token, user data) or the chat JWT.
 # 10.3.0
 ## SDK Versions
 - Android [16.7.0]
