@@ -13,7 +13,7 @@ import 'package:collection/collection.dart';
 /// will show all messages from all topics if not provided.
 /// [topic] and [topics] are mutually exclusive — [topic] takes precedence
 /// if both are set. [limit] - number of messages to show, [fromDateTime]
-/// and [toDateTime].
+/// and [toDateTime]. [cursor] - [Inbox.nextCursor] of the previous page, to fetch the next page.
 class FilterOptions {
   /// Optional: DateTime from which Inbox messages to show.
   final DateTime? fromDateTime;
@@ -32,6 +32,11 @@ class FilterOptions {
   /// Limit of messages to show. Maximum stored amount is 100, default is 20.
   final int? limit;
 
+  /// Optional: opaque pagination cursor, [Inbox.nextCursor] returned by the previous fetch.
+  /// Null fetches the first page. Keep [topic], [fromDateTime] and [toDateTime] the same as
+  /// for the previous page; [limit] may change. Not supported together with [topics].
+  final String? cursor;
+
   /// Creates a new class.
   FilterOptions({
     this.fromDateTime,
@@ -39,6 +44,7 @@ class FilterOptions {
     this.topic,
     this.topics,
     this.limit,
+    this.cursor,
   });
 
   /// Mapping [FilterOptions] to json. Formats [fromDateTime] and [toDateTime] for native to process.
@@ -49,6 +55,7 @@ class FilterOptions {
         if (topic != null) 'topic': topic,
         if (topic == null && topics != null && topics!.isNotEmpty) 'topics': topics,
         'limit': limit,
+        'cursor': cursor,
       }..removeWhere((dynamic key, dynamic value) => value == null);
 
   String timeFormatter(DateTime datetime) => '${datetime.toIso8601String().substring(0, 19)}Z';
@@ -62,7 +69,8 @@ class FilterOptions {
           toDateTime == other.toDateTime &&
           topic == other.topic &&
           const DeepCollectionEquality().equals(topics, other.topics) &&
-          limit == other.limit;
+          limit == other.limit &&
+          cursor == other.cursor;
 
   @override
   int get hashCode =>
@@ -70,5 +78,6 @@ class FilterOptions {
       toDateTime.hashCode ^
       topic.hashCode ^
       const DeepCollectionEquality().hash(topics) ^
-      limit.hashCode;
+      limit.hashCode ^
+      cursor.hashCode;
 }

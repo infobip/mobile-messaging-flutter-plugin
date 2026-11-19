@@ -4,7 +4,7 @@
 
 import PackageDescription
 
-let mmSdkVersion: Version = "15.9.0"
+let mmSdkVersion: Version = "15.10.1"
 
 let webRTCUIEnabled = ["1", "true"].contains(
     (Context.environment["INFOBIP_WEBRTCUI_ENABLED"] ?? "").lowercased()

@@ -507,9 +507,20 @@ class InfobipMobilemessaging {
   /// Fetches messages from Inbox.
   /// Requires `token`, `externalUserId`, and [FilterOptions].
   ///
+  /// To fetch the next page, pass [Inbox.nextCursor] of the previous page as
+  /// [FilterOptions.cursor], keeping the other filters the same. A null
+  /// [Inbox.nextCursor] means no further page is available from this request.
+  ///
+  /// Throws [PlatformException] if fetching fails.
+  ///
   /// Example:
   /// ```dart
-  /// var inbox = await fetchInboxMessages('jwtToken', 'yourId', FilterOptions());
+  /// var inbox = await fetchInboxMessages('jwtToken', 'yourId', FilterOptions(limit: 20));
+  /// if (inbox.nextCursor != null) {
+  ///   var nextPage = await fetchInboxMessages(
+  ///     'jwtToken', 'yourId', FilterOptions(limit: 20, cursor: inbox.nextCursor));
+  /// }
+  /// ```
   static Future<Inbox> fetchInboxMessages(
     String token,
     String externalUserId,
@@ -531,10 +542,12 @@ class InfobipMobilemessaging {
   /// Fetches messages from [Inbox] without token - recommended only for sandbox
   /// applications. For production apps use [fetchInboxMessages] with token.
   /// Requires `externalUserId`, and [FilterOptions].
+  /// Supports cursor pagination the same way as [fetchInboxMessages].
   ///
   /// Example:
   /// ```dart
   /// var inbox = await fetchInboxMessagesWithoutToken('yourId', FilterOptions());
+  /// ```
   static Future<Inbox> fetchInboxMessagesWithoutToken(
     String externalUserId,
     FilterOptions filterOptions,
@@ -559,6 +572,65 @@ class InfobipMobilemessaging {
   ) async {
     await _channel.invokeMethod(
       'setInboxMessagesSeen',
+      {
+        'externalUserId': externalUserId,
+        'messageIds': messageIds,
+      },
+    );
+  }
+
+  /// Deletes [Inbox] messages of the user. Uses the same `token` as [fetchInboxMessages].
+  /// Requires `token`, `externalUserId`, and List of IDs of messages to be deleted.
+  /// To delete a single message, pass a list with only its ID.
+  ///
+  /// Deleting is idempotent: messages that are missing or already deleted count
+  /// as deleted, so a failed call can be retried with the same IDs. A following
+  /// fetch may still briefly return deleted messages.
+  ///
+  /// Pass at most 100 IDs per call, duplicates included, and split larger
+  /// selections into several calls. The server rejects larger requests with
+  /// `"BAD_REQUEST"`.
+  ///
+  /// Throws [PlatformException] if deleting fails. [PlatformException.code] is
+  /// `"20013"` for invalid arguments (empty [messageIds], blank IDs, blank
+  /// `token` or `externalUserId`), `"20006"` if the installation isn't
+  /// registered yet, otherwise the server error code, for example
+  /// `"UNAUTHORIZED"`.
+  ///
+  /// Example:
+  /// ```dart
+  /// await deleteInboxMessages('jwtToken', 'yourId', [message.messageId]);
+  /// ```
+  static Future<void> deleteInboxMessages(
+    String token,
+    String externalUserId,
+    List<String> messageIds,
+  ) async {
+    await _channel.invokeMethod(
+      'deleteInboxMessages',
+      {
+        'token': token,
+        'externalUserId': externalUserId,
+        'messageIds': messageIds,
+      },
+    );
+  }
+
+  /// Deletes [Inbox] messages of the user without token - recommended only for sandbox
+  /// applications. For production apps use [deleteInboxMessages] with token.
+  /// Requires `externalUserId`, and List of IDs of messages to be deleted.
+  /// Success and errors are the same as for [deleteInboxMessages].
+  ///
+  /// Example:
+  /// ```dart
+  /// await deleteInboxMessagesWithoutToken('yourId', [message.messageId]);
+  /// ```
+  static Future<void> deleteInboxMessagesWithoutToken(
+    String externalUserId,
+    List<String> messageIds,
+  ) async {
+    await _channel.invokeMethod(
+      'deleteInboxMessagesWithoutToken',
       {
         'externalUserId': externalUserId,
         'messageIds': messageIds,

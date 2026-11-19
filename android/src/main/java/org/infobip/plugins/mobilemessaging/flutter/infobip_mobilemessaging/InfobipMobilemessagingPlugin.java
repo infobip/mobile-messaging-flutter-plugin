@@ -270,6 +270,12 @@ public class InfobipMobilemessagingPlugin implements FlutterPlugin, MethodCallHa
             case "setInboxMessagesSeen":
                 setInboxMessagesSeen(call, result);
                 break;
+            case "deleteInboxMessages":
+                deleteInboxMessages(call, result);
+                break;
+            case "deleteInboxMessagesWithoutToken":
+                deleteInboxMessagesWithoutToken(call, result);
+                break;
             case "setChatPushTitle":
                 setChatPushTitle(call, result);
                 break;
@@ -909,6 +915,53 @@ public class InfobipMobilemessagingPlugin implements FlutterPlugin, MethodCallHa
             public void onResult(org.infobip.mobile.messaging.mobileapi.Result<String[], MobileMessagingError> result) {
                 if (result.isSuccess()) {
                     resultCallbacks.success(Arrays.toString(result.getData()));
+                } else {
+                    resultCallbacks.error(result.getError().getCode(), result.getError().getMessage(), result.getError().toString());
+                }
+            }
+        };
+    }
+
+    private void deleteInboxMessages(MethodCall call, MethodChannel.Result result) {
+        try {
+            String token = call.argument("token");
+            String externalUserId = call.argument("externalUserId");
+            String[] messageIds = resolveMessageIds(call);
+            MobileInbox.getInstance(activity.getApplication()).deleteMessages(token, externalUserId, messageIds, deleteResultListener(result));
+        } catch (Exception e) {
+            FlutterLogger.d(TAG, "Failed deleting inbox messages: " + e.getMessage());
+            result.error(ErrorCodes.INBOX_ERROR.getErrorCode(), e.getMessage(), e.getLocalizedMessage());
+        }
+    }
+
+    private void deleteInboxMessagesWithoutToken(MethodCall call, MethodChannel.Result result) {
+        try {
+            String externalUserId = call.argument("externalUserId");
+            String[] messageIds = resolveMessageIds(call);
+            MobileInbox.getInstance(activity.getApplication()).deleteMessages(externalUserId, messageIds, deleteResultListener(result));
+        } catch (Exception e) {
+            FlutterLogger.d(TAG, "Failed deleting inbox messages: " + e.getMessage());
+            result.error(ErrorCodes.INBOX_ERROR.getErrorCode(), e.getMessage(), e.getLocalizedMessage());
+        }
+    }
+
+    /**
+     * Unlike {@link #resolveStringArray(JSONArray)}, allows an empty list, so that the native SDK validates it
+     * and reports "20013", same as on iOS.
+     */
+    @NonNull
+    private static String[] resolveMessageIds(MethodCall call) {
+        List<String> messageIds = Objects.requireNonNull(call.argument("messageIds"));
+        return messageIds.toArray(new String[0]);
+    }
+
+    @NonNull
+    private MobileMessaging.ResultListener<Void> deleteResultListener(final MethodChannel.Result resultCallbacks) {
+        return new MobileMessaging.ResultListener<Void>() {
+            @Override
+            public void onResult(org.infobip.mobile.messaging.mobileapi.Result<Void, MobileMessagingError> result) {
+                if (result.isSuccess()) {
+                    resultCallbacks.success(null);
                 } else {
                     resultCallbacks.error(result.getError().getCode(), result.getError().getMessage(), result.getError().toString());
                 }

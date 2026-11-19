@@ -172,6 +172,10 @@ public class InfobipMobilemessagingPlugin: NSObject, FlutterPlugin {
             fetchInboxMessagesWithoutToken(call: call, result: result)
         } else if call.method == "setInboxMessagesSeen" {
             setInboxMessagesSeen(call: call, result: result)
+        } else if call.method == "deleteInboxMessages" {
+            deleteInboxMessages(call: call, result: result)
+        } else if call.method == "deleteInboxMessagesWithoutToken" {
+            deleteInboxMessagesWithoutToken(call: call, result: result)
         } else if call.method == "markMessagesSeen" {
             markMessagesSeen(call: call, result: result)
         } else if call.method == "setUserDataJwt" {
@@ -773,13 +777,13 @@ public class InfobipMobilemessagingPlugin: NSObject, FlutterPlugin {
                               details: "Could not retrieve inbox data" ))
         }
         
+        guard let inboxService = MobileMessaging.inbox else {
+            return result(inboxUnavailableError())
+        }
         let filters = MMInboxFilterOptions(dictRepresentation: convertStringToDictionary(text: args["filterOptions"] as! String) ?? [:])
-        MobileMessaging.inbox?.fetchInbox(token: token, externalUserId: extUserId, options: filters, completion: { (inbox, error) in
+        inboxService.fetchInbox(token: token, externalUserId: extUserId, options: filters, completion: { (inbox, error) in
             if let error = error {
-                return result(
-                    FlutterError( code: error.mm_code ?? "0",
-                                  message: error.mm_message,
-                                  details: error.description ))
+                return result(self.inboxError(error))
             } else {
                 self.dictionaryResult(result: result, dict: inbox?.dictionary() ?? [:])
             }
@@ -795,13 +799,13 @@ public class InfobipMobilemessagingPlugin: NSObject, FlutterPlugin {
                               details: "Could not retrieve inbox data" ))
         }
         
+        guard let inboxService = MobileMessaging.inbox else {
+            return result(inboxUnavailableError())
+        }
         let filters = MMInboxFilterOptions(dictRepresentation: convertStringToDictionary(text: args["filterOptions"] as! String) ?? [:])
-        MobileMessaging.inbox?.fetchInbox(externalUserId: extUserId, options: filters, completion: { (inbox, error) in
+        inboxService.fetchInbox(externalUserId: extUserId, options: filters, completion: { (inbox, error) in
             if let error = error {
-                return result(
-                    FlutterError( code: error.mm_code ?? "0",
-                                  message: error.mm_message,
-                                  details: error.description ))
+                return result(self.inboxError(error))
             } else {
                 self.dictionaryResult(result: result, dict: inbox?.dictionary() ?? [:])
             }
@@ -830,6 +834,75 @@ public class InfobipMobilemessagingPlugin: NSObject, FlutterPlugin {
                 return result(Constants.resultSuccess)
             }
         })
+    }
+    
+    func deleteInboxMessages(call: FlutterMethodCall, result: @escaping FlutterResult) {
+        guard let args = call.arguments as? [String : Any],
+              let token = args["token"] as? String,
+              let extUserId = args["externalUserId"] as? String,
+              let mIds = args["messageIds"] as? [String]
+        else {
+            return result(
+                FlutterError( code: "invalidInbox",
+                              message: "Could not retrieve inbox data",
+                              details: "Could not retrieve inbox data" ))
+        }
+        performInboxDelete(result: result) { inbox in
+            try await inbox.deleteMessages(token: token, externalUserId: extUserId, messageIds: mIds)
+        }
+    }
+    
+    func deleteInboxMessagesWithoutToken(call: FlutterMethodCall, result: @escaping FlutterResult) {
+        guard let args = call.arguments as? [String : Any],
+              let extUserId = args["externalUserId"] as? String,
+              let mIds = args["messageIds"] as? [String]
+        else {
+            return result(
+                FlutterError( code: "invalidInbox",
+                              message: "Could not retrieve inbox data",
+                              details: "Could not retrieve inbox data" ))
+        }
+        performInboxDelete(result: result) { inbox in
+            try await inbox.deleteMessages(externalUserId: extUserId, messageIds: mIds)
+        }
+    }
+    
+    private func performInboxDelete(result: @escaping FlutterResult, operation: @escaping (MMInboxService) async throws -> Void) {
+        guard let inbox = MobileMessaging.inbox else {
+            return result(inboxUnavailableError())
+        }
+        // Main actor, as Flutter results have to be sent on the main thread
+        Task { @MainActor in
+            do {
+                try await operation(inbox)
+                result(nil)
+            } catch {
+                result(self.inboxError(error as NSError))
+            }
+        }
+    }
+    
+    private func inboxUnavailableError() -> FlutterError {
+        return FlutterError( code: "invalidInbox",
+                             message: "Inbox is not available, check that MobileMessaging is initialized",
+                             details: nil )
+    }
+    
+    /// Code is always a String: server error code, or e.g. "20013" for SDK validation errors, same as on Android.
+    private func inboxError(_ error: NSError) -> FlutterError {
+        return FlutterError( code: error.mm_code ?? inboxLocalErrorCode(error),
+                             message: error.mm_message ?? error.localizedDescription,
+                             details: error.description )
+    }
+
+    /// Code for errors without `mm_code`. Inbox validation errors already have `mm_code` "20013", so the only local Inbox error
+    /// without it is `NoRegistration`, reported with Android's `NO_VALID_REGISTRATION` code. Other errors, e.g. network errors,
+    /// keep the "0" code that the Inbox fetch has always reported.
+    private func inboxLocalErrorCode(_ error: NSError) -> String {
+        if error.domain == MMInternalErrorDomain && error.code == NSError(type: .NoRegistration).code {
+            return "20006"
+        }
+        return "0"
     }
     
     func markMessagesSeen(call: FlutterMethodCall, result: @escaping FlutterResult) {
