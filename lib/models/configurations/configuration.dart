@@ -116,6 +116,10 @@ class AndroidSettings {
   /// Should multiple notifications in status bar be shown. By default only the latest notification is shown.
   final bool? multipleNotifications;
 
+  /// Displays regular push notifications as banners while the Android app is in
+  /// the foreground. Disabled when omitted or false.
+  final bool? withBannerForegroundNotificationsEnabled;
+
   /// Accent color for notification.
   final String? notificationAccentColor;
 
@@ -130,6 +134,7 @@ class AndroidSettings {
     this.notificationChannelName,
     this.notificationSound,
     this.multipleNotifications,
+    this.withBannerForegroundNotificationsEnabled,
     this.notificationAccentColor,
     this.appManagedFcmTokenLifecycle,
   });
@@ -142,6 +147,7 @@ class AndroidSettings {
         'notificationChannelName': notificationChannelName,
         'notificationSound': notificationSound,
         'multipleNotifications': multipleNotifications,
+        'withBannerForegroundNotificationsEnabled': withBannerForegroundNotificationsEnabled,
         'notificationAccentColor': notificationAccentColor,
         'appManagedFcmTokenLifecycle': appManagedFcmTokenLifecycle,
       };

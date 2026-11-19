@@ -37,6 +37,7 @@ final mmconf.Configuration ibConfig = mmconf.Configuration(
   logging: true,
   androidSettings: mmconf.AndroidSettings(
     multipleNotifications: true,
+    withBannerForegroundNotificationsEnabled: true,
   ),
   iosSettings: mmconf.IOSSettings(
     notificationTypes: ['alert', 'badge', 'sound'],

@@ -153,6 +153,7 @@ $ pub get infobip_mobilemessaging
           ),
           androidSettings: mmconf.AndroidSettings(
             multipleNotifications: true,
+            withBannerForegroundNotificationsEnabled: true,
           ),  
         ));
 
@@ -166,6 +167,14 @@ $ pub get infobip_mobilemessaging
 
     > ### Notice
     > If your security requirements prohibit embedding the Application Code in your app, retrieve it from your backend before initializing the plugin. Obfuscation can make extraction harder, but does not keep the value secret.
+
+
+### Android foreground push banners
+
+Set `Configuration.androidSettings.withBannerForegroundNotificationsEnabled` to `true` to display regular push notifications as banners when they arrive while the Android app is in the foreground, including pushes sent through Flow. The option is disabled when omitted or set to `false`; regular foreground pushes then use the default notification-bar behavior.
+
+This Android-only option calls the native SDK's `withBannerForegroundNotifications()` builder method. It does not require the push to specify `inAppStyle: BANNER` and does not affect iOS.
+
 
 #### More details on SDK features and FAQ you can find on [Wiki](https://github.com/infobip/mobile-messaging-flutter-plugin/wiki)
 

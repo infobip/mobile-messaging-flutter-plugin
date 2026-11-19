@@ -74,6 +74,10 @@ public class InitHelper {
             notificationBuilder.withMultipleNotifications();
         }
 
+        if (androidSettings != null && androidSettings.isWithBannerForegroundNotificationsEnabled()) {
+            builder.withBannerForegroundNotifications();
+        }
+
         if (androidSettings != null && androidSettings.getNotificationAccentColor() != null) {
             int color = Color.parseColor(androidSettings.getNotificationAccentColor());
             notificationBuilder.withColor(color);

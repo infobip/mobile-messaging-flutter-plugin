@@ -45,6 +45,7 @@ public class Configuration {
         String notificationChannelName;
         String notificationSound;
         boolean multipleNotifications;
+        boolean withBannerForegroundNotificationsEnabled;
         String notificationAccentColor;
         FirebaseOptions firebaseOptions;
         boolean appManagedFcmTokenLifecycle;
@@ -75,6 +76,10 @@ public class Configuration {
 
         public void setMultipleNotifications(boolean multipleNotifications) {
             this.multipleNotifications = multipleNotifications;
+        }
+
+        public boolean isWithBannerForegroundNotificationsEnabled() {
+            return withBannerForegroundNotificationsEnabled;
         }
 
         public String getNotificationAccentColor() {
